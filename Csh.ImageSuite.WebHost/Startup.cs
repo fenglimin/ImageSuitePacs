@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using System.Web.Routing;
 using Csh.ImageSuite.WebHost;
 using Microsoft.Owin;
 using Microsoft.Owin.Extensions;
@@ -15,6 +16,8 @@ namespace Csh.ImageSuite.WebHost
         {
             var httpConfiguration = new HttpConfiguration();
             WebApiConfig.Register(httpConfiguration);
+
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             app.UseWebApi(httpConfiguration);
 
