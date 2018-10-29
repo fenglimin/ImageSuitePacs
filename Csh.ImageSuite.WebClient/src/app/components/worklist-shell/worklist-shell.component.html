@@ -1,0 +1,12 @@
+<tr>
+  <td>
+    <div id="DivLeft">
+      <app-query-shortcut (selected)="onSelected($event)"></app-query-shortcut>
+    </div>
+  </td>
+  <td>
+    <div id="DivRight">
+      <app-worklist [shortcut]="selectedShortcut" [test]="selectedShortcut"></app-worklist>
+    </div>
+  </td>
+</tr>  

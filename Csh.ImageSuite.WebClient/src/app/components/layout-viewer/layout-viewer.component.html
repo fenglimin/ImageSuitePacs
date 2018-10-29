@@ -1,0 +1,17 @@
+<div class="DivLayoutViewer" [id]="'DivLayoutViewer' + groupLayout.rowIndex + groupLayout.colIndex"
+      (click)="onSelected()"
+      [style.width]="groupLayout.width+'px'"
+      [style.height]="groupLayout.height+'px'">
+  <tr *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
+    <td *ngFor="let b of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
+
+      <app-image-viewer [imageLayout]="{
+                        rowIndex:rowIndex, colIndex:colIndex,
+                        rowIndexParent:groupLayout.rowIndex,
+                        colIndexParent:groupLayout.colIndex, 
+                        width:(groupLayout.width/groupLayout.colCountChild-4),
+                        height:(groupLayout.height/groupLayout.rowCountChild-4)}">
+      </app-image-viewer>
+    </td>
+  </tr>
+</div>

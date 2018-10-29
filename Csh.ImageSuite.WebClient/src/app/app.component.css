@@ -1,0 +1,18 @@
+#DivTop
+{
+  width:976px;
+  margin: 0px;
+  padding: 12px 12px 12px 16px;
+  border-bottom: solid 4px #FFFFFF;
+  background-color: #000000;
+  color: #cccccc;
+  height: 20px;
+}
+
+/*#DivTop .navbar-fixed-top{
+  border-width: 0 0 2px 0;
+  -webkit-border-image: -webkit-linear-gradient(left, #ff9900, #5c492c) 100% 1;
+  border-color: #ff9900;
+  border-image: linear-gradient(left, #ff9900, #5c492c) 100% 1;
+  border-style: solid;
+}*/

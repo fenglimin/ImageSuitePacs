@@ -1,0 +1,46 @@
+:root {
+  --view-width: 764px;
+  --view-height: 618px;
+}
+
+#DivLeft
+{
+  display:block;
+  float:left;
+  width:200px;
+  margin:0 auto;
+  height: 650px;
+  padding: 12px 12px 12px 16px;
+  border-bottom: solid 4px #FFFFFF;
+  border-right: solid 4px #FFFFFF;
+  background-color: #000000;
+  color: #F5F5F5;
+}
+
+#DivToolbar
+{
+  display:block;
+  float:left;
+  width:748px;
+  margin:0 auto;
+  height: 20px;
+  padding: 12px 12px 12px 12px;
+  border-bottom: solid 4px #FFFFFF;
+  background-color: #000000;
+  color: #F5F5F5;
+}
+
+#DivViewerBack
+{
+  display:block;
+  float:left;
+  width:764px;
+  margin:0 auto;
+  height: 618px;
+  padding: 4px 4px 4px 4px;
+  border-bottom: solid 4px #FFFFFF;
+  background-color: #888888;
+  color: #F5F5F5;
+}
+
+
