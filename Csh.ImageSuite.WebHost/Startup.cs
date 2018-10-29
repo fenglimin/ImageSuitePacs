@@ -22,7 +22,7 @@ namespace Csh.ImageSuite.WebHost
             app.UseFileServer(new FileServerOptions
             {
                 RequestPath = new Microsoft.Owin.PathString(string.Empty),
-                FileSystem = new PhysicalFileSystem("./App"),
+                FileSystem = new PhysicalFileSystem("./AngularDist"),
                 EnableDirectoryBrowsing = true
             });
 
