@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using Csh.ImageSuite.Common.Interface;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -12,6 +13,13 @@ namespace Csh.ImageSuite.WebHost.Controllers
 
     public class ShortcutController : Controller
     {
+        private readonly IPacsCoordinator _pacsCoordinator;
+
+        public ShortcutController(IPacsCoordinator pacsCoordinator)
+        {
+            _pacsCoordinator = pacsCoordinator;
+        }
+
         // GET: Shortcut
         public string Index()
         {

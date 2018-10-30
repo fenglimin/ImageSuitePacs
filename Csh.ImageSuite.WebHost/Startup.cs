@@ -1,6 +1,8 @@
 ﻿using System.Web.Http;
+using System.Web.Mvc;
 using System.Web.Routing;
 using Csh.ImageSuite.WebHost;
+using Csh.ImageSuite.Windsor;
 using Microsoft.Owin;
 using Microsoft.Owin.Extensions;
 using Microsoft.Owin.FileSystems;
@@ -30,6 +32,9 @@ namespace Csh.ImageSuite.WebHost
             });
 
             app.UseStageMarker(PipelineStage.MapHandler);
+
+            ControllerBuilder.Current.SetControllerFactory(new WindsorControllerFactory(IoCContainer.Instance.Kernel));
+            GlobalConfiguration.Configuration.DependencyResolver = new Windsor.DependencyResolver(IoCContainer.Instance.Kernel);
         }
     }
 }
