@@ -54,8 +54,8 @@ namespace Csh.ImageSuite.Windsor
                             windsorContainer.Install(FromAssembly.This());
 
                             // install installer.
-                            windsorContainer.Install(FromAssembly.Named("Csh.ImageSuite.MiniPacs"));
-                            windsorContainer.Install(FromAssembly.Named("Csh.ImageSuite.WebPacs"));
+                            //windsorContainer.Install(FromAssembly.Named("Csh.ImageSuite.MiniPacs"));
+                            //windsorContainer.Install(FromAssembly.Named("Csh.ImageSuite.WebPacs"));
                             windsorContainer.Install(FromAssembly.Named("Csh.ImageSuite.Common"));
 
                             // install the entry assembly's installer.
