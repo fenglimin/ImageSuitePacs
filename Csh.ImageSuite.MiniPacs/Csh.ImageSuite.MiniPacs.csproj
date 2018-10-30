@@ -64,7 +64,7 @@
       <Name>Csh.ImageSuite.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Csh.ImageSuite.Model\Csh.ImageSuite.Model.csproj">
-      <Project>{ffd232e9-75b5-45d1-a0bf-e7a5d2789276}</Project>
+      <Project>{7897711d-5109-45c5-a317-32ad1943102e}</Project>
       <Name>Csh.ImageSuite.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\Csh.ImageSuite.Windsor\Csh.ImageSuite.Windsor.csproj">
