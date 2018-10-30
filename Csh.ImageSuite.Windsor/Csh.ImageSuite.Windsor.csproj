@@ -71,16 +71,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Csh.ImageSuite.Common\Csh.ImageSuite.Common.csproj">
-      <Project>{1dbdb9aa-f9ff-4354-a9aa-ebdaf4ba3433}</Project>
-      <Name>Csh.ImageSuite.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Csh.ImageSuite.Model\Csh.ImageSuite.Model.csproj">
-      <Project>{ffd232e9-75b5-45d1-a0bf-e7a5d2789276}</Project>
-      <Name>Csh.ImageSuite.Model</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
