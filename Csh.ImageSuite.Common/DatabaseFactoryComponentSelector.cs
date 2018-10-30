@@ -2,7 +2,7 @@
 using Castle.Facilities.TypedFactory;
 using Csh.ImageSuite.Model.Enum;
 
-namespace Csh.ImageSuite.Windsor
+namespace Csh.ImageSuite.Common
 {
     public class DatabaseFactoryComponentSelector : DefaultTypedFactoryComponentSelector
     {
