@@ -41,14 +41,14 @@ export class DatabaseService {
   /** GET shortcut from the server */
   getShortcuts (): Observable<Shortcut[]> {
 
-    this.http.get('https://api.github.com/users/seeschweiler').subscribe(data => {
+/*    this.http.get('https://api.github.com/users/seeschweiler').subscribe(data => {
       console.log(data);
     });
 
     this.http.get(this.patientUrl).subscribe(data => {
       console.log(data);
     });
-
+    */
     return this.http.get<Shortcut[]>(this.shortcutUrl)
       .pipe(
         tap(heroes => this.log('fetched heroes')),
