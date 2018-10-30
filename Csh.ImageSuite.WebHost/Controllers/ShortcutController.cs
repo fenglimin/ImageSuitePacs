@@ -13,13 +13,11 @@ namespace Csh.ImageSuite.WebHost.Controllers
 
     public class ShortcutController : Controller
     {
-        private readonly IPacsCoordinator _pacsCoordinator;
-        private IDbHelper _dbHelper;
+        private readonly IDbHelper _dbHelper;
 
         public ShortcutController(IPacsCoordinator pacsCoordinator)
         {
-            _pacsCoordinator = pacsCoordinator;
-            _dbHelper = _pacsCoordinator.GetDbHelper();
+            _dbHelper = pacsCoordinator.GetDbHelper();
         }
 
         // GET: Shortcut
