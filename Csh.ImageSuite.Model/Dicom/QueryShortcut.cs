@@ -8,7 +8,7 @@ namespace Csh.ImageSuite.Model.Dicom
 {
     public class QueryShortcut
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
     }

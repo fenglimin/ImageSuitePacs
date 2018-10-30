@@ -12,7 +12,7 @@ namespace Csh.ImageSuite.Common
         public PacsCoordinator(IDatabaseFactoryComponentSelector databaseFactoryComponentSelector)
         {
             _databaseFactoryComponentSelector = databaseFactoryComponentSelector;
-            _pacsType = PacsType.WebPacs;
+            _pacsType = PacsType.MiniPacs;
         }
 
         public void SetPacsType(PacsType pacsType)

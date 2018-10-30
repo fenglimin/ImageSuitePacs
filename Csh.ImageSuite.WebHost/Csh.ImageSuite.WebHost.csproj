@@ -203,6 +203,10 @@
       <Project>{1dbdb9aa-f9ff-4354-a9aa-ebdaf4ba3433}</Project>
       <Name>Csh.ImageSuite.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Csh.ImageSuite.MiniPacs\Csh.ImageSuite.MiniPacs.csproj">
+      <Project>{7054a1c1-b2be-48ef-9620-0e4543470e8c}</Project>
+      <Name>Csh.ImageSuite.MiniPacs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Csh.ImageSuite.Model\Csh.ImageSuite.Model.csproj">
       <Project>{ffd232e9-75b5-45d1-a0bf-e7a5d2789276}</Project>
       <Name>Csh.ImageSuite.Model</Name>

@@ -14,25 +14,28 @@ namespace Csh.ImageSuite.WebHost.Controllers
     public class ShortcutController : Controller
     {
         private readonly IPacsCoordinator _pacsCoordinator;
+        private IDbHelper _dbHelper;
 
         public ShortcutController(IPacsCoordinator pacsCoordinator)
         {
             _pacsCoordinator = pacsCoordinator;
+            _dbHelper = _pacsCoordinator.GetDbHelper();
         }
 
         // GET: Shortcut
         public string Index()
         {
-            var shortcuts = new Shortcut[]
-            {
-                new Shortcut() {Id=3, Name="aa"},
-                new Shortcut() {Id=4, Name="bb"},
-                new Shortcut() {Id=5, Name="cc"},
-                new Shortcut() {Id=6, Name="dd"},
-                new Shortcut() {Id=7, Name="ee"},
-                new Shortcut() {Id=8, Name="ff"}
-            };
+            //var shortcuts = new Shortcut[]
+            //{
+            //    new Shortcut() {Id=3, Name="aa"},
+            //    new Shortcut() {Id=4, Name="bb"},
+            //    new Shortcut() {Id=5, Name="cc"},
+            //    new Shortcut() {Id=6, Name="dd"},
+            //    new Shortcut() {Id=7, Name="ee"},
+            //    new Shortcut() {Id=8, Name="ff"}
+            //};
 
+            var shortcuts = _dbHelper.LoadQueryShortcuts();
             var ret = JsonConvert.SerializeObject(shortcuts, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
