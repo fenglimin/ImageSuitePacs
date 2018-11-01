@@ -2,10 +2,8 @@
       (click)="onSelected()"
       [style.width]="groupLayout.width+'%'"
       [style.height]="groupLayout.height+'%'">
-  <!--<tr *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
-    <td *ngFor="let b of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
-
   <div class="div-flex-column" *ngFor="let a of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
+    <div class="div-flex-row" *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
       <app-image-viewer [imageLayout]="{
                       rowIndex:rowIndex, colIndex:colIndex,
                       rowIndexParent:groupLayout.rowIndex,
