@@ -5,31 +5,13 @@
   <!--<tr *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
     <td *ngFor="let b of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
 
+  <div class="div-flex-column" *ngFor="let a of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
       <app-image-viewer [imageLayout]="{
-                        rowIndex:rowIndex, colIndex:colIndex,
-                        rowIndexParent:groupLayout.rowIndex,
-                        colIndexParent:groupLayout.colIndex, 
-                        width:100/groupLayout.colCountChild,
-                        height:100/groupLayout.rowCountChild}">
+                      rowIndex:rowIndex, colIndex:colIndex,
+                      rowIndexParent:groupLayout.rowIndex,
+                      colIndexParent:groupLayout.colIndex, 
+                      width:100,height:100}">
       </app-image-viewer>
-    </td>
-  </tr>-->
-  <!--<app-image-viewer [imageLayout]="{
-                        rowIndex:0, colIndex:0,
-                        rowIndexParent:groupLayout.rowIndex,
-                        colIndexParent:groupLayout.colIndex, 
-                        width:100,
-                        height:100}">
-  </app-image-viewer>-->
-  
-    <div class="div-flex-column" *ngFor="let a of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
-      <div class="div-flex-row" *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
-        <app-image-viewer [imageLayout]="{
-                        rowIndex:rowIndex, colIndex:colIndex,
-                        rowIndexParent:groupLayout.rowIndex,
-                        colIndexParent:groupLayout.colIndex, 
-                        width:100,height:100}">
-        </app-image-viewer>
-      </div>
     </div>
+  </div>
 </div>

@@ -1,28 +1,4 @@
-<!--<tr>
-  <td>
-    <div id="DivLeft">
-      <app-navigation></app-navigation>
-    </div>
-  </td>
-  <td>
-    <div id="DivToolbar">
-      <app-viewer-toolbar (layout)="onLayoutChanged($event)"></app-viewer-toolbar>
-    </div>
-    <div id="DivViewerBack">
-      <tr *ngFor="let a of Arr(totalRow).fill(1); let rowIndex = index">
-        <td *ngFor="let b of Arr(totalCol).fill(1); let colIndex = index">
-          <app-layout-viewer [groupLayout]="{
-                rowIndex:rowIndex, colIndex:colIndex, 
-                rowCountChild:1, colCountChild:1, 
-                width:764/totalCol-4,height:618/totalRow-4}"></app-layout-viewer>
-        </td>
-      </tr>
-    </div>
-  </td>
-</tr>-->
- 
 <div id="divContainer" class="sp_panel-container">
-
   <div class="sp_panel-left">
     <div id="leftPanelTop">
       <div id="queryTree">

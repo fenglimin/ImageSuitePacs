@@ -42,7 +42,7 @@ export class LayoutViewerComponent implements OnInit, AfterContentInit {
   doSelectById(id: string, selected: boolean): void {
     const o = document.getElementById(id);
     if (o !== undefined && o !== null) {
-      o.style.border = selected ? '2px solid red' : '2px solid #CCCCCC';
+      o.style.border = selected ? '1px solid red' : '1px solid #555555';
     }
   }
 

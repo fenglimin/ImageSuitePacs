@@ -5,7 +5,7 @@
   margin:0 auto;
   height: 40px;
   padding: 12px 12px 12px 12px;
-  background-color: #000000;
+  background-color: black;
   color: #F5F5F5;
 }
 
@@ -16,7 +16,8 @@
   margin:0 auto;
   height: 100%;
   color: #F5F5F5;
-  background-color: #008800;
+  background-color: black;
+  padding: 1px;
 }
 
 
@@ -213,11 +214,11 @@
 .sp_panel-right {
     flex: 1 1 auto;
     /* resizable */
-    padding: 0px;
+    padding-bottom: 100px;
     width: 100%;
     min-height: 200px;
     min-width: 200px;
-    background: #b3b3b3;
+    background: black;
 }
 
 
