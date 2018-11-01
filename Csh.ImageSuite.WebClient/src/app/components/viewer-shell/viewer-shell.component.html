@@ -1,4 +1,4 @@
-<tr>
+<!--<tr>
   <td>
     <div id="DivLeft">
       <app-navigation></app-navigation>
@@ -19,5 +19,37 @@
       </tr>
     </div>
   </td>
-</tr>
+</tr>-->
  
+<div id="divContainer" class="sp_panel-container">
+
+  <div class="sp_panel-left">
+    <div id="leftPanelTop">
+      <div id="queryTree">
+        <app-navigation></app-navigation>
+      </div>
+    </div>
+  </div>
+
+  <div class="sp_splitter">
+  </div>
+
+  <div class="sp_panel-right">
+    <div class="DivToolbar">
+      <app-viewer-toolbar (layout)="onLayoutChanged($event)"></app-viewer-toolbar>
+    </div>
+
+    <div class="DivViewerBack">
+      <div class="div-flex-column" *ngFor="let b of Arr(totalCol).fill(1); let colIndex = index">
+        <div class="div-flex-row" *ngFor="let a of Arr(totalRow).fill(1); let rowIndex = index">
+          <app-layout-viewer [style.width]="100/totalCol + '%'"
+                              [style.height]="100/totalRow + '%'"
+                              [groupLayout]="{rowIndex:rowIndex, colIndex:colIndex,
+                                        rowCountChild:1, colCountChild:1,
+                                        width:100, height:100}">
+          </app-layout-viewer>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

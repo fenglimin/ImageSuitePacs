@@ -20,3 +20,9 @@ nav a:hover {
 nav a.active {
   color: #039be5;
 }
+
+.product-name {
+  padding: 15px 2px;
+  color: white;
+  font-size: 8px;
+}

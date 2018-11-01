@@ -1,4 +1,4 @@
-#DivTop
+/*#DivTop
 {
   width:976px;
   margin: 0px;
@@ -7,7 +7,7 @@
   background-color: #000000;
   color: #cccccc;
   height: 20px;
-}
+}*/
 
 /*#DivTop .navbar-fixed-top{
   border-width: 0 0 2px 0;
@@ -16,3 +16,4 @@
   border-image: linear-gradient(left, #ff9900, #5c492c) 100% 1;
   border-style: solid;
 }*/
+

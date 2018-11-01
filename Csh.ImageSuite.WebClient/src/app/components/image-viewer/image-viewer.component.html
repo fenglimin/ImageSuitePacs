@@ -1,7 +1,7 @@
 <div class="DivImageViewer" [id]="'DivImageViewer' + imageLayout.rowIndexParent + imageLayout.colIndexParent + imageLayout.rowIndex + imageLayout.colIndex"
        (click)="onSelected()"
-       [style.width]="imageLayout.width+'px'"
-       [style.height]="imageLayout.height+'px'">
+       [style.width]="imageLayout.width+'%'"
+       [style.height]="imageLayout.height+'%'">
   <p>
     Viewer({{imageLayout.rowIndexParent}},{{imageLayout.colIndexParent}})({{imageLayout.rowIndex}},{{imageLayout.colIndex}})
   </p>

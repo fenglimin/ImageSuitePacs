@@ -1,17 +1,35 @@
 <div class="DivLayoutViewer" [id]="'DivLayoutViewer' + groupLayout.rowIndex + groupLayout.colIndex"
       (click)="onSelected()"
-      [style.width]="groupLayout.width+'px'"
-      [style.height]="groupLayout.height+'px'">
-  <tr *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
+      [style.width]="groupLayout.width+'%'"
+      [style.height]="groupLayout.height+'%'">
+  <!--<tr *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
     <td *ngFor="let b of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
 
       <app-image-viewer [imageLayout]="{
                         rowIndex:rowIndex, colIndex:colIndex,
                         rowIndexParent:groupLayout.rowIndex,
                         colIndexParent:groupLayout.colIndex, 
-                        width:(groupLayout.width/groupLayout.colCountChild-4),
-                        height:(groupLayout.height/groupLayout.rowCountChild-4)}">
+                        width:100/groupLayout.colCountChild,
+                        height:100/groupLayout.rowCountChild}">
       </app-image-viewer>
     </td>
-  </tr>
+  </tr>-->
+  <!--<app-image-viewer [imageLayout]="{
+                        rowIndex:0, colIndex:0,
+                        rowIndexParent:groupLayout.rowIndex,
+                        colIndexParent:groupLayout.colIndex, 
+                        width:100,
+                        height:100}">
+  </app-image-viewer>-->
+  
+    <div class="div-flex-column" *ngFor="let a of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
+      <div class="div-flex-row" *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
+        <app-image-viewer [imageLayout]="{
+                        rowIndex:rowIndex, colIndex:colIndex,
+                        rowIndexParent:groupLayout.rowIndex,
+                        colIndexParent:groupLayout.colIndex, 
+                        width:100,height:100}">
+        </app-image-viewer>
+      </div>
+    </div>
 </div>

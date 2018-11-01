@@ -1,15 +1,12 @@
 .DivLayoutViewer
 {
-  display:block;
-  float:left;
-  width: 200px;
+  display:flex;
   margin:0 auto;
   /*border-top: solid 2px #FFFFFF;
   border-bottom: solid 2px #FFFFFF;
   border-left: solid 2px #FFFFFF;
   border-right: solid 2px #FFFFFF;*/
   border: 2px solid white;
-  height: 300px;
   background-color: #555555;
   color: #F5F5F5;
 }
