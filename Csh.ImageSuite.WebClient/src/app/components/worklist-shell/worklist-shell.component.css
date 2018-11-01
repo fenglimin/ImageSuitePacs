@@ -190,7 +190,7 @@
 .sp_panel-right {
     flex: 1 1 auto;
     /* resizable */
-    padding: 0px;
+    padding-bottom: 100px;
     width: 100%;
     min-height: 200px;
     min-width: 200px;

@@ -10,6 +10,16 @@ import { Shortcut } from '../../models/shortcut';
 export class WorklistComponent implements OnInit {
   @Input() shortcut: Shortcut;
 
+  worklistColumns: string[] = [
+    "Patient ID",
+    "Patient Name"
+  ];
+
+  studyInfoList: string[][] = [
+    ["PID001", "Tom"],
+    ["PID002", "Jerry"]
+  ];
+
   private _test = null;
   @Input()
   set test(test: Shortcut) {
@@ -32,4 +42,7 @@ export class WorklistComponent implements OnInit {
   ngOnInit() {
   }
 
+  doShowStudy() {
+    alert('study clicked');
+  }
 }

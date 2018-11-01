@@ -1,3 +1,16 @@
 <p>
   Query studies by shortcut : {{shortcut.name}}, id is {{shortcut.id}}
 </p>
+
+<table>
+  <tr>
+    <th *ngFor="let col of worklistColumns">
+      {{col}}
+    </th>
+  </tr>
+  <tr *ngFor="let studyInfo of studyInfoList">
+    <td *ngFor="let col of worklistColumns; let colIndex = index">
+      <button class="image-button" (click)="doShowStudy()">{{studyInfo[colIndex]}}</button>
+    </td>
+  </tr>
+</table>
