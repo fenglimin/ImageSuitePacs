@@ -32,7 +32,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   onSelected() {
-    this.imageSelectorService.selectImage(this.id);
+    this.imageSelectorService.selectImage(this.imageLayout.id + '.' + this.id);
   }
 
   doSelectById(id: string, selected: boolean): void {
@@ -44,7 +44,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
   doSelectByImageViewerId(imageViewerId: string): void {
     var selectedDivId = "DivImageViewer" + imageViewerId;
-    var divId = 'DivImageViewer' + this.id;
+    var divId = 'DivImageViewer' + this.imageLayout.id + '.' + this.id;
 
     this.doSelectById(divId, selectedDivId === divId);
   }

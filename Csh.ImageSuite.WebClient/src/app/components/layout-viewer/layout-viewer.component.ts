@@ -47,8 +47,8 @@ export class LayoutViewerComponent implements OnInit, AfterContentInit {
   }
 
   doSelectByImageViewerId(imageViewerId: string): void {
-    this.selected = imageViewerId.startsWith(this.id);
-    var divId = 'DivLayoutViewer' + this.id;
+    this.selected = imageViewerId.startsWith(this.groupLayout.id + '.' + this.id);
+    var divId = 'DivLayoutViewer' + this.groupLayout.id + '.' + this.id;
 
     this.doSelectById(divId, this.selected);
   }
