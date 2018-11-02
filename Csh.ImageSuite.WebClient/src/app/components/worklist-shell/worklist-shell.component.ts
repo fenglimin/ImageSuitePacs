@@ -12,6 +12,8 @@ export class WorklistShellComponent implements OnInit {
     name: 'Default'
   }
 
+  hideMe = false;
+
   constructor() { }
 
   ngOnInit() {

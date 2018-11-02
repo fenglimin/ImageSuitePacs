@@ -10,6 +10,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   Arr = Array; //Array type captured in a variable
   totalRow = 1;
   totalCol = 1;
+  hideMe = false;
 
   @ViewChildren(LayoutViewerComponent) viewers: QueryList<LayoutViewerComponent>;
 
