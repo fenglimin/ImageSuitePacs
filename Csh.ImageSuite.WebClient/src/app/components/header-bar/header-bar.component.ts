@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ShellNavigatorService } from '../../services/shell-navigator.service';
+import { Subscription }   from 'rxjs';
 
 @Component({
   selector: 'app-header-bar',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderBarComponent implements OnInit {
 
-  constructor() { }
+  subscriptionShellNavigated: Subscription;
+  hideMe = false;
+
+  constructor(private shellNavigatorService: ShellNavigatorService) {
+  }
 
   ngOnInit() {
   }
 
+  doShowStudy(studyUid) {
+    this.shellNavigatorService.shellNavigate(studyUid);
+  }
 }

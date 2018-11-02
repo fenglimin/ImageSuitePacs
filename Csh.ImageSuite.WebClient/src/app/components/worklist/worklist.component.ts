@@ -1,6 +1,7 @@
 import { Component, OnInit, OnChanges, SimpleChange, Input } from '@angular/core';
 import { Shortcut } from '../../models/shortcut';
-
+import { ShellNavigatorService } from '../../services/shell-navigator.service';
+import { Subscription }   from 'rxjs';
 
 @Component({
   selector: 'app-worklist',
@@ -9,6 +10,12 @@ import { Shortcut } from '../../models/shortcut';
 })
 export class WorklistComponent implements OnInit {
   @Input() shortcut: Shortcut;
+  
+
+  subscriptionShellNavigated: Subscription;
+
+  constructor(private shellNavigatorService: ShellNavigatorService) {
+  }
 
   worklistColumns: string[] = [
     "Patient ID",
@@ -37,12 +44,11 @@ export class WorklistComponent implements OnInit {
     //alert('aa');
   }
 
-  constructor() { }
 
   ngOnInit() {
   }
 
-  doShowStudy() {
-    alert('study clicked');
+  doShowStudy(studyUid) {
+    this.shellNavigatorService.shellNavigate(studyUid);
   }
 }

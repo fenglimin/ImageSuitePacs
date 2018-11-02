@@ -3,6 +3,8 @@ import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolve
 import { WorklistShellComponent } from './components/worklist-shell/worklist-shell.component'
 import { ViewerShellComponent } from './components/viewer-shell/viewer-shell.component'
 
+import { ShellNavigatorService } from './services/shell-navigator.service';
+import { Subscription }   from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -13,16 +15,24 @@ export class AppComponent implements OnInit {
   title = 'AngularPacsDemo';
   @ViewChild("shellContainer", { read: ViewContainerRef }) container;
 
-  constructor(private resolver: ComponentFactoryResolver) {}
+  subscriptionShellCreated: Subscription;
 
-  ngOnInit() {
-    this.createComponent(WorklistShellComponent, false);
+  constructor(private resolver: ComponentFactoryResolver, private shellNavigatorService: ShellNavigatorService) {
+    this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(
+      studyUid => {
+        this.createComponent(ViewerShellComponent, studyUid, false);
+      });
   }
 
-  createComponent(comType, hide) {
+  ngOnInit() {
+    this.createComponent(WorklistShellComponent, '', false);
+  }
+
+  createComponent(comType, studyUid, hide) {
     //this.container.clear(); 
     let componentFactory = this.resolver.resolveComponentFactory(comType);
     let componentRef = this.container.createComponent(componentFactory);
     componentRef.instance.hideMe = hide;
+    componentRef.instance.studyUid = studyUid;
   }
 }

@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Shortcut } from '../../models/shortcut';
+import { ShellNavigatorService } from '../../services/shell-navigator.service';
+import { Subscription }   from 'rxjs';
 
 @Component({
   selector: 'app-worklist-shell',
@@ -12,9 +14,16 @@ export class WorklistShellComponent implements OnInit {
     name: 'Default'
   }
 
+  subscriptionShellNavigated: Subscription;
   hideMe = false;
+  studyUid: string;
 
-  constructor() { }
+  constructor(private shellNavigatorService: ShellNavigatorService) {
+    this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
+      studyUid => {
+        this.hideMe = studyUid !== this.studyUid;
+      });
+  }
 
   ngOnInit() {
   }

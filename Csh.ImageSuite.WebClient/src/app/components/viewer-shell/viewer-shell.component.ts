@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChildren, QueryList, AfterViewInit  } from '@angular/core';
 import { LayoutViewerComponent } from '../layout-viewer/layout-viewer.component';
+import { ShellNavigatorService } from '../../services/shell-navigator.service';
+import { Subscription }   from 'rxjs';
 
 @Component({
   selector: 'app-viewer-shell',
@@ -11,10 +13,16 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   totalRow = 1;
   totalCol = 1;
   hideMe = false;
+  studyUid: string;
 
   @ViewChildren(LayoutViewerComponent) viewers: QueryList<LayoutViewerComponent>;
 
-  constructor() {
+  subscriptionShellNavigated: Subscription;
+  constructor(private shellNavigatorService: ShellNavigatorService) {
+    this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
+      studyUid => {
+        this.hideMe = studyUid !== this.studyUid;
+      });
   }
 
   ngOnInit() {

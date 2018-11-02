@@ -1,23 +1,21 @@
 
-nav a {
-  padding: 5px 10px;
+.nav-button {
   text-decoration: none;
-  margin-top: 5px;
   /*display: inline-block;*/
-  background-color: #444444;
-  border-radius: 4px;
+  background-color: #cccccc;
+  border-radius: 2px;
   margin-right: 10px;
   margin-left: 10px;
 }
 
-nav a:visited, a:link {
+.nav-button:visited {
   color: #607D8B;
 }
-nav a:hover {
+.nav-button:hover {
   color: #039be5;
   background-color: #CFD8DC;
 }
-nav a.active {
+.nav-button.active {
   color: #039be5;
 }
 
