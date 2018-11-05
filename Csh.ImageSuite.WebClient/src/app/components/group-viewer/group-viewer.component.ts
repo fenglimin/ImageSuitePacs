@@ -5,11 +5,11 @@ import { Subscription }   from 'rxjs';
 import { Study } from '../../models/pssi';
 
 @Component({
-  selector: 'app-layout-viewer',
-  templateUrl: './layout-viewer.component.html',
-  styleUrls: ['./layout-viewer.component.css']
+  selector: 'app-group-viewer',
+  templateUrl: './group-viewer.component.html',
+  styleUrls: ['./group-viewer.component.css']
 })
-export class LayoutViewerComponent implements OnInit, AfterContentInit {
+export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
   @Input() groupLayout: GroupLayout;
   @Input() study: Study;

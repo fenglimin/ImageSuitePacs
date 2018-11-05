@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LayoutViewerComponent } from './layout-viewer.component';
+import { GroupViewerComponent } from './group-viewer.component';
 
-describe('LayoutViewerComponent', () => {
-  let component: LayoutViewerComponent;
-  let fixture: ComponentFixture<LayoutViewerComponent>;
+describe('GroupViewerComponent', () => {
+  let component: GroupViewerComponent;
+  let fixture: ComponentFixture<GroupViewerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LayoutViewerComponent ]
+      declarations: [ GroupViewerComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LayoutViewerComponent);
+    fixture = TestBed.createComponent(GroupViewerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

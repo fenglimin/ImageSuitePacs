@@ -12,7 +12,7 @@ import { ViewerShellComponent } from './components/viewer-shell/viewer-shell.com
 import { AppRoutingModule } from './app-routing.module';
 import { ViewerToolbarComponent } from './components/viewer-toolbar/viewer-toolbar.component';
 import { ThumbnailComponent } from './components/thumbnail/thumbnail.component';
-import { LayoutViewerComponent } from './components/layout-viewer/layout-viewer.component';
+import { GroupViewerComponent } from './components/group-viewer/group-viewer.component';
 import { ImageViewerComponent } from './components/image-viewer/image-viewer.component';
 
 @NgModule({
@@ -26,7 +26,7 @@ import { ImageViewerComponent } from './components/image-viewer/image-viewer.com
     ViewerShellComponent,
     ViewerToolbarComponent,
     ThumbnailComponent,
-    LayoutViewerComponent,
+    GroupViewerComponent,
     ImageViewerComponent
   ],
   imports: [

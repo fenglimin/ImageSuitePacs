@@ -18,9 +18,9 @@
     <div class="DivViewerBack">
       <div class="div-flex-column" *ngFor="let b of Arr(totalCol).fill(1); let colIndex = index">
         <div class="div-flex-row" *ngFor="let a of Arr(totalRow).fill(1); let rowIndex = index">
-          <app-layout-viewer [groupLayout]="{rowIndex:rowIndex, colIndex:colIndex,
+          <app-group-viewer [groupLayout]="{rowIndex:rowIndex, colIndex:colIndex,
                                         rowCountChild:1, colCountChild:1}" [study]=study>
-          </app-layout-viewer>
+          </app-group-viewer>
         </div>
       </div>
     </div>

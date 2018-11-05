@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChildren, QueryList, AfterViewInit  } from '@angular/core';
-import { LayoutViewerComponent } from '../layout-viewer/layout-viewer.component';
+import { GroupViewerComponent } from '../group-viewer/group-viewer.component';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
 import { Study } from '../../models/pssi';
@@ -16,7 +16,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   hideMe = false;
   study: Study;
 
-  @ViewChildren(LayoutViewerComponent) viewers: QueryList<LayoutViewerComponent>;
+  @ViewChildren(GroupViewerComponent) viewers: QueryList<GroupViewerComponent>;
 
   subscriptionShellNavigated: Subscription;
 
