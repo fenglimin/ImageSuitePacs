@@ -52,9 +52,9 @@ export class AppComponent implements OnInit {
   }
 
   deleteComponent(study) {
-    let a = this.createComponents.filter((value, index, array) => value.instance.study.studyInstanceUid === study.studyInstanceUid);
-    if (a.length != 0) {
-      a[0].destroy();
+    const studyCom = this.createComponents.filter((value, index, array) => value.instance.study.studyInstanceUid === study.studyInstanceUid);
+    if (studyCom.length !== 0) {
+      studyCom[0].destroy();
     }
 
     this.createComponents = this.createComponents.filter((value, index, array) => value.instance.study.studyInstanceUid !== study.studyInstanceUid);

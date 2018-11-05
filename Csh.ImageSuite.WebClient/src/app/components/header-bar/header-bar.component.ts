@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges, AfterContentInit, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
 import { Study } from '../../models/pssi';
@@ -8,31 +8,63 @@ import { Study } from '../../models/pssi';
   templateUrl: './header-bar.component.html',
   styleUrls: ['./header-bar.component.css']
 })
-export class HeaderBarComponent implements OnInit {
+export class HeaderBarComponent implements OnInit, AfterContentInit, AfterViewInit, AfterViewChecked {
 
-  subscriptionShellNavigated: Subscription;
   hideMe = false;
-
   openedStudies: Array<Study> = [];
+  studyShown: Study;
 
   subscriptionShellCreated: Subscription;
 
   constructor(private shellNavigatorService: ShellNavigatorService) {
     this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(
-      studyUid => {
+      study => {
         this.openedStudies = shellNavigatorService.createdShell;
-            });
+        this.studyShown = study;
+      });
   }
 
   ngOnInit() {
   }
 
-  doShowStudy(study: Study) {
-    this.shellNavigatorService.shellNavigate(study);
+  ngAfterContentInit() {
+    
+  }
+ 
+  ngAfterViewInit() {
+    
   }
 
-  doHideStudy(study: Study) {
+  ngOnChanges(changes: SimpleChanges) {
+  }
+
+  ngAfterViewChecked(): void {
+    this.highlightStudyButton(this.studyShown);
+  }
+
+  showStudy(study: Study) {
+    this.shellNavigatorService.shellNavigate(study);
+    this.studyShown = study;
+  }
+
+  closeStudy(study: Study) {
     this.openedStudies = this.openedStudies.filter((value, index, array) => value.studyInstanceUid !== study.studyInstanceUid);
-    this.shellNavigatorService.shellDelete(study);
+    const nextStudy = this.shellNavigatorService.shellDelete(study);
+    this.studyShown = nextStudy;
+  }
+
+  highlightStudyButton(study: Study) {
+    if (study === null) {
+      return;
+    }
+
+    const len = this.openedStudies.length;
+    for (let i = 0; i < len; i++) {
+      const id = "headerButton" + this.openedStudies[i].studyInstanceUid;
+      const o = document.getElementById(id);
+      if (o !== undefined && o !== null) {
+        o.style.color = (this.openedStudies[i].studyInstanceUid === study.studyInstanceUid) ? '#ff9900' : 'white';
+      }
+    }
   }
 }

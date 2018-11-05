@@ -49,7 +49,7 @@ export class ShellNavigatorService {
     }
   }
 
-  shellDelete(study: Study) {
+  shellDelete(study: Study): Study {
     if (this.isStudyOpened(study)) {
       let index = this.createdShell.indexOf(study);
       this.createdShell = this.createdShell.filter((value, index, array) => value.studyInstanceUid !== study.studyInstanceUid);
@@ -57,13 +57,17 @@ export class ShellNavigatorService {
         index--;
       }
 
+      let nextSelectedStudy: Study;
       if (index >= 0) {
-        this.shellNavigate(this.createdShell[index]);
+        nextSelectedStudy = this.createdShell[index];
       } else {
-        this.shellNavigate(null);
+        nextSelectedStudy = null;
       }
 
+      this.shellNavigate(nextSelectedStudy);
       this.shellDeletedSource.next(study);
+
+      return nextSelectedStudy;
     }
   }
 

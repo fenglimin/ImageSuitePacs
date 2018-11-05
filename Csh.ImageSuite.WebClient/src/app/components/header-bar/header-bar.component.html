@@ -10,12 +10,12 @@
         <div class="product-name">ImageViewPacs</div>
       </td>
       <td>
-        <button class="nav-button" (click)="doShowStudy(null)">Worklist</button>    
+        <button class="nav-button" (click)="showStudy(null)">Worklist</button>    
       </td>
 	  <td *ngFor="let study of openedStudies">
 		<div class="nav-button">
-			<button class="div-headerbar-button" (click)="doShowStudy(study)">{{study.patient.id}}_{{study.patient.name}}</button>
-            <button class="div-headerbar-button" (click)="doHideStudy(study)">x</button>
+			<button [id]="'headerButton' + study.studyInstanceUid" class="div-headerbar-button" (click)="showStudy(study)">{{study.patient.id}}_{{study.patient.name}}</button>
+      <button class="div-headerbar-button" (click)="closeStudy(study)">x</button>
 		</div>
 	  </td>
     </tr>
