@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
-import { GroupLayout } from '../../models/layout';
 import { ImageSelectorService } from '../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
 import { Study } from '../../models/pssi';
+import { GroupLayout, ImageLayout, Layout } from '../../models/layout';
 
 @Component({
   selector: 'app-group-viewer',
@@ -63,7 +63,16 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   generateId(): string {
-    return '_' + this.study.studyInstanceUid + '_' + this.groupLayout.rowIndex + this.groupLayout.colIndex;
+    return '_' + this.study.studyInstanceUid + '_' + this.groupLayout.layout.rowIndex + this.groupLayout.layout.colIndex;
   }
 
+  createImageLayout(rowIndex, colIndex): ImageLayout {
+    const imageLayout = new ImageLayout();
+
+    imageLayout.groupLayout = this.groupLayout;
+    imageLayout.rowIndex = rowIndex;
+    imageLayout.colIndex = colIndex;
+
+    return imageLayout;
+  }
 }

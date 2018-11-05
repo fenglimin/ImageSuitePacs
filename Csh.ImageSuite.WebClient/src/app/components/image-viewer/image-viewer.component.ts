@@ -49,8 +49,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   generateId(): string {
-    return '_' + this.study.studyInstanceUid + '_' + this.imageLayout.rowIndexParent +
-      this.imageLayout.colIndexParent +
+    return '_' + this.study.studyInstanceUid + '_' + this.imageLayout.groupLayout.layout.rowIndex +
+      this.imageLayout.groupLayout.layout.colIndex +
       this.imageLayout.rowIndex +
       this.imageLayout.colIndex;
   }

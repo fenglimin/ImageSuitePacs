@@ -3,6 +3,7 @@ import { GroupViewerComponent } from '../group-viewer/group-viewer.component';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
 import { Study } from '../../models/pssi';
+import { Layout, GroupLayout } from '../../models/layout';
 
 @Component({
   selector: 'app-viewer-shell',
