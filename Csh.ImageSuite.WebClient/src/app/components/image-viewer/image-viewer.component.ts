@@ -2,6 +2,7 @@ import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
 import { ImageLayout } from '../../models/layout';
 import { ImageSelectorService } from '../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
+import { Study } from '../../models/pssi';
 
 @Component({
   selector: 'app-image-viewer',
@@ -10,7 +11,8 @@ import { Subscription }   from 'rxjs';
 })
 export class ImageViewerComponent implements OnInit, AfterContentInit {
   @Input() imageLayout: ImageLayout;
-  id:string =  "";
+  @Input() study: Study;
+  id: string = "";
   subscriptionImageSelection: Subscription;
   subscriptionSubLayoutChange: Subscription;
 
@@ -25,14 +27,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.id = this.id + this.imageLayout.rowIndexParent +
-      this.imageLayout.colIndexParent +
-      this.imageLayout.rowIndex +
-      this.imageLayout.colIndex;
+    this.id = this.generateId();
   }
 
   onSelected() {
-    this.imageSelectorService.selectImage(this.imageLayout.id + '.' + this.id);
+    this.imageSelectorService.selectImage(this.id);
   }
 
   doSelectById(id: string, selected: boolean): void {
@@ -44,8 +43,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
   doSelectByImageViewerId(imageViewerId: string): void {
     var selectedDivId = "DivImageViewer" + imageViewerId;
-    var divId = 'DivImageViewer' + this.imageLayout.id + '.' + this.id;
+    var divId = 'DivImageViewer' + this.id;
 
     this.doSelectById(divId, selectedDivId === divId);
+  }
+
+  generateId(): string {
+    return '_' + this.study.studyInstanceUid + '_' + this.imageLayout.rowIndexParent +
+      this.imageLayout.colIndexParent +
+      this.imageLayout.rowIndex +
+      this.imageLayout.colIndex;
   }
 }

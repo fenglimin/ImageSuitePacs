@@ -2,20 +2,21 @@
 .nav-button {
   text-decoration: none;
   /*display: inline-block;*/
-  background-color: #cccccc;
-  border-radius: 2px;
-  margin-right: 10px;
-  margin-left: 10px;
+  background-color: #555555;
+  border-radius: 1px;
+  margin-right: 2px;
+  margin-left: 2px;
+  border-width: 1px;
+  color: white;
 }
 
 .nav-button:visited {
   color: #607D8B;
 }
 .nav-button:hover {
-  color: #039be5;
-  background-color: #CFD8DC;
+  color: #ff9900;
 }
-.nav-button.active {
+.nav-button:active {
   color: #039be5;
 }
 
@@ -23,4 +24,26 @@
   padding: 15px 2px;
   color: white;
   font-size: 8px;
+}
+
+.div-headerbar-nav {
+  text-decoration: none;
+  /*display: inline-block;*/
+  background-color: #555555;
+  border-radius: 1px;
+  margin-right: 2px;
+  margin-left: 2px;
+  border-width: 1px;
+  color: white;
+}
+.div-headerbar-button {
+  text-decoration: none;
+  background-color: #555555;
+  border-radius: 0px;
+  border-width: 0px;
+  color: white;
+}
+
+.div-headerbar-button:hover {
+  color: #ff9900;
 }

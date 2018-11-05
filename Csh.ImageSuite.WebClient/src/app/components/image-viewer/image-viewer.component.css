@@ -1,6 +1,6 @@
 .DivImageViewer
 {
-  display:flex;
+  display:block;
   flex: 1;
   /*border-top: solid 2px #FFFFFF;
   border-bottom: solid 2px #FFFFFF;

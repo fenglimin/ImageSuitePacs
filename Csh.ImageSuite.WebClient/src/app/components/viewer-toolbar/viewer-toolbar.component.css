@@ -1,4 +1,21 @@
-.image-button 
-{
-  color: black;  
+.image-button {
+  text-decoration: none;
+  /*display: inline-block;*/
+  background-color: #555555;
+  border-radius: 1px;
+  margin-right: 2px;
+  margin-left: 2px;
+  border-width: 1px;
+  color: white;
+}
+
+.image-button:visited {
+  color: #607D8B;
+}
+.image-button:hover {
+  color: #039be5;
+  background-color: #CFD8DC;
+}
+.image-button.active {
+  color: #039be5;
 }

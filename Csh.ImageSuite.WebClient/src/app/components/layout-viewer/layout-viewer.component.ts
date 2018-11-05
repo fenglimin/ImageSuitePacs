@@ -2,6 +2,7 @@ import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
 import { GroupLayout } from '../../models/layout';
 import { ImageSelectorService } from '../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
+import { Study } from '../../models/pssi';
 
 @Component({
   selector: 'app-layout-viewer',
@@ -11,6 +12,7 @@ import { Subscription }   from 'rxjs';
 export class LayoutViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
   @Input() groupLayout: GroupLayout;
+  @Input() study: Study;
   id =  "";
   selected = false;
 
@@ -33,7 +35,7 @@ export class LayoutViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.id = this.id + this.groupLayout.rowIndex + this.groupLayout.colIndex;
+    this.id = this.generateId();
   }
 
   onSelected() {
@@ -47,8 +49,8 @@ export class LayoutViewerComponent implements OnInit, AfterContentInit {
   }
 
   doSelectByImageViewerId(imageViewerId: string): void {
-    this.selected = imageViewerId.startsWith(this.groupLayout.id + '.' + this.id);
-    var divId = 'DivLayoutViewer' + this.groupLayout.id + '.' + this.id;
+    this.selected = imageViewerId.startsWith(this.id);
+    var divId = 'DivLayoutViewer' + this.id;
 
     this.doSelectById(divId, this.selected);
   }
@@ -59,4 +61,9 @@ export class LayoutViewerComponent implements OnInit, AfterContentInit {
       this.groupLayout.colCountChild = subLayoutStyle % 10;
     }
   }
+
+  generateId(): string {
+    return '_' + this.study.studyInstanceUid + '_' + this.groupLayout.rowIndex + this.groupLayout.colIndex;
+  }
+
 }

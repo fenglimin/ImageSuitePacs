@@ -10,7 +10,8 @@
   </tr>
   <tr *ngFor="let studyInfo of studyInfoList">
     <td *ngFor="let col of worklistColumns; let colIndex = index">
-      <button class="image-button" (click)="doShowStudy(studyInfo[colIndex])">{{studyInfo[colIndex]}}</button>
+      <button *ngIf="colIndex === 0" class="image-button" (click)="doShowStudy(studyInfo)">{{studyInfo[colIndex]}}</button>
+      <p *ngIf="colIndex !== 0">{{studyInfo[colIndex]}}</p>
     </td>
   </tr>
 </table>

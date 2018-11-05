@@ -3,7 +3,6 @@
   colIndex: number;
   rowCountChild: number;
   colCountChild: number;
-  id: string;
 
   constructor() {
     this.rowIndex = 0;
@@ -18,7 +17,6 @@ export class ImageLayout {
   colIndex: number;
   rowIndexParent: number;
   colIndexParent: number;
-  id: string;
 
   constructor() {
     this.rowIndex = 0;

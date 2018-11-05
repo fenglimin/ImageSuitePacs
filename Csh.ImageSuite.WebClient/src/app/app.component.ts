@@ -6,6 +6,8 @@ import { ViewerShellComponent } from './components/viewer-shell/viewer-shell.com
 import { ShellNavigatorService } from './services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
 
+import { Study } from './models/pssi';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,25 +16,47 @@ import { Subscription }   from 'rxjs';
 export class AppComponent implements OnInit {
   title = 'AngularPacsDemo';
   @ViewChild("shellContainer", { read: ViewContainerRef }) container;
+  createComponents: Array<any> = [];
 
   subscriptionShellCreated: Subscription;
+  subscriptionShellDeleted: Subscription;
 
   constructor(private resolver: ComponentFactoryResolver, private shellNavigatorService: ShellNavigatorService) {
     this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(
-      studyUid => {
-        this.createComponent(ViewerShellComponent, studyUid, false);
+      study => {
+        this.createComponent(ViewerShellComponent, study, false);
       });
+
+
+    this.subscriptionShellDeleted = shellNavigatorService.shellDeleted$.subscribe(
+      study => {
+        this.deleteComponent(study);
+      }
+    );
   }
 
   ngOnInit() {
-    this.createComponent(WorklistShellComponent, '', false);
+    this.createComponent(WorklistShellComponent, null, false);
   }
 
-  createComponent(comType, studyUid, hide) {
+  createComponent(comType, study, hide) {
     //this.container.clear(); 
     let componentFactory = this.resolver.resolveComponentFactory(comType);
     let componentRef = this.container.createComponent(componentFactory);
     componentRef.instance.hideMe = hide;
-    componentRef.instance.studyUid = studyUid;
+    componentRef.instance.study = study;
+
+    if (comType === ViewerShellComponent) {
+      this.createComponents.push(componentRef);
+    }
+  }
+
+  deleteComponent(study) {
+    let a = this.createComponents.filter((value, index, array) => value.instance.study.studyInstanceUid === study.studyInstanceUid);
+    if (a.length != 0) {
+      a[0].destroy();
+    }
+
+    this.createComponents = this.createComponents.filter((value, index, array) => value.instance.study.studyInstanceUid !== study.studyInstanceUid);
   }
 }

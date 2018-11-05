@@ -1,11 +1,11 @@
-<div class="DivLayoutViewer" [id]="'DivLayoutViewer' + groupLayout.id + '.' + groupLayout.rowIndex + groupLayout.colIndex"
+<div class="DivLayoutViewer" [id]="'DivLayoutViewer' + generateId()"
       (click)="onSelected()">
   <div class="div-flex-column" *ngFor="let a of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
     <div class="div-flex-row" *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
       <app-image-viewer [imageLayout]="{
                       rowIndex:rowIndex, colIndex:colIndex,
                       rowIndexParent:groupLayout.rowIndex,
-                      colIndexParent:groupLayout.colIndex, id:groupLayout.id}">
+                      colIndexParent:groupLayout.colIndex}" [study]="study">
       </app-image-viewer>
     </div>
   </div>

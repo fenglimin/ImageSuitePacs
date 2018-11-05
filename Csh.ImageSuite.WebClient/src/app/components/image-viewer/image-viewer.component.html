@@ -1,5 +1,10 @@
-<div class="DivImageViewer" [id]="'DivImageViewer' + imageLayout.id + '.' + imageLayout.rowIndexParent + imageLayout.colIndexParent + imageLayout.rowIndex + imageLayout.colIndex"
-       (click)="onSelected()">
+<div class="DivImageViewer" [id]="'DivImageViewer' + generateId()" (click)="onSelected()">
+  <p>
+    ID : {{study.patient.id}}
+  </p>
+  <p>
+    Name : {{study.patient.name}}
+  </p>
   <p>
     Viewer({{imageLayout.rowIndexParent}},{{imageLayout.colIndexParent}})({{imageLayout.rowIndex}},{{imageLayout.colIndex}})
   </p>

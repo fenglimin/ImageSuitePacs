@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChildren, QueryList, AfterViewInit  } from '@ang
 import { LayoutViewerComponent } from '../layout-viewer/layout-viewer.component';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
+import { Study } from '../../models/pssi';
 
 @Component({
   selector: 'app-viewer-shell',
@@ -13,15 +14,16 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   totalRow = 1;
   totalCol = 1;
   hideMe = false;
-  studyUid: string;
+  study: Study;
 
   @ViewChildren(LayoutViewerComponent) viewers: QueryList<LayoutViewerComponent>;
 
   subscriptionShellNavigated: Subscription;
+
   constructor(private shellNavigatorService: ShellNavigatorService) {
     this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
-      studyUid => {
-        this.hideMe = studyUid !== this.studyUid;
+      study => {
+        this.hideMe = ( study === null || study.studyInstanceUid !== this.study.studyInstanceUid );
       });
   }
 
