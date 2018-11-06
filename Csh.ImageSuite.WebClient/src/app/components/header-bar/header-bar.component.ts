@@ -14,6 +14,7 @@ export class HeaderBarComponent implements OnInit, AfterContentInit, AfterViewIn
   openedStudies: Array<Study> = [];
   studyShown: Study;
 
+  subscriptionShellNavigated: Subscription;
   subscriptionShellCreated: Subscription;
 
   constructor(private shellNavigatorService: ShellNavigatorService) {
@@ -22,6 +23,9 @@ export class HeaderBarComponent implements OnInit, AfterContentInit, AfterViewIn
         this.openedStudies = shellNavigatorService.createdShell;
         this.studyShown = study;
       });
+
+    this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
+      study => { this.highlightStudyButton(study);});
   }
 
   ngOnInit() {
