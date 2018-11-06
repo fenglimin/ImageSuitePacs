@@ -1,9 +1,9 @@
 <div class="DivImageViewer" [id]="'DivImageViewer' + generateId()" (click)="onSelected()">
   <p>
-    ID : {{study.patient.id}}
+    ID : {{study.patient.patientId}}
   </p>
   <p>
-    Name : {{study.patient.name}}
+    Name : {{study.patient.patientName}}
   </p>
   <p>
     Viewer({{imageLayout.groupLayout.layout.rowIndex}},{{imageLayout.groupLayout.layout.colIndex}})({{imageLayout.rowIndex}},{{imageLayout.colIndex}})
