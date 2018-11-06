@@ -1,53 +1,45 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 using Csh.ImageSuite.Common.Interface;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace Csh.ImageSuite.WebHost.Controllers
 {
-    public class Shortcut
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
-
-    public class ShortcutController : Controller
+    public class PssiController : Controller
     {
         private readonly IDbHelper _dbHelper;
         private readonly ICommonTool _commonTool;
 
-        public ShortcutController(IPacsCoordinator pacsCoordinator, ICommonTool commonTool)
+        public PssiController(IPacsCoordinator pacsCoordinator, ICommonTool commonTool)
         {
             _dbHelper = pacsCoordinator.GetDbHelper();
             _commonTool = commonTool;
         }
 
-        // GET: Shortcut
+        // GET: Pssi
         public string Index()
         {
-            var shortcuts = _dbHelper.LoadQueryShortcuts();
-            return _commonTool.GetJsonStringFromObject(shortcuts);
+            var studies = _dbHelper.GetStudies(null);
+            return _commonTool.GetJsonStringFromObject(studies);
         }
 
-        // GET: Shortcut/Details/5
-        public string Details(int id)
+        // GET: Pssi/Details/5
+        public ActionResult Details(int id)
         {
-            var shortcut = new Shortcut { Id = id, Name = "Sailddd" };
-            var ret = JsonConvert.SerializeObject(shortcut, new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
-
-            return ret;
+            return View();
         }
 
-        // GET: Shortcut/Create
+        // GET: Pssi/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Shortcut/Create
+        // POST: Pssi/Create
         [HttpPost]
         public ActionResult Create(FormCollection collection)
         {
@@ -63,13 +55,13 @@ namespace Csh.ImageSuite.WebHost.Controllers
             }
         }
 
-        // GET: Shortcut/Edit/5
+        // GET: Pssi/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: Shortcut/Edit/5
+        // POST: Pssi/Edit/5
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
@@ -85,13 +77,13 @@ namespace Csh.ImageSuite.WebHost.Controllers
             }
         }
 
-        // GET: Shortcut/Delete/5
+        // GET: Pssi/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: Shortcut/Delete/5
+        // POST: Pssi/Delete/5
         [HttpPost]
         public ActionResult Delete(int id, FormCollection collection)
         {

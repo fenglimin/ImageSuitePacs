@@ -38,6 +38,9 @@
       <HintPath>..\packages\Castle.Windsor.4.1.1\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -52,11 +55,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonTool.cs" />
     <Compile Include="DatabaseFactoryComponentSelector.cs" />
     <Compile Include="Database\SqlHelper.cs" />
+    <Compile Include="Installer\CommonToolInstaller.cs" />
     <Compile Include="Installer\DatabaseFactoryComponentSelectorInstaller.cs" />
     <Compile Include="Installer\PacsCoordinatorInstaller.cs" />
     <Compile Include="Installer\PssiObjectCreatorInstaller.cs" />
+    <Compile Include="Interface\ICommonTool.cs" />
     <Compile Include="Interface\IDatabaseFactoryComponentSelector.cs" />
     <Compile Include="Interface\IDbHelper.cs" />
     <Compile Include="Interface\IPacsCoordinator.cs" />

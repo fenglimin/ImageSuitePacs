@@ -32,9 +32,5 @@ namespace Csh.ImageSuite.Common.Interface
         /// <param name="row"></param>
         /// <returns></returns>
         Image CreateImage(DataRow row);
-
-        string GetSafeStringValue(object value);
-
-        int GetSafeIntValue(object value);
     }
 }

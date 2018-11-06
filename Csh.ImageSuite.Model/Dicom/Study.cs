@@ -7,13 +7,13 @@ namespace Csh.ImageSuite.Model.Dicom
     {
         public Study(string uid)
         {
-            InstanceUid = uid;
+            StudyInstanceUid = uid;
             SeriesList = new List<Series>();
         }
 
         public int Id { get; set; }
 
-        public string InstanceUid { get; set; }
+        public string StudyInstanceUid { get; set; }
 
         public Patient Patient { get; set; }
 

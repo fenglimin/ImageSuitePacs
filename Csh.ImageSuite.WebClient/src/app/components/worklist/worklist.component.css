@@ -1,0 +1,36 @@
+#tblStudies a{
+  color: white;
+}
+
+#tblStudies tr.cust-info td{
+  background-color: #222;
+}
+
+#trStudiesHeader a{
+  color: white;
+}
+
+#trSeriesHeader a{
+  color: white;
+}
+
+
+#trStudiesQuery input[type=text] {
+  width: 100%;
+  vertical-align: middle;
+}
+
+#trStudiesQuery select {
+  width: 100%;
+}
+
+#trStudiesQuery td:nth-child(n+2) {
+  padding: 1px;
+  margin: 0px;
+  vertical-align: middle;
+}
+
+#trStudiesQuery .dropdown .btn {
+  padding: 1px 6px;
+  min-width: 70px;
+}

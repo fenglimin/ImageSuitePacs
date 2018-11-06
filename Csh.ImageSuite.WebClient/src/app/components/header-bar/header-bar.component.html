@@ -14,7 +14,7 @@
       </td>
 	  <td *ngFor="let study of openedStudies">
 		<div class="nav-button">
-			<button [id]="'headerButton' + study.studyInstanceUid" class="div-headerbar-button" (click)="showStudy(study)">{{study.patient.id}}_{{study.patient.name}}</button>
+			<button [id]="'headerButton' + study.studyInstanceUid" class="div-headerbar-button" (click)="showStudy(study)">{{study.patient.patientId}}_{{study.patient.patientName}}</button>
       <button class="div-headerbar-button" (click)="closeStudy(study)">x</button>
 		</div>
 	  </td>

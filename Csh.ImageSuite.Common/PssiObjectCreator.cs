@@ -7,14 +7,21 @@ namespace Csh.ImageSuite.Common
 {
     public class PssiObjectCreator : IPssiObjectCreator
     {
+        private readonly ICommonTool _commonTool;
+
+        public PssiObjectCreator(ICommonTool commonTool)
+        {
+            _commonTool = commonTool;
+        }
+
         public Patient CreatPatient(DataRow row)
         {
-            var patient = new Patient(GetSafeStringValue(row["PatientID"]))
+            var patient = new Patient(_commonTool.GetSafeStrValue(row["PatientID"]))
             {
-                Id = GetSafeIntValue(row["ID_Patient"]),
-                PatientName = GetSafeStringValue(row["PatientName"]),
-                BirthDateString = GetSafeStringValue(row["PatientBirthDate"]),
-                Gender = GetSafeStringValue(row["PatientSex"])
+                Id = _commonTool.GetSafeIntValue(row["ID_Patient"]),
+                PatientName = _commonTool.GetSafeStrValue(row["PatientName"]),
+                BirthDateString = _commonTool.GetSafeStrValue(row["PatientBirthDate"]),
+                Gender = _commonTool.GetSafeStrValue(row["PatientSex"])
             };
 
             return patient;
@@ -22,13 +29,13 @@ namespace Csh.ImageSuite.Common
 
         public Study CreateStudy(DataRow row)
         {
-            var study = new Study(GetSafeStringValue(row["StudyInstanceUID"]))
+            var study = new Study(_commonTool.GetSafeStrValue(row["StudyInstanceUID"]))
             {
-                Id = GetSafeIntValue(row["ID_Study"]),
-                StudyDateString = GetSafeStringValue(row["StudyDate"]),
-                StudyTimeString = GetSafeStringValue(row["StudyTime"]),
-                SeriesCount = GetSafeIntValue(row["SeriesCount"]),
-                ImageCount = GetSafeIntValue(row["IC_Study"])
+                Id = _commonTool.GetSafeIntValue(row["ID_Study"]),
+                StudyDateString = _commonTool.GetSafeStrValue(row["StudyDate"]),
+                StudyTimeString = _commonTool.GetSafeStrValue(row["StudyTime"]),
+                SeriesCount = _commonTool.GetSafeIntValue(row["SeriesCount"]),
+                ImageCount = _commonTool.GetSafeIntValue(row["IC_Study"])
             };
 
             return study;
@@ -36,16 +43,16 @@ namespace Csh.ImageSuite.Common
 
         public Series CreateSeries(DataRow row)
         {
-            var series = new Series(row["SeriesInstanceUID"].ToString().TrimEnd())
+            var series = new Series(_commonTool.GetSafeStrValue(row["SeriesInstanceUID"]))
             {
-                Id = GetSafeIntValue(row["ID_Series"]),
-                BodyPart = GetSafeStringValue(row["BodyPart"]),
-                ViewPosition = GetSafeStringValue(row["ViewPosition"]),
-                Modality = GetSafeStringValue(row["Modality"]),
-                SeriesNumber = GetSafeIntValue(row["SeriesNo"]),
-                ImageCount = GetSafeIntValue(row["IC_Series"]),
-                SeriesDateString = GetSafeStringValue(row["SeriesDate"]),
-                SeriesTimeString = GetSafeStringValue(row["SeriesTime"])
+                Id = _commonTool.GetSafeIntValue(row["ID_Series"]),
+                BodyPart = _commonTool.GetSafeStrValue(row["BodyPart"]),
+                ViewPosition = _commonTool.GetSafeStrValue(row["ViewPosition"]),
+                Modality = _commonTool.GetSafeStrValue(row["Modality"]),
+                SeriesNumber = _commonTool.GetSafeIntValue(row["SeriesNo"]),
+                ImageCount = _commonTool.GetSafeIntValue(row["IC_Series"]),
+                SeriesDateString = _commonTool.GetSafeStrValue(row["SeriesDate"]),
+                SeriesTimeString = _commonTool.GetSafeStrValue(row["SeriesTime"])
             };
 
             return series;
@@ -53,41 +60,17 @@ namespace Csh.ImageSuite.Common
 
         public Image CreateImage(DataRow row)
         {
-            var image = new Image(row["SOPInstanceUID"].ToString().TrimEnd())
+            var image = new Image(_commonTool.GetSafeStrValue(row["SOPInstanceUID"]))
             {
-                Id = GetSafeIntValue(row["ID_Image"]),
-                ImageColumns = GetSafeIntValue(row["ImageColumns"]),
-                ImageRows = GetSafeIntValue(row["ImageRows"]),
-                FilePath = GetSafeStringValue(row["ObjectFile"]),
+                Id = _commonTool.GetSafeIntValue(row["ID_Image"]),
+                ImageColumns = _commonTool.GetSafeIntValue(row["ImageColumns"]),
+                ImageRows = _commonTool.GetSafeIntValue(row["ImageRows"]),
+                FilePath = _commonTool.GetSafeStrValue(row["ObjectFile"]),
                 SerializeJson = string.Empty,
-                ImageNumber = GetSafeIntValue(row["ImageNo"])
+                ImageNumber = _commonTool.GetSafeIntValue(row["ImageNo"])
             };
 
             return image;
-        }
-
-        public string GetSafeStringValue(object value)
-        {
-            return value?.ToString().TrimEnd() ?? string.Empty;
-        }
-
-        public int GetSafeIntValue(object value)
-        {
-            var ret = 0;
-
-            try
-            {
-                if (value != null)
-                {
-                    ret = Convert.ToInt32(value.ToString().TrimEnd());
-                }
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            return ret;
         }
     }
 }

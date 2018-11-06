@@ -172,6 +172,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\PssiController.cs" />
     <Compile Include="Controllers\ShortcutController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -196,6 +197,7 @@
   <ItemGroup>
     <Folder Include="AngularDist\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Pssi\" />
     <Folder Include="Views\Shortcut\" />
   </ItemGroup>
   <ItemGroup>

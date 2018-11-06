@@ -3,6 +3,7 @@ import { Shortcut } from '../../models/shortcut';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
 import { Patient, Study } from '../../models/pssi';
+import { DatabaseService } from '../../services/database.service'
 
 @Component({
   selector: 'app-worklist',
@@ -12,15 +13,25 @@ import { Patient, Study } from '../../models/pssi';
 export class WorklistComponent implements OnInit {
   @Input() shortcut: Shortcut;
   
-
+  studies: Study[];
   subscriptionShellNavigated: Subscription;
 
-  constructor(private shellNavigatorService: ShellNavigatorService) {
+  constructor(private shellNavigatorService: ShellNavigatorService, private databaseService: DatabaseService) {
   }
 
   worklistColumns: string[] = [
+    "",
     "Patient ID",
-    "Patient Name"
+    "Patient Name",
+    "Gender",
+    "BirthDateString",
+    "AccessionNo",
+    "Modality",
+    "StudyDate",
+    "StudyTime",
+    "SeriesCount",
+    "ImageCount",
+    "StudyID"
   ];
 
   studyInfoList: string[][] = [
@@ -47,16 +58,21 @@ export class WorklistComponent implements OnInit {
     //alert('aa');
   }
 
+  setStudies(studies) {
+    for (let i = 0; i < studies.length; i++) {
+      for (let j = 0; j < studies[i].seriesList.length; j++) {
+        studies[i].seriesList[j].study = studies[i];
+      }    
+    }
 
-  ngOnInit() {
+    this.studies = studies;
   }
 
-  doShowStudy(studyInfo: string[]) {
-    let study = new Study;
-    study.studyInstanceUid = studyInfo[0];
-    study.patient = new Patient;
-    study.patient.id = studyInfo[0];
-    study.patient.name = studyInfo[1];
+  ngOnInit() {
+    this.databaseService.getStudies().subscribe(studies => this.setStudies(studies));
+  }
+
+  doShowStudy(study: Study) {
     this.shellNavigatorService.shellNavigate(study);
   }
 }

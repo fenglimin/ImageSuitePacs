@@ -1,17 +1,86 @@
-<p>
+<!--<p>
   Query studies by shortcut : {{shortcut.name}}, id is {{shortcut.id}}
 </p>
 
 <table>
-  <tr>
-    <th *ngFor="let col of worklistColumns">
-      {{col}}
-    </th>
-  </tr>
   <tr *ngFor="let studyInfo of studyInfoList">
     <td *ngFor="let col of worklistColumns; let colIndex = index">
       <button *ngIf="colIndex === 0" class="image-button" (click)="doShowStudy(studyInfo)">{{studyInfo[colIndex]}}</button>
       <p *ngIf="colIndex !== 0">{{studyInfo[colIndex]}}</p>
     </td>
+  </tr>
+</table>-->
+
+<table id="tblStudies" class="table table-hover table-bordered table-condensed">
+  <tr id="trStudiesHeader">
+    <th *ngFor="let col of worklistColumns">
+      <a href="#">{{col}}</a>
+    </th>
+  </tr>
+  <tr id="trStudiesQuery">
+    <td>
+      <input type="checkbox" />
+    </td>
+    <td>
+      <input id="queryPatientId" type="text" />
+    </td>
+    <td>
+      <input id="queryPatientName" type="text" />
+    </td>
+    <td>
+      <select id="queryGender">
+        <option value="">All</option>
+        <option value="F">Female</option>
+        <option value="M">Male</option>
+        <option value="O">Other</option>
+      </select>
+    </td>
+    <td>
+      <input id="queryBirthDate" type="text" />
+    </td>
+    <td>
+      <input id="queryAccessionNo" type="text" />
+    </td>
+    <td>
+      <select id="queryModality">
+        <option value="">All</option>
+        <option>CR</option>
+        <option>CT</option>
+        <option>DX</option>
+        <option>MG</option>
+        <option>MR</option>
+        <option>US</option>
+      </select>
+    </td>
+    <td>
+      <select id="queryStudyDate">
+        <option>All</option>
+        <option>Today</option>
+        <option>Since Yesterday</option>
+        <option>Last 7 Days</option>
+        <option>Last 30 Days</option>
+        <option>Last 6 Months</option>
+      </select>
+    </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>
+      <input id="queryStudyID" type="text" />
+    </td>
+  </tr>
+  <tr *ngFor="let study of studies">
+    <td></td>
+    <td style="cursor: pointer" (click)="doShowStudy(study)">{{study.patient.patientId}}</td>
+    <td>{{study.patient.patientName}}</td>
+    <td>{{study.patient.gender}}</td>
+    <td>{{study.patient.birthDateString}}</td>
+    <td>{{study.accessionNo}}</td>
+    <td>{{study.modality}}</td>
+    <td>{{study.studyDateString}}</td>
+    <td>{{study.studyTimeString}}</td>
+    <td>{{study.seriesCount}}</td>
+    <td>{{study.imageCount}}</td>
+    <td>{{study.studyId}}</td>
   </tr>
 </table>

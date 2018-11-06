@@ -1,25 +1,43 @@
 ﻿export class Patient {
   id: string;
-  name: string;
-  studies: Array<Study>;
+  patientId:string;
+  patientName:string;
+  firstName:string;
+  middleName:string;
+  lastName:string;
+  birthDateString:string;
+  gender:string;
 }
 
 export class Study {
-    patient: Patient;
+  patient: Patient;
 
-    studyInstanceUid: string;
-    studyId: string;
+  studyInstanceUid: string;
+  studyId: string;
+  studyDateString: string;
+  studyTimeString:string;
+  accessionNo: string;
+  seriesCount: number;
+  imageCount: number;
+  modality: string;
 
-    series: Array<Series>;
+  seriesList: Array<Series>;
 }
 
+
 export class Series {
-    study: Study;
+  study: Study;
+  
+  seriesInstanceUid: string;
+  modality: string;
+  seriesDateString: string;
+  seriesTimeString: string;
+  bodyPart: string;
+  viewPosition: string;
+  seriesNumber: number;
+  imageCount: number;
 
-    seriesInstanceUid: string;
-    modality: string;
-
-    images: Array<Image>;
+  //images: Array<Image>;
 }
 
 export class Image {

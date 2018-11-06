@@ -10,5 +10,7 @@ namespace Csh.ImageSuite.Common.Interface
     public interface IDbHelper
     {
         IList<QueryShortcut> LoadQueryShortcuts();
+
+        IList<Study> GetStudies(QueryShortcut query);
     }
 }

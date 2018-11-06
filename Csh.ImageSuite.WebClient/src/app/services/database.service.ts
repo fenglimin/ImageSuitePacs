@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Shortcut } from '../models/shortcut';
-import { Patient } from '../models/pssi';
+import { Patient, Study } from '../models/pssi';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -19,6 +19,7 @@ export class DatabaseService {
   private shortcutUrl = 'shortcut';  // URL to web api
   private patientUrl = 'patient';  // URL to web api
   private worklistUrl = 'worklist';  // URL to web api
+  private pssiUrl = 'pssi';
 
   constructor(private http: HttpClient) {
   }
@@ -53,6 +54,15 @@ export class DatabaseService {
       .pipe(
         tap(heroes => this.log('fetched heroes')),
         catchError(this.handleError('getHeroes', []))
+      );
+  }
+
+  /** GET shortcut from the server */
+  getStudies (): Observable<Study[]> {
+    return this.http.get<Study[]>(this.pssiUrl)
+      .pipe(
+        tap(studies => this.log('fetched studies')),
+        catchError(this.handleError('getStudies', []))
       );
   }
 
