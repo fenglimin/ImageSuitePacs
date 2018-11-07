@@ -19,7 +19,8 @@ namespace Csh.ImageSuite.Windsor
         {
             if (controllerType == null)
             {
-                throw new HttpException(404, string.Format("当前对{0}的请求不存在", requestContext.HttpContext.Request.Path));
+                //throw new HttpException(404, string.Format("当前对{0}的请求不存在", requestContext.HttpContext.Request.Path));
+                return null;
             }
             return (IController)_ikernel.Resolve(controllerType);
         }

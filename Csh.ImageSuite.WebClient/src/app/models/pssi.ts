@@ -1,5 +1,6 @@
 ﻿export class Patient {
   id: string;
+
   patientId:string;
   patientName:string;
   firstName:string;
@@ -10,7 +11,7 @@
 }
 
 export class Study {
-  patient: Patient;
+  id: string;
 
   studyInstanceUid: string;
   studyId: string;
@@ -21,12 +22,13 @@ export class Study {
   imageCount: number;
   modality: string;
 
+  patient: Patient;
   seriesList: Array<Series>;
 }
 
 
 export class Series {
-  study: Study;
+  id: string;
   
   seriesInstanceUid: string;
   modality: string;
@@ -37,11 +39,13 @@ export class Series {
   seriesNumber: number;
   imageCount: number;
 
+  study: Study;
   //images: Array<Image>;
 }
 
 export class Image {
-    series: Series;
-
-    objectFile: string;
+  id: string;
+  
+  series: Series;
+  objectFile: string;
 }
