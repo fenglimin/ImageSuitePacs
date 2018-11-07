@@ -1,28 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Subject }    from 'rxjs';
-import { Study } from '../models/pssi';
+import { OpenedViewerShell } from '../models/openedViewerShell';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShellNavigatorService {
 
-  createdShell = new Array<Study>();
+  openedViewerShellList = new Array<OpenedViewerShell>();
+  openedViewerShellHighlighted: OpenedViewerShell; // The shell current highlighted
 
   // Observable string sources
-  private shellSelectedSource = new Subject<Study>();
+  private shellSelectedSource = new Subject<OpenedViewerShell>();
 
   // Observable string streams
   shellSelected$ = this.shellSelectedSource.asObservable();
 
   // Observable string sources
-  private shellCreatedSource = new Subject<Study>();
+  private shellCreatedSource = new Subject<OpenedViewerShell>();
 
   // Observable string streams
   shellCreated$ = this.shellCreatedSource.asObservable();
 
   // Observable string sources
-  private shellDeletedSource = new Subject<Study>();
+  private shellDeletedSource = new Subject<OpenedViewerShell>();
 
   // Observable string streams
   shellDeleted$ = this.shellDeletedSource.asObservable();
@@ -31,50 +32,54 @@ export class ShellNavigatorService {
   }
 
   // Service string commands
-  private shellCreated(study: Study) {
-    this.shellCreatedSource.next(study);
+  private shellCreated(openedViewerShell: OpenedViewerShell) {
+    this.shellCreatedSource.next(openedViewerShell);
   }
 
   // Service string commands
-  private shellSelected(study: Study) {
-    this.shellSelectedSource.next(study);
+  private shellSelected(openedViewerShell: OpenedViewerShell) {
+    this.shellSelectedSource.next(openedViewerShell);
   }
 
-  shellNavigate(study: Study) {
-    if (!this.isStudyOpened(study)) {
-      this.createdShell.push(study);
-      this.shellCreated(study);
+  shellNavigate(openedViewerShell: OpenedViewerShell) {
+    if (!this.isViewerShellOpened(openedViewerShell)) {
+      this.openedViewerShellList.push(openedViewerShell);
+      this.shellCreated(openedViewerShell);
     } else {
-      this.shellSelected(study);
+      this.shellSelected(openedViewerShell);
     }
+
+    this.openedViewerShellHighlighted = openedViewerShell;
   }
 
-  shellDelete(study: Study): Study {
-    if (this.isStudyOpened(study)) {
-      let index = this.createdShell.indexOf(study);
-      this.createdShell = this.createdShell.filter((value, index, array) => value.studyInstanceUid !== study.studyInstanceUid);
-      if (index >= this.createdShell.length) {
+  shellDelete(openedViewerShell: OpenedViewerShell): OpenedViewerShell {
+    if (this.isViewerShellOpened(openedViewerShell)) {
+      let index = this.openedViewerShellList.indexOf(openedViewerShell);
+      this.openedViewerShellList = this.openedViewerShellList.filter((value, index, array) => value.getId() !== openedViewerShell.getId());
+      if (index >= this.openedViewerShellList.length) {
         index--;
       }
 
-      let nextSelectedStudy: Study;
-      if (index >= 0) {
-        nextSelectedStudy = this.createdShell[index];
-      } else {
-        nextSelectedStudy = null;
+      if (this.openedViewerShellHighlighted === openedViewerShell) {
+        if (index >= 0) {
+          this.openedViewerShellHighlighted = this.openedViewerShellList[index];
+        } else {
+          this.openedViewerShellHighlighted = null;
+        }
+        this.shellNavigate(this.openedViewerShellHighlighted);
+        this.shellDeletedSource.next(openedViewerShell);
+
       }
-
-      this.shellNavigate(nextSelectedStudy);
-      this.shellDeletedSource.next(study);
-
-      return nextSelectedStudy;
+      return this.openedViewerShellHighlighted;
     }
+
+    return null;
   }
 
-  private isStudyOpened(study: Study): boolean {
-    if (study === null)
+  private isViewerShellOpened(openedViewerShell: OpenedViewerShell): boolean {
+    if (openedViewerShell === null)
       return true;
 
-    return this.createdShell.some((value, index, array) => value.studyInstanceUid === study.studyInstanceUid);
+    return this.openedViewerShellList.some((value, index, array) => value.getId() === openedViewerShell.getId());
   }
 }

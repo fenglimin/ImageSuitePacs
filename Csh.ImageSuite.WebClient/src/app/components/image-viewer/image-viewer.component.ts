@@ -4,6 +4,7 @@ import { ImageSelectorService } from '../../services/image-selector.service';
 import { DicomImageService } from '../../services/dicom-image.service';
 import { Subscription }   from 'rxjs';
 import { Study, Image } from '../../models/pssi';
+import { OpenedViewerShell } from '../../models/openedViewerShell';
 
 @Component({
   selector: 'app-image-viewer',
@@ -12,7 +13,7 @@ import { Study, Image } from '../../models/pssi';
 })
 export class ImageViewerComponent implements OnInit, AfterContentInit {
   @Input() imageLayout: ImageLayout;
-  @Input() study: Study;
+  @Input() openedViewerShell: OpenedViewerShell;
   id: string = "";
   subscriptionImageSelection: Subscription;
   subscriptionSubLayoutChange: Subscription;
@@ -79,7 +80,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   generateId(): string {
-    return '_' + this.study.studyInstanceUid + '_' + this.imageLayout.groupLayout.layout.rowIndex +
+    return '_' + this.openedViewerShell.getId() + '_' + this.imageLayout.groupLayout.layout.rowIndex +
       this.imageLayout.groupLayout.layout.colIndex +
       this.imageLayout.rowIndex +
       this.imageLayout.colIndex;

@@ -2,8 +2,9 @@ import { Component, OnInit, OnChanges, SimpleChange, Input } from '@angular/core
 import { Shortcut } from '../../models/shortcut';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
-import { Patient, Study } from '../../models/pssi';
+import { Study } from '../../models/pssi';
 import { DatabaseService } from '../../services/database.service'
+import { OpenedViewerShell } from '../../models/openedViewerShell';
 
 @Component({
   selector: 'app-worklist',
@@ -73,6 +74,8 @@ export class WorklistComponent implements OnInit {
   }
 
   doShowStudy(study: Study) {
-    this.shellNavigatorService.shellNavigate(study);
+    const openedViewerShell = new OpenedViewerShell();
+    openedViewerShell.studies.push(study);
+    this.shellNavigatorService.shellNavigate(openedViewerShell);
   }
 }

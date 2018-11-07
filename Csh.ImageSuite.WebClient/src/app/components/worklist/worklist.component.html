@@ -70,7 +70,7 @@
     </td>
   </tr>
   <tr *ngFor="let study of studies">
-    <td></td>
+    <td><input type="checkbox" /></td>
     <td style="cursor: pointer" (click)="doShowStudy(study)">{{study.patient.patientId}}</td>
     <td>{{study.patient.patientName}}</td>
     <td>{{study.patient.gender}}</td>

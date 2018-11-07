@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
 import { ImageSelectorService } from '../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
-import { Study } from '../../models/pssi';
+import { OpenedViewerShell } from '../../models/openedViewerShell';
 import { GroupLayout, ImageLayout, Layout } from '../../models/layout';
 
 @Component({
@@ -12,7 +12,7 @@ import { GroupLayout, ImageLayout, Layout } from '../../models/layout';
 export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
   @Input() groupLayout: GroupLayout;
-  @Input() study: Study;
+  @Input() openedViewerShell: OpenedViewerShell;
   id =  "";
   selected = false;
 
@@ -63,7 +63,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   generateId(): string {
-    return '_' + this.study.studyInstanceUid + '_' + this.groupLayout.layout.rowIndex + this.groupLayout.layout.colIndex;
+    return '_' + this.openedViewerShell.getId() + '_' + this.groupLayout.layout.rowIndex + this.groupLayout.layout.colIndex;
   }
 
   createImageLayout(rowIndex, colIndex): ImageLayout {

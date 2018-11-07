@@ -10,12 +10,12 @@
         <div class="product-name">ImageViewPacs</div>
       </td>
       <td>
-        <button class="nav-button" (click)="showStudy(null)">Worklist</button>    
+        <button class="nav-button" (click)="showViewerShell(null)">Worklist</button>    
       </td>
-	  <td *ngFor="let study of openedStudies">
+	  <td *ngFor="let openedViewerShell of getOpenedViewerShellList()">
 		<div class="nav-button">
-			<button [id]="'headerButton' + study.studyInstanceUid" class="div-headerbar-button" (click)="showStudy(study)">{{study.patient.patientId}}_{{study.patient.patientName}}</button>
-      <button class="div-headerbar-button" (click)="closeStudy(study)">x</button>
+			<button [id]="'headerButton' + openedViewerShell.getId()" class="div-headerbar-button" (click)="showViewerShell(openedViewerShell)">{{openedViewerShell.getName()}}</button>
+      <button class="div-headerbar-button" (click)="closeViewerShell(openedViewerShell)">x</button>
 		</div>
 	  </td>
     </tr>

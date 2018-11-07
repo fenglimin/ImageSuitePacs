@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChildren, QueryList, AfterViewInit  } from '@ang
 import { GroupViewerComponent } from '../group-viewer/group-viewer.component';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
-import { Study } from '../../models/pssi';
 import { Layout, GroupLayout } from '../../models/layout';
+import { OpenedViewerShell } from '../../models/openedViewerShell';
 
 @Component({
   selector: 'app-viewer-shell',
@@ -15,7 +15,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   totalRow = 1;
   totalCol = 1;
   hideMe = false;
-  study: Study;
+  openedViewerShell: OpenedViewerShell;
 
   @ViewChildren(GroupViewerComponent) viewers: QueryList<GroupViewerComponent>;
 
@@ -23,8 +23,8 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
 
   constructor(private shellNavigatorService: ShellNavigatorService) {
     this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
-      study => {
-        this.hideMe = ( study === null || study.studyInstanceUid !== this.study.studyInstanceUid );
+      openedViewerShell => {
+        this.hideMe = ( openedViewerShell === null || openedViewerShell.getId() !== this.openedViewerShell.getId() );
       });
   }
 

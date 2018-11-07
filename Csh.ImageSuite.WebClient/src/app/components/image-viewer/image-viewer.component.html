@@ -1,13 +1,13 @@
 <div class="DivImageViewer" [id]="'DivImageViewer' + generateId()" (click)="onSelected()">
-  <!--<p>
-    ID : {{study.patient.patientId}}
+  <p>
+    ID : {{openedViewerShell.getId()}}
   </p>
   <p>
-    Name : {{study.patient.patientName}}
+    Name : {{openedViewerShell.getName()}}
   </p>
   <p>
     Viewer({{imageLayout.groupLayout.layout.rowIndex}},{{imageLayout.groupLayout.layout.colIndex}})({{imageLayout.rowIndex}},{{imageLayout.colIndex}})
-  </p>-->
-  <img [src]="imageToShow"
-       alt="Place image title" />
+  </p>
+  <!--<img [src]="imageToShow"
+       alt="Place image title" />-->
 </div>

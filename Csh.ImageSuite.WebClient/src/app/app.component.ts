@@ -6,7 +6,7 @@ import { ViewerShellComponent } from './components/viewer-shell/viewer-shell.com
 import { ShellNavigatorService } from './services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
 
-import { Study } from './models/pssi';
+import { OpenedViewerShell } from './models/openedViewerShell';
 
 @Component({
   selector: 'app-root',
@@ -23,40 +23,43 @@ export class AppComponent implements OnInit {
 
   constructor(private resolver: ComponentFactoryResolver, private shellNavigatorService: ShellNavigatorService) {
     this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(
-      study => {
-        this.createComponent(ViewerShellComponent, study, false);
+      openedViewerShell => {
+        this.createViewerShell(openedViewerShell);
       });
 
 
     this.subscriptionShellDeleted = shellNavigatorService.shellDeleted$.subscribe(
-      study => {
-        this.deleteComponent(study);
+      openedViewerShell => {
+        this.deleteViewerShell(openedViewerShell);
       }
     );
   }
 
   ngOnInit() {
-    this.createComponent(WorklistShellComponent, null, false);
+    this.createWorklistShell();
   }
 
-  createComponent(comType, study, hide) {
-    //this.container.clear(); 
-    let componentFactory = this.resolver.resolveComponentFactory(comType);
+  createWorklistShell() {
+    let componentFactory = this.resolver.resolveComponentFactory(WorklistShellComponent);
     let componentRef = this.container.createComponent(componentFactory);
-    componentRef.instance.hideMe = hide;
-    componentRef.instance.study = study;
-
-    if (comType === ViewerShellComponent) {
-      this.createComponents.push(componentRef);
-    }
+    componentRef.instance.hideMe = false;
   }
 
-  deleteComponent(study) {
-    const studyCom = this.createComponents.filter((value, index, array) => value.instance.study.studyInstanceUid === study.studyInstanceUid);
+  createViewerShell(openedViewerShell: OpenedViewerShell) {
+    let componentFactory = this.resolver.resolveComponentFactory(ViewerShellComponent);
+    let componentRef = this.container.createComponent(componentFactory);
+    componentRef.instance.hideMe = false;
+    componentRef.instance.openedViewerShell = openedViewerShell;
+
+    this.createComponents.push(componentRef);
+  }
+
+  deleteViewerShell(openedViewerShell: OpenedViewerShell) {
+    const studyCom = this.createComponents.filter((value, index, array) => value.instance.openedViewerShell.getId() === openedViewerShell.getId);
     if (studyCom.length !== 0) {
       studyCom[0].destroy();
     }
 
-    this.createComponents = this.createComponents.filter((value, index, array) => value.instance.study.studyInstanceUid !== study.studyInstanceUid);
+    this.createComponents = this.createComponents.filter((value, index, array) => value.instance.openedViewerShell.getId() !== openedViewerShell.getId);
   }
 }
