@@ -18,17 +18,12 @@ namespace Csh.ImageSuite.WebHost.Controllers
         // GET: DicomImage/Details/5
         public ActionResult Details(string id)
         {
-            var stream = new MemoryStream();
-
             var fs = new FileStream(@"E:\1.jpg", FileMode.Open);
             var buffer = new byte[fs.Length];
             fs.Read(buffer, 0, (int)fs.Length);
             fs.Close();
             
-            
             return File(buffer, "image/jpeg", "fileName.jpg");
-
-            //return stream;
         }
 
         // GET: DicomImage/Create

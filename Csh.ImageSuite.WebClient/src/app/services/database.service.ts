@@ -17,21 +17,11 @@ const httpOptions = {
 export class DatabaseService {
 
   private shortcutUrl = 'shortcut';  // URL to web api
-  private patientUrl = 'patient';  // URL to web api
-  private worklistUrl = 'worklist';  // URL to web api
   private pssiUrl = 'pssi';
 
   constructor(private http: HttpClient) {
   }
 
-  /** GET shortcut from the server */
-  getPatients (): Observable<Patient[]> {
-    return this.http.get<Patient[]>(this.patientUrl)
-      .pipe(
-        tap(heroes => this.log('fetched heroes')),
-        catchError(this.handleError('getHeroes', []))
-      );
-  }
 
   getShortcut(id : number): Observable<Shortcut> {
     const url = `${this.shortcutUrl}/details/${id}`;
@@ -41,15 +31,6 @@ export class DatabaseService {
 
   /** GET shortcut from the server */
   getShortcuts (): Observable<Shortcut[]> {
-
-/*    this.http.get('https://api.github.com/users/seeschweiler').subscribe(data => {
-      console.log(data);
-    });
-
-    this.http.get(this.patientUrl).subscribe(data => {
-      console.log(data);
-    });
-    */
     return this.http.get<Shortcut[]>(this.shortcutUrl)
       .pipe(
         tap(heroes => this.log('fetched heroes')),
