@@ -49,7 +49,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   getImageFromService() {
     this.isImageLoading = true;
     let image = new Image();
-    image.id = '1';
+    image.id = 1;
 
     this.dicomImageService.getImage(image).subscribe(data => {
       this.createImageFromBlob(data);
