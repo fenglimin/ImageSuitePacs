@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
-import { ImageLayout } from '../../models/layout';
+import { Layout, ImageLayout, LayoutPosition, LayoutMatrix } from '../../models/layout';
 import { ImageSelectorService } from '../../services/image-selector.service';
 import { DicomImageService } from '../../services/dicom-image.service';
 import { Subscription }   from 'rxjs';
@@ -80,9 +80,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   generateId(): string {
-    return '_' + this.openedViewerShell.getId() + '_' + this.imageLayout.groupLayout.layout.rowIndex +
-      this.imageLayout.groupLayout.layout.colIndex +
-      this.imageLayout.rowIndex +
-      this.imageLayout.colIndex;
+    return '_' + this.openedViewerShell.getId() + '_' + this.imageLayout.getId();
   }
 }

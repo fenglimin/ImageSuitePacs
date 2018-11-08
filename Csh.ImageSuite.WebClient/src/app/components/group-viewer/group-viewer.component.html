@@ -1,7 +1,7 @@
 <div class="DivLayoutViewer" [id]="'DivLayoutViewer' + generateId()"
       (click)="onSelected()">
-  <div class="div-flex-column" *ngFor="let a of Arr(groupLayout.colCountChild).fill(1); let colIndex = index">
-    <div class="div-flex-row" *ngFor="let a of Arr(groupLayout.rowCountChild).fill(1); let rowIndex = index">
+  <div class="div-flex-column" *ngFor="let a of Arr(imageLayoutMatrix.colCount).fill(1); let colIndex = index">
+    <div class="div-flex-row" *ngFor="let a of Arr(imageLayoutMatrix.rowCount).fill(1); let rowIndex = index">
       <app-image-viewer [imageLayout]="createImageLayout(rowIndex,colIndex)" [openedViewerShell]="openedViewerShell">
       </app-image-viewer>
     </div>

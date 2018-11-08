@@ -2,7 +2,7 @@ import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
 import { ImageSelectorService } from '../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
 import { OpenedViewerShell } from '../../models/openedViewerShell';
-import { GroupLayout, ImageLayout, Layout } from '../../models/layout';
+import { Layout, ImageLayout, LayoutPosition, LayoutMatrix } from '../../models/layout';
 
 @Component({
   selector: 'app-group-viewer',
@@ -11,10 +11,12 @@ import { GroupLayout, ImageLayout, Layout } from '../../models/layout';
 })
 export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
-  @Input() groupLayout: GroupLayout;
+  @Input() groupLayout: Layout;
   @Input() openedViewerShell: OpenedViewerShell;
   id =  "";
   selected = false;
+
+  imageLayoutMatrix = new LayoutMatrix(1,1);
 
   subscriptionImageSelection: Subscription;
   subscriptionSubLayoutChange: Subscription;
@@ -29,6 +31,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
       subLayoutStyle => {
         this.doChangeSubLayout(subLayoutStyle);
       });
+
+    
   }
 
   ngOnInit() {
@@ -57,22 +61,17 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
 
   doChangeSubLayout(subLayoutStyle: number): void {
     if (this.selected) {
-      this.groupLayout.rowCountChild = Math.trunc(subLayoutStyle / 10);
-      this.groupLayout.colCountChild = subLayoutStyle % 10;
+      this.imageLayoutMatrix.fromNumber(subLayoutStyle);
     }
   }
 
   generateId(): string {
-    return '_' + this.openedViewerShell.getId() + '_' + this.groupLayout.layout.rowIndex + this.groupLayout.layout.colIndex;
+    return '_' + this.openedViewerShell.getId() + '_' + this.groupLayout.getId();
   }
 
   createImageLayout(rowIndex, colIndex): ImageLayout {
-    const imageLayout = new ImageLayout();
-
-    imageLayout.groupLayout = this.groupLayout;
-    imageLayout.rowIndex = rowIndex;
-    imageLayout.colIndex = colIndex;
-
+    const layout = new Layout(new LayoutPosition(rowIndex, colIndex), this.imageLayoutMatrix);
+    const imageLayout = new ImageLayout(this.groupLayout, layout);
     return imageLayout;
   }
 }

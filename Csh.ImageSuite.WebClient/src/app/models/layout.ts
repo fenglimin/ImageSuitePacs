@@ -1,37 +1,56 @@
-﻿export class Layout {
+﻿export class LayoutPosition {
   rowIndex: number;
   colIndex: number;
-  rowCount: number;
-  colCount: number;  
 
-  constructor() {
-    this.rowIndex = 0;
-    this.colIndex = 0;
-    this.rowCount = 1;
-    this.colCount = 1;
+  getId(): string {
+    return '' + this.rowIndex + this.colIndex;
+  }
+
+  constructor(rowIndex: number, colIndex: number) {
+    this.rowIndex = rowIndex;
+    this.colIndex = colIndex;
   }
 }
 
-export class GroupLayout {
-  layout: Layout;
-  rowCountChild: number;
-  colCountChild: number;
+export class LayoutMatrix {
+  rowCount: number;
+  colCount: number;
 
-  constructor() {
-    this.layout = new Layout();
-    this.rowCountChild = 1;
-    this.colCountChild = 1;
+  constructor(rowCount: number, colCount: number) {
+    this.rowCount = rowCount;
+    this.colCount = colCount;
+  }
+
+  fromNumber(matrixNumber: number) {
+    this.rowCount = Math.trunc(matrixNumber / 10);
+    this.colCount = matrixNumber % 10;
+  }
+}
+
+export class Layout {
+  position: LayoutPosition;
+  matrix: LayoutMatrix;
+
+  getId(): string {
+    return '' + this.position.getId();
+  }
+
+  constructor(position: LayoutPosition, matrix: LayoutMatrix) {
+    this.position = position;
+    this.matrix = matrix;
   }
 }
 
 export class ImageLayout {
-  groupLayout: GroupLayout;
-  rowIndex: number;
-  colIndex: number;
+  groupLayout: Layout;
+  imageLayout: Layout;
 
-  constructor() {
-    this.groupLayout = new GroupLayout();
-    this.rowIndex = 0;
-    this.colIndex = 0;
+  constructor(groupLayout: Layout, imageLayout: Layout) {
+    this.groupLayout = groupLayout;
+    this.imageLayout = imageLayout;
+  }
+
+  getId(): string {
+    return this.groupLayout.getId() + this.imageLayout.getId();
   }
 }
