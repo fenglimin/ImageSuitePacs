@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject }    from 'rxjs';
-import { OpenedViewerShell } from '../models/openedViewerShell';
+import { OpenedViewerShell } from '../models/opened-viewer-shell';
 
 @Injectable({
   providedIn: 'root'

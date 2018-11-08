@@ -4,7 +4,7 @@ import { ImageSelectorService } from '../../services/image-selector.service';
 import { DicomImageService } from '../../services/dicom-image.service';
 import { Subscription }   from 'rxjs';
 import { Study, Image } from '../../models/pssi';
-import { OpenedViewerShell } from '../../models/openedViewerShell';
+import { OpenedViewerShell } from '../../models/opened-viewer-shell';
 
 @Component({
   selector: 'app-image-viewer',

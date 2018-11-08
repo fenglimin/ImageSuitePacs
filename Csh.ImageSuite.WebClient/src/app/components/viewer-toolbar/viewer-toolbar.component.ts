@@ -1,6 +1,7 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ImageSelectorService } from '../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
+import { GroupHangingProtocal } from '../../models/hanging-protocal';
 
 @Component({
   selector: 'app-viewer-toolbar',
@@ -14,8 +15,8 @@ export class ViewerToolbarComponent implements OnInit {
   ngOnInit() {
   }
 
-  doSplitLayout(layoutStyle: number): void {
-    this.layout.emit(layoutStyle);
+  createGroupLayoutMatrix(groupHangingProtocalNumber: number): void {
+    this.layout.emit(groupHangingProtocalNumber);
   }
 
   doSplitSubLayout(subLayoutStyle: number): void {

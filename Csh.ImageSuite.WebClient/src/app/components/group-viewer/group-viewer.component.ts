@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
 import { ImageSelectorService } from '../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
-import { OpenedViewerShell } from '../../models/openedViewerShell';
+import { OpenedViewerShell } from '../../models/opened-viewer-shell';
 import { Layout, ImageLayout, LayoutPosition, LayoutMatrix } from '../../models/layout';
 
 @Component({

@@ -4,7 +4,7 @@ import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
 import { Study } from '../../models/pssi';
 import { DatabaseService } from '../../services/database.service'
-import { OpenedViewerShell } from '../../models/openedViewerShell';
+import { OpenedViewerShell } from '../../models/opened-viewer-shell';
 
 @Component({
   selector: 'app-worklist',

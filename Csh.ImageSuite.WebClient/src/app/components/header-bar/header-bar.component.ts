@@ -1,7 +1,7 @@
 import { Component, OnInit, SimpleChanges, AfterContentInit, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
-import { OpenedViewerShell } from '../../models/openedViewerShell';
+import { OpenedViewerShell } from '../../models/opened-viewer-shell';
 
 @Component({
   selector: 'app-header-bar',
