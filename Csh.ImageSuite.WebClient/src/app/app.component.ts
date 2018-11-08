@@ -55,11 +55,11 @@ export class AppComponent implements OnInit {
   }
 
   deleteViewerShell(openedViewerShell: OpenedViewerShell) {
-    const studyCom = this.createComponents.filter((value, index, array) => value.instance.openedViewerShell.getId() === openedViewerShell.getId);
+    const studyCom = this.createComponents.filter((value, index, array) => value.instance.openedViewerShell.getId() === openedViewerShell.getId());
     if (studyCom.length !== 0) {
       studyCom[0].destroy();
     }
 
-    this.createComponents = this.createComponents.filter((value, index, array) => value.instance.openedViewerShell.getId() !== openedViewerShell.getId);
+    this.createComponents = this.createComponents.filter((value, index, array) => value.instance.openedViewerShell.getId() !== openedViewerShell.getId());
   }
 }
