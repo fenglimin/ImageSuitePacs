@@ -101,7 +101,7 @@ export class DatabaseService {
 
     let study = new Study();
 
-    study.id = this.id_study;
+    study.id = this.id_study++;
     study.studyInstanceUid = study.id + '.' + study.id;
     study.seriesCount = seriesCount;
     study.imageCount = seriesCount;
@@ -118,7 +118,6 @@ export class DatabaseService {
   }
 
   createSeries(): Series {
-    let seriesId = 1;
     let series = new Series();
 
     series.id = this.id_series++;
