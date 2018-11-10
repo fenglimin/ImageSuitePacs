@@ -2,7 +2,8 @@ import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
 import { ImageSelectorService } from '../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
 import { OpenedViewerShell } from '../../models/opened-viewer-shell';
-import { Layout, ImageLayout, LayoutPosition, LayoutMatrix } from '../../models/layout';
+import { Layout, ImageLayout, GroupLayout, LayoutPosition, LayoutMatrix } from '../../models/layout';
+import { ImageHangingProtocal } from '../../models/hanging-protocal';
 
 @Component({
   selector: 'app-group-viewer',
@@ -11,8 +12,10 @@ import { Layout, ImageLayout, LayoutPosition, LayoutMatrix } from '../../models/
 })
 export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
-  @Input() groupLayout: Layout;
+  @Input() groupLayout: GroupLayout;
   @Input() openedViewerShell: OpenedViewerShell;
+
+  imageHaningProtocal = ImageHangingProtocal.ByModality;
   id =  "";
   selected = false;
 
@@ -61,6 +64,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
 
   doChangeImageLayout(imageLayoutStyle: number): void {
     if (this.selected) {
+      this.imageHaningProtocal = imageLayoutStyle;
       this.imageLayoutMatrix.fromNumber(imageLayoutStyle);
     }
   }
@@ -71,7 +75,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
 
   createImageLayout(rowIndex, colIndex): ImageLayout {
     const layout = new Layout(new LayoutPosition(rowIndex, colIndex), this.imageLayoutMatrix);
-    const imageLayout = new ImageLayout(this.groupLayout, layout);
+    const imageLayout = new ImageLayout(this.groupLayout, layout, this.imageHaningProtocal);
     return imageLayout;
   }
 }

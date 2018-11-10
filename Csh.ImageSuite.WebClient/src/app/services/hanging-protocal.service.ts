@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { OpenedViewerShell } from '../models/opened-viewer-shell';
-import { LayoutMatrix } from '../models/layout';
+import { LayoutMatrix, ImageLayout } from '../models/layout';
 import { GroupHangingProtocal, ImageHangingProtocal} from '../models/hanging-protocal';
+import { Patient, Study, Series, Image } from '../models/pssi';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,19 @@ export class HangingProtocalService {
       groupDataList.push(openedViewerShell);
       return groupDataList;
     }
+  }
+
+  getImageList(openedViewerShell: OpenedViewerShell, imageLayout: ImageLayout): Array<Image> {
+    let imageList = new Array<Image>();
+    let groupIndex = imageLayout.groupLayout.layout.position.rowIndex * imageLayout.groupLayout.layout.matrix.colCount +
+      imageLayout.groupLayout.layout.position.colIndex;
+    let imageIndex = imageLayout.layout.position.rowIndex * imageLayout.layout.matrix.colCount +
+      imageLayout.layout.position.colIndex;
+
+    if (imageLayout.groupLayout.hangingProtocal === GroupHangingProtocal.ByPatent) {
+      
+    }
+    return imageList;
   }
 }
 
