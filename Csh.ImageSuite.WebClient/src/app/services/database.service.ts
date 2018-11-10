@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { Shortcut } from '../models/shortcut';
-import { Patient, Study } from '../models/pssi';
+import { Patient, Study, Series, Image } from '../models/pssi';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -18,6 +18,11 @@ export class DatabaseService {
 
   private shortcutUrl = 'shortcut';  // URL to web api
   private pssiUrl = 'pssi';
+  private id_patient = 1;
+  private id_study = 1;
+  private id_series = 1;
+  private id_image = 1;
+
 
   constructor(private http: HttpClient) {
   }
@@ -47,6 +52,79 @@ export class DatabaseService {
       );
   }
 
+  getStudiesTest(): Study[] {
+    let studies = new Array<Study>();
+    let patient1 = this.createPatient('PID001', 'Tom', 'M');
+    let patient2 = this.createPatient('PID002', 'Jerry', 'M');
+    let patient3 = this.createPatient('PID003', 'Mark', 'M');
+
+    let study = this.createStudy(1);
+    study.patient = patient1;
+    studies.push(study);
+
+    study = this.createStudy(2);
+    study.patient = patient2;
+    studies.push(study);
+
+    study = this.createStudy(3);
+    study.patient = patient2;
+    studies.push(study);
+
+    study = this.createStudy(1);
+    study.patient = patient3;
+    studies.push(study);
+
+    study = this.createStudy(2);
+    study.patient = patient3;
+    studies.push(study);
+
+    study = this.createStudy(5);
+    study.patient = patient3;
+    studies.push(study);
+
+    return studies;
+  }
+
+  createPatient(patientId: string, patientName: string, gender: string): Patient {
+
+    let patient = new Patient();
+
+    patient.id = this.id_patient++;
+    patient.patientId = patientId;
+    patient.patientName = patientName;
+    patient.gender = gender;
+
+    return patient;
+  }
+
+  createStudy(seriesCount: number): Study {
+
+    let study = new Study();
+
+    study.id = this.id_study;
+    study.studyInstanceUid = study.id + '.' + study.id;
+    study.seriesCount = seriesCount;
+    study.imageCount = seriesCount;
+    study.studyId = '1';
+    study.studyDateString = '2018-11-11';
+    study.studyTimeString = '12:11:12';
+
+    study.seriesList = new Array<Series>();
+    for (let i = 0; i < seriesCount; i++){
+      study.seriesList.push(this.createSeries());
+    }
+
+    return study;
+  }
+
+  createSeries(): Series {
+    let seriesId = 1;
+    let series = new Series();
+
+    series.id = this.id_series++;
+
+    return series;
+  }
   /**
   * Handle Http operation that failed.
   * Let the app continue.

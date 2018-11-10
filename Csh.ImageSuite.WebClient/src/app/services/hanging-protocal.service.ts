@@ -7,7 +7,9 @@ import { GroupHangingProtocal, ImageHangingProtocal} from '../models/hanging-pro
   providedIn: 'root'
 })
 export class HangingProtocalService {
-  groupHangingProtocal = GroupHangingProtocal.BySeries;
+  defaultGroupHangingProtocal = GroupHangingProtocal.BySeries;
+  defaultImageHangingPrococal = ImageHangingProtocal.ByModality;
+
   groupLayoutNumberList = [11, 11, 12, 22, 22];
   constructor() { }
 
@@ -36,4 +38,19 @@ export class HangingProtocalService {
     layoutMatrix.fromNumber(groupLayoutNumber);
     return layoutMatrix;
   }
+
+  getGroupDataList(openedViewerShell: OpenedViewerShell, groupHangingProtocal: GroupHangingProtocal): Array<OpenedViewerShell> {
+    if (groupHangingProtocal === GroupHangingProtocal.ByPatent) {
+      return openedViewerShell.splitGroupByPatient();
+    } else if (groupHangingProtocal === GroupHangingProtocal.ByStudy) {
+      return openedViewerShell.splitGroupByStudy();
+    } else if (groupHangingProtocal === GroupHangingProtocal.BySeries) {
+      return openedViewerShell.splitGroupBySeries();
+    } else {
+      let groupDataList = new Array<OpenedViewerShell>();
+      groupDataList.push(openedViewerShell);
+      return groupDataList;
+    }
+  }
 }
+

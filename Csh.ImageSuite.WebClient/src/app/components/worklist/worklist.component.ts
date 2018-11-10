@@ -70,12 +70,14 @@ export class WorklistComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.databaseService.getStudies().subscribe(studies => this.setStudies(studies));
+    //this.databaseService.getStudies().subscribe(studies => this.setStudies(studies));
+    this.studies = this.databaseService.getStudiesTest();
   }
 
   doShowStudy(study: Study) {
     const openedViewerShell = new OpenedViewerShell();
     openedViewerShell.studies.push(study);
+    //openedViewerShell.studies.push(this.studies[5]);
     this.shellNavigatorService.shellNavigate(openedViewerShell);
   }
 }
