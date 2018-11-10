@@ -19,7 +19,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   imageLayoutMatrix = new LayoutMatrix(1,1);
 
   subscriptionImageSelection: Subscription;
-  subscriptionSubLayoutChange: Subscription;
+  subscriptionImageLayoutChange: Subscription;
   
   constructor(private imageSelectorService: ImageSelectorService) {
     this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
@@ -27,9 +27,9 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         this.doSelectByImageViewerId(imageViewerId);
       });
 
-    this.subscriptionSubLayoutChange = imageSelectorService.subLayoutChanged$.subscribe(
-      subLayoutStyle => {
-        this.doChangeSubLayout(subLayoutStyle);
+    this.subscriptionImageLayoutChange = imageSelectorService.imageLayoutChanged$.subscribe(
+      imageLayoutStyle => {
+        this.doChangeImageLayout(imageLayoutStyle);
       });
 
     
@@ -59,9 +59,9 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     this.doSelectById(divId, this.selected);
   }
 
-  doChangeSubLayout(subLayoutStyle: number): void {
+  doChangeImageLayout(imageLayoutStyle: number): void {
     if (this.selected) {
-      this.imageLayoutMatrix.fromNumber(subLayoutStyle);
+      this.imageLayoutMatrix.fromNumber(imageLayoutStyle);
     }
   }
 

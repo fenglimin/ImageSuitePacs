@@ -19,7 +19,7 @@ export class ViewerToolbarComponent implements OnInit {
     this.layout.emit(groupHangingProtocalNumber);
   }
 
-  doSplitSubLayout(subLayoutStyle: number): void {
-    this.imageSelectorService.changeSubLayout(subLayoutStyle);
+  doSplitImageLayout(imageLayoutStyle: number): void {
+    this.imageSelectorService.changeImageLayout(imageLayoutStyle);
   }
 }

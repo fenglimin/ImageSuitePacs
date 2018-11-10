@@ -10,13 +10,13 @@ export class ImageSelectorService {
   private imageSelectedSource = new Subject<string>();
 
   // Observable number sources
-  private subLayoutChangedSource = new Subject<number>();
+  private imageLayoutChangedSource = new Subject<number>();
 
   // Observable string streams
   imageSelected$ = this.imageSelectedSource.asObservable();
 
   // Observable number streams
-  subLayoutChanged$ = this.subLayoutChangedSource.asObservable();
+  imageLayoutChanged$ = this.imageLayoutChangedSource.asObservable();
 
   // Service string commands
   selectImage(imageSopSelected: string) {
@@ -24,7 +24,7 @@ export class ImageSelectorService {
   }
 
   // Service number commands
-  changeSubLayout(subLayoutStyle: number) {
-    this.subLayoutChangedSource.next(subLayoutStyle);
+  changeImageLayout(imageLayoutStyle: number) {
+    this.imageLayoutChangedSource.next(imageLayoutStyle);
   }
 }

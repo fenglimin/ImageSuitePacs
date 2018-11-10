@@ -16,7 +16,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   @Input() openedViewerShell: OpenedViewerShell;
   id: string = "";
   subscriptionImageSelection: Subscription;
-  subscriptionSubLayoutChange: Subscription;
+  subscriptionImageLayoutChange: Subscription;
   isImageLoading:boolean;
   imageToShow: any;
 
