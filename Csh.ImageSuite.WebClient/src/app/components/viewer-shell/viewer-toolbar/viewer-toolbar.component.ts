@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { ImageSelectorService } from '../../services/image-selector.service';
+import { ImageSelectorService } from '../../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
-import { GroupHangingProtocal } from '../../models/hanging-protocal';
+import { GroupHangingProtocal } from '../../../models/hanging-protocal';
 
 @Component({
   selector: 'app-viewer-toolbar',

@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
-import { ImageSelectorService } from '../../services/image-selector.service';
+import { ImageSelectorService } from '../../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
-import { OpenedViewerShell } from '../../models/opened-viewer-shell';
-import { Layout, ImageLayout, GroupLayout, LayoutPosition, LayoutMatrix } from '../../models/layout';
-import { ImageHangingProtocal } from '../../models/hanging-protocal';
+import { OpenedViewerShell } from '../../../models/opened-viewer-shell';
+import { Layout, ImageLayout, GroupLayout, LayoutPosition, LayoutMatrix } from '../../../models/layout';
+import { ImageHangingProtocal } from '../../../models/hanging-protocal';
 
 @Component({
   selector: 'app-group-viewer',

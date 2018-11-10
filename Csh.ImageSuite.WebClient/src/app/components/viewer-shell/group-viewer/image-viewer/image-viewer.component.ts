@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
-import { Layout, ImageLayout, LayoutPosition, LayoutMatrix } from '../../models/layout';
-import { ImageSelectorService } from '../../services/image-selector.service';
-import { DicomImageService } from '../../services/dicom-image.service';
+import { Layout, ImageLayout, LayoutPosition, LayoutMatrix } from '../../../../models/layout';
+import { ImageSelectorService } from '../../../../services/image-selector.service';
+import { DicomImageService } from '../../../../services/dicom-image.service';
 import { Subscription }   from 'rxjs';
-import { Study, Image } from '../../models/pssi';
-import { OpenedViewerShell } from '../../models/opened-viewer-shell';
+import { Study, Image } from '../../../../models/pssi';
+import { OpenedViewerShell } from '../../../../models/opened-viewer-shell';
 
 @Component({
   selector: 'app-image-viewer',

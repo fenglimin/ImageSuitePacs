@@ -1,10 +1,10 @@
 import { Component, OnInit, OnChanges, SimpleChange, Input } from '@angular/core';
-import { Shortcut } from '../../models/shortcut';
-import { ShellNavigatorService } from '../../services/shell-navigator.service';
+import { Shortcut } from '../../../models/shortcut';
+import { ShellNavigatorService } from '../../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
-import { Study } from '../../models/pssi';
-import { DatabaseService } from '../../services/database.service'
-import { OpenedViewerShell } from '../../models/opened-viewer-shell';
+import { Study } from '../../../models/pssi';
+import { DatabaseService } from '../../../services/database.service'
+import { OpenedViewerShell } from '../../../models/opened-viewer-shell';
 
 @Component({
   selector: 'app-worklist',

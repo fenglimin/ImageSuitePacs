@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChildren, QueryList, AfterViewInit  } from '@angular/core';
-import { GroupViewerComponent } from '../group-viewer/group-viewer.component';
+import { GroupViewerComponent } from './group-viewer/group-viewer.component';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { HangingProtocalService } from '../../services/hanging-protocal.service';
 import { Subscription }   from 'rxjs';

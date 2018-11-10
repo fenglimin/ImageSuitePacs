@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Shortcut } from '../../models/shortcut';
-import { Patient } from '../../models/pssi';
-import { DatabaseService } from '../../services/database.service';
+import { Shortcut } from '../../../models/shortcut';
+import { Patient } from '../../../models/pssi';
+import { DatabaseService } from '../../../services/database.service';
 
 @Component({
   selector: 'app-query-shortcut',

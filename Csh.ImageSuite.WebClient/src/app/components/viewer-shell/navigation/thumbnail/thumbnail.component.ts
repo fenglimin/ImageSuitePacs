@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ImageSelectorService } from '../../services/image-selector.service';
+import { ImageSelectorService } from '../../../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
 
 @Component({
