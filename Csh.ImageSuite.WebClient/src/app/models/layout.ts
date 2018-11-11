@@ -1,4 +1,12 @@
 ﻿import { GroupHangingProtocal, ImageHangingProtocal } from './hanging-protocal';
+import { Patient, Study, Series, Image } from '../models/pssi';
+
+export enum LayoutContent {
+  Patient,
+  Study,
+  Series,
+  Image
+}
 
 export class LayoutPosition {
   rowIndex: number;
@@ -11,6 +19,11 @@ export class LayoutPosition {
 
   getId(): string {
     return '' + this.rowIndex + this.colIndex;
+  }
+
+  fromNumber(positionNumber: number, colCount: number) {
+    this.rowIndex = Math.trunc(positionNumber / colCount);
+    this.colIndex = positionNumber % colCount;
   }
 }
 
@@ -61,6 +74,7 @@ export class ImageLayout {
   groupLayout: GroupLayout;
   layout: Layout;
   haningProtocal: ImageHangingProtocal;
+  imageList: Array<Image>;
 
   constructor(groupLayout: GroupLayout, layout: Layout, haningProtocal: ImageHangingProtocal) {
     this.groupLayout = groupLayout;

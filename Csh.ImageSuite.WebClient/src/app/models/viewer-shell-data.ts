@@ -1,67 +1,151 @@
-﻿import { Patient, Study, Image } from '../models/pssi';
+﻿import { Patient, Study, Series, Image } from '../models/pssi';
 
 export class ViewerShellData {
-  studies = new Array<Study>();
+  patientList = new Array<Patient>();
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Public functions
+  addStudy(study: Study) {
+    let index = -1;
+    for (let i = 0; i < this.patientList.length; i++) {
+      if (this.patientList[i].id === study.patient.id) {
+        index = i;
+        break;
+      }
+    }
+    
+    let patient = null;
+    if (index === -1) {
+      // Clone a patient and added to the list
+      patient = study.patient.clone()
+      this.patientList.push(patient);
+    } else {
+      patient = this.patientList[index];
+    }
+
+    patient.studyList.push(study);
+  }
+  
   getId() : string {
     let id = '';
-    this.studies.forEach(value => id += '.' + value.id);
+    this.patientList.forEach(patient => id += '.' + this.getIdFromPatient(patient));
     return id;
   }
 
   getName(): string {
-    if (this.studies.length === 0) {
-      return '';
-    }
-
     let name = '';
-    this.studies.forEach(value => name += value.patient.patientId + '_' + value.patient.patientName + ' | ');
+    this.patientList.forEach(patient => name += patient.patientId + '_' + patient.patientName + ' | ');
     return name.substr(0, name.length - 3);
   }
 
-  getTotalSeriesCount(): number {
-    let count = 0;
-    this.studies.forEach(value => count += value.seriesCount);
-    return count;
+
+  getImages(patientIndex: number, studyIndex: number, seriesIndex: number): Array<Image> {
+    
+    if (patientIndex >= this.patientList.length) return null;
+
+    let totalStudyCount = this.getTotalStudyCount();
+    if (studyIndex >= totalStudyCount) return null;
+
+    let totalSeriesCount = this.getTotalSeriesCount();
+    if (seriesIndex >= totalSeriesCount) return null;
+
+    return this.patientList[patientIndex].studyList[studyIndex].seriesList[seriesIndex].imageList;
   }
 
-  getTotalStudyCount(): number {
-    return this.studies.length;
-  }
+  getAllImageOfPatientByIndex(patientIndex: number): Array<Image> {
+    if (patientIndex >= this.patientList.length) return null;
 
-  getTotalPatientCount(): number {
-    return this.getAllPatients().length;
-  }
-
-  private getAllPatients(): Array<Patient> {
-    let patients = Array<Patient>();
-
-    this.studies.forEach(value => {
-      if (patients.indexOf(value.patient) == -1) {
-        patients.push(value.patient);
-      }
-    });
-
-    return patients;
-  }
-
-  getPatientImages(patientIndex: number): Array<Image> {
     let images = new Array<Image>();
-    let patients = this.getAllPatients();
+    let patient = this.patientList[patientIndex];
 
-    if (patientIndex >= 0 && patientIndex < patients.length) {
-      this.studies.forEach(study => {
-        if (patients.indexOf(study.patient) != -1) {
-          study.seriesList.forEach(series => {
-            images.concat(series.imageList);
-          });
-        }
-      });
-    }
+    patient.studyList.forEach(study => {
+      study.seriesList.forEach(series => images.concat(series.imageList));
+    });
 
     return images;
   }
 
+  getAllImageOfPatientStudyByIndex(patientIndex: number, studyIndex: number): Array<Image> {
+    if (patientIndex >= this.patientList.length) return null;
+    let patient = this.patientList[patientIndex];
+    if (studyIndex >= patient.studyList.length) return null;
+
+    let images = new Array<Image>();
+    patient.studyList[studyIndex].seriesList.forEach(series => images.concat(series.imageList));
+    return images;
+  }
+
+  getAllImageOfPatientStudySeriesByIndex(patientIndex: number, studyIndex: number, seriesIndex: number): Array<Image> {
+    if (patientIndex >= this.patientList.length) return null;
+    let patient = this.patientList[patientIndex];
+    if (studyIndex >= patient.studyList.length) return null;
+    let study = patient.studyList[studyIndex];
+    if (seriesIndex >= study.seriesList.length) return null;
+
+    return study.seriesList[0].imageList;
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+  // Private functions
+  private getIdFromPatient(patient: Patient): string {
+    let id = '';
+    patient.studyList.forEach(value => id += '.' + value.id);
+    return id;
+  }
+
+  getTotalSeriesCount(): number {
+    let count = 0;
+    this.patientList.forEach(patient => count += this.getPatientSeriesCountByObj(patient));
+    return count;
+  }
+
+  getTotalStudyCount(): number {
+    let count = 0;
+    this.patientList.forEach(patient => count += patient.studyList.length);
+    return count;
+  }
+
+  getTotalPatientCount(): number {
+    return this.patientList.length;
+  }
+
+  getPatientStudyCountByIndex(patientIndex: number): number {
+    if (patientIndex >= this.patientList.length) return 0;
+    return this.patientList[patientIndex].studyList.length;
+  }
+
+  getPatientSeriesCountByIndex(patientIndex: number): number {
+    if (patientIndex >= this.patientList.length) return 0;
+    
+    let count = 0;
+    this.patientList[patientIndex].studyList.forEach(study => count += study.seriesList.length);
+    return count;
+  }
+
+  getPatientSeriesCountByObj(patient: Patient): number {
+    let count = 0;
+    patient.studyList.forEach(study => count += study.seriesList.length);
+    return count;
+  }
+
+
+
+  getAllStudyList(): Array<Study> {
+    let studies = new Array<Study>();
+    this.patientList.forEach(patient => studies.concat(patient.studyList));
+    return studies;
+  }
+
+  getAllImageOfStudy(studyIndex: number): Array<Image> {
+    if (studyIndex >= this.getTotalStudyCount()) return null;
+    let study = this.getAllStudyList()[studyIndex];
+
+    let images = new Array<Image>();
+    study.seriesList.forEach(series => images.concat(series.imageList));
+    return images;
+  }
+
+
+  /*
   splitGroupByPatient(): Array<ViewerShellData> {
     let dataList = new Array<ViewerShellData>();
 
@@ -116,4 +200,5 @@ export class ViewerShellData {
 
     return dataList;
   }
+  */
 }

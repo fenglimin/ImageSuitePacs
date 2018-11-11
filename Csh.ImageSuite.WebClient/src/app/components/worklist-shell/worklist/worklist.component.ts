@@ -76,7 +76,7 @@ export class WorklistComponent implements OnInit {
 
   doShowStudy(study: Study) {
     const viewerShellData = new ViewerShellData();
-    viewerShellData.studies.push(study);
+    viewerShellData.addStudy(study);
     //viewerShellData.studies.push(this.studies[5]);
     this.shellNavigatorService.shellNavigate(viewerShellData);
   }

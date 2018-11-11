@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
 import { ImageSelectorService } from '../../../services/image-selector.service';
+import { HangingProtocalService } from '../../../services/hanging-protocal.service';
 import { Subscription }   from 'rxjs';
 import { ViewerShellData } from '../../../models/viewer-shell-data';
 import { Layout, ImageLayout, GroupLayout, LayoutPosition, LayoutMatrix } from '../../../models/layout';
@@ -15,16 +16,17 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   @Input() groupLayout: GroupLayout;
   @Input() viewerShellData: ViewerShellData;
 
-  imageHaningProtocal = ImageHangingProtocal.ByModality;
+  imageHaningProtocal = ImageHangingProtocal.Auto;
   id =  "";
   selected = false;
 
-  imageLayoutMatrix = new LayoutMatrix(1,1);
+  imageLayoutList: Array<ImageLayout>;
+  imageLayoutMatrix: LayoutMatrix;
 
   subscriptionImageSelection: Subscription;
   subscriptionImageLayoutChange: Subscription;
   
-  constructor(private imageSelectorService: ImageSelectorService) {
+  constructor(private imageSelectorService: ImageSelectorService, private hangingProtocalService: HangingProtocalService) {
     this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
       imageViewerId => {
         this.doSelectByImageViewerId(imageViewerId);
@@ -39,6 +41,9 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
+    this.imageLayoutList = this.hangingProtocalService.createImageLayoutList(this.viewerShellData,
+      this.imageHaningProtocal, this.groupLayout);
+    this.imageLayoutMatrix = this.imageLayoutList[0].layout.matrix;
   }
 
   ngAfterContentInit() {
@@ -74,8 +79,9 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   createImageLayout(rowIndex, colIndex): ImageLayout {
-    const layout = new Layout(new LayoutPosition(rowIndex, colIndex), this.imageLayoutMatrix);
-    const imageLayout = new ImageLayout(this.groupLayout, layout, this.imageHaningProtocal);
-    return imageLayout;
+    let index = rowIndex * this.imageLayoutMatrix.colCount + colIndex;
+    if (index >= this.imageLayoutList.length) return null;
+
+    return this.imageLayoutList[index]; 
   }
 }

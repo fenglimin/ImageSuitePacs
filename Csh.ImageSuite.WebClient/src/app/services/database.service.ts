@@ -58,28 +58,22 @@ export class DatabaseService {
     let patient2 = this.createPatient('PID002', 'Jerry', 'M');
     let patient3 = this.createPatient('PID003', 'Mark', 'M');
 
-    let study = this.createStudy(1);
-    study.patient = patient1;
+    let study = this.createStudy(patient1, 1);
     studies.push(study);
 
-    study = this.createStudy(2);
-    study.patient = patient2;
+    study = this.createStudy(patient2, 2);
     studies.push(study);
 
-    study = this.createStudy(3);
-    study.patient = patient2;
+    study = this.createStudy(patient2, 3);
     studies.push(study);
 
-    study = this.createStudy(1);
-    study.patient = patient3;
+    study = this.createStudy(patient3, 1);
     studies.push(study);
 
-    study = this.createStudy(2);
-    study.patient = patient3;
+    study = this.createStudy(patient3, 2);
     studies.push(study);
 
-    study = this.createStudy(5);
-    study.patient = patient3;
+    study = this.createStudy(patient3, 5);
     studies.push(study);
 
     return studies;
@@ -93,36 +87,55 @@ export class DatabaseService {
     patient.patientId = patientId;
     patient.patientName = patientName;
     patient.gender = gender;
-
+    patient.studyList = new Array<Study>();
+    
     return patient;
   }
 
-  createStudy(seriesCount: number): Study {
+  createStudy(patient: Patient, seriesCount: number): Study {
 
     let study = new Study();
 
     study.id = this.id_study++;
     study.studyInstanceUid = study.id + '.' + study.id;
     study.seriesCount = seriesCount;
-    study.imageCount = seriesCount;
-    study.studyId = '1';
+    study.imageCount = seriesCount * seriesCount;
+    study.studyId = '' + study.id;
+    study.accessionNo = study.studyId;
     study.studyDateString = '2018-11-11';
     study.studyTimeString = '12:11:12';
 
     study.seriesList = new Array<Series>();
     for (let i = 0; i < seriesCount; i++){
-      study.seriesList.push(this.createSeries());
+      study.seriesList.push(this.createSeries(study, seriesCount));
     }
 
+    study.patient = patient;
+    patient.studyList.push(study);
     return study;
   }
 
-  createSeries(): Series {
+  createSeries(study: Study, imageCount: number): Series {
     let series = new Series();
 
     series.id = this.id_series++;
+    series.study = study;
+
+    series.imageList = new Array<Image>();
+    for (let i = 0; i < imageCount; i++) {
+      series.imageList.push(this.createImage(series));
+    }
 
     return series;
+  }
+
+  createImage(series: Series): Image {
+    let image = new Image();
+
+    image.id = this.id_image++;
+    image.series = series;
+
+    return image;
   }
   /**
   * Handle Http operation that failed.
