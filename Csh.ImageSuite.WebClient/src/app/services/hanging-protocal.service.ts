@@ -40,6 +40,23 @@ export class HangingProtocalService {
     return layoutMatrix;
   }
 
+  getImageLayoutMatrix(openedViewerShell: OpenedViewerShell, imageLayout: ImageLayout): LayoutMatrix {
+    let layoutMatrix = new LayoutMatrix(1, 1);
+    let groupIndex = imageLayout.groupLayout.layout.position.rowIndex * imageLayout.groupLayout.layout.matrix.colCount +
+      imageLayout.groupLayout.layout.position.colIndex;
+
+    let layoutNumber = 1;
+    if (imageLayout.groupLayout.hangingProtocal === GroupHangingProtocal.ByPatent) {
+      let patientImage = openedViewerShell.splitGroupByPatient()[groupIndex];
+      if (patientImage.studies.length > 1) {
+        layoutNumber = patientImage.studies.length;
+      } else if (patientImage.studies[0].seriesList.length > 1) {
+        layoutNumber = patientImage.studies[0].seriesList.length;
+      }
+    }
+    return layoutMatrix;
+  }
+
   getGroupDataList(openedViewerShell: OpenedViewerShell, groupHangingProtocal: GroupHangingProtocal): Array<OpenedViewerShell> {
     if (groupHangingProtocal === GroupHangingProtocal.ByPatent) {
       return openedViewerShell.splitGroupByPatient();
@@ -62,7 +79,7 @@ export class HangingProtocalService {
       imageLayout.layout.position.colIndex;
 
     if (imageLayout.groupLayout.hangingProtocal === GroupHangingProtocal.ByPatent) {
-      
+      let patientImage = openedViewerShell.splitGroupByPatient()[groupIndex];
     }
     return imageList;
   }

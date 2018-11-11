@@ -2,7 +2,7 @@
   ByPatent = 1,
   ByStudy = 2,
   BySeries = 3,
-  FreeHang_1X1 = 1,
+  FreeHang_1X1 = 11,
   FreeHang_1X2 = 12,
   FreeHang_2X1 = 21,
   FreeHang_2X2 = 22,
@@ -10,8 +10,9 @@
 }
 
 export enum ImageHangingProtocal {
-  ByModality = 1,
-  FreeHang_1X1 = 1,
+  Overlap = 1,    // 1x1, all images are ovelapped and need a scroll bar if there are more than one images.
+  ByModality = 2, // the layout will be determined by it modality.
+  FreeHang_1X1 = 11,
   FreeHang_1X2 = 12,
   FreeHang_2X1 = 21,
   FreeHang_2X2 = 22,
