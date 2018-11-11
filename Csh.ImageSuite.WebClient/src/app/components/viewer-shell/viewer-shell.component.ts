@@ -4,7 +4,7 @@ import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { HangingProtocalService } from '../../services/hanging-protocal.service';
 import { Subscription }   from 'rxjs';
 import { LayoutPosition, LayoutMatrix, Layout, GroupLayout } from '../../models/layout';
-import { OpenedViewerShell } from '../../models/opened-viewer-shell';
+import { ViewerShellData } from '../../models/viewer-shell-data';
 import { GroupHangingProtocal } from '../../models/hanging-protocal';
 
 @Component({
@@ -17,7 +17,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   groupMatrix = new LayoutMatrix(1, 1);
   groupHangingProtocal = GroupHangingProtocal.BySeries;
   hideMe = false;
-  openedViewerShell: OpenedViewerShell;
+  viewerShellData: ViewerShellData;
 
   @ViewChildren(GroupViewerComponent) viewers: QueryList<GroupViewerComponent>;
 
@@ -25,8 +25,8 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
 
   constructor(private shellNavigatorService: ShellNavigatorService, private hangingProtocalService: HangingProtocalService) {
     this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
-      openedViewerShell => {
-        this.hideMe = ( openedViewerShell === null || openedViewerShell.getId() !== this.openedViewerShell.getId() );
+      viewerShellData => {
+        this.hideMe = ( viewerShellData === null || viewerShellData.getId() !== this.viewerShellData.getId() );
       });
   }
 
@@ -39,7 +39,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
 
   onLayoutChanged(groupHangingProtocalNumber: number): void {
     let groupHangingProtocal: GroupHangingProtocal = groupHangingProtocalNumber;
-    this.groupMatrix = this.hangingProtocalService.getGroupLayoutMatrix(this.openedViewerShell, groupHangingProtocal);
+    this.groupMatrix = this.hangingProtocalService.getGroupLayoutMatrix(this.viewerShellData, groupHangingProtocal);
   }
 
   createGroupLayout(rowIndex: number, colIndex: number): GroupLayout {

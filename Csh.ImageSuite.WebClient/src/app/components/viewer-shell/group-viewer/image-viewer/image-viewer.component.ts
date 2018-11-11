@@ -4,7 +4,7 @@ import { ImageSelectorService } from '../../../../services/image-selector.servic
 import { DicomImageService } from '../../../../services/dicom-image.service';
 import { Subscription }   from 'rxjs';
 import { Study, Image } from '../../../../models/pssi';
-import { OpenedViewerShell } from '../../../../models/opened-viewer-shell';
+import { ViewerShellData } from '../../../../models/viewer-shell-data';
 
 @Component({
   selector: 'app-image-viewer',
@@ -13,7 +13,7 @@ import { OpenedViewerShell } from '../../../../models/opened-viewer-shell';
 })
 export class ImageViewerComponent implements OnInit, AfterContentInit {
   @Input() imageLayout: ImageLayout;
-  @Input() openedViewerShell: OpenedViewerShell;
+  @Input() viewerShellData: ViewerShellData;
   id: string = "";
   subscriptionImageSelection: Subscription;
   subscriptionImageLayoutChange: Subscription;
@@ -80,6 +80,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   generateId(): string {
-    return '_' + this.openedViewerShell.getId() + '_' + this.imageLayout.getId();
+    return '_' + this.viewerShellData.getId() + '_' + this.imageLayout.getId();
   }
 }

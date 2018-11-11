@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
 import { ImageSelectorService } from '../../../services/image-selector.service';
 import { Subscription }   from 'rxjs';
-import { OpenedViewerShell } from '../../../models/opened-viewer-shell';
+import { ViewerShellData } from '../../../models/viewer-shell-data';
 import { Layout, ImageLayout, GroupLayout, LayoutPosition, LayoutMatrix } from '../../../models/layout';
 import { ImageHangingProtocal } from '../../../models/hanging-protocal';
 
@@ -13,7 +13,7 @@ import { ImageHangingProtocal } from '../../../models/hanging-protocal';
 export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
   @Input() groupLayout: GroupLayout;
-  @Input() openedViewerShell: OpenedViewerShell;
+  @Input() viewerShellData: ViewerShellData;
 
   imageHaningProtocal = ImageHangingProtocal.ByModality;
   id =  "";
@@ -70,7 +70,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   generateId(): string {
-    return '_' + this.openedViewerShell.getId() + '_' + this.groupLayout.getId();
+    return '_' + this.viewerShellData.getId() + '_' + this.groupLayout.getId();
   }
 
   createImageLayout(rowIndex, colIndex): ImageLayout {

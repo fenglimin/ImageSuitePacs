@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Shortcut } from '../../models/shortcut';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
-import { OpenedViewerShell } from '../../models/opened-viewer-shell';
+import { ViewerShellData } from '../../models/viewer-shell-data';
 
 @Component({
   selector: 'app-worklist-shell',
@@ -20,8 +20,8 @@ export class WorklistShellComponent implements OnInit {
 
   constructor(private shellNavigatorService: ShellNavigatorService) {
     this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
-      openedViewerShell => {
-        this.hideMe = openedViewerShell !== null;
+      viewerShellData => {
+        this.hideMe = viewerShellData !== null;
       });
   }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { OpenedViewerShell } from '../models/opened-viewer-shell';
+import { ViewerShellData } from '../models/viewer-shell-data';
 import { LayoutMatrix, ImageLayout } from '../models/layout';
 import { GroupHangingProtocal, ImageHangingProtocal} from '../models/hanging-protocal';
 import { Patient, Study, Series, Image } from '../models/pssi';
@@ -14,17 +14,17 @@ export class HangingProtocalService {
   groupLayoutNumberList = [11, 11, 12, 22, 22];
   constructor() { }
 
-  getGroupLayoutMatrix(openedViewerShell: OpenedViewerShell, groupHangingProtocal: GroupHangingProtocal): LayoutMatrix {
+  getGroupLayoutMatrix(viewerShellData: ViewerShellData, groupHangingProtocal: GroupHangingProtocal): LayoutMatrix {
     let groupCount = 0;
     let layoutMatrix = new LayoutMatrix(1,1);
     let groupLayoutNumber = 0;
 
     if (groupHangingProtocal === GroupHangingProtocal.ByPatent) {
-      groupCount = openedViewerShell.getTotalPatientCount();
+      groupCount = viewerShellData.getTotalPatientCount();
     }else if (groupHangingProtocal === GroupHangingProtocal.ByStudy) {
-      groupCount = openedViewerShell.getTotalStudyCount();
+      groupCount = viewerShellData.getTotalStudyCount();
     }else if (groupHangingProtocal === GroupHangingProtocal.BySeries) {
-      groupCount = openedViewerShell.getTotalSeriesCount();
+      groupCount = viewerShellData.getTotalSeriesCount();
     } else {
       layoutMatrix.fromNumber(groupHangingProtocal);
       return layoutMatrix;
@@ -40,14 +40,14 @@ export class HangingProtocalService {
     return layoutMatrix;
   }
 
-  getImageLayoutMatrix(openedViewerShell: OpenedViewerShell, imageLayout: ImageLayout): LayoutMatrix {
+  getImageLayoutMatrix(viewerShellData: ViewerShellData, imageLayout: ImageLayout): LayoutMatrix {
     let layoutMatrix = new LayoutMatrix(1, 1);
     let groupIndex = imageLayout.groupLayout.layout.position.rowIndex * imageLayout.groupLayout.layout.matrix.colCount +
       imageLayout.groupLayout.layout.position.colIndex;
 
     let layoutNumber = 1;
     if (imageLayout.groupLayout.hangingProtocal === GroupHangingProtocal.ByPatent) {
-      let patientImage = openedViewerShell.splitGroupByPatient()[groupIndex];
+      let patientImage = viewerShellData.splitGroupByPatient()[groupIndex];
       if (patientImage.studies.length > 1) {
         layoutNumber = patientImage.studies.length;
       } else if (patientImage.studies[0].seriesList.length > 1) {
@@ -57,21 +57,21 @@ export class HangingProtocalService {
     return layoutMatrix;
   }
 
-  getGroupDataList(openedViewerShell: OpenedViewerShell, groupHangingProtocal: GroupHangingProtocal): Array<OpenedViewerShell> {
+  getGroupDataList(viewerShellData: ViewerShellData, groupHangingProtocal: GroupHangingProtocal): Array<ViewerShellData> {
     if (groupHangingProtocal === GroupHangingProtocal.ByPatent) {
-      return openedViewerShell.splitGroupByPatient();
+      return viewerShellData.splitGroupByPatient();
     } else if (groupHangingProtocal === GroupHangingProtocal.ByStudy) {
-      return openedViewerShell.splitGroupByStudy();
+      return viewerShellData.splitGroupByStudy();
     } else if (groupHangingProtocal === GroupHangingProtocal.BySeries) {
-      return openedViewerShell.splitGroupBySeries();
+      return viewerShellData.splitGroupBySeries();
     } else {
-      let groupDataList = new Array<OpenedViewerShell>();
-      groupDataList.push(openedViewerShell);
+      let groupDataList = new Array<ViewerShellData>();
+      groupDataList.push(viewerShellData);
       return groupDataList;
     }
   }
 
-  getImageList(openedViewerShell: OpenedViewerShell, imageLayout: ImageLayout): Array<Image> {
+  getImageList(viewerShellData: ViewerShellData, imageLayout: ImageLayout): Array<Image> {
     let imageList = new Array<Image>();
     let groupIndex = imageLayout.groupLayout.layout.position.rowIndex * imageLayout.groupLayout.layout.matrix.colCount +
       imageLayout.groupLayout.layout.position.colIndex;
@@ -79,7 +79,7 @@ export class HangingProtocalService {
       imageLayout.layout.position.colIndex;
 
     if (imageLayout.groupLayout.hangingProtocal === GroupHangingProtocal.ByPatent) {
-      let patientImage = openedViewerShell.splitGroupByPatient()[groupIndex];
+      let patientImage = viewerShellData.splitGroupByPatient()[groupIndex];
     }
     return imageList;
   }

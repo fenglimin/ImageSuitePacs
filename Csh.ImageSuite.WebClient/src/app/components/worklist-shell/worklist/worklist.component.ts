@@ -4,7 +4,7 @@ import { ShellNavigatorService } from '../../../services/shell-navigator.service
 import { Subscription }   from 'rxjs';
 import { Study } from '../../../models/pssi';
 import { DatabaseService } from '../../../services/database.service'
-import { OpenedViewerShell } from '../../../models/opened-viewer-shell';
+import { ViewerShellData } from '../../../models/viewer-shell-data';
 
 @Component({
   selector: 'app-worklist',
@@ -75,9 +75,9 @@ export class WorklistComponent implements OnInit {
   }
 
   doShowStudy(study: Study) {
-    const openedViewerShell = new OpenedViewerShell();
-    openedViewerShell.studies.push(study);
-    //openedViewerShell.studies.push(this.studies[5]);
-    this.shellNavigatorService.shellNavigate(openedViewerShell);
+    const viewerShellData = new ViewerShellData();
+    viewerShellData.studies.push(study);
+    //viewerShellData.studies.push(this.studies[5]);
+    this.shellNavigatorService.shellNavigate(viewerShellData);
   }
 }

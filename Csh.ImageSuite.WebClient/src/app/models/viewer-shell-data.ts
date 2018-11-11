@@ -1,6 +1,6 @@
 ﻿import { Patient, Study, Image } from '../models/pssi';
 
-export class OpenedViewerShell {
+export class ViewerShellData {
   studies = new Array<Study>();
 
   getId() : string {
@@ -62,8 +62,8 @@ export class OpenedViewerShell {
     return images;
   }
 
-  splitGroupByPatient(): Array<OpenedViewerShell> {
-    let dataList = new Array<OpenedViewerShell>();
+  splitGroupByPatient(): Array<ViewerShellData> {
+    let dataList = new Array<ViewerShellData>();
 
     for (let i = 0; i < this.studies.length; i++) {
       let patientIndex = -1;
@@ -74,43 +74,43 @@ export class OpenedViewerShell {
         }
       }
 
-      let openedViewerShell = null;
+      let viewerShellData = null;
       if (patientIndex === -1) {
-        openedViewerShell = new OpenedViewerShell();
-        dataList.push(openedViewerShell);
+        viewerShellData = new ViewerShellData();
+        dataList.push(viewerShellData);
       } else {
-        openedViewerShell = dataList[patientIndex];
+        viewerShellData = dataList[patientIndex];
       }
 
-      openedViewerShell.studies.push(this.studies[i]);
+      viewerShellData.studies.push(this.studies[i]);
     }
 
     return dataList;
   }
 
-  splitGroupByStudy(): Array<OpenedViewerShell> {
-    let dataList = new Array<OpenedViewerShell>();
+  splitGroupByStudy(): Array<ViewerShellData> {
+    let dataList = new Array<ViewerShellData>();
 
     for (let i = 0; i < this.studies.length; i++) {
-      let openedViewerShell = new OpenedViewerShell();
-      openedViewerShell.studies.push(this.studies[i]);
-      dataList.push(openedViewerShell);
+      let viewerShellData = new ViewerShellData();
+      viewerShellData.studies.push(this.studies[i]);
+      dataList.push(viewerShellData);
     }
 
     return dataList;
   }
 
-  splitGroupBySeries(): Array<OpenedViewerShell> {
-    let dataList = new Array<OpenedViewerShell>();
+  splitGroupBySeries(): Array<ViewerShellData> {
+    let dataList = new Array<ViewerShellData>();
 
     for (let i = 0; i < this.studies.length; i++) {
       for (let j = 0; j < this.studies[i].seriesList.length; j++) {
 
 
-        let openedViewerShell = new OpenedViewerShell();
+        let viewerShellData = new ViewerShellData();
 
-        openedViewerShell.studies.push(this.studies[i]);
-        dataList.push(openedViewerShell);
+        viewerShellData.studies.push(this.studies[i]);
+        dataList.push(viewerShellData);
       }
     }
 

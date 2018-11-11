@@ -1,29 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Subject }    from 'rxjs';
-import { OpenedViewerShell } from '../models/opened-viewer-shell';
+import { ViewerShellData } from '../models/viewer-shell-data';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShellNavigatorService {
 
-  openedViewerShellList = new Array<OpenedViewerShell>();
-  openedViewerShellHighlighted: OpenedViewerShell; // The shell current highlighted
+  viewerShellDataList = new Array<ViewerShellData>();
+  viewerShellDataHighlighted: ViewerShellData; // The shell current highlighted
 
   // Observable string sources
-  private shellSelectedSource = new Subject<OpenedViewerShell>();
+  private shellSelectedSource = new Subject<ViewerShellData>();
 
   // Observable string streams
   shellSelected$ = this.shellSelectedSource.asObservable();
 
   // Observable string sources
-  private shellCreatedSource = new Subject<OpenedViewerShell>();
+  private shellCreatedSource = new Subject<ViewerShellData>();
 
   // Observable string streams
   shellCreated$ = this.shellCreatedSource.asObservable();
 
   // Observable string sources
-  private shellDeletedSource = new Subject<OpenedViewerShell>();
+  private shellDeletedSource = new Subject<ViewerShellData>();
 
   // Observable string streams
   shellDeleted$ = this.shellDeletedSource.asObservable();
@@ -32,54 +32,54 @@ export class ShellNavigatorService {
   }
 
   // Service string commands
-  private shellCreated(openedViewerShell: OpenedViewerShell) {
-    this.shellCreatedSource.next(openedViewerShell);
+  private shellCreated(viewerShellData: ViewerShellData) {
+    this.shellCreatedSource.next(viewerShellData);
   }
 
   // Service string commands
-  private shellSelected(openedViewerShell: OpenedViewerShell) {
-    this.shellSelectedSource.next(openedViewerShell);
+  private shellSelected(viewerShellData: ViewerShellData) {
+    this.shellSelectedSource.next(viewerShellData);
   }
 
-  shellNavigate(openedViewerShell: OpenedViewerShell) {
-    if (!this.isViewerShellOpened(openedViewerShell)) {
-      this.openedViewerShellList.push(openedViewerShell);
-      this.shellCreated(openedViewerShell);
+  shellNavigate(viewerShellData: ViewerShellData) {
+    if (!this.isViewerShellOpened(viewerShellData)) {
+      this.viewerShellDataList.push(viewerShellData);
+      this.shellCreated(viewerShellData);
     } else {
-      this.shellSelected(openedViewerShell);
+      this.shellSelected(viewerShellData);
     }
 
-    this.openedViewerShellHighlighted = openedViewerShell;
+    this.viewerShellDataHighlighted = viewerShellData;
   }
 
-  shellDelete(openedViewerShell: OpenedViewerShell): OpenedViewerShell {
-    if (this.isViewerShellOpened(openedViewerShell)) {
-      let index = this.openedViewerShellList.indexOf(openedViewerShell);
-      this.openedViewerShellList = this.openedViewerShellList.filter((value, index, array) => value.getId() !== openedViewerShell.getId());
-      if (index >= this.openedViewerShellList.length) {
+  shellDelete(viewerShellData: ViewerShellData): ViewerShellData {
+    if (this.isViewerShellOpened(viewerShellData)) {
+      let index = this.viewerShellDataList.indexOf(viewerShellData);
+      this.viewerShellDataList = this.viewerShellDataList.filter((value, index, array) => value.getId() !== viewerShellData.getId());
+      if (index >= this.viewerShellDataList.length) {
         index--;
       }
 
-      if (this.openedViewerShellHighlighted === openedViewerShell) {
+      if (this.viewerShellDataHighlighted === viewerShellData) {
         if (index >= 0) {
-          this.openedViewerShellHighlighted = this.openedViewerShellList[index];
+          this.viewerShellDataHighlighted = this.viewerShellDataList[index];
         } else {
-          this.openedViewerShellHighlighted = null;
+          this.viewerShellDataHighlighted = null;
         }
-        this.shellNavigate(this.openedViewerShellHighlighted);
-        this.shellDeletedSource.next(openedViewerShell);
+        this.shellNavigate(this.viewerShellDataHighlighted);
+        this.shellDeletedSource.next(viewerShellData);
 
       }
-      return this.openedViewerShellHighlighted;
+      return this.viewerShellDataHighlighted;
     }
 
     return null;
   }
 
-  private isViewerShellOpened(openedViewerShell: OpenedViewerShell): boolean {
-    if (openedViewerShell === null)
+  private isViewerShellOpened(viewerShellData: ViewerShellData): boolean {
+    if (viewerShellData === null)
       return true;
 
-    return this.openedViewerShellList.some((value, index, array) => value.getId() === openedViewerShell.getId());
+    return this.viewerShellDataList.some((value, index, array) => value.getId() === viewerShellData.getId());
   }
 }
