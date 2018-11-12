@@ -19,7 +19,7 @@
   </tr>
   <tr id="trStudiesQuery">
     <td>
-      <input type="checkbox" />
+      <input type="checkbox" (click)="onAllStudyChecked($event)"/>
     </td>
     <td>
       <input id="queryPatientId" type="text" />
@@ -70,7 +70,7 @@
     </td>
   </tr>
   <tr *ngFor="let study of studies">
-    <td><input type="checkbox" /></td>
+    <td><input type="checkbox" [(ngModel)]="study.checked" (click)="onStudyChecked(study)"/></td>
     <td style="cursor: pointer" (click)="doShowStudy(study)">{{study.patient.patientId}}</td>
     <td>{{study.patient.patientName}}</td>
     <td>{{study.patient.gender}}</td>

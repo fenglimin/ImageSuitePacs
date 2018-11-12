@@ -1,4 +1,5 @@
 import { Component, OnInit, OnChanges, SimpleChange, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Shortcut } from '../../../models/shortcut';
 import { ShellNavigatorService } from '../../../services/shell-navigator.service';
 import { Subscription }   from 'rxjs';
@@ -74,10 +75,23 @@ export class WorklistComponent implements OnInit {
     this.studies = this.databaseService.getStudiesTest();
   }
 
+  onStudyChecked(study: Study) {
+   
+  }
+
+  onAllStudyChecked(event) {
+    this.studies.forEach(study => study.checked = event.target.checked);
+  }
+
   doShowStudy(study: Study) {
     const viewerShellData = new ViewerShellData();
-    viewerShellData.addStudy(study);
-    //viewerShellData.studies.push(this.studies[5]);
+    study.checked = true;
+    this.studies.forEach(study1 => {
+      if (study1.checked) {
+        viewerShellData.addStudy(study1);
+      }
+    });
+
     this.shellNavigatorService.shellNavigate(viewerShellData);
   }
 }

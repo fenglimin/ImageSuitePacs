@@ -104,6 +104,8 @@ export class DatabaseService {
     study.accessionNo = study.studyId;
     study.studyDateString = '2018-11-11';
     study.studyTimeString = '12:11:12';
+    study.modality = 'DX';
+    study.checked = false;
 
     study.seriesList = new Array<Series>();
     for (let i = 0; i < seriesCount; i++){

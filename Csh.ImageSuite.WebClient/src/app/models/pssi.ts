@@ -32,6 +32,7 @@
 
 export class Study {
   id: number;
+  checked: boolean;
 
   studyInstanceUid: string;
   studyId: string;
@@ -41,6 +42,8 @@ export class Study {
   seriesCount: number;
   imageCount: number;
   modality: string;
+
+  
 
   patient: Patient;
   seriesList: Array<Series>;
