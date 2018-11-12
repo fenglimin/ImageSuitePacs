@@ -15,7 +15,7 @@ import { GroupHangingProtocal } from '../../models/hanging-protocal';
 export class ViewerShellComponent implements OnInit, AfterViewInit {
   Arr = Array; //Array type captured in a variable
   groupMatrix = new LayoutMatrix(1, 1);
-  groupHangingProtocal = GroupHangingProtocal.ByPatent;
+  groupHangingProtocal : GroupHangingProtocal;
   hideMe = false;
   viewerShellData: ViewerShellData;
 
@@ -31,6 +31,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.groupHangingProtocal = this.hangingProtocalService.getDefaultGroupHangingProtocal();
     this.onLayoutChanged(this.groupHangingProtocal);
   }
 

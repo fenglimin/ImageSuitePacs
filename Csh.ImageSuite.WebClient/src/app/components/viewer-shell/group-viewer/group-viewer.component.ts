@@ -16,7 +16,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   @Input() groupLayout: GroupLayout;
   @Input() viewerShellData: ViewerShellData;
 
-  imageHaningProtocal = ImageHangingProtocal.Auto;
+  imageHaningProtocal : ImageHangingProtocal;
   id =  "";
   selected = false;
 
@@ -41,7 +41,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
-    this.setImageLayout(ImageHangingProtocal.Auto);
+    this.imageHaningProtocal = this.hangingProtocalService.getDefaultImageHangingPrococal();
+    this.setImageLayout(this.imageHaningProtocal);
   }
 
   ngAfterContentInit() {
