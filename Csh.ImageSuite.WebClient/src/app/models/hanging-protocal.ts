@@ -10,8 +10,8 @@
 }
 
 export enum ImageHangingProtocal {
-  Overlap = 1,    // 1x1, all images are ovelapped and need a scroll bar if there are more than one images.
-  Auto = 2, // the layout will be determined by it modality.
+  Auto = 1, // the layout will be determined by it modality.
+  Overlap = 2,    // 1x1, all images are ovelapped and need a scroll bar if there are more than one images.
   FreeHang_1X1 = 11,
   FreeHang_1X2 = 12,
   FreeHang_2X1 = 21,

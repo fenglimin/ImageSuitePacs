@@ -34,16 +34,14 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
 
     this.subscriptionImageLayoutChange = imageSelectorService.imageLayoutChanged$.subscribe(
       imageLayoutStyle => {
-        this.doChangeImageLayout(imageLayoutStyle);
+        this.onChangeImageLayout(imageLayoutStyle);
       });
 
     
   }
 
   ngOnInit() {
-    this.imageLayoutList = this.hangingProtocalService.createImageLayoutList(this.viewerShellData,
-      this.imageHaningProtocal, this.groupLayout);
-    this.imageLayoutMatrix = this.imageLayoutList[0].layout.matrix;
+    this.setImageLayout(ImageHangingProtocal.Auto);
   }
 
   ngAfterContentInit() {
@@ -67,11 +65,21 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     this.doSelectById(divId, this.selected);
   }
 
-  doChangeImageLayout(imageLayoutStyle: number): void {
+  onChangeImageLayout(imageLayoutStyle: number): void {
     if (this.selected) {
-      this.imageHaningProtocal = imageLayoutStyle;
-      this.imageLayoutMatrix.fromNumber(imageLayoutStyle);
+      this.setImageLayout(imageLayoutStyle);
     }
+  }
+
+  setImageLayout(imageLayoutStyle: number): void {
+    this.imageHaningProtocal = imageLayoutStyle;
+      
+    this.imageLayoutList = this.hangingProtocalService.createImageLayoutList(this.viewerShellData,
+      this.imageHaningProtocal, this.groupLayout);
+    if (this.imageLayoutList.length === 0) {
+      alert('Error in createImageLayoutList()');
+    }
+    this.imageLayoutMatrix = this.imageLayoutList[0].layout.matrix;
   }
 
   generateId(): string {
