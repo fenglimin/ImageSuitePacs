@@ -8,7 +8,7 @@ import { Patient, Study, Series, Image } from '../models/pssi';
   providedIn: 'root'
 })
 export class HangingProtocalService {
-  defaultGroupHangingProtocal = GroupHangingProtocal.ByStudy;
+  defaultGroupHangingProtocal = GroupHangingProtocal.BySeries;
   defaultImageHangingPrococal = ImageHangingProtocal.Auto;
 
   groupLayoutNumberList = [11, 11, 12, 22, 22];
@@ -54,6 +54,8 @@ export class HangingProtocalService {
       return this.createImageLayoutListByPatient(viewerShellData, imageHangingProcotal, groupLayout, groupIndex);
     } else if (groupLayout.hangingProtocal === GroupHangingProtocal.ByStudy) {
       return this.createImageLayoutListByStudy(viewerShellData, imageHangingProcotal, groupLayout, groupIndex);
+    } else if (groupLayout.hangingProtocal === GroupHangingProtocal.BySeries) {
+      return this.createImageLayoutListBySeries(viewerShellData, imageHangingProcotal, groupLayout, groupIndex);
     } else {
       return null;
     }
@@ -123,6 +125,50 @@ export class HangingProtocalService {
       for (let i = 0; i < count; i++) {
         let imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
         imageLayout.imageList = study.seriesList[i].imageList;
+        imageLayoutList.push(imageLayout);
+      }
+    }
+
+    return imageLayoutList;
+  }
+
+  private createImageLayoutListBySeries(viewerShellData: ViewerShellData, imageHangingProcotal: ImageHangingProtocal,
+    groupLayout: GroupLayout, seriesIndex: number): Array<ImageLayout> {
+    
+    const imageLayoutList = new Array<ImageLayout>();
+    const series = viewerShellData.getSeriesByIndex(seriesIndex);
+    if (series === null) {
+      // This is an empty group
+      return null;
+    }
+
+    if (imageHangingProcotal === ImageHangingProtocal.Overlap) {
+      // 1x1, only one image cell
+      let layout = new Layout(new LayoutPosition(0, 0), new LayoutMatrix(1, 1));
+      let imageLayout = new ImageLayout(groupLayout, layout, imageHangingProcotal);
+      imageLayout.imageList = series.imageList;
+      imageLayoutList.push(imageLayout);        
+    } else if (imageHangingProcotal === ImageHangingProtocal.Auto) {
+      let count = series.imageList.length;
+      let layoutMatrix = this.getImageLayoutMatrixFromCount(count);
+
+      for (let i = 0; i < count; i++) {
+        let imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
+        const imageList = new Array<Image>();
+        imageList.push(series.imageList[i]);
+        imageLayout.imageList = imageList;
+        imageLayoutList.push(imageLayout);
+      }
+    } else {
+      const layoutMatrix = new LayoutMatrix(1, 1);
+      layoutMatrix.fromNumber(imageHangingProcotal);
+      let count = series.imageList.length;
+
+      for (let i = 0; i < count; i++) {
+        let imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
+        const imageList = new Array<Image>();
+        imageList.push(series.imageList[i]);
+        imageLayout.imageList = imageList;
         imageLayoutList.push(imageLayout);
       }
     }

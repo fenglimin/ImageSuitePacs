@@ -129,11 +129,21 @@ export class ViewerShellData {
   getStudyByIndex(studyIndex: number): Study {
     const studyList = this.getAllStudyList();
     if (studyIndex >= studyList.length) {
-      alert('Error get study by index : ' + studyIndex + ' total study count is ' + studyList.length);
+      //alert('Error get study by index : ' + studyIndex + ', total study count is ' + studyList.length);
       return null;
     }
 
     return studyList[studyIndex];
+  }
+
+  getSeriesByIndex(seriesIndex: number): Series {
+    const seriesList = this.getAllSeriesList();
+    if (seriesIndex >= seriesList.length) {
+      //alert('Error get series by index : ' + seriesIndex + ', total series count is ' + seriesList.length);
+      return null;
+    }
+
+    return seriesList[seriesIndex];
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,4 +160,11 @@ export class ViewerShellData {
     return studies;
   }
 
+  private getAllSeriesList(): Array<Series> {
+    let studyList = this.getAllStudyList();
+
+    let series = new Array<Series>();
+    studyList.forEach(study => series = series.concat(study.seriesList));
+    return series;
+  }
 }

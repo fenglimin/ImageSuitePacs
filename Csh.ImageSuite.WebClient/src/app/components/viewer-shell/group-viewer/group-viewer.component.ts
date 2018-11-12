@@ -77,10 +77,11 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
       
     this.imageLayoutList = this.hangingProtocalService.createImageLayoutList(this.viewerShellData,
       this.imageHaningProtocal, this.groupLayout);
-    if (this.imageLayoutList.length === 0) {
-      alert('Error in createImageLayoutList()');
+    if (this.imageLayoutList === null || this.imageLayoutList.length === 0) {
+      this.imageLayoutMatrix = new LayoutMatrix(1, 1);
+    } else {
+      this.imageLayoutMatrix = this.imageLayoutList[0].layout.matrix;  
     }
-    this.imageLayoutMatrix = this.imageLayoutList[0].layout.matrix;
   }
 
   generateId(): string {
@@ -88,6 +89,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   createImageLayout(rowIndex, colIndex): ImageLayout {
+    if (this.imageLayoutList === null || this.imageLayoutList.length === 0) return null;
+
     let index = rowIndex * this.imageLayoutMatrix.colCount + colIndex;
     if (index >= this.imageLayoutList.length) return null;
 
