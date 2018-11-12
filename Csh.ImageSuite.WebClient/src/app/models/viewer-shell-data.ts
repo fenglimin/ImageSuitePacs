@@ -38,51 +38,36 @@ export class ViewerShellData {
     return name.substr(0, name.length - 3);
   }
 
-
-  getImages(patientIndex: number, studyIndex: number, seriesIndex: number): Array<Image> {
-    
-    if (patientIndex >= this.patientList.length) return null;
-
-    let totalStudyCount = this.getTotalStudyCount();
-    if (studyIndex >= totalStudyCount) return null;
-
-    let totalSeriesCount = this.getTotalSeriesCount();
-    if (seriesIndex >= totalSeriesCount) return null;
-
-    return this.patientList[patientIndex].studyList[studyIndex].seriesList[seriesIndex].imageList;
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Get count
+  getTotalPatientCount(): number {
+    return this.patientList.length;
   }
+    
+  getTotalStudyCount(): number {
+    let count = 0;
+    this.patientList.forEach(patient => count += patient.studyList.length);
+    return count;
+  }
+ 
+  getTotalSeriesCount(): number {
+    let count = 0;
+    this.patientList.forEach(patient => {
+      patient.studyList.forEach(study => count += study.seriesList.length);
+    });
+    return count;
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  getAllImageOfPatientByIndex(patientIndex: number): Array<Image> {
-    if (patientIndex >= this.patientList.length) return null;
-
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Get image
+  getAllImageOfPatient(patient: Patient): Array<Image> {
     let images = new Array<Image>();
-    let patient = this.patientList[patientIndex];
-
     patient.studyList.forEach(study => {
       study.seriesList.forEach(series => images = images.concat(series.imageList));
     });
 
     return images;
-  }
-
-  getAllImageOfPatientStudyByIndex(patientIndex: number, studyIndex: number): Array<Image> {
-    if (patientIndex >= this.patientList.length) return null;
-    let patient = this.patientList[patientIndex];
-    if (studyIndex >= patient.studyList.length) return null;
-
-    let images = new Array<Image>();
-    patient.studyList[studyIndex].seriesList.forEach(series => images = images.concat(series.imageList));
-    return images;
-  }
-
-  getAllImageOfPatientStudySeriesByIndex(patientIndex: number, studyIndex: number, seriesIndex: number): Array<Image> {
-    if (patientIndex >= this.patientList.length) return null;
-    let patient = this.patientList[patientIndex];
-    if (studyIndex >= patient.studyList.length) return null;
-    let study = patient.studyList[studyIndex];
-    if (seriesIndex >= study.seriesList.length) return null;
-
-    return study.seriesList[0].imageList;
   }
 
   getAllImageOfStudy(study: Study): Array<Image> {
@@ -91,39 +76,15 @@ export class ViewerShellData {
     return images;
   }
 
-  getTotalSeriesCount(): number {
-    let count = 0;
-    this.patientList.forEach(patient => count += this.getPatientSeriesCountByObj(patient));
-    return count;
-  }
 
-  getTotalStudyCount(): number {
-    let count = 0;
-    this.patientList.forEach(patient => count += patient.studyList.length);
-    return count;
-  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Get object by index
+  getPatientByIndex(patientIndex: number): Patient {
+    if (patientIndex >= this.patientList.length) {
+      return null;
+    }
 
-  getTotalPatientCount(): number {
-    return this.patientList.length;
-  }
-
-  getPatientStudyCountByIndex(patientIndex: number): number {
-    if (patientIndex >= this.patientList.length) return 0;
-    return this.patientList[patientIndex].studyList.length;
-  }
-
-  getPatientSeriesCountByIndex(patientIndex: number): number {
-    if (patientIndex >= this.patientList.length) return 0;
-    
-    let count = 0;
-    this.patientList[patientIndex].studyList.forEach(study => count += study.seriesList.length);
-    return count;
-  }
-
-  getPatientSeriesCountByObj(patient: Patient): number {
-    let count = 0;
-    patient.studyList.forEach(study => count += study.seriesList.length);
-    return count;
+    return this.patientList[patientIndex];
   }
 
   getStudyByIndex(studyIndex: number): Study {
@@ -145,6 +106,7 @@ export class ViewerShellData {
 
     return seriesList[seriesIndex];
   }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   // Private functions

@@ -74,15 +74,24 @@ export class ImageLayout {
   groupLayout: GroupLayout;
   layout: Layout;
   haningProtocal: ImageHangingProtocal;
-  imageList: Array<Image>;
+  private image: Image;
 
   constructor(groupLayout: GroupLayout, layout: Layout, haningProtocal: ImageHangingProtocal) {
     this.groupLayout = groupLayout;
     this.layout = layout;
     this.haningProtocal = haningProtocal;
+    this.image = null;
   }
 
   getId(): string {
     return this.groupLayout.getId() + this.layout.getId();
+  }
+
+  setImage(image: Image) {
+    this.image = image;
+  }
+
+  getImage(): Image {
+    return this.image;
   }
 }

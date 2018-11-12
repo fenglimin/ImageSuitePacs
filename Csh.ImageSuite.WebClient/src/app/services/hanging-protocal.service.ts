@@ -8,7 +8,7 @@ import { Patient, Study, Series, Image } from '../models/pssi';
   providedIn: 'root'
 })
 export class HangingProtocalService {
-  defaultGroupHangingProtocal = GroupHangingProtocal.BySeries;
+  defaultGroupHangingProtocal = GroupHangingProtocal.ByStudy;
   defaultImageHangingPrococal = ImageHangingProtocal.Auto;
 
   groupLayoutNumberList = [11, 11, 12, 22, 22];
@@ -63,114 +63,59 @@ export class HangingProtocalService {
 
   private createImageLayoutListByPatient(viewerShellData: ViewerShellData, imageHangingProcotal: ImageHangingProtocal,
     groupLayout: GroupLayout, patientIndex: number): Array<ImageLayout> {
-    
-    const imageLayoutList = new Array<ImageLayout>();
-
-    if (imageHangingProcotal === ImageHangingProtocal.Overlap) {
-      // 1x1, only one image cell
-      let layout = new Layout(new LayoutPosition(0, 0), new LayoutMatrix(1, 1));
-      let imageLayout = new ImageLayout(groupLayout, layout, imageHangingProcotal);
-      imageLayout.imageList = viewerShellData.getAllImageOfPatientByIndex(patientIndex);
-      imageLayoutList.push(imageLayout);        
-    } else if (imageHangingProcotal === ImageHangingProtocal.Auto) {
-      let count = viewerShellData.getPatientStudyCountByIndex(patientIndex);
-      let layoutMatrix = this.getImageLayoutMatrixFromCount(count);
-
-      for (let i = 0; i < count; i++) {
-        let imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
-        imageLayout.imageList = viewerShellData.getAllImageOfPatientStudyByIndex(patientIndex, i);
-        imageLayoutList.push(imageLayout);
-      }
-    } else {
-      const layoutMatrix = new LayoutMatrix(1, 1);
-      layoutMatrix.fromNumber(imageHangingProcotal);
-      let count = viewerShellData.getPatientStudyCountByIndex(patientIndex);
-
-      for (let i = 0; i < count; i++) {
-        let imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
-        imageLayout.imageList = viewerShellData.getAllImageOfPatientStudyByIndex(patientIndex, i);
-        imageLayoutList.push(imageLayout);
-      }
+ 
+    const patient = viewerShellData.getPatientByIndex(patientIndex);
+    if (patient === null || patient === undefined) {
+      // This is an empty group
+      return null;
     }
-
-    return imageLayoutList;
+    
+    const imageList = viewerShellData.getAllImageOfPatient(patient);
+    return this.createImageLayoutListFromImageList(imageList, imageHangingProcotal, groupLayout);
   }
 
   private createImageLayoutListByStudy(viewerShellData: ViewerShellData, imageHangingProcotal: ImageHangingProtocal,
     groupLayout: GroupLayout, studyIndex: number): Array<ImageLayout> {
     
-    const imageLayoutList = new Array<ImageLayout>();
     const study = viewerShellData.getStudyByIndex(studyIndex);
-
-    if (imageHangingProcotal === ImageHangingProtocal.Overlap) {
-      // 1x1, only one image cell
-      let layout = new Layout(new LayoutPosition(0, 0), new LayoutMatrix(1, 1));
-      let imageLayout = new ImageLayout(groupLayout, layout, imageHangingProcotal);
-      imageLayout.imageList = viewerShellData.getAllImageOfStudy(study);
-      imageLayoutList.push(imageLayout);        
-    } else if (imageHangingProcotal === ImageHangingProtocal.Auto) {
-      let count = study.seriesList.length;
-      let layoutMatrix = this.getImageLayoutMatrixFromCount(count);
-
-      for (let i = 0; i < count; i++) {
-        let imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
-        imageLayout.imageList = study.seriesList[i].imageList;
-        imageLayoutList.push(imageLayout);
-      }
-    } else {
-      const layoutMatrix = new LayoutMatrix(1, 1);
-      layoutMatrix.fromNumber(imageHangingProcotal);
-      let count = study.seriesList.length;
-
-      for (let i = 0; i < count; i++) {
-        let imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
-        imageLayout.imageList = study.seriesList[i].imageList;
-        imageLayoutList.push(imageLayout);
-      }
+    if (study === null || study === undefined) {
+      // This is an empty group
+      return null;
     }
 
-    return imageLayoutList;
+    const imageList = viewerShellData.getAllImageOfStudy(study);
+    return this.createImageLayoutListFromImageList(imageList, imageHangingProcotal, groupLayout);
   }
 
   private createImageLayoutListBySeries(viewerShellData: ViewerShellData, imageHangingProcotal: ImageHangingProtocal,
     groupLayout: GroupLayout, seriesIndex: number): Array<ImageLayout> {
     
-    const imageLayoutList = new Array<ImageLayout>();
     const series = viewerShellData.getSeriesByIndex(seriesIndex);
-    if (series === null) {
+    if (series === null || series === undefined) {
       // This is an empty group
       return null;
     }
 
-    if (imageHangingProcotal === ImageHangingProtocal.Overlap) {
-      // 1x1, only one image cell
-      let layout = new Layout(new LayoutPosition(0, 0), new LayoutMatrix(1, 1));
-      let imageLayout = new ImageLayout(groupLayout, layout, imageHangingProcotal);
-      imageLayout.imageList = series.imageList;
-      imageLayoutList.push(imageLayout);        
-    } else if (imageHangingProcotal === ImageHangingProtocal.Auto) {
-      let count = series.imageList.length;
-      let layoutMatrix = this.getImageLayoutMatrixFromCount(count);
+    return this.createImageLayoutListFromImageList(series.imageList, imageHangingProcotal, groupLayout);
+  }
 
-      for (let i = 0; i < count; i++) {
-        let imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
-        const imageList = new Array<Image>();
-        imageList.push(series.imageList[i]);
-        imageLayout.imageList = imageList;
-        imageLayoutList.push(imageLayout);
-      }
+  private createImageLayoutListFromImageList(imageList: Array<Image>, imageHangingProcotal: ImageHangingProtocal,
+    groupLayout: GroupLayout): Array<ImageLayout> {
+    
+    const imageLayoutList = new Array<ImageLayout>();
+    const count = imageList.length;
+    let layoutMatrix = new LayoutMatrix(1, 1);
+
+    if (imageHangingProcotal === ImageHangingProtocal.Auto) {
+      layoutMatrix = this.getImageLayoutMatrixFromCount(count);
     } else {
-      const layoutMatrix = new LayoutMatrix(1, 1);
       layoutMatrix.fromNumber(imageHangingProcotal);
-      let count = series.imageList.length;
+    }
 
-      for (let i = 0; i < count; i++) {
-        let imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
-        const imageList = new Array<Image>();
-        imageList.push(series.imageList[i]);
-        imageLayout.imageList = imageList;
-        imageLayoutList.push(imageLayout);
-      }
+    for (let i = 0; i < count; i++) {
+      const imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
+      imageLayout.setImage(imageList[i]);
+      imageLayoutList.push(imageLayout);
     }
 
     return imageLayoutList;

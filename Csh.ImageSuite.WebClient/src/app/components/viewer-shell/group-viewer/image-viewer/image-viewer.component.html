@@ -1,13 +1,10 @@
 <div class="DivImageViewer" [id]="'DivImageViewer' + generateId()" (click)="onSelected()">
     <div *ngIf="imageLayout !== null" class="DivImageViewer">
         <p>
-            ID : {{viewerShellData.getId()}}
+            ID : {{viewerShellData.getId()}}  Name : {{viewerShellData.getName()}}
         </p>
         <p>
-            Name : {{viewerShellData.getName()}}
-        </p>
-        <p>
-            Viewer {{imageLayout.getId()}}
+            Viewer {{imageLayout.getId()}} ImageID : {{imageLayout.getImage().id}}
         </p>
         <!--<img [src]="imageToShow"
          alt="Place image title" />-->
