@@ -85,14 +85,18 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   generateId(): string {
-    return '_' + this.viewerShellData.getId() + '_' + this.groupLayout.getId();
+    return this.viewerShellData.getId() + '_' + this.groupLayout.getId();
   }
 
   createImageLayout(rowIndex, colIndex): ImageLayout {
-    if (this.imageLayoutList === null || this.imageLayoutList.length === 0) return null;
+    if (this.imageLayoutList === null || this.imageLayoutList.length === 0) {
+      return ImageLayout.createDefaultFromGroupLayout(this.groupLayout);
+    }
 
     let index = rowIndex * this.imageLayoutMatrix.colCount + colIndex;
-    if (index >= this.imageLayoutList.length) return null;
+    if (index >= this.imageLayoutList.length) {
+      return ImageLayout.createDefaultFromGroupLayout(this.groupLayout);
+    }
 
     return this.imageLayoutList[index]; 
   }

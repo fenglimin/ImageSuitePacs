@@ -39,7 +39,7 @@ export class ViewerShellData {
   
   getId() : string {
     let id = '';
-    this.patientList.forEach(patient => id += '.' + this.getIdFromPatient(patient));
+    this.patientList.forEach(patient => id += this.getIdFromPatient(patient));
     return id;
   }
 
@@ -123,7 +123,7 @@ export class ViewerShellData {
   // Private functions
   private getIdFromPatient(patient: Patient): string {
     let id = '';
-    patient.studyList.forEach(value => id += '.' + value.id);
+    patient.studyList.forEach(value => id += '_' + value.id);
     return id;
   }
 

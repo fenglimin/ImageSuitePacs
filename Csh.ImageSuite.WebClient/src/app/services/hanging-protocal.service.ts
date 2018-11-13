@@ -26,8 +26,6 @@ export class HangingProtocalService {
 
   getGroupLayoutMatrix(viewerShellData: ViewerShellData, groupHangingProtocal: GroupHangingProtocal): LayoutMatrix {
     let groupCount = 0;
-    let layoutMatrix = new LayoutMatrix(1,1);
-    let groupLayoutNumber = 0;
 
     if (groupHangingProtocal === GroupHangingProtocal.ByPatent) {
       groupCount = viewerShellData.getTotalPatientCount();
@@ -36,8 +34,7 @@ export class HangingProtocalService {
     }else if (groupHangingProtocal === GroupHangingProtocal.BySeries) {
       groupCount = viewerShellData.getTotalSeriesCount();
     } else {
-      layoutMatrix.fromNumber(groupHangingProtocal);
-      return layoutMatrix;
+      return LayoutMatrix.fromNumber(groupHangingProtocal);
     }
 
     return this.getGroupLayoutMatrixFromCount(groupCount);
@@ -104,17 +101,18 @@ export class HangingProtocalService {
     
     const imageLayoutList = new Array<ImageLayout>();
     const count = imageList.length;
-    let layoutMatrix = new LayoutMatrix(1, 1);
+    let layoutMatrix: LayoutMatrix;
 
     if (imageHangingProcotal === ImageHangingProtocal.Auto) {
       layoutMatrix = this.getImageLayoutMatrixFromCount(count);
     } else {
-      layoutMatrix.fromNumber(imageHangingProcotal);
+      layoutMatrix = LayoutMatrix.fromNumber(imageHangingProcotal);
     }
 
-    for (let i = 0; i < count; i++) {
+    const totalCount = layoutMatrix.rowCount * layoutMatrix.colCount;
+    for (let i = 0; i < totalCount; i++) {
       const imageLayout = this.createImageLayoutFromGroupLayout(groupLayout, imageHangingProcotal, layoutMatrix, i);
-      imageLayout.setImage(imageList[i]);
+      imageLayout.setImage(i < count? imageList[i] : null);
       imageLayoutList.push(imageLayout);
     }
 
@@ -124,8 +122,7 @@ export class HangingProtocalService {
   private createImageLayoutFromGroupLayout(groupLayout: GroupLayout, imageHangingProcotal: ImageHangingProtocal,
     layoutMatrix: LayoutMatrix, index: number): ImageLayout {
 
-    let layoutPosition = new LayoutPosition(-1, -1);
-    layoutPosition.fromNumber(index, layoutMatrix.colCount);
+    let layoutPosition = LayoutPosition.fromNumber(index, layoutMatrix.colCount);
 
     let layout = new Layout(layoutPosition, layoutMatrix);
     let imageLayout = new ImageLayout(groupLayout, layout, imageHangingProcotal);
@@ -141,15 +138,12 @@ export class HangingProtocalService {
   }
 
   private getLayoutMatrixFromCount(count: number, layoutNumberList: number[]): LayoutMatrix {
-    let layoutMatrix = new LayoutMatrix(1, 1);
-
     let matrixNumber = 33;
     if (count < layoutNumberList.length) {
       matrixNumber = layoutNumberList[count];
     }
 
-    layoutMatrix.fromNumber(matrixNumber);
-    return layoutMatrix;
+    return LayoutMatrix.fromNumber(matrixNumber)
   }
 
 }

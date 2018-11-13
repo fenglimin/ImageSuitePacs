@@ -88,6 +88,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   generateId(): string {
     if (this.imageLayout === null) return '';
 
-    return '_' + this.viewerShellData.getId() + '_' + this.imageLayout.getId();
+    return this.viewerShellData.getId() + '_' + this.imageLayout.getId();
   }
 }

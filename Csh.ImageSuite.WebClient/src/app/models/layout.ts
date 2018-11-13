@@ -21,9 +21,11 @@ export class LayoutPosition {
     return '' + this.rowIndex + this.colIndex;
   }
 
-  fromNumber(positionNumber: number, colCount: number) {
-    this.rowIndex = Math.trunc(positionNumber / colCount);
-    this.colIndex = positionNumber % colCount;
+  static fromNumber(positionNumber: number, colCount: number) : LayoutPosition {
+    const layoutPosition = new LayoutPosition(0, 0);
+    layoutPosition.rowIndex = Math.trunc(positionNumber / colCount);
+    layoutPosition.colIndex = positionNumber % colCount;
+    return layoutPosition;
   }
 }
 
@@ -36,9 +38,11 @@ export class LayoutMatrix {
     this.colCount = colCount;
   }
 
-  fromNumber(matrixNumber: number) {
-    this.rowCount = Math.trunc(matrixNumber / 10);
-    this.colCount = matrixNumber % 10;
+  static fromNumber(matrixNumber: number) : LayoutMatrix {
+    const layoutMatrix = new LayoutMatrix(1, 1);
+    layoutMatrix.rowCount = Math.trunc(matrixNumber / 10);
+    layoutMatrix.colCount = matrixNumber % 10;
+    return layoutMatrix;
   }
 }
 
@@ -53,6 +57,11 @@ export class Layout {
 
   getId(): string {
     return '' + this.position.getId();
+  }
+
+  static fromNumber(positionNumber: number, colCount: number, matrixNumber: number): Layout {
+    const layout = new Layout(LayoutPosition.fromNumber(positionNumber, colCount), LayoutMatrix.fromNumber(matrixNumber));
+      return layout;
   }
 }
 
@@ -94,4 +103,10 @@ export class ImageLayout {
   getImage(): Image {
     return this.image;
   }
+
+  static createDefaultFromGroupLayout(groupLayout: GroupLayout) : ImageLayout {
+    const imageLayout = new ImageLayout(groupLayout, Layout.fromNumber(0, 1, 11), ImageHangingProtocal.Auto);
+    return imageLayout;
+  }
+
 }

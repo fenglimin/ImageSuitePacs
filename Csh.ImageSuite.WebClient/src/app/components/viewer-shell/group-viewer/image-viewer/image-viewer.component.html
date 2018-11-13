@@ -1,5 +1,5 @@
 <div class="DivImageViewer" [id]="'DivImageViewer' + generateId()" (click)="onSelected()">
-    <div *ngIf="imageLayout !== null" class="DivImageViewer">
+    <div *ngIf="imageLayout.getImage() !== null" class="DivImageViewer">
       <p>
         Name : {{imageLayout.getImage().series.study.patient.patientName}} | 
         AccNo : {{imageLayout.getImage().series.study.accessionNo}} | 
