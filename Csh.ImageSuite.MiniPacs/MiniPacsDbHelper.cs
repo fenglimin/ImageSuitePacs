@@ -139,5 +139,28 @@ namespace Csh.ImageSuite.MiniPacs
 
             return newStudy;
         }
+
+        public Image GetImage(int serialNo)
+        {
+            var sqlStr = "SELECT SerialNo ID_Image, ImageNo, SOPInstanceUID, ImageColumns, ImageRows, ObjectFile FROM Image WHERE serialNo = " + serialNo;
+            var result = SqlHelper.ExecuteQuery(sqlStr, _connectionString);
+            if (result.Tables[0].Rows.Count != 1)
+                return null;
+
+            return _pssiObjectCreator.CreateImage(result.Tables[0].Rows[0]);
+        }
+
+        public string GetImageRootDir(int serialNo)
+        {
+            var sbSql = new StringBuilder();
+            sbSql.Append("SELECT SMS.sms_name FROM SMS ");
+            sbSql.Append("join Series on Series.StudyInstanceUID = SMS.SUID ");
+            sbSql.Append("join Image on Image.SeriesInstanceUID = Series.SeriesInstanceUID ");
+            sbSql.Append("where SMS.sms_type = 1 AND Image.serialNo = " + serialNo);
+
+            var sqlStr = sbSql.ToString();
+            var storageAeName = SqlHelper.GetSingleReturnValue(sqlStr, _connectionString);
+            return DicStorageDirectory[storageAeName];
+        }
     }
 }

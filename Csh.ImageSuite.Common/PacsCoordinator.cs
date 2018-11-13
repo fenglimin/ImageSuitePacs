@@ -20,9 +20,14 @@ namespace Csh.ImageSuite.Common
             _pacsType = pacsType;
         }
 
-        public IDbHelper GetDbHelper()
+        public IDbHelper GetCurrentDbHelper()
         {
             return _databaseFactoryComponentSelector.Create(_pacsType);
+        }
+
+        public IDbHelper GetDbHelper(PacsType pacsType)
+        {
+            return _databaseFactoryComponentSelector.Create(pacsType);
         }
     }
 }

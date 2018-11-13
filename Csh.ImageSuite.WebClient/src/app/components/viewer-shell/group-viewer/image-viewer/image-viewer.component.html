@@ -1,11 +1,12 @@
 <div class="DivImageViewer" [id]="'DivImageViewer' + generateId()" (click)="onSelected()">
     <div *ngIf="imageLayout !== null" class="DivImageViewer">
-      Name : {{imageLayout.getImage().series.study.patient.patientName}} | 
-      AccNo : {{imageLayout.getImage().series.study.accessionNo}} | 
-      Modality : {{imageLayout.getImage().series.modality}} | 
-      ImageID : {{imageLayout.getImage().id}}
-        <!--<img [src]="imageToShow"
-         alt="Place image title" />-->
+      <p>
+        Name : {{imageLayout.getImage().series.study.patient.patientName}} | 
+        AccNo : {{imageLayout.getImage().series.study.accessionNo}} | 
+        Modality : {{imageLayout.getImage().series.modality}} | 
+        ImageID : {{imageLayout.getImage().id}}
+      </p>
+      <img [src]="imageToShow" alt="Loading image..." />
 
     </div>
 </div>

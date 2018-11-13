@@ -108,7 +108,10 @@ export class WorklistComponent implements OnInit {
       });
       this.shellNavigatorService.shellNavigate(viewerShellData);
 
-      this.studies.forEach(value => value.detailsLoaded = false);
+      this.studies.forEach(value => {
+        value.detailsLoaded = false;
+        value.checked = false;
+      });
     }
   }
 }

@@ -18,7 +18,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
 
         public ShortcutController(IPacsCoordinator pacsCoordinator, ICommonTool commonTool)
         {
-            _dbHelper = pacsCoordinator.GetDbHelper();
+            _dbHelper = pacsCoordinator.GetCurrentDbHelper();
             _commonTool = commonTool;
         }
 

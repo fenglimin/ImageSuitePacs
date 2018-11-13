@@ -52,7 +52,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Installer\MiniPacsDbHelperInstaller.cs" />
+    <Compile Include="Installer\MiniPacsDicomHelperInstaller.cs" />
+    <Compile Include="Interface\IMiniPacsDicomHelper.cs" />
     <Compile Include="MiniPacsDbHelper.cs" />
+    <Compile Include="MiniPacsDicomHelper.cs" />
+    <Compile Include="MiniPacsDllImporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -72,9 +76,7 @@
       <Name>Csh.ImageSuite.Windsor</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interface\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

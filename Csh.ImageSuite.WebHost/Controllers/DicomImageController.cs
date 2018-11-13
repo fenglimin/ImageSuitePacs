@@ -4,11 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Csh.ImageSuite.MiniPacs.Interface;
 
 namespace Csh.ImageSuite.WebHost.Controllers
 {
     public class DicomImageController : Controller
     {
+        private IMiniPacsDicomHelper _miniPacsDicomHelper;
+
+        public DicomImageController(IMiniPacsDicomHelper miniPacsDicomHelper)
+        {
+            this._miniPacsDicomHelper = miniPacsDicomHelper;
+        }
+
         // GET: DicomImage
         public ActionResult Index()
         {
@@ -18,7 +26,13 @@ namespace Csh.ImageSuite.WebHost.Controllers
         // GET: DicomImage/Details/5
         public ActionResult Details(string id)
         {
-            var fs = new FileStream(@"E:\1.jpg", FileMode.Open);
+            var jpgFile = _miniPacsDicomHelper.GetJpgFile(Convert.ToInt32(id));
+            if (jpgFile == string.Empty)
+            {
+                return null;
+            }
+
+            var fs = new FileStream(jpgFile, FileMode.Open);
             var buffer = new byte[fs.Length];
             fs.Read(buffer, 0, (int)fs.Length);
             fs.Close();

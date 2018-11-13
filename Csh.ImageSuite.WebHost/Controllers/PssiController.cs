@@ -16,7 +16,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
 
         public PssiController(IPacsCoordinator pacsCoordinator, ICommonTool commonTool)
         {
-            _dbHelper = pacsCoordinator.GetDbHelper();
+            _dbHelper = pacsCoordinator.GetCurrentDbHelper();
             _commonTool = commonTool;
         }
 

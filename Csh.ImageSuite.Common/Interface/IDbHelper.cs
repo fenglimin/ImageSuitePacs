@@ -14,5 +14,9 @@ namespace Csh.ImageSuite.Common.Interface
         IList<Study> GetStudies(QueryShortcut query);
 
         Study GetStudy(int serialNo);
+
+        Image GetImage(int serialNo);
+
+        string GetImageRootDir(int serialNo);
     }
 }

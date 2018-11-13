@@ -6,6 +6,8 @@ namespace Csh.ImageSuite.Common.Interface
     {
         void SetPacsType(PacsType pacsType);
 
-        IDbHelper GetDbHelper();
+        IDbHelper GetCurrentDbHelper();
+
+        IDbHelper GetDbHelper(PacsType pacsType);
     }
 }
