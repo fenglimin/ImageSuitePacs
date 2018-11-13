@@ -28,7 +28,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
-    this.getImageFromService();
+    if (this.imageLayout !== null) {
+      this.getImageFromService(this.imageLayout.getImage());  
+    }
   }
 
   ngAfterContentInit() {
@@ -47,11 +49,16 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
   }
 
-  getImageFromService() {
+  getImageFromService(image: Image) {
+
+    if (image === null) {
+      return;
+    }
+
     this.isImageLoading = true;
 
 
-    this.dicomImageService.getImage(this.imageLayout.getImage()).subscribe(data => {
+    this.dicomImageService.getImage(image).subscribe(data => {
       this.createImageFromBlob(data);
       this.isImageLoading = false;
     }, error => {
