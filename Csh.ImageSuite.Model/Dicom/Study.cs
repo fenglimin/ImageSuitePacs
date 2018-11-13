@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Csh.ImageSuite.Model.Dicom
 {
@@ -47,14 +48,15 @@ namespace Csh.ImageSuite.Model.Dicom
         {
             get
             {
-                if(SeriesList.Count > 0)
+                var ret = string.Empty;
+                foreach (var series in SeriesList)
                 {
-                    return SeriesList[0].Modality;
+                    if (!ret.Contains(series.Modality + "|"))
+                        ret += series.Modality + "|";
                 }
-                else
-                {
-                    return string.Empty;
-                }
+
+                ret = ret.Remove(ret.Length - 1);
+                return ret;
             }
         }
     }

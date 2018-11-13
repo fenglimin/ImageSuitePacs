@@ -43,7 +43,7 @@ export class DatabaseService {
       );
   }
 
-  /** GET shortcut from the server */
+  /** GET studies from the server */
   getStudies (): Observable<Study[]> {
     return this.http.get<Study[]>(this.pssiUrl)
       .pipe(
@@ -51,6 +51,17 @@ export class DatabaseService {
         catchError(this.handleError('getStudies', []))
       );
   }
+
+  /** GET study from the server */
+  getStudy (id: number): Observable<Study> {
+    const url = `${this.pssiUrl}/details/${id}`;
+    return this.http.get<Study>(url)
+      .pipe(
+        tap(_ => this.log(`fetched Study id=${id}`)),
+        catchError(this.handleError<Study>(`getStudy id=${id}`))
+      );
+  }
+
 
   getStudiesTest(): Study[] {
     let studies = new Array<Study>();

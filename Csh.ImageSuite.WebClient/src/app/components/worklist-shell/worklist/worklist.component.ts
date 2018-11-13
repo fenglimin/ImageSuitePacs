@@ -60,8 +60,10 @@ export class WorklistComponent implements OnInit {
     //alert('aa');
   }
 
-  setStudies(studies) {
+  formatStudies(studies) {
     for (let i = 0; i < studies.length; i++) {
+      studies[i].checked = false;
+      studies[i].detailsLoaded = false;
       for (let j = 0; j < studies[i].seriesList.length; j++) {
         studies[i].seriesList[j].study = studies[i];
       }    
@@ -71,12 +73,11 @@ export class WorklistComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.databaseService.getStudies().subscribe(studies => this.setStudies(studies));
-    this.studies = this.databaseService.getStudiesTest();
+    this.databaseService.getStudies().subscribe(studies => this.formatStudies(studies));
+    //this.studies = this.databaseService.getStudiesTest();
   }
 
   onStudyChecked(study: Study) {
-   
   }
 
   onAllStudyChecked(event) {
@@ -84,14 +85,30 @@ export class WorklistComponent implements OnInit {
   }
 
   doShowStudy(study: Study) {
-    const viewerShellData = new ViewerShellData();
     study.checked = true;
     this.studies.forEach(study1 => {
       if (study1.checked) {
-        viewerShellData.addStudy(study1);
+        this.databaseService.getStudy(study1.id).subscribe(value => this.studyDetailsLoaded(this.studies.indexOf(study1), value));
       }
     });
+  }
 
-    this.shellNavigatorService.shellNavigate(viewerShellData);
+  studyDetailsLoaded(index: number, studyNew: Study) {
+
+    studyNew.checked = true;
+    studyNew.detailsLoaded = true;
+    this.studies[index] = studyNew;
+
+    if (this.studies.every(study => study.checked === study.detailsLoaded)) {
+      const viewerShellData = new ViewerShellData();
+      this.studies.forEach(value => {
+        if (value.checked && value.detailsLoaded) {
+          viewerShellData.addStudy(value);
+        }
+      });
+      this.shellNavigatorService.shellNavigate(viewerShellData);
+
+      this.studies.forEach(value => value.detailsLoaded = false);
+    }
   }
 }

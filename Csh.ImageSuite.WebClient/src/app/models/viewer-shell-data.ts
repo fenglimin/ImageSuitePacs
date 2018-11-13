@@ -6,6 +6,17 @@ export class ViewerShellData {
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   // Public functions
   addStudy(study: Study) {
+
+    // Set parent for all series and all images, since they are NOT set in JSON string returned from server
+    for (let i = 0; i < study.seriesList.length; i++) {
+      const series = study.seriesList[i];
+      series.study = study;
+      for (let j = 0; j < series.imageList.length; j++) {
+        series.imageList[j].series = series;
+      }
+    }
+
+
     let index = -1;
     for (let i = 0; i < this.patientList.length; i++) {
       if (this.patientList[i].id === study.patient.id) {
@@ -17,7 +28,7 @@ export class ViewerShellData {
     let patient = null;
     if (index === -1) {
       // Clone a patient and added to the list
-      patient = study.patient.clone()
+      patient = this.clonePatient(study.patient);
       this.patientList.push(patient);
     } else {
       patient = this.patientList[index];
@@ -128,5 +139,22 @@ export class ViewerShellData {
     let series = new Array<Series>();
     studyList.forEach(study => series = series.concat(study.seriesList));
     return series;
+  }
+
+  private clonePatient(patient: Patient): Patient {
+      // Clone basic information, withou study list.
+    const clonedPatient = new Patient();
+
+    clonedPatient.id = patient.id;
+    clonedPatient.patientId = patient.patientId;
+    clonedPatient.patientName = patient.patientName;
+    clonedPatient.firstName = patient.firstName;
+    clonedPatient.middleName = patient.middleName;
+    clonedPatient.lastName = patient.lastName;
+    clonedPatient.birthDateString = patient.birthDateString;
+    clonedPatient.gender = patient.gender;
+
+    clonedPatient.studyList = new Array<Study>();
+    return clonedPatient;
   }
 }

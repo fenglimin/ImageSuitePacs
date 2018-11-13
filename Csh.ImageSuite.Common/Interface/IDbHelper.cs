@@ -12,5 +12,7 @@ namespace Csh.ImageSuite.Common.Interface
         IList<QueryShortcut> LoadQueryShortcuts();
 
         IList<Study> GetStudies(QueryShortcut query);
+
+        Study GetStudy(int serialNo);
     }
 }

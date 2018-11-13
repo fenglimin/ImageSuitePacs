@@ -28,9 +28,10 @@ namespace Csh.ImageSuite.WebHost.Controllers
         }
 
         // GET: Pssi/Details/5
-        public ActionResult Details(int id)
+        public string Details(int id)
         {
-            return View();
+            var study = _dbHelper.GetStudy(id);
+            return _commonTool.GetJsonStringFromObject(study);
         }
 
         // GET: Pssi/Create

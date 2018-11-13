@@ -32,6 +32,8 @@ namespace Csh.ImageSuite.Common
             var study = new Study(_commonTool.GetSafeStrValue(row["StudyInstanceUID"]))
             {
                 Id = _commonTool.GetSafeIntValue(row["ID_Study"]),
+                AccessionNo = _commonTool.GetSafeStrValue(row["AccessionNo"]),
+                StudyId = _commonTool.GetSafeStrValue(row["StudyID"]),
                 StudyDateString = _commonTool.GetSafeStrValue(row["StudyDate"]),
                 StudyTimeString = _commonTool.GetSafeStrValue(row["StudyTime"]),
                 SeriesCount = _commonTool.GetSafeIntValue(row["SeriesCount"]),

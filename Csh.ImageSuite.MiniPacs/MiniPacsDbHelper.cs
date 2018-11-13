@@ -63,7 +63,7 @@ namespace Csh.ImageSuite.MiniPacs
 
             var sqlStr = string.Format("SELECT " +
                                        "P.SerialNo ID_Patient, P.PatientID, P.PatientName, P.PatientBirthDate, P.PatientSex, " +
-                                       "S.SerialNo ID_Study, S.StudyInstanceUID, S.StudyDate, S.StudyTime, S.SeriesCount, S.ImageCount IC_Study, " +
+                                       "S.SerialNo ID_Study, S.StudyInstanceUID, S.AccessionNo, S.StudyID, S.StudyDate, S.StudyTime, S.SeriesCount, S.ImageCount IC_Study, " +
                                        "R.SerialNo ID_Series, R.SeriesInstanceUID, R.SeriesNo, R.SeriesDate, R.SeriesTime, R.BodyPart, R.ViewPosition, R.Modality, R.ImageCount IC_Series " +
                                        "FROM Patient P, Study S, Series R " +
                                        "WHERE R.StudyInstanceUID = S.StudyInstanceUID AND S.PatientGUID = P.PatientGUID");
@@ -88,6 +88,56 @@ namespace Csh.ImageSuite.MiniPacs
             }
 
             return studies;
+        }
+
+        public Study GetStudy(int serialNo)
+        {
+            var sbSql = new StringBuilder();
+            sbSql.Append("select Image.SerialNo ID_Image, Image.SOPInstanceUID, Image.ImageColumns, Image.ImageRows, Image.ObjectFile, ");//4
+            sbSql.Append("Series.SerialNo ID_Series, Series.SeriesInstanceUID, Series.BodyPart, Series.ViewPosition, Series.Modality,  Series.ImageCount IC_Series,");//9
+            sbSql.Append("Study.SerialNo ID_Study, Study.StudyInstanceUID, Study.AccessionNo, Study.StudyID, Study.StudyDate, Study.StudyTime, Study.SeriesCount, Study.ImageCount IC_Study, ");//16
+            sbSql.Append("Patient.SerialNo ID_Patient, Patient.PatientID, Patient.PatientName, Patient.PatientBirthDate, Patient.PatientSex, Series.SeriesDate, Series.SeriesTime, Series.SeriesNo, Image.ImageNo  from Image ");
+            sbSql.Append("join Series on Image.SeriesInstanceUID = Series.SeriesInstanceUID ");
+            sbSql.Append("join Study on Series.StudyInstanceUID = Study.StudyInstanceUID ");
+            sbSql.Append("join Patient on study.PatientGUID = Patient.PatientGUID ");
+            sbSql.Append("where study.SerialNo=" + serialNo);
+            sbSql.Append(" order by Series.SeriesNo, Image.ImageNo");
+
+            var sqlStr = sbSql.ToString();
+            var result = SqlHelper.ExecuteQuery(sqlStr, _connectionString);
+
+            Study newStudy = null;
+            Patient newPatient = null;
+
+
+            foreach (DataRow row in result.Tables[0].Rows)
+            {
+                if (newPatient == null)
+                {
+                    newPatient = _pssiObjectCreator.CreatPatient(row);
+                }
+
+                if (newStudy == null)
+                {
+                    newStudy = _pssiObjectCreator.CreateStudy(row);
+                    newStudy.Patient = newPatient;
+                }
+
+                var seriesId = _commonTool.GetSafeIntValue(row["ID_Series"]);
+                var newSeries = newStudy.SeriesList.FirstOrDefault(s => s.Id == seriesId);
+                if (newSeries == null)
+                {
+                    newSeries = _pssiObjectCreator.CreateSeries(row);
+                    newStudy.SeriesList.Add(newSeries);
+                    newSeries.Study = newStudy;
+                }
+
+                var newImage = _pssiObjectCreator.CreateImage(row);
+                newSeries.ImageList.Add(newImage);
+                newImage.Series = newSeries;
+            }
+
+            return newStudy;
         }
     }
 }
