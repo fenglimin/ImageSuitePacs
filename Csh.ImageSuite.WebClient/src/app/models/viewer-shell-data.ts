@@ -1,7 +1,24 @@
 ﻿import { Patient, Study, Series, Image } from '../models/pssi';
+import { ViewerGroupData } from '../models/viewer-group-data';
+import { ViewerImageData } from '../models/viewer-image-data';
+import { GroupHangingProtocal, ImageHangingProtocal } from '../models/hanging-protocal';
+import { LayoutPosition, LayoutMatrix, Layout, GroupLayout, ImageLayout } from '../models/layout';
 
 export class ViewerShellData {
   patientList = new Array<Patient>();
+
+  groupCount = 0; // The count of groups that contain image
+  groupMatrix = new LayoutMatrix(1, 1);
+  groupDataList = new Array<ViewerGroupData>(); // Must contains all group even if its an empty group
+
+  groupHangingProtocal : GroupHangingProtocal;
+  defaultGroupHangingProtocal : GroupHangingProtocal;
+  defaultImageHangingProtocal : ImageHangingProtocal;
+
+  constructor(defaultGroupHangingProtocal : GroupHangingProtocal, defaultImageHangingProtocal : ImageHangingProtocal) {
+    this.defaultGroupHangingProtocal = defaultGroupHangingProtocal;
+    this.defaultImageHangingProtocal = defaultImageHangingProtocal;
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   // Public functions
@@ -69,6 +86,46 @@ export class ViewerShellData {
     return count;
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Group Operation
+  cleanGroup() {
+    this.groupDataList.length = 0;
+    this.groupCount = 0;
+  }
+
+  getGroup(rowIndex: number, colIndex: number): ViewerGroupData {
+    const groupIndex = rowIndex * this.groupMatrix.colCount + colIndex;
+    if (groupIndex >= this.groupDataList.length) {
+      alert("Invalid group index : " + groupIndex);
+      return null;
+    }
+
+    return this.groupDataList[groupIndex];
+  }
+
+  addGroup(groupIndex: number) {
+    const groupData = new ViewerGroupData(this, this.defaultImageHangingProtocal,
+      LayoutPosition.fromNumber(groupIndex, this.groupMatrix.colCount));
+    this.groupDataList.push(groupData);
+  }
+
+  addEmptyGroup(groupIndex: number) {
+    const groupData = new ViewerGroupData(this, this.defaultImageHangingProtocal,
+      LayoutPosition.fromNumber(groupIndex, this.groupMatrix.colCount));
+    groupData.setEmpty();
+    this.groupDataList.push(groupData);
+  }
+
+  updateGroupPositionFromIndex(groupIndex: number) {
+    if (groupIndex < 0 || groupIndex >= this.groupDataList.length) {
+      alert("updateGroupPositionFromIndex() => Invalid group index : " + groupIndex);
+      return;
+    }
+
+    this.groupDataList[groupIndex].setPosition(LayoutPosition.fromNumber(groupIndex, this.groupMatrix.colCount));
+  }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Get image

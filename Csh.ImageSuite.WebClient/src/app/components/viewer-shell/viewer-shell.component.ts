@@ -14,14 +14,11 @@ import { GroupHangingProtocal } from '../../models/hanging-protocal';
 })
 export class ViewerShellComponent implements OnInit, AfterViewInit {
   Arr = Array; //Array type captured in a variable
-  groupMatrix = new LayoutMatrix(1, 1);
-  groupHangingProtocal : GroupHangingProtocal;
   hideMe = false;
   viewerShellData: ViewerShellData;
+  subscriptionShellNavigated: Subscription;
 
   @ViewChildren(GroupViewerComponent) viewers: QueryList<GroupViewerComponent>;
-
-  subscriptionShellNavigated: Subscription;
 
   constructor(private shellNavigatorService: ShellNavigatorService, private hangingProtocalService: HangingProtocalService) {
     this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
@@ -31,33 +28,13 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.groupHangingProtocal = this.hangingProtocalService.getDefaultGroupHangingProtocal();
-    this.onLayoutChanged(this.groupHangingProtocal);
+    this.onChangeGroupLayout(this.viewerShellData.defaultGroupHangingProtocal);
   }
 
   ngAfterViewInit() {
   }
 
-  onLayoutChanged(groupHangingProtocalNumber: number): void {
-
-    if (groupHangingProtocalNumber === GroupHangingProtocal.ByPatent ||
-      groupHangingProtocalNumber === GroupHangingProtocal.ByStudy ||
-      groupHangingProtocalNumber === GroupHangingProtocal.BySeries) {
-      this.groupHangingProtocal = groupHangingProtocalNumber;
-    }
-
-    this.groupMatrix = this.hangingProtocalService.getGroupLayoutMatrix(this.viewerShellData, groupHangingProtocalNumber);
-  }
-
-  createGroupLayout(rowIndex: number, colIndex: number): GroupLayout {
-    let layout = new Layout(new LayoutPosition(rowIndex, colIndex), this.groupMatrix);
-    return new GroupLayout(layout, this.groupHangingProtocal);
-  }
-
-  createImageLayoutList(rowIndex: number, colIndex: number): Array<ImageLayout> {
-    const groupLayout = this.createGroupLayout(rowIndex, colIndex);
-    return this.hangingProtocalService.createImageLayoutList(this.viewerShellData,
-      this.hangingProtocalService.getDefaultImageHangingPrococal(),
-      groupLayout);
+  onChangeGroupLayout(groupHangingProtocalNumber: number): void {
+    this.hangingProtocalService.applyGroupHangingProtocal(this.viewerShellData, groupHangingProtocalNumber);
   }
 }

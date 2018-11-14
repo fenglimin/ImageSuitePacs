@@ -6,6 +6,7 @@ import { Subscription }   from 'rxjs';
 import { Study } from '../../../models/pssi';
 import { DatabaseService } from '../../../services/database.service'
 import { ViewerShellData } from '../../../models/viewer-shell-data';
+import { HangingProtocalService } from '../../../services/hanging-protocal.service';
 
 @Component({
   selector: 'app-worklist',
@@ -18,7 +19,7 @@ export class WorklistComponent implements OnInit {
   studies: Study[];
   subscriptionShellNavigated: Subscription;
 
-  constructor(private shellNavigatorService: ShellNavigatorService, private databaseService: DatabaseService) {
+  constructor(private shellNavigatorService: ShellNavigatorService, private databaseService: DatabaseService, private hangingProtocalService: HangingProtocalService) {
   }
 
   worklistColumns: string[] = [
@@ -94,7 +95,8 @@ export class WorklistComponent implements OnInit {
     });
     */
 
-    const viewerShellData = new ViewerShellData();
+    const viewerShellData = new ViewerShellData(this.hangingProtocalService.getDefaultGroupHangingProtocal(),
+      this.hangingProtocalService.getDefaultImageHangingPrococal());
     this.studies.forEach(study1 => {
       if (study1.checked) {
         viewerShellData.addStudy(study1);
@@ -111,7 +113,8 @@ export class WorklistComponent implements OnInit {
     this.studies[index] = studyNew;
 
     if (this.studies.every(study => study.checked === study.detailsLoaded)) {
-      const viewerShellData = new ViewerShellData();
+      const viewerShellData = new ViewerShellData(this.hangingProtocalService.getDefaultGroupHangingProtocal(),
+        this.hangingProtocalService.getDefaultImageHangingPrococal());
       this.studies.forEach(value => {
         if (value.checked && value.detailsLoaded) {
           viewerShellData.addStudy(value);

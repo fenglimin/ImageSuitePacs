@@ -12,15 +12,13 @@
 
   <div class="sp_panel-right">
     <div class="DivToolbar">
-      <app-viewer-toolbar (layout)="onLayoutChanged($event)"></app-viewer-toolbar>
+      <app-viewer-toolbar (layout)="onChangeGroupLayout($event)"></app-viewer-toolbar>
     </div>
 
     <div class="DivViewerBack">
-      <div class="div-flex-column" *ngFor="let b of Arr(groupMatrix.colCount).fill(1); let colIndex = index">
-        <div class="div-flex-row" *ngFor="let a of Arr(groupMatrix.rowCount).fill(1); let rowIndex = index">
-          <app-group-viewer [groupLayout]="createGroupLayout(rowIndex, colIndex)" 
-                            [viewerShellData]=viewerShellData
-                            [imageLayoutList]="createImageLayoutList(rowIndex, colIndex)">
+      <div class="div-flex-column" *ngFor="let b of Arr(viewerShellData.groupMatrix.colCount).fill(1); let colIndex = index">
+        <div class="div-flex-row" *ngFor="let a of Arr(viewerShellData.groupMatrix.rowCount).fill(1); let rowIndex = index">
+          <app-group-viewer [groupData]="viewerShellData.getGroup(rowIndex, colIndex)">
           </app-group-viewer>
         </div>
       </div>

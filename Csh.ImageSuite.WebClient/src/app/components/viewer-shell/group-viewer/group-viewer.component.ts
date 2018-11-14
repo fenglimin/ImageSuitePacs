@@ -5,6 +5,7 @@ import { Subscription }   from 'rxjs';
 import { ViewerShellData } from '../../../models/viewer-shell-data';
 import { Layout, ImageLayout, GroupLayout, LayoutPosition, LayoutMatrix } from '../../../models/layout';
 import { ImageHangingProtocal } from '../../../models/hanging-protocal';
+import { ViewerGroupData } from '../../../models/viewer-group-data';
 
 @Component({
   selector: 'app-group-viewer',
@@ -13,17 +14,11 @@ import { ImageHangingProtocal } from '../../../models/hanging-protocal';
 })
 export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
-  @Input() groupLayout: GroupLayout;
-  @Input() viewerShellData: ViewerShellData;
-  @Input() imageLayoutList: Array<ImageLayout>;
+  @Input() groupData: ViewerGroupData;
 
-  imageHaningProtocal : ImageHangingProtocal;
   id =  "";
   selected = false;
-
   
-  imageLayoutMatrix: LayoutMatrix;
-
   subscriptionImageSelection: Subscription;
   subscriptionImageLayoutChange: Subscription;
   
@@ -37,13 +32,10 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
       imageLayoutStyle => {
         this.onChangeImageLayout(imageLayoutStyle);
       });
-
-    
   }
 
   ngOnInit() {
-    this.imageHaningProtocal = this.hangingProtocalService.getDefaultImageHangingPrococal();
-    this.setImageLayout(this.imageHaningProtocal);
+    this.setImageLayout(this.groupData.imageHangingProtocal);
   }
 
   ngAfterContentInit() {
@@ -74,31 +66,10 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   setImageLayout(imageLayoutStyle: number): void {
-    this.imageHaningProtocal = imageLayoutStyle;
-      
-    this.imageLayoutList = this.hangingProtocalService.createImageLayoutList(this.viewerShellData,
-      this.imageHaningProtocal, this.groupLayout);
-    if (this.imageLayoutList === null || this.imageLayoutList.length === 0) {
-      this.imageLayoutMatrix = new LayoutMatrix(1, 1);
-    } else {
-      this.imageLayoutMatrix = this.imageLayoutList[0].layout.matrix;  
-    }
+    this.hangingProtocalService.applyImageHangingProtocal(this.groupData, imageLayoutStyle);
   }
 
   generateId(): string {
-    return this.viewerShellData.getId() + '_' + this.groupLayout.getId();
-  }
-
-  createImageLayout(rowIndex, colIndex): ImageLayout {
-    if (this.imageLayoutList === null || this.imageLayoutList.length === 0) {
-      return ImageLayout.createDefaultFromGroupLayout(this.groupLayout);
-    }
-
-    let index = rowIndex * this.imageLayoutMatrix.colCount + colIndex;
-    if (index >= this.imageLayoutList.length) {
-      return new ImageLayout(this.groupLayout, new Layout(new LayoutPosition(rowIndex, colIndex), this.imageLayoutMatrix), this.imageHaningProtocal);
-    }
-
-    return this.imageLayoutList[index]; 
+    return this.groupData.getId();
   }
 }

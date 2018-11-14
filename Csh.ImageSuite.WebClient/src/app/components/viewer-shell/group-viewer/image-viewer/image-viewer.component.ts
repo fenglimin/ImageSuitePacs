@@ -4,16 +4,15 @@ import { ImageSelectorService } from '../../../../services/image-selector.servic
 import { DicomImageService } from '../../../../services/dicom-image.service';
 import { Subscription }   from 'rxjs';
 import { Study, Image } from '../../../../models/pssi';
-import { ViewerShellData } from '../../../../models/viewer-shell-data';
-
+import { ViewerImageData } from '../../../../models/viewer-image-data';
 @Component({
   selector: 'app-image-viewer',
   templateUrl: './image-viewer.component.html',
   styleUrls: ['./image-viewer.component.css']
 })
 export class ImageViewerComponent implements OnInit, AfterContentInit {
-  @Input() imageLayout: ImageLayout;
-  @Input() viewerShellData: ViewerShellData;
+  @Input() imageData: ViewerImageData;
+
   id: string = "";
   subscriptionImageSelection: Subscription;
   subscriptionImageLayoutChange: Subscription;
@@ -28,8 +27,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
-    if (this.imageLayout !== null) {
-      this.getImageFromService(this.imageLayout.getImage());  
+    if (this.imageData.image !== null) {
+      this.getImageFromService(this.imageData.image);  
     }
   }
 
@@ -86,8 +85,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   generateId(): string {
-    if (this.imageLayout === null) return '';
-
-    return this.viewerShellData.getId() + '_' + this.imageLayout.getId();
+    return this.imageData.getId();
   }
 }
