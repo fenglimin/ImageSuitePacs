@@ -15,12 +15,13 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
   @Input() groupLayout: GroupLayout;
   @Input() viewerShellData: ViewerShellData;
+  @Input() imageLayoutList: Array<ImageLayout>;
 
   imageHaningProtocal : ImageHangingProtocal;
   id =  "";
   selected = false;
 
-  imageLayoutList: Array<ImageLayout>;
+  
   imageLayoutMatrix: LayoutMatrix;
 
   subscriptionImageSelection: Subscription;
@@ -95,7 +96,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
 
     let index = rowIndex * this.imageLayoutMatrix.colCount + colIndex;
     if (index >= this.imageLayoutList.length) {
-      return ImageLayout.createDefaultFromGroupLayout(this.groupLayout);
+      return new ImageLayout(this.groupLayout, new Layout(new LayoutPosition(rowIndex, colIndex), this.imageLayoutMatrix), this.imageHaningProtocal);
     }
 
     return this.imageLayoutList[index]; 

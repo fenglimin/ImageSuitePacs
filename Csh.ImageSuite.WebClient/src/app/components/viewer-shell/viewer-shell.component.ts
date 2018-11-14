@@ -3,7 +3,7 @@ import { GroupViewerComponent } from './group-viewer/group-viewer.component';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { HangingProtocalService } from '../../services/hanging-protocal.service';
 import { Subscription }   from 'rxjs';
-import { LayoutPosition, LayoutMatrix, Layout, GroupLayout } from '../../models/layout';
+import { LayoutPosition, LayoutMatrix, Layout, GroupLayout, ImageLayout } from '../../models/layout';
 import { ViewerShellData } from '../../models/viewer-shell-data';
 import { GroupHangingProtocal } from '../../models/hanging-protocal';
 
@@ -52,5 +52,12 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   createGroupLayout(rowIndex: number, colIndex: number): GroupLayout {
     let layout = new Layout(new LayoutPosition(rowIndex, colIndex), this.groupMatrix);
     return new GroupLayout(layout, this.groupHangingProtocal);
+  }
+
+  createImageLayoutList(rowIndex: number, colIndex: number): Array<ImageLayout> {
+    const groupLayout = this.createGroupLayout(rowIndex, colIndex);
+    return this.hangingProtocalService.createImageLayoutList(this.viewerShellData,
+      this.hangingProtocalService.getDefaultImageHangingPrococal(),
+      groupLayout);
   }
 }

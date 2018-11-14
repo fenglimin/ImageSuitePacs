@@ -19,7 +19,8 @@
       <div class="div-flex-column" *ngFor="let b of Arr(groupMatrix.colCount).fill(1); let colIndex = index">
         <div class="div-flex-row" *ngFor="let a of Arr(groupMatrix.rowCount).fill(1); let rowIndex = index">
           <app-group-viewer [groupLayout]="createGroupLayout(rowIndex, colIndex)" 
-                            [viewerShellData]=viewerShellData>
+                            [viewerShellData]=viewerShellData
+                            [imageLayoutList]="createImageLayoutList(rowIndex, colIndex)">
           </app-group-viewer>
         </div>
       </div>
