@@ -13,7 +13,6 @@ import { ViewerImageData } from '../../../../models/viewer-image-data';
 export class ImageViewerComponent implements OnInit, AfterContentInit {
   @Input() imageData: ViewerImageData;
 
-  id: string = "";
   subscriptionImageSelection: Subscription;
   subscriptionImageLayoutChange: Subscription;
   isImageLoading:boolean;
@@ -32,9 +31,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
   }
 
-  ngAfterContentInit() {
-    this.id = this.generateId();
-    
+  ngAfterContentInit() {    
   }
 
   createImageFromBlob(image: Blob) {
@@ -67,7 +64,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   onSelected() {
-    this.imageSelectorService.selectImage(this.id);
+    this.imageSelectorService.selectImage(this.imageData.getId());
   }
 
   doSelectById(id: string, selected: boolean): void {
@@ -79,12 +76,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
   doSelectByImageViewerId(imageViewerId: string): void {
     var selectedDivId = "DivImageViewer" + imageViewerId;
-    var divId = 'DivImageViewer' + this.id;
+    var divId = 'DivImageViewer' + this.imageData.getId();
 
     this.doSelectById(divId, selectedDivId === divId);
-  }
-
-  generateId(): string {
-    return this.imageData.getId();
   }
 }

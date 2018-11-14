@@ -35,14 +35,13 @@ export class HangingProtocalService {
         viewerShellData.groupMatrix = groupMatrix;
 
         // For the exsiting group, only change its position
-        const max = Math.max(oldMatrixSize, viewerShellData.groupCount);
-        for (let i = 0; i < max; i++) {
+        for (let i = 0; i < viewerShellData.groupDataList.length; i++) {
           viewerShellData.updateGroupPositionFromIndex(i);
         }
 
         // Add empty group if matrix size becomes bigger
         const matrixSize = viewerShellData.groupMatrix.rowCount * viewerShellData.groupMatrix.colCount;
-        for (let i = max; i < matrixSize; i++) {
+        for (let i = viewerShellData.groupDataList.length; i < matrixSize; i++) {
           viewerShellData.addEmptyGroup(i);
         }
       }
@@ -85,14 +84,17 @@ export class HangingProtocalService {
       this.createImageDataListOfGroup(groupData);
       return;
     }
-    
+
+    groupData.imageHangingProtocal = imageHangingProtocal;
+
     if (imageHangingProtocal >= ImageHangingProtocal.FreeHang) {
       const imageMatrix = LayoutMatrix.fromNumber(imageHangingProtocal);
       if (imageMatrix !== groupData.imageMatrix) {
+        const oldMatrixSize = groupData.imageMatrix.rowCount * groupData.imageMatrix.colCount;
         groupData.imageMatrix = imageMatrix;
 
         // For the image cell that contains image, only change its position
-        for (let i = 0; i < groupData.imageCount; i++) {
+        for (let i = 0; i < groupData.imageDataList.length; i++) {
           groupData.updateImagePositionFromIndex(i);
         }
 
@@ -109,11 +111,11 @@ export class HangingProtocalService {
         return;
       }
 
-      groupData.imageHangingProtocal = imageHangingProtocal;
+      
       groupData.imageMatrix = this.getImageLayoutMatrixFromCount(groupData.imageCount);
 
       // For the image cell that contains image, only change its position
-      for (let i = 0; i < groupData.imageCount; i++) {
+      for (let i = 0; i < groupData.imageDataList.length; i++) {
         groupData.updateImagePositionFromIndex(i);
       }
     }

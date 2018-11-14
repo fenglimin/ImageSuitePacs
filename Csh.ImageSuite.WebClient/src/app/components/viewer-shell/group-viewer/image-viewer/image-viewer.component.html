@@ -1,4 +1,4 @@
-<div class="DivImageViewer" [id]="'DivImageViewer' + generateId()" (click)="onSelected()">
+<div class="DivImageViewer" [id]="'DivImageViewer' + imageData.getId()" (click)="onSelected()">
     <div *ngIf="imageData.image !== null" class="DivImageViewer">
       <p>
         Name : {{imageData.image.series.study.patient.patientName}} | 

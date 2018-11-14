@@ -16,7 +16,6 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
   @Input() groupData: ViewerGroupData;
 
-  id =  "";
   selected = false;
   
   subscriptionImageSelection: Subscription;
@@ -39,7 +38,6 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.id = this.generateId();
   }
 
   onSelected() {
@@ -53,8 +51,9 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   doSelectByImageViewerId(imageViewerId: string): void {
-    this.selected = imageViewerId.startsWith(this.id);
-    var divId = 'DivLayoutViewer' + this.id;
+    const id = this.groupData.getId();
+    this.selected = imageViewerId.startsWith(id);
+    var divId = 'DivLayoutViewer' + id;
 
     this.doSelectById(divId, this.selected);
   }
@@ -67,9 +66,5 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
 
   setImageLayout(imageLayoutStyle: number): void {
     this.hangingProtocalService.applyImageHangingProtocal(this.groupData, imageLayoutStyle);
-  }
-
-  generateId(): string {
-    return this.groupData.getId();
   }
 }
