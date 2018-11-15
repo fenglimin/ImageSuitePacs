@@ -11,13 +11,12 @@ import { ViewerImageData } from '../../../../models/viewer-image-data';
 })
 export class ImageViewerComponent implements OnInit, AfterContentInit {
   
-  _imageData: ViewerImageData = null;
- // @Input()
+  _imageData: ViewerImageData;
+  @Input()
   set imageData(imageData: ViewerImageData) {
-    const imageChanged = this._imageData === null || this._imageData.image !== imageData.image;
-    this._imageData = imageData;
-    if (imageChanged) {
-        this.refreshImage();  
+    if (this._imageData != imageData) {
+      this._imageData = imageData;
+      this.refreshImage();
     }
   }
   get imageData() {
@@ -97,6 +96,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   getId(): string {
-    return 'DivImageViewer';// + this.imageData.getId();
+    return 'DivImageViewer' + this.imageData.getId();
   }
 }

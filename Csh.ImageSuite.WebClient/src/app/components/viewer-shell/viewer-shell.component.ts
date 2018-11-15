@@ -31,7 +31,6 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    let len = this.groups.length;
   }
 
   onChangeGroupLayout(groupHangingProtocalNumber: number): void {
