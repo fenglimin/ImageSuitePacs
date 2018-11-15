@@ -17,7 +17,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   viewerShellData: ViewerShellData;
   subscriptionShellNavigated: Subscription;
 
-  @ViewChildren(GroupViewerComponent) viewers: QueryList<GroupViewerComponent>;
+  @ViewChildren(GroupViewerComponent) groups: QueryList<GroupViewerComponent>;
 
   constructor(private shellNavigatorService: ShellNavigatorService, private hangingProtocalService: HangingProtocalService) {
     this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(

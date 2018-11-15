@@ -14,7 +14,16 @@ import { ViewerGroupData } from '../../../models/viewer-group-data';
 })
 export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
-  @Input() groupData: ViewerGroupData;
+
+  _groupData: ViewerGroupData;
+  @Input()
+  set groupData(groupData: ViewerGroupData) {
+    this._groupData = groupData;
+    this.setImageLayout(this.groupData.imageHangingProtocal);
+  }
+  get groupData() {
+    return this._groupData;
+  }
 
   selected = false;
   
@@ -34,7 +43,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
-    this.setImageLayout(this.groupData.imageHangingProtocal);
+    
   }
 
   ngAfterContentInit() {
