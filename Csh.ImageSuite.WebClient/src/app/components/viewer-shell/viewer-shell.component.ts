@@ -3,7 +3,6 @@ import { GroupViewerComponent } from './group-viewer/group-viewer.component';
 import { ShellNavigatorService } from '../../services/shell-navigator.service';
 import { HangingProtocalService } from '../../services/hanging-protocal.service';
 import { Subscription }   from 'rxjs';
-import { LayoutPosition, LayoutMatrix, Layout, GroupLayout, ImageLayout } from '../../models/layout';
 import { ViewerShellData } from '../../models/viewer-shell-data';
 import { GroupHangingProtocal } from '../../models/hanging-protocal';
 

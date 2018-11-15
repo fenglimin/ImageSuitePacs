@@ -1,6 +1,6 @@
 ﻿import { ImageHangingProtocal } from '../models/hanging-protocal';
 import { ViewerShellData } from '../models/viewer-shell-data';
-import { LayoutPosition, LayoutMatrix, Layout, GroupLayout, ImageLayout } from '../models/layout';
+import { LayoutPosition, LayoutMatrix } from '../models/layout';
 import { ViewerImageData } from '../models/viewer-image-data';
 import { Patient, Study, Series, Image } from '../models/pssi';
 

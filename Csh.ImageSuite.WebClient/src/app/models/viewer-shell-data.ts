@@ -2,7 +2,7 @@
 import { ViewerGroupData } from '../models/viewer-group-data';
 import { ViewerImageData } from '../models/viewer-image-data';
 import { GroupHangingProtocal, ImageHangingProtocal } from '../models/hanging-protocal';
-import { LayoutPosition, LayoutMatrix, Layout, GroupLayout, ImageLayout } from '../models/layout';
+import { LayoutPosition, LayoutMatrix } from '../models/layout';
 
 export class ViewerShellData {
   patientList = new Array<Patient>();

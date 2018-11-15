@@ -3,7 +3,7 @@ import { ImageSelectorService } from '../../../services/image-selector.service';
 import { HangingProtocalService } from '../../../services/hanging-protocal.service';
 import { Subscription }   from 'rxjs';
 import { ViewerShellData } from '../../../models/viewer-shell-data';
-import { Layout, ImageLayout, GroupLayout, LayoutPosition, LayoutMatrix } from '../../../models/layout';
+import { LayoutPosition, LayoutMatrix } from '../../../models/layout';
 import { ImageHangingProtocal } from '../../../models/hanging-protocal';
 import { ViewerGroupData } from '../../../models/viewer-group-data';
 

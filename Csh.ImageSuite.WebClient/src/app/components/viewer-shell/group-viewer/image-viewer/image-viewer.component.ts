@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
-import { Layout, ImageLayout, LayoutPosition, LayoutMatrix } from '../../../../models/layout';
 import { ImageSelectorService } from '../../../../services/image-selector.service';
 import { DicomImageService } from '../../../../services/dicom-image.service';
 import { Subscription }   from 'rxjs';

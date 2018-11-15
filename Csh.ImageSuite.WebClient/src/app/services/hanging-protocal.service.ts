@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ViewerShellData } from '../models/viewer-shell-data';
-import { LayoutPosition, LayoutMatrix, Layout, GroupLayout, ImageLayout } from '../models/layout';
+import { LayoutPosition, LayoutMatrix } from '../models/layout';
 import { GroupHangingProtocal, ImageHangingProtocal} from '../models/hanging-protocal';
 import { Patient, Study, Series, Image } from '../models/pssi';
 import { ViewerGroupData } from '../models/viewer-group-data';
@@ -27,7 +27,7 @@ export class HangingProtocalService {
 
 
   applyGroupHangingProtocal(viewerShellData: ViewerShellData, groupHangingProtocal: GroupHangingProtocal) {
-    
+
     if (groupHangingProtocal >= GroupHangingProtocal.FreeHang) {
       const groupMatrix = LayoutMatrix.fromNumber(groupHangingProtocal);
       if (groupMatrix !== viewerShellData.groupMatrix) {

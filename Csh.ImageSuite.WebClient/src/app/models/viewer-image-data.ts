@@ -1,5 +1,5 @@
 ﻿import { Patient, Study, Series, Image } from '../models/pssi';
-import { LayoutPosition, LayoutMatrix, Layout, GroupLayout, ImageLayout } from '../models/layout';
+import { LayoutPosition, LayoutMatrix } from '../models/layout';
 import { ViewerGroupData } from '../models/viewer-group-data';
 
 export class ViewerImageData {
