@@ -30,7 +30,7 @@ export class HangingProtocalService {
 
     if (groupHangingProtocal >= GroupHangingProtocal.FreeHang) {
       const groupMatrix = LayoutMatrix.fromNumber(groupHangingProtocal);
-      if (groupMatrix !== viewerShellData.groupMatrix) {
+      if (!groupMatrix.equal(viewerShellData.groupMatrix)) {
         const oldMatrixSize = viewerShellData.groupMatrix.rowCount * viewerShellData.groupMatrix.colCount;
         viewerShellData.groupMatrix = groupMatrix;
 

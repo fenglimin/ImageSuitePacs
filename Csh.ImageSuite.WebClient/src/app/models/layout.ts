@@ -27,6 +27,10 @@ export class LayoutPosition {
     layoutPosition.colIndex = positionNumber % colCount;
     return layoutPosition;
   }
+
+  equal(layoutPosition: LayoutPosition): boolean {
+    return this.rowIndex === layoutPosition.rowIndex && this.colIndex === layoutPosition.colIndex;
+  }
 }
 
 export class LayoutMatrix {
@@ -43,6 +47,10 @@ export class LayoutMatrix {
     layoutMatrix.rowCount = Math.trunc(matrixNumber / 10);
     layoutMatrix.colCount = matrixNumber % 10;
     return layoutMatrix;
+  }
+
+  equal(layoutMatrix: LayoutMatrix): boolean {
+    return this.rowCount === layoutMatrix.rowCount && this.colCount === layoutMatrix.colCount;
   }
 }
 
