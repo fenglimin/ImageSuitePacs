@@ -89,8 +89,7 @@ export class HangingProtocalService {
 
     if (imageHangingProtocal >= ImageHangingProtocal.FreeHang) {
       const imageMatrix = LayoutMatrix.fromNumber(imageHangingProtocal);
-      if (imageMatrix !== groupData.imageMatrix) {
-        const oldMatrixSize = groupData.imageMatrix.rowCount * groupData.imageMatrix.colCount;
+      if (!imageMatrix.equal(groupData.imageMatrix)) {
         groupData.imageMatrix = imageMatrix;
 
         // For the image cell that contains image, only change its position

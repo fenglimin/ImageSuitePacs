@@ -10,7 +10,18 @@ import { ViewerImageData } from '../../../../models/viewer-image-data';
   styleUrls: ['./image-viewer.component.css']
 })
 export class ImageViewerComponent implements OnInit, AfterContentInit {
-  @Input() imageData: ViewerImageData;
+  
+  _imageData: ViewerImageData;
+  @Input()
+  set imageData(imageData: ViewerImageData) {
+    if (this._imageData != imageData) {
+      this._imageData = imageData;
+      this.refreshImage();
+    }
+  }
+  get imageData() {
+    return this._imageData;
+  }
 
   subscriptionImageSelection: Subscription;
   subscriptionImageLayoutChange: Subscription;
@@ -25,9 +36,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
+  
+  }
+
+  refreshImage() {
     if (this.imageData.image !== null) {
       this.getImageFromService(this.imageData.image);  
-    }
+    }  
   }
 
   ngAfterContentInit() {    
