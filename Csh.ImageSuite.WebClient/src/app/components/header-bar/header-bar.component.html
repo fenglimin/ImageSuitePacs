@@ -14,7 +14,7 @@
       </td>
 	  <td *ngFor="let viewerShellData of getViewerShellDataList()">
 		<div class="nav-button">
-			<button [id]="'headerButton' + viewerShellData.getId()" class="div-headerbar-button" (click)="showViewerShell(viewerShellData)">{{viewerShellData.getName()}}</button>
+			<button [id]="getId(viewerShellData)" class="div-headerbar-button" (click)="showViewerShell(viewerShellData)">{{viewerShellData.getName()}}</button>
       <button class="div-headerbar-button" (click)="closeViewerShell(viewerShellData)">x</button>
 		</div>
 	  </td>

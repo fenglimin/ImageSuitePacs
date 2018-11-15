@@ -63,4 +63,8 @@ export class HeaderBarComponent implements OnInit, AfterContentInit, AfterViewIn
       }
     }
   }
+
+  getId(viewerShellData: ViewerShellData): string {
+    return 'headerButton' + viewerShellData.getId();
+  }
 }

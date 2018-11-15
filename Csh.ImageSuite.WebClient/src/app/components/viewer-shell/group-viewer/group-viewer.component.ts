@@ -76,4 +76,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   setImageLayout(imageLayoutStyle: number): void {
     this.hangingProtocalService.applyImageHangingProtocal(this.groupData, imageLayoutStyle);
   }
+
+  getId(): string {
+    return 'DivLayoutViewer' + this.groupData.getId();
+  }
 }

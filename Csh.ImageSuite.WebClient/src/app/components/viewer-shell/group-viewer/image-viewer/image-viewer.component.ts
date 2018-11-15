@@ -94,4 +94,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
     this.doSelectById(divId, selectedDivId === divId);
   }
+
+  getId(): string {
+    return 'DivImageViewer' + this.imageData.getId();
+  }
 }

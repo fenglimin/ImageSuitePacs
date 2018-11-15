@@ -1,4 +1,4 @@
-<div class="DivLayoutViewer" [id]="'DivLayoutViewer' + groupData.getId()"
+<div class="DivLayoutViewer" [id]="getId()"
       (click)="onSelected()">
   <div class="div-flex-column" *ngFor="let a of Arr(groupData.imageMatrix.colCount).fill(1); let colIndex = index">
     <div class="div-flex-row" *ngFor="let a of Arr(groupData.imageMatrix.rowCount).fill(1); let rowIndex = index">
