@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
+import { ImageViewerComponent } from './image-viewer/image-viewer.component';
 import { ImageSelectorService } from '../../../services/image-selector.service';
 import { HangingProtocalService } from '../../../services/hanging-protocal.service';
 import { Subscription }   from 'rxjs';
@@ -12,7 +13,7 @@ import { ViewerGroupData } from '../../../models/viewer-group-data';
   templateUrl: './group-viewer.component.html',
   styleUrls: ['./group-viewer.component.css']
 })
-export class GroupViewerComponent implements OnInit, AfterContentInit {
+export class GroupViewerComponent implements OnInit, AfterViewInit {
   Arr = Array; //Array type captured in a variable
 
   _groupData: ViewerGroupData;
@@ -24,6 +25,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   get groupData() {
     return this._groupData;
   }
+
+  @ViewChildren(ImageViewerComponent) imageComponents: QueryList<ImageViewerComponent>;
 
   selected = false;
   
@@ -43,10 +46,11 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
-    
-  }
+   }
 
-  ngAfterContentInit() {
+  ngAfterViewInit() {
+    this.imageComponents.forEach((imageComp,index) => imageComp.imageData = this.groupData.getImage(
+      Math.trunc(index/this.groupData.imageMatrix.colCount), index % this.groupData.imageMatrix.colCount));
   }
 
   onSelected() {
