@@ -50,16 +50,26 @@ export class HeaderBarComponent implements OnInit, AfterContentInit, AfterViewIn
   }
 
   highlightStudyButton(viewerShellData: ViewerShellData) {
+    let highlightedId:string;
+    
     if (viewerShellData === null || viewerShellData === undefined) {
-      return;
+      highlightedId = "headerButton-worklist";
+    } else {
+      highlightedId = viewerShellData.getId();
     }
+
+    let o = document.getElementById("headerButton-worklist");
+    if (o !== undefined && o !== null) {
+      o.style.color = (highlightedId === "headerButton-worklist") ? '#ff9900' : 'white';
+    }
+
 
     const len = this.getViewerShellDataList().length;
     for (let i = 0; i < len; i++) {
       const id = "headerButton" + this.getViewerShellDataList()[i].getId();
-      const o = document.getElementById(id);
+      o = document.getElementById(id);
       if (o !== undefined && o !== null) {
-        o.style.color = (this.getViewerShellDataList()[i].getId() === viewerShellData.getId()) ? '#ff9900' : 'white';
+        o.style.color = (this.getViewerShellDataList()[i].getId() === highlightedId) ? '#ff9900' : 'white';
       }
     }
   }

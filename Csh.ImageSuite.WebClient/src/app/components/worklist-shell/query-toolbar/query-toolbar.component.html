@@ -1,0 +1,24 @@
+<table>
+  <tr>
+    <td>
+      <button class="query" role="button" title="Query"></button>
+    </td>
+    <td>
+      <button class="queryClear" role="button" title="Clear Condition"></button>
+    </td>
+    <td style="padding-left: 6px">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" [(ngModel)]="showHistoryStudies"/>Show History Study
+        </label>
+      </div>
+    </td>
+    <td style="padding-left: 6px">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" [(ngModel)]="databaseService.usingLocalTestData" (click)="queryStudy()"/>Using Local Test Data
+        </label>
+      </div>
+    </td>
+  </tr>
+</table>

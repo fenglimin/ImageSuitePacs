@@ -1,23 +1,25 @@
 <div [style.visibility]= "hideMe? 'hidden' : 'visible'" id="divContainer" class="sp_panel-container">
 
   <div class="sp_panel-left">
-    <div id="leftPanelTop">
-      <div id="queryTree">
-        <app-query-shortcut (selected)="onSelected($event)"></app-query-shortcut>
-      </div>
-    </div>
-    <div class="leftPanelBottom">
-      <a>Upload DCM files...</a>
-    </div>
+    <app-query-shortcut (selected)="onSelected($event)"></app-query-shortcut>
   </div>
 
   <div class="sp_splitter">
   </div>
 
   <div class="sp_panel-right">
-    <app-worklist [shortcut]="selectedShortcut" [test]="selectedShortcut"></app-worklist>
-  </div>
+    <div class="studyQueryToolbar">
+      <app-query-toolbar></app-query-toolbar>
+    </div>
+    
+    <div>
+      <app-worklist [shortcut]="selectedShortcut" [test]="selectedShortcut"></app-worklist>  
+    </div>
 
+    <div class="studyOpertionToolbar">
+      <app-operate-toolbar></app-operate-toolbar>
+    </div>
+  </div>
 </div>
 
 

@@ -1,0 +1,54 @@
+.div-shortcut-header {
+  padding:4px;
+  background-color: #555555;
+  border-radius: 3px;
+  color: white;
+  width:100%;
+}
+
+.div-shortcut-item{
+  padding-top: 3px;
+  padding-bottom:3px;
+  padding-left:24px;
+  background-color: inherit;
+  border-radius: 3px;
+  color: white;
+  width:100%;
+}
+
+.div-shortcut-item:hover{
+    color: #ff9900;
+    background-color:#999;
+}
+
+.div-shortcut-item:hover .shortcut-close-button{
+    color: #ff9900;
+}
+
+.div-shortcut-item:hover .shortcut-close-button:hover{
+    color: red;
+}
+
+.div-shortcut-item:hover .shortcut-name-button:hover{
+    color: red;
+}
+
+.shortcut-close-button{
+  background-color:transparent;
+  border-width: 0px;
+  color:transparent;
+}
+
+.shortcut-close-button:focus{
+    outline:none;
+}
+
+.shortcut-name-button {
+  background-color:transparent;
+  border-width: 0px;
+  color:inherit;
+}
+
+.shortcut-name-button:focus{
+    outline:none;
+}

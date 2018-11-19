@@ -16,6 +16,14 @@ const httpOptions = {
 })
 export class DatabaseService {
 
+  private _usingLocalTestData = true;
+  set usingLocalTestData(value: boolean) {
+    this._usingLocalTestData = value;
+  }
+  get usingLocalTestData(): boolean {
+    return this._usingLocalTestData;
+  }
+
   private shortcutUrl = 'shortcut';  // URL to web api
   private pssiUrl = 'pssi';
   private id_patient = 1;

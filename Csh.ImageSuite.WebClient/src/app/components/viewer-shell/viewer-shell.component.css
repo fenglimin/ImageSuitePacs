@@ -159,7 +159,7 @@
 }
 
 #queryTree .node-queryTree {
-    padding: 2px 15px;
+    padding: 2px 2px;
 }
 
 .query {
@@ -191,7 +191,7 @@
 .sp_panel-left {
     flex: 0 0 auto;
     /* only manually resize */
-    padding: 10px;
+    padding: 6px;
     width: 170px;
     min-height: 200px;
     /*min-width: 1px;*/

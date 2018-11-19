@@ -2,12 +2,20 @@
   color: white;
 }
 
+#tblStudies td{
+  border:1px solid #333;
+}
+
+#tblStudies th{
+  border:1px solid #333;
+}
+
 #tblStudies tr.cust-info td{
   background-color: #222;
 }
 
 #trStudiesHeader a{
-  color: white;
+  color: #ddd;
 }
 
 #trSeriesHeader a{
@@ -18,10 +26,14 @@
 #trStudiesQuery input[type=text] {
   width: 100%;
   vertical-align: middle;
+  background-color:black;
+  border: 1px solid #444;
 }
 
 #trStudiesQuery select {
   width: 100%;
+  background-color:black;
+  border: 1px solid #444;
 }
 
 #trStudiesQuery td:nth-child(n+2) {
@@ -30,7 +42,30 @@
   vertical-align: middle;
 }
 
+#trStudiesQuery .dropdown {
+  background-color:#555555;
+  color:red;
+}
+
 #trStudiesQuery .dropdown .btn {
   padding: 1px 6px;
   min-width: 70px;
+  background-color:#555555;
+}
+
+.table-hover > tbody > tr:nth-child(n+3) {
+  color:#ccc;
+}
+
+.table-hover > tbody > tr:nth-child(n+3):hover {
+  background-color: #555555;
+  color:#ff9900;
+}
+
+.table-hover > tbody > tr:nth-child(1):hover {
+  background-color: black;
+}
+
+.table-hover > tbody > tr:nth-child(2):hover {
+  background-color: black;
 }

@@ -1,0 +1,38 @@
+.loadImage, .loadKeyImage{
+  width: 40px;
+  height: 40px;
+  border: none;
+  outline: none;
+}
+
+.loadImage{
+  background: url(../../../../img/button/LoadImage_40_40_All.png) no-repeat left top;
+}
+
+.loadImage:hover {
+  background: url(../../../../img/button/LoadImage_40_40_All.png) no-repeat right top;
+}
+
+.loadImage:active {
+  background: url(../../../../img/button/LoadImage_40_40_All.png) no-repeat left bottom;
+}
+
+.loadImage:disabled {
+  background: url(../../../../img/button/LoadImage_40_40_All.png) no-repeat right bottom;
+}
+
+.loadKeyImage{
+  background: url(../../../../img/button/loadKeyImage_40_40_All.png) no-repeat left top;
+}
+
+.loadKeyImage:hover {
+  background: url(../../../../img/button/loadKeyImage_40_40_All.png) no-repeat right top;
+}
+
+.loadKeyImage:active {
+  background: url(../../../../img/button/loadKeyImage_40_40_All.png) no-repeat left bottom;
+}
+
+.loadKeyImage:disabled {
+  background: url(../../../../img/button/loadKeyImage_40_40_All.png) no-repeat right bottom;
+}

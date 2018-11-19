@@ -18,6 +18,8 @@ import { NavigationComponent } from './components/viewer-shell/navigation/naviga
 import { ThumbnailComponent } from './components/viewer-shell/navigation/thumbnail/thumbnail.component';
 import { GroupViewerComponent } from './components/viewer-shell/group-viewer/group-viewer.component';
 import { ImageViewerComponent } from './components/viewer-shell/group-viewer/image-viewer/image-viewer.component';
+import { QueryToolbarComponent } from './components/worklist-shell/query-toolbar/query-toolbar.component';
+import { OperateToolbarComponent } from './components/worklist-shell/operate-toolbar/operate-toolbar.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { ImageViewerComponent } from './components/viewer-shell/group-viewer/ima
     ViewerToolbarComponent,
     ThumbnailComponent,
     GroupViewerComponent,
-    ImageViewerComponent
+    ImageViewerComponent,
+    QueryToolbarComponent,
+    OperateToolbarComponent
   ],
   imports: [
     BrowserModule,

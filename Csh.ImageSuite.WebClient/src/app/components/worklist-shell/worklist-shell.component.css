@@ -1,37 +1,36 @@
-/*#DivLeft
-{
-  display:block;
-  float:left;
-  width:200px;
-  margin:0 auto;
-  height: 650px;
-  padding: 12px 12px 12px 16px;
-  border-bottom: solid 4px #FFFFFF;
-  border-right: solid 4px #FFFFFF;
-  background-color: #000000;
-  color: #F5F5F5;
-}
-
-#DivRight
-{
-  display:block;
-  float:left;
-  width:744px;
-  margin:0 auto;
-  height: 650px;
-  padding: 12px 12px 12px 16px;
-  border-bottom: solid 4px #FFFFFF;
-  background-color: #000000;
-  color: #F5F5F5;
-}*/
-
-
 #divContainer {
     position: absolute;
     left: 0px;
     right: 0px;
     top: 40px;
     bottom: 0px;
+  border-bottom: 2px solid #333;
+}
+
+.studyQueryToolbar
+{
+  display:block;
+  width: 100%;
+  margin:0 auto;
+  height: 40px;
+  padding: 3px;
+  background-color: black;
+  color: #F5F5F5;
+}
+
+.studyOpertionToolbar
+{
+  display:block;
+  width: 100%;
+  margin:0 auto;
+  height: 48px;
+  padding: 4px;
+  background-color: black;
+  color: #F5F5F5;
+  position: fixed;
+  bottom: 0;
+  border-top: 1px solid #333;
+  border-bottom: 2px solid #333;
 }
 
 #panelStudyDash {
@@ -167,7 +166,7 @@
 .sp_panel-left {
     flex: 0 0 auto;
     /* only manually resize */
-    padding: 10px;
+    padding: 4px;
     width: 170px;
     min-height: 200px;
     /*min-width: 1px;*/
@@ -188,13 +187,12 @@
 }
 
 .sp_panel-right {
-    flex: 1 1 auto;
-    /* resizable */
     padding-bottom: 100px;
     width: 100%;
     min-height: 200px;
     min-width: 200px;
-    background: #b3b3b3;
+    background: black;
+    color:white;
 }
 
 
@@ -254,25 +252,6 @@
     color: black;
 }
 
-#trStudiesQuery input[type=text] {
-    width: 100%;
-    vertical-align: middle;
-}
-
-#trStudiesQuery select {
-    width: 100%;
-}
-
-#trStudiesQuery td:nth-child(n+2) {
-    padding: 1px;
-    margin: 0px;
-    vertical-align: middle;
-}
-
-#trStudiesQuery .dropdown .btn {
-    padding: 1px 6px;
-    min-width: 70px;
-}
 
 #leftPanelTop {
     flex: 1 1 auto;

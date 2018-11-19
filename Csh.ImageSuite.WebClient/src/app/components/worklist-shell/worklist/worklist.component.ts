@@ -74,11 +74,15 @@ export class WorklistComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.databaseService.getStudies().subscribe(studies => this.formatStudies(studies));
-    this.studies = this.databaseService.getStudiesTest();
+    if (this.databaseService.usingLocalTestData) {
+      this.studies = this.databaseService.getStudiesTest();  
+    } else {
+      this.databaseService.getStudies().subscribe(studies => this.formatStudies(studies));  
+    }
   }
 
   onStudyChecked(study: Study) {
+    study.checked = !study.checked;
   }
 
   onAllStudyChecked(event) {
@@ -87,23 +91,24 @@ export class WorklistComponent implements OnInit {
 
   doShowStudy(study: Study) {
     study.checked = true;
-    /*
-    this.studies.forEach(study1 => {
-      if (study1.checked) {
-        this.databaseService.getStudy(study1.id).subscribe(value => this.studyDetailsLoaded(this.studies.indexOf(study1), value));
-      }
-    });
-    */
+    
+    if (this.databaseService.usingLocalTestData) {
+      const viewerShellData = new ViewerShellData(this.hangingProtocalService.getDefaultGroupHangingProtocal(),
+        this.hangingProtocalService.getDefaultImageHangingPrococal());
+      this.studies.forEach(study1 => {
+        if (study1.checked) {
+          viewerShellData.addStudy(study1);
+        }
+      });
 
-    const viewerShellData = new ViewerShellData(this.hangingProtocalService.getDefaultGroupHangingProtocal(),
-      this.hangingProtocalService.getDefaultImageHangingPrococal());
-    this.studies.forEach(study1 => {
-      if (study1.checked) {
-        viewerShellData.addStudy(study1);
-      }
-    });
-
-    this.shellNavigatorService.shellNavigate(viewerShellData);
+      this.shellNavigatorService.shellNavigate(viewerShellData);
+    } else {
+      this.studies.forEach(study1 => {
+        if (study1.checked) {
+          this.databaseService.getStudy(study1.id).subscribe(value => this.studyDetailsLoaded(this.studies.indexOf(study1), value));
+        }
+      });
+    }
   }
 
   studyDetailsLoaded(index: number, studyNew: Study) {

@@ -1,4 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+
 import { Shortcut } from '../../../models/shortcut';
 import { Patient } from '../../../models/pssi';
 import { DatabaseService } from '../../../services/database.service';
@@ -28,5 +29,13 @@ export class QueryShortcutComponent implements OnInit {
     this.selected.emit(shortcut);
     
     //this.databaseService.getPatients().subscribe(patients => this.patients = patients.slice(1, 5));
+  }
+
+  queryAllStudy(): void {
+    alert('query all');
+  }
+
+  deleteShortcut(): void {
+    
   }
 }

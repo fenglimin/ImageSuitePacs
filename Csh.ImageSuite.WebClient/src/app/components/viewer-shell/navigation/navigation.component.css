@@ -1,0 +1,43 @@
+#main-nav {
+  margin-left: 1px;
+}
+
+  #main-nav.nav-tabs.nav-stacked > li > a {
+    padding: 4px 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4A515B;
+    background: #E9E9E9;
+    border: 1px solid #D5D5D5;
+    border-radius: 4px;
+  }
+
+    #main-nav.nav-tabs.nav-stacked > li > a > span {
+      color: #4A515B;
+    }
+
+    #main-nav.nav-tabs.nav-stacked > li.active > a, #main-nav.nav-tabs.nav-stacked > li > a:hover {
+      color: #FFF;
+      background: #3C4049;
+      border-color: #2B2E33;
+    }
+
+      #main-nav.nav-tabs.nav-stacked > li.active > a, #main-nav.nav-tabs.nav-stacked > li > a:hover > span {
+        color: #FFF;
+      }
+
+  #main-nav.nav-tabs.nav-stacked > li {
+    margin-bottom: 4px;
+  }
+
+/*定义二级菜单样式*/
+.secondmenu a {
+  font-size: 10px;
+  color: #4A515B;
+  text-align: left;
+}
+
+.navbar-static-top {
+  background-color: #212121;
+  margin-bottom: 5px;
+}

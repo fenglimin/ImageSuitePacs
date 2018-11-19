@@ -1,0 +1,30 @@
+.query, .queryClear{
+  width: 100px;
+  height: 30px;
+  border: none;
+  outline: none;
+}
+
+.query{
+  background: url(../../../../img/button/Query_All.png) no-repeat left top;
+}
+
+.query:hover {
+  background: url(../../../../img/button/Query_All.png) no-repeat right top;
+}
+
+.query:active {
+  background: url(../../../../img/button/Query_All.png) no-repeat right bottom;
+}
+
+.queryClear {
+  background: url(../../../../img/button/ClearCondition_All.png) no-repeat left top;
+}
+
+.queryClear:hover {
+  background: url(../../../../img/button/ClearCondition_All.png) no-repeat right top;
+}
+
+.queryClear:active {
+  background: url(../../../../img/button/ClearCondition_All.png) no-repeat right bottom;
+}

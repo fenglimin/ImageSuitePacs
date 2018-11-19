@@ -1,24 +1,28 @@
 <div class="container-fluid">
   <div class="navbar-header">
-    <tr>
-      <td>
-        <div class="navbar-brand" href="#">
-          <img src="../../../img/Carestream.svg">
-        </div>
-      </td>
-      <td>
-        <div class="product-name">ImageViewPacs</div>
-      </td>
-      <td>
-        <button class="nav-button" (click)="showViewerShell(null)">Worklist</button>    
-      </td>
-	  <td *ngFor="let viewerShellData of getViewerShellDataList()">
-		<div class="nav-button">
-			<button [id]="getId(viewerShellData)" class="div-headerbar-button" (click)="showViewerShell(viewerShellData)">{{viewerShellData.getName()}}</button>
-      <button class="div-headerbar-button" (click)="closeViewerShell(viewerShellData)">x</button>
-		</div>
-	  </td>
-    </tr>
-    
+    <table>
+      <tr>
+        <td>
+          <!--<div class="navbar-brand" href="#">
+            <img src="../../../img/Carestream.svg">
+          </div>-->
+          <div class="company-name">Carestream</div>
+        </td>
+        <td>
+          <div class="product-name">ImageViewPacs</div>
+        </td>
+        <td>
+          <div class="nav-button" style="padding-left:4px;padding-right:4px">
+            <button id="headerButton-worklist" class="div-headerbar-button" (click)="showViewerShell(null)">Worklist</button>
+          </div>
+        </td>
+        <td *ngFor="let viewerShellData of getViewerShellDataList()">
+          <div class="nav-button">
+			      <button [id]="getId(viewerShellData)" class="div-headerbar-button" (click)="showViewerShell(viewerShellData)">{{viewerShellData.getName()}}</button>
+            <button class="div-headerbar-button" (click)="closeViewerShell(viewerShellData)">x</button>
+          </div>
+        </td>
+      </tr>
+    </table>
   </div>
 </div>
