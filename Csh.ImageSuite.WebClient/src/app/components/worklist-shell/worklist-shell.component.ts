@@ -10,11 +10,6 @@ import { ViewerShellData } from '../../models/viewer-shell-data';
   styleUrls: ['./worklist-shell.component.css']
 })
 export class WorklistShellComponent implements OnInit {
-  selectedShortcut: Shortcut = {
-    id: 11,
-    name: 'Default'
-  }
-
   subscriptionShellNavigated: Subscription;
   hideMe = false;
 
@@ -26,9 +21,5 @@ export class WorklistShellComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
-
-  onSelected(shortcut: Shortcut) {
-      this.selectedShortcut = shortcut;
   }
 }

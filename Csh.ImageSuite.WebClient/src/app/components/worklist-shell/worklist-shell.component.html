@@ -1,7 +1,7 @@
 <div [style.visibility]= "hideMe? 'hidden' : 'visible'" id="divContainer" class="sp_panel-container">
 
   <div class="sp_panel-left">
-    <app-query-shortcut (selected)="onSelected($event)"></app-query-shortcut>
+    <app-query-shortcut></app-query-shortcut>
   </div>
 
   <div class="sp_splitter">
@@ -13,7 +13,7 @@
     </div>
     
     <div>
-      <app-worklist [shortcut]="selectedShortcut" [test]="selectedShortcut"></app-worklist>  
+      <app-worklist></app-worklist>  
     </div>
 
     <div class="studyOpertionToolbar">

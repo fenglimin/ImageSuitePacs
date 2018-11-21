@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { DatabaseService } from '../../../services/database.service';
+import { WorklistService } from '../../../services/worklist.service';
+import { DataSource } from '../../../models/shortcut';
+
 
 @Component({
   selector: 'app-query-toolbar',
@@ -7,13 +9,21 @@ import { DatabaseService } from '../../../services/database.service';
   styleUrls: ['./query-toolbar.component.css']
 })
 export class QueryToolbarComponent implements OnInit {
-  showHistoryStudies:boolean;
-  constructor(private databaseService: DatabaseService) { }
+
+  constructor(private worklistService: WorklistService) { }
 
   ngOnInit() {
   }
 
-  queryStudy() {
+  onChangeDataSource(event) {
+    this.worklistService.setDataSource(event.target.checked? DataSource.LocalTestData : DataSource.MiniPacs);
+  }
+
+  onQuery() {
+    
+  }
+
+  onClearCondition() {
     
   }
 }

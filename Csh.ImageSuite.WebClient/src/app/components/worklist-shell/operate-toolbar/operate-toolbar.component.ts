@@ -7,9 +7,60 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OperateToolbarComponent implements OnInit {
 
-  constructor() { }
+  disableLoadImageButton:boolean;
+
+  constructor() {
+    this.disableLoadImageButton = false;
+  }
 
   ngOnInit() {
   }
 
+  onLoadImage() {
+
+  }
+
+  onLoadKeyImage() {
+
+  }
+
+  onSetRead() {
+
+  }
+
+  onSetUnread() {
+
+  }
+
+  onChangeImageSeriesOrder() {
+
+  }
+
+  onReassign() {
+
+  }
+
+  onTransfer() {
+
+  }
+
+  onTagEdit() {
+
+  }
+
+  onDeletePrevent() {
+
+  }
+
+  onDeleteAllow() {
+
+  }
+
+  onDelete() {
+
+  }
+
+  onImport() {
+    
+  }
 }
