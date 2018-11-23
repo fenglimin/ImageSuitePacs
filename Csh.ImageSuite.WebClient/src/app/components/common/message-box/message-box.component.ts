@@ -14,6 +14,7 @@ export class MessageBoxComponent implements OnInit {
 
   form: FormGroup;
   content = new MessageBoxContent();
+  confirmed: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -25,6 +26,7 @@ export class MessageBoxComponent implements OnInit {
     this.content.messageType = messageType;
 
     this.form = fb.group({
+      confirmed : [true]
     });
 
   }
@@ -35,18 +37,17 @@ export class MessageBoxComponent implements OnInit {
 
 
   onYes() {
+    this.form.value.confirmed = true;
     this.dialogRef.close(this.form.value);
   }
 
   onNo() {
-    this.dialogRef.close();
+    this.form.value.confirmed = false;
+    this.dialogRef.close(this.form.value);
   }
 
   onOk() {
-    this.dialogRef.close();
-  }
-
-  getClass(): string {
-    return 'glyphicon-warning-sign';
+    this.form.value.confirmed = true;
+    this.dialogRef.close(this.form.value);
   }
 }
