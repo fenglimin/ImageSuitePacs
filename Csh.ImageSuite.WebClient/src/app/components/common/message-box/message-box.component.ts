@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {FormBuilder, Validators, FormGroup} from "@angular/forms";
 import * as moment from 'moment';
 import { Shortcut } from '../../../models/shortcut';
+import { MessageBoxContent } from '../../../models/messageBox';
 
 @Component({
   selector: 'app-message-box',
@@ -12,15 +13,18 @@ import { Shortcut } from '../../../models/shortcut';
 export class MessageBoxComponent implements OnInit {
 
   form: FormGroup;
-  title:string;
+  content = new MessageBoxContent();
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<MessageBoxComponent>) {
+    private dialogRef: MatDialogRef<MessageBoxComponent>,
+    @Inject(MAT_DIALOG_DATA) { title, messageText, messageType }: MessageBoxContent) {
 
+    this.content.title = title;
+    this.content.messageText = messageText;
+    this.content.messageType = messageType;
 
     this.form = fb.group({
-      patientId: ['aa', Validators.required]
     });
 
   }
@@ -30,11 +34,15 @@ export class MessageBoxComponent implements OnInit {
   }
 
 
-  save() {
+  onYes() {
     this.dialogRef.close(this.form.value);
   }
 
-  close() {
+  onNo() {
     this.dialogRef.close();
+  }
+
+  getClass(): string {
+    return 'glyphicon glyphicon-warning-sign';
   }
 }

@@ -1,10 +1,10 @@
-<h5 mat-dialog-title>Confirm Delete</h5>
+<h5 mat-dialog-title>{{content.title}}</h5>
 
 
 <mat-dialog-content [formGroup]="form">
 
   <i class="glyphicon glyphicon-warning-sign" style="padding-right:8px;color:#F90"></i>
-  <span style="color:white">Are you sure to delete this shortcut?</span>
+  <span style="color:white">{{content.messageText}}</span>
 
 
 </mat-dialog-content>
@@ -12,12 +12,12 @@
 <mat-dialog-actions>
 
   <button class="mat-raised-button"
-          (click)="save()">
+          (click)="onYes()">
     <i class="glyphicon glyphicon-remove" style="padding-right:8px"></i>No
   </button>
 
   <button class="mat-raised-button"
-          (click)="close()">
+          (click)="onNo()">
     <i class="glyphicon glyphicon-ok" style="padding-right:8px"></i>Yes
   </button>
 
