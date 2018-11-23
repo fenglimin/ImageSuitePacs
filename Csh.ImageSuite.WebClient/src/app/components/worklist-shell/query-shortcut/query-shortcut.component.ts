@@ -1,8 +1,10 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import {MatDialog, MatDialogConfig} from "@angular/material";
 
 import { Shortcut } from '../../../models/shortcut';
 import { Patient } from '../../../models/pssi';
-import { DatabaseService } from '../../../services/database.service';
+import { WorklistService } from '../../../services/worklist.service';
+import { MessageBoxComponent } from '../../common/message-box/message-box.component';
 
 @Component({
   selector: 'app-query-shortcut',
@@ -11,31 +13,45 @@ import { DatabaseService } from '../../../services/database.service';
 })
 export class QueryShortcutComponent implements OnInit {
 
-  @Output() selected = new EventEmitter<Shortcut>();
   allShortcuts: Shortcut[];
 
-  constructor(private databaseService: DatabaseService) {
+  constructor(private worklistService: WorklistService, private dialog: MatDialog) {
     
   }
 
   ngOnInit() {
-    this.databaseService.getShortcuts().subscribe(shortcuts => this.allShortcuts = shortcuts);
-   // this.databaseService.getShortcut(2).subscribe(shortcut => {
-   //   this.allShortcuts[2].name = shortcut.name;
-   // });
+   // this.databaseService.getShortcuts().subscribe(shortcuts => this.allShortcuts = shortcuts);
   }
 
   doQuery(shortcut: Shortcut): void {
-    this.selected.emit(shortcut);
-    
-    //this.databaseService.getPatients().subscribe(patients => this.patients = patients.slice(1, 5));
+
   }
 
-  queryAllStudy(): void {
-    alert('query all');
+  onQueryTodayStudy(): void {
+    this.worklistService.onQueryTodayStudy();
+  }
+
+  onQueryAllStudies(): void {
+    this.worklistService.onQueryAllStudies();
   }
 
   deleteShortcut(): void {
-    
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = false;
+
+    const title = 'Confirm Delete';
+    dialogConfig.data = {
+      title
+    };
+
+    const dialogRef = this.dialog.open(MessageBoxComponent,
+      dialogConfig);
+
+
+    dialogRef.afterClosed().subscribe(
+      val => console.log("Dialog output:", val)
+    );
   }
 }

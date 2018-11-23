@@ -23,8 +23,10 @@ export class DatabaseService {
   private id_series = 1;
   private id_image = 1;
 
+  private localTestData : Study[];
 
   constructor(private http: HttpClient) {
+    this.localTestData = this.createStudiesTest();
   }
 
 
@@ -44,8 +46,9 @@ export class DatabaseService {
   }
 
   /** GET studies from the server */
-  getStudies (): Observable<Study[]> {
-    return this.http.get<Study[]>(this.pssiUrl)
+  getStudies (shortcut: Shortcut): Observable<Study[]> {
+    const url = `${this.pssiUrl}/search/`;
+    return this.http.post<Study[]>(url, shortcut, httpOptions)
       .pipe(
         tap(studies => this.log('fetched studies')),
         catchError(this.handleError('getStudies', []))
@@ -62,8 +65,11 @@ export class DatabaseService {
       );
   }
 
-
   getStudiesTest(): Study[] {
+    return this.localTestData;
+  }
+
+  private createStudiesTest(): Study[] {
     let studies = new Array<Study>();
     let patient1 = this.createPatient('PID001', 'Tom', 'M');
     let patient2 = this.createPatient('PID002', 'Jerry', 'M');
@@ -90,7 +96,7 @@ export class DatabaseService {
     return studies;
   }
 
-  createPatient(patientId: string, patientName: string, gender: string): Patient {
+  private createPatient(patientId: string, patientName: string, gender: string): Patient {
 
     let patient = new Patient();
 
@@ -103,7 +109,7 @@ export class DatabaseService {
     return patient;
   }
 
-  createStudy(patient: Patient, seriesCount: number): Study {
+  private createStudy(patient: Patient, seriesCount: number): Study {
 
     let study = new Study();
 
@@ -128,7 +134,7 @@ export class DatabaseService {
     return study;
   }
 
-  createSeries(study: Study, imageCount: number): Series {
+  private createSeries(study: Study, imageCount: number): Series {
     let series = new Series();
 
     series.id = this.id_series++;
@@ -142,7 +148,7 @@ export class DatabaseService {
     return series;
   }
 
-  createImage(series: Series): Image {
+  private createImage(series: Series): Image {
     let image = new Image();
 
     image.id = this.id_image++;

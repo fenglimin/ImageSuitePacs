@@ -20,10 +20,10 @@ export class QueryToolbarComponent implements OnInit {
   }
 
   onQuery() {
-    
+    this.worklistService.onQueryStudies();
   }
 
   onClearCondition() {
-    
+    this.worklistService.onCleanCondition();
   }
 }

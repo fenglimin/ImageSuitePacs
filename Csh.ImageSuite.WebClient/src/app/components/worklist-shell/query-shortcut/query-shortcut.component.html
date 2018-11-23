@@ -1,20 +1,20 @@
 <div class="container-fluid">
   <div class="row">
     <div class="div-shortcut-header">
-      <i class="glyphicon glyphicon-tree-deciduous"></i>
-      <button class="shortcut-name-button">Public Query</button>
+      <i class="glyphicon glyphicon-hdd"></i>
+      <button class="shortcut-name-button">Local Data Source</button>
     </div>
   </div>
   <div class="row">
     <div class="div-shortcut-item">
       <i class="glyphicon glyphicon-list-alt"></i>
-      <button class="shortcut-name-button" (click)="queryAllStudy()">All</button>
+      <button class="shortcut-name-button" (click)="onQueryAllStudies()">All</button>
     </div>
   </div>
   <div class="row">
     <div class="div-shortcut-item">
       <i class="glyphicon glyphicon-star-empty"></i>
-      <button class="shortcut-name-button" (click)="showViewerShell(null)">Today</button>
+      <button class="shortcut-name-button" (click)="onQueryTodayStudy()">Today</button>
     </div>
   </div>
   <div class="row">
@@ -26,21 +26,8 @@
   </div>
   <div class="row">
     <div class="div-shortcut-header">
-      <i class="glyphicon glyphicon-user"></i>
-      <button class="shortcut-name-button">Private Query</button>
-    </div>
-  </div>
-  <div class="row">
-    <div class="div-shortcut-item">
-      <i class="glyphicon glyphicon-search"></i>
-      <button class="shortcut-name-button" (click)="showViewerShell(null)">This Week</button>
-      <button class="pull-right shortcut-close-button" (click)="deleteShortcut()">X</button>
+      <i class="glyphicon glyphicon-cloud"></i>
+      <button class="shortcut-name-button">Third-Party Pacs</button>
     </div>
   </div>
 </div>
-
-<!--<li *ngFor="let shortcut of allShortcuts">
-  <button (click)="doQuery(shortcut)">{{shortcut.name}}</button>
-</li>-->
-
-

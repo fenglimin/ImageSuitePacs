@@ -1,0 +1,23 @@
+<h5 mat-dialog-title>Confirm Delete</h5>
+
+
+<mat-dialog-content [formGroup]="form">
+
+  <P style="color:white">Are you sure to delete this?</P>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+
+  <button class="mat-raised-button"
+          (click)="close()">
+    Yes
+  </button>
+
+  <button class="mat-raised-button"
+          (click)="save()">
+    No
+  </button>
+
+</mat-dialog-actions>

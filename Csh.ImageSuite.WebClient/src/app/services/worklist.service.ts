@@ -54,7 +54,7 @@ export class WorklistService {
     if (this.isUsingLocalTestData()) {
       this.studies = this.databaseService.getStudiesTest();  
     } else {
-      this.databaseService.getStudies().subscribe(studies => this.formatStudies(studies));  
+      this.databaseService.getStudies(this._shortcut).subscribe(studies => this.formatStudies(studies));  
     }
 
     return this.studies;
@@ -87,6 +87,21 @@ export class WorklistService {
   setDataSource(dataSource: DataSource) {
     this._shortcut.dataSource = dataSource;
     this.studies = this.onQueryStudies();
+  }
+
+  onCleanCondition() {
+    this.shortcut.clearCondition();
+  }
+
+  onQueryAllStudies() {
+    this.shortcut.clearCondition();
+    this.onQueryStudies();
+  }
+
+  onQueryTodayStudy() {
+    this.shortcut.clearCondition();
+    this.shortcut.studyDate = 'Today';
+    this.onQueryStudies();
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Private functions

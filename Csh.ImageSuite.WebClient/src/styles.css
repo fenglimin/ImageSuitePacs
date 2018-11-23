@@ -1,4 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+@import '../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.mat-dialog-container {
+  background-color: #555;
+  width: 250px;
+  height: 250px;
+}
+
+.mat-dialog-title {
+  color: white;
+  font-weight: bold;
+  padding: 2px 2px;
+}
+
 body {
   padding-top: 50px;
   padding-bottom: 20px;
