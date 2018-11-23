@@ -42,7 +42,11 @@ export class MessageBoxComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  onOk() {
+    this.dialogRef.close();
+  }
+
   getClass(): string {
-    return 'glyphicon glyphicon-warning-sign';
+    return 'glyphicon-warning-sign';
   }
 }

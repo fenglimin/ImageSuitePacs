@@ -3,7 +3,10 @@
 
 <mat-dialog-content [formGroup]="form">
 
-  <i class="glyphicon glyphicon-warning-sign" style="padding-right:8px;color:#F90"></i>
+  <i *ngIf="content.messageType === 0" class="glyphicon glyphicon-info-sign" style="padding-right:8px"></i>
+  <i *ngIf="content.messageType === 1" class="glyphicon glyphicon-question-sign" style="padding-right:8px"></i>
+  <i *ngIf="content.messageType === 2" class="glyphicon glyphicon-warning-sign" style="padding-right:8px;color:#F90"></i>
+  <i *ngIf="content.messageType === 3" class="glyphicon glyphicon-remove" style="padding-right:8px;color:#F90"></i>
   <span style="color:white">{{content.messageText}}</span>
 
 
@@ -11,14 +14,19 @@
 
 <mat-dialog-actions>
 
-  <button class="mat-raised-button"
+  <button *ngIf="content.messageType === 1" class="mat-raised-button"
           (click)="onYes()">
-    <i class="glyphicon glyphicon-remove" style="padding-right:8px"></i>No
+    <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>No
   </button>
 
-  <button class="mat-raised-button"
+  <button *ngIf="content.messageType === 1" class="mat-raised-button"
           (click)="onNo()">
-    <i class="glyphicon glyphicon-ok" style="padding-right:8px"></i>Yes
+    <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Yes
+  </button>
+
+  <button *ngIf="content.messageType !== 1" class="mat-raised-button"
+          (click)="onOk()">
+    <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Ok
   </button>
 
 </mat-dialog-actions>
