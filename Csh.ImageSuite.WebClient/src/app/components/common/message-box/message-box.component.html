@@ -15,12 +15,12 @@
 <mat-dialog-actions>
 
   <button *ngIf="content.messageType === 1" class="mat-raised-button"
-          (click)="onYes()">
+          (click)="onNo()">
     <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>No
   </button>
 
   <button *ngIf="content.messageType === 1" class="mat-raised-button"
-          (click)="onNo()">
+          (click)="onYes()">
     <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Yes
   </button>
 
