@@ -45,9 +45,4 @@ export class MessageBoxComponent implements OnInit {
     this.form.value.confirmed = false;
     this.dialogRef.close(this.form.value);
   }
-
-  onOk() {
-    this.form.value.confirmed = true;
-    this.dialogRef.close(this.form.value);
-  }
 }
