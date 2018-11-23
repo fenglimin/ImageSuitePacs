@@ -5,18 +5,24 @@
   padding: 1px 10px;
   margin:-24px -24px 0px -24px;
   border-bottom: 1px solid #FF9900;
+  min-width: 400px;
 }
 
 .mat-dialog-content {
   color: white;
   font-size: 16px;
   padding: 10px 10px;
+  min-width: 400px;
+}
+
+.mat-form-field {
+    min-width: 400px;
 }
 
 .mat-raised-button {
     border: 1px solid #777;
     border-radius: 3px;
-    width: 70px;
+    width: 100px;
     padding: 3px;
     margin-left: 6px;
 }
@@ -27,4 +33,13 @@
 
 .mat-dialog-actions{
     flex-direction:row-reverse;
+}
+
+.matInput {
+    color : green;
+    caret-color: #F90;
+}
+
+.mat-input-element {
+    caret-color: #F90;
 }

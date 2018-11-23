@@ -7,24 +7,33 @@
   <i *ngIf="content.messageType === 1" class="glyphicon glyphicon-question-sign" style="padding-right:8px"></i>
   <i *ngIf="content.messageType === 2" class="glyphicon glyphicon-warning-sign" style="padding-right:8px;color:#F90"></i>
   <i *ngIf="content.messageType === 3" class="glyphicon glyphicon-remove" style="padding-right:8px;color:#F90"></i>
-  <span style="color:white">{{content.messageText}}</span>
-
+  <span *ngIf="content.messageType !== 4" style="color:white">{{content.messageText}}</span>
+  <mat-form-field *ngIf="content.messageType === 4">
+    <input matInput
+           placeholder="{{content.messageText}}"
+           formControlName="valueInput">
+  </mat-form-field>
 
 </mat-dialog-content>
 
 <mat-dialog-actions>
 
-  <button *ngIf="content.messageType === 1" class="mat-raised-button"
+  <button *ngIf="needShowYesNoButton()" class="mat-raised-button"
           (click)="onNo()">
     <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>No
   </button>
 
-  <button *ngIf="content.messageType === 1" class="mat-raised-button"
+  <button *ngIf="needShowYesNoButton()" class="mat-raised-button"
           (click)="onYes()">
     <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Yes
   </button>
 
-  <button *ngIf="content.messageType !== 1" class="mat-raised-button"
+  <button *ngIf="needShowCancelButton()" class="mat-raised-button"
+          (click)="onNo()">
+    <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>Cancel
+  </button>
+
+  <button *ngIf="needShowOkButton()" class="mat-raised-button"
           (click)="onYes()">
     <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Ok
   </button>

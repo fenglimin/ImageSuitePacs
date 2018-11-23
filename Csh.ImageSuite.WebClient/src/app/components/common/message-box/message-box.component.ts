@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {FormBuilder, Validators, FormGroup} from "@angular/forms";
 import * as moment from 'moment';
 import { Shortcut } from '../../../models/shortcut';
-import { MessageBoxContent } from '../../../models/messageBox';
+import { MessageBoxType, MessageBoxContent } from '../../../models/messageBox';
 
 @Component({
   selector: 'app-message-box',
@@ -15,6 +15,7 @@ export class MessageBoxComponent implements OnInit {
   form: FormGroup;
   content = new MessageBoxContent();
   confirmed: boolean;
+  valueInput: string;
 
   constructor(
     private fb: FormBuilder,
@@ -26,7 +27,8 @@ export class MessageBoxComponent implements OnInit {
     this.content.messageType = messageType;
 
     this.form = fb.group({
-      confirmed : [true]
+      confirmed: [true],
+      valueInput: [this.valueInput, Validators.required]
     });
 
   }
@@ -45,4 +47,17 @@ export class MessageBoxComponent implements OnInit {
     this.form.value.confirmed = false;
     this.dialogRef.close(this.form.value);
   }
+
+  needShowYesNoButton(): boolean {
+    return this.content.messageType === MessageBoxType.Question;
+  }
+
+  needShowOkButton(): boolean {
+    return this.content.messageType !== MessageBoxType.Question;
+  }
+
+  needShowCancelButton(): boolean {
+    return this.content.messageType === MessageBoxType.Input;
+  }
+
 }

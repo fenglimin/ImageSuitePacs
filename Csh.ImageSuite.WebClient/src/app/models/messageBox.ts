@@ -3,7 +3,8 @@ export enum MessageBoxType {
   Info,
   Question,
   Warning,
-  Error
+  Error,
+  Input
 }
 
 export class MessageBoxContent {

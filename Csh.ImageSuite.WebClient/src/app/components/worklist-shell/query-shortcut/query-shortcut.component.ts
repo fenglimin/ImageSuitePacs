@@ -42,8 +42,8 @@ export class QueryShortcutComponent implements OnInit {
     dialogConfig.autoFocus = false;
 
     const title = 'Confirm Delete';
-    const messageText = 'Are you sure to delete this shortcut?';
-    const messageType = 1;
+    const messageText = 'Please input the name of the shortcut:';//Are you sure to delete this shortcut?';
+    const messageType = 4;
     dialogConfig.data = {
       title,
       messageText,
