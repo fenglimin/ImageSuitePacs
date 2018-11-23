@@ -39,6 +39,11 @@ export class MessageBoxComponent implements OnInit {
 
 
   onYes() {
+    if (this.content.messageType === MessageBoxType.Input &&
+      (this.form.value.valueInput === null || this.form.value.valueInput === undefined)) {
+      return;
+    }
+
     this.form.value.confirmed = true;
     this.dialogRef.close(this.form.value);
   }
