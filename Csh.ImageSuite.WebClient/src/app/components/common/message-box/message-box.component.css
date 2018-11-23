@@ -1,7 +1,30 @@
-.mat-dialog-container {
-  background-color: #555;
-  width: 250px;
-  height: 250px;
-  padding: 2px 2px;
-  
+
+.mat-dialog-title {
+  color: #f90;
+  font-size: 18px;
+  padding: 4px 10px;
+  margin:-24px -24px 0px -24px;
+  border-bottom: 1px solid #FF9900;
+}
+
+.mat-dialog-content {
+  color: white;
+  font-size: 16px;
+  padding: 10px 10px;
+}
+
+.mat-raised-button {
+    border: 1px solid #777;
+    border-radius: 3px;
+    width: 70px;
+    padding: 3px;
+    margin-left: 6px;
+}
+
+.mat-raised-button:hover {
+    color:#f90;
+}
+
+.mat-dialog-actions{
+    flex-direction:row-reverse;
 }
