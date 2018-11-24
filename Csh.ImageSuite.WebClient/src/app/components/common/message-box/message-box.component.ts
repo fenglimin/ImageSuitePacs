@@ -16,6 +16,7 @@ export class MessageBoxComponent implements OnInit {
   content = new MessageBoxContent();
   confirmed: boolean;
   valueInput: string;
+  needDisableYesButton = true;
 
   constructor(
     private fb: FormBuilder,
@@ -39,11 +40,6 @@ export class MessageBoxComponent implements OnInit {
 
 
   onYes() {
-    if (this.content.messageType === MessageBoxType.Input &&
-      (this.form.value.valueInput === null || this.form.value.valueInput === undefined)) {
-      return;
-    }
-
     this.form.value.confirmed = true;
     this.dialogRef.close(this.form.value);
   }
@@ -65,4 +61,9 @@ export class MessageBoxComponent implements OnInit {
     return this.content.messageType === MessageBoxType.Input;
   }
 
+  onInput() {
+    this.needDisableYesButton = this.content.messageType === MessageBoxType.Input &&
+      (this.form.value.valueInput === null || this.form.value.valueInput === undefined ||
+        this.form.value.valueInput === '');
+  }
 }

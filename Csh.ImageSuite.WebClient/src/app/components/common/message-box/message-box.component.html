@@ -11,9 +11,9 @@
   <mat-form-field *ngIf="content.messageType === 4">
     <input matInput
            placeholder="{{content.messageText}}"
-           formControlName="valueInput">
+           formControlName="valueInput"
+           (keyup)="onInput()">
   </mat-form-field>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
@@ -33,7 +33,7 @@
     <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>Cancel
   </button>
 
-  <button *ngIf="needShowOkButton()" class="mat-raised-button"
+  <button *ngIf="needShowOkButton()" class="mat-raised-button" [disabled]="needDisableYesButton"
           (click)="onYes()">
     <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Ok
   </button>
