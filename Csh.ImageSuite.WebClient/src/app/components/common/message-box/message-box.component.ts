@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {FormBuilder, Validators, FormGroup} from "@angular/forms";
 import * as moment from 'moment';
 import { Shortcut } from '../../../models/shortcut';
-import { MessageBoxType, MessageBoxContent } from '../../../models/messageBox';
+import { MessageBoxType, MessageBoxContent, DialogResult } from '../../../models/messageBox';
 
 @Component({
   selector: 'app-message-box',
@@ -13,10 +13,10 @@ import { MessageBoxType, MessageBoxContent } from '../../../models/messageBox';
 export class MessageBoxComponent implements OnInit {
 
   form: FormGroup;
-  content = new MessageBoxContent();
-  confirmed: boolean;
+  dialogResult: DialogResult;
   valueInput: string;
   needDisableYesButton = true;
+  content = new MessageBoxContent();
 
   constructor(
     private fb: FormBuilder,
@@ -28,7 +28,7 @@ export class MessageBoxComponent implements OnInit {
     this.content.messageType = messageType;
 
     this.form = fb.group({
-      confirmed: [true],
+      dialogResult: [DialogResult.Yes],
       valueInput: [this.valueInput, Validators.required]
     });
 
@@ -40,12 +40,22 @@ export class MessageBoxComponent implements OnInit {
 
 
   onYes() {
-    this.form.value.confirmed = true;
+    this.form.value.dialogResult = DialogResult.Yes;
     this.dialogRef.close(this.form.value);
   }
 
   onNo() {
-    this.form.value.confirmed = false;
+    this.form.value.dialogResult = DialogResult.No;
+    this.dialogRef.close(this.form.value);
+  }
+
+  onOk() {
+    this.form.value.dialogResult = DialogResult.Ok;
+    this.dialogRef.close(this.form.value);
+  }
+
+  onCancel() {
+    this.form.value.dialogResult = DialogResult.Cancel;
     this.dialogRef.close(this.form.value);
   }
 

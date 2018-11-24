@@ -29,12 +29,12 @@
   </button>
 
   <button *ngIf="needShowCancelButton()" class="mat-raised-button"
-          (click)="onNo()">
+          (click)="onCancel()">
     <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>Cancel
   </button>
 
   <button *ngIf="needShowOkButton()" class="mat-raised-button" [disabled]="needDisableYesButton"
-          (click)="onYes()">
+          (click)="onOk()">
     <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Ok
   </button>
 

@@ -5,6 +5,7 @@ import { Shortcut } from '../../../models/shortcut';
 import { Patient } from '../../../models/pssi';
 import { WorklistService } from '../../../services/worklist.service';
 import { DialogService } from '../../../services/dialog.service';
+import { MessageBoxType, MessageBoxContent, DialogResult } from '../../../models/messageBox';
 
 @Component({
   selector: 'app-query-shortcut',
@@ -36,8 +37,20 @@ export class QueryShortcutComponent implements OnInit {
   }
 
   deleteShortcut(): void {
-    this.dialogService.showMessageBox().subscribe(
-      val => console.log("Dialog output:", val)
-    );
+
+    const content = new MessageBoxContent();
+    content.title = 'Confirm Delete';
+    content.messageText = 'Are you sure to delete this shortcut?';
+    content.messageType = MessageBoxType.Question;
+
+    this.dialogService.showMessageBox(content).subscribe(
+      val => this.onConfirmDeleteCallback(val));
   }
+
+  onConfirmDeleteCallback(val: any) {
+    if (val.dialogResult === DialogResult.Yes) {
+      alert('delete');
+    }
+  }
+
 }

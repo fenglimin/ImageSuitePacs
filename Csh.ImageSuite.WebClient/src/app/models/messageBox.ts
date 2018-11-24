@@ -7,6 +7,13 @@ export enum MessageBoxType {
   Input
 }
 
+export enum DialogResult {
+  Ok,
+  Cancel,
+  Yes,
+  No
+}
+
 export class MessageBoxContent {
   title: string;
   messageText: string;
