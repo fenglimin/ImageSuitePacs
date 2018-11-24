@@ -15,6 +15,10 @@
   min-width: 400px;
 }
 
+.mat-dialog-actions {
+    margin-right: -12px;
+}
+
 .mat-form-field {
     min-width: 400px;
 }
