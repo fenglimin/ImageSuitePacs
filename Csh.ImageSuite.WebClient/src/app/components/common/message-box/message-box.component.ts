@@ -71,9 +71,13 @@ export class MessageBoxComponent implements OnInit {
     return this.content.messageType === MessageBoxType.Input;
   }
 
-  onInput() {
+  onInput(event) {
     this.needDisableYesButton = this.content.messageType === MessageBoxType.Input &&
       (this.form.value.valueInput === null || this.form.value.valueInput === undefined ||
         this.form.value.valueInput === '');
+
+    //if (!this.needDisableYesButton && event.code === "Enter") {
+    //  this.onOk();
+    //}
   }
 }

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { WorklistService } from '../../../services/worklist.service';
 import { DataSource } from '../../../models/shortcut';
-
+import { DialogService } from '../../../services/dialog.service';
+import { MessageBoxType, MessageBoxContent, DialogResult } from '../../../models/messageBox';
 
 @Component({
   selector: 'app-query-toolbar',
@@ -10,7 +11,7 @@ import { DataSource } from '../../../models/shortcut';
 })
 export class QueryToolbarComponent implements OnInit {
 
-  constructor(private worklistService: WorklistService) { }
+  constructor(private worklistService: WorklistService, private dialogService: DialogService) { }
 
   ngOnInit() {
   }
@@ -25,5 +26,21 @@ export class QueryToolbarComponent implements OnInit {
 
   onClearCondition() {
     this.worklistService.onCleanCondition();
+  }
+
+  onSaveShortcut() {
+    const content = new MessageBoxContent();
+    content.title = 'Add Shortcut';
+    content.messageText = 'Please input the name of the shortcut:';
+    content.messageType = MessageBoxType.Input;
+
+    this.dialogService.showMessageBox(content).subscribe(
+      val => this.onSaveShortcutCallback(val));
+  }
+
+  onSaveShortcutCallback(val: any) {
+    if (val.dialogResult === DialogResult.Ok) {
+      alert('add shortcut ' + val.valueInput);
+    }
   }
 }

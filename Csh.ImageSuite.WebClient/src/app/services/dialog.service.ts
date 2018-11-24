@@ -15,7 +15,7 @@ export class DialogService {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = false;
+    dialogConfig.autoFocus = messageBoxContent.messageType === MessageBoxType.Input;
 
     const title = messageBoxContent.title;
     const messageText = messageBoxContent.messageText;
