@@ -17,11 +17,11 @@
       <button class="shortcut-name-button" (click)="onQueryTodayStudy()">Today</button>
     </div>
   </div>
-  <div class="row">
+  <div *ngFor="let shortcut of allShortcuts" class="row">
     <div class="div-shortcut-item">
       <i class="glyphicon glyphicon-search"></i>
-      <button class="shortcut-name-button" (click)="showViewerShell(null)">All CR</button>
-      <button class="pull-right shortcut-close-button" (click)="deleteShortcut()">X</button>
+      <button class="shortcut-name-button" (click)="onQuery(shortcut)">{{shortcut.name}}</button>
+      <button class="pull-right shortcut-close-button" (click)="onDeleteShortcut(shortcut)">X</button>
     </div>
   </div>
   <div class="row">

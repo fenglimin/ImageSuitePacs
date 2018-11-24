@@ -46,4 +46,15 @@ export class Shortcut {
     this.studyId = '';
     this.accessionNo = '';
   }
+
+  copyConditionFrom(shortcut: Shortcut) {
+    this.patientId = shortcut.patientId;     
+    this.patientName = shortcut.patientName;
+    this.gender = shortcut.gender;
+    this.modality = shortcut.modality;
+    this.studyDate = shortcut.studyDate;
+    this.birthDate = shortcut.birthDate;
+    this.studyId = shortcut.studyId;
+    this.accessionNo = shortcut.accessionNo;
+  }
 }

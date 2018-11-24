@@ -16,7 +16,7 @@ export class WorklistService {
 
   private _shortcut : Shortcut;
   set shortcut(value: Shortcut) {
-    this._shortcut = value;
+    this._shortcut.copyConditionFrom(value);
     this.studies = this.onQueryStudies();
   }
   get shortcut(): Shortcut {
@@ -103,6 +103,11 @@ export class WorklistService {
     this.shortcut.studyDate = 'Today';
     this.onQueryStudies();
   }
+
+  onQueryStudyByShortcut(shortcut: Shortcut) {
+    this.shortcut = shortcut;
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Private functions
   private formatStudies(studies) {

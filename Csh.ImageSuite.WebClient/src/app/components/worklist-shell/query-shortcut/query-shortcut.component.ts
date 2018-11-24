@@ -14,18 +14,22 @@ import { MessageBoxType, MessageBoxContent, DialogResult } from '../../../models
 })
 export class QueryShortcutComponent implements OnInit {
 
-  allShortcuts: Shortcut[];
+  allShortcuts: Shortcut[] = [];
 
   constructor(private worklistService: WorklistService, private dialogService: DialogService) {
-    
+    const shortcut = new Shortcut();
+    shortcut.name = "All CR";
+    shortcut.id = 1;
+    shortcut.modality = "CR";
+    this.allShortcuts.push(shortcut);
   }
 
   ngOnInit() {
    // this.databaseService.getShortcuts().subscribe(shortcuts => this.allShortcuts = shortcuts);
   }
 
-  doQuery(shortcut: Shortcut): void {
-
+  onQuery(shortcut: Shortcut): void {
+    this.worklistService.onQueryStudyByShortcut(shortcut);
   }
 
   onQueryTodayStudy(): void {
@@ -36,7 +40,7 @@ export class QueryShortcutComponent implements OnInit {
     this.worklistService.onQueryAllStudies();
   }
 
-  deleteShortcut(): void {
+  onDeleteShortcut(shortcut: Shortcut): void {
 
     const content = new MessageBoxContent();
     content.title = 'Confirm Delete';
@@ -44,12 +48,12 @@ export class QueryShortcutComponent implements OnInit {
     content.messageType = MessageBoxType.Question;
 
     this.dialogService.showMessageBox(content).subscribe(
-      val => this.onConfirmDeleteCallback(val));
+      val => this.onConfirmDeleteCallback(val,shortcut));
   }
 
-  onConfirmDeleteCallback(val: any) {
+  onConfirmDeleteCallback(val: any, shortcut: Shortcut) {
     if (val.dialogResult === DialogResult.Yes) {
-      alert('delete');
+      alert('delete shortcut ' + shortcut.name);
     }
   }
 
