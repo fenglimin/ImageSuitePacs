@@ -1,10 +1,10 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import {MatDialog, MatDialogConfig} from "@angular/material";
+
 
 import { Shortcut } from '../../../models/shortcut';
 import { Patient } from '../../../models/pssi';
 import { WorklistService } from '../../../services/worklist.service';
-import { MessageBoxComponent } from '../../common/message-box/message-box.component';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-query-shortcut',
@@ -15,7 +15,7 @@ export class QueryShortcutComponent implements OnInit {
 
   allShortcuts: Shortcut[];
 
-  constructor(private worklistService: WorklistService, private dialog: MatDialog) {
+  constructor(private worklistService: WorklistService, private dialogService: DialogService) {
     
   }
 
@@ -36,24 +36,7 @@ export class QueryShortcutComponent implements OnInit {
   }
 
   deleteShortcut(): void {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = false;
-
-    const title = 'Confirm Delete';
-    const messageText = 'Please input the name of the shortcut:';//Are you sure to delete this shortcut?';
-    const messageType = 4;
-    dialogConfig.data = {
-      title,
-      messageText,
-      messageType
-    };
-
-    const dialogRef = this.dialog.open(MessageBoxComponent, dialogConfig);
-
-
-    dialogRef.afterClosed().subscribe(
+    this.dialogService.showMessageBox().subscribe(
       val => console.log("Dialog output:", val)
     );
   }

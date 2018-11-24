@@ -27,6 +27,10 @@
     margin-left: 6px;
 }
 
+.mat-raised-button:disabled:hover {
+    color: #999;
+}
+
 .mat-raised-button:hover {
     color:#f90;
 }
