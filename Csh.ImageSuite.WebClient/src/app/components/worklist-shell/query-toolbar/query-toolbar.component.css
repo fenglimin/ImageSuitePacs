@@ -1,4 +1,4 @@
-.query, .queryClear{
+.query, .queryClear, .querySave{
   width: 100px;
   height: 30px;
   border: none;
@@ -27,4 +27,16 @@
 
 .queryClear:active {
   background: url(../../../../img/button/ClearCondition_All.png) no-repeat right bottom;
+}
+
+.querySave {
+  background: url(../../../../img/button/Query_Save.png) no-repeat left top;
+}
+
+.querySave:hover {
+  background: url(../../../../img/button/Query_Save.png) no-repeat right top;
+}
+
+.querySave:active {
+  background: url(../../../../img/button/Query_Save.png) no-repeat right bottom;
 }
