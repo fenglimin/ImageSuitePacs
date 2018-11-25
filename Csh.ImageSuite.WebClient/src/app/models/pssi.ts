@@ -1,5 +1,11 @@
-﻿export class Patient {
+﻿export abstract class Pssi {
   id: number;
+  hide: boolean;
+
+  abstract setHide(hide: boolean): void;
+}
+
+export class Patient extends Pssi {
 
   patientId:string;
   patientName:string;
@@ -10,10 +16,15 @@
   gender: string;
 
   studyList: Array<Study>;
+
+  setHide(hide: boolean) {
+    this.hide = hide;
+    this.studyList.forEach(study => study.setHide(hide));
+  }
 }
 
-export class Study {
-  id: number;
+export class Study extends Pssi {
+
   checked: boolean;
   detailsLoaded: boolean;
 
@@ -26,15 +37,17 @@ export class Study {
   imageCount: number;
   modality: string;
 
-  
-
   patient: Patient;
   seriesList: Array<Series>;
+
+  setHide(hide: boolean) {
+    this.hide = hide;
+    this.seriesList.forEach(series => series.setHide(hide));
+  }
 }
 
 
-export class Series {
-  id: number;
+export class Series extends Pssi{
   
   seriesInstanceUid: string;
   modality: string;
@@ -47,11 +60,19 @@ export class Series {
 
   study: Study;
   imageList: Array<Image>;
+
+  setHide(hide: boolean) {
+    this.hide = hide;
+    this.imageList.forEach(image => image.setHide(hide));
+  }
 }
 
-export class Image {
-  id: number;
+export class Image extends Pssi {
   
   series: Series;
   objectFile: string;
+
+  setHide(hide: boolean) {
+    this.hide = hide;
+  }
 }
