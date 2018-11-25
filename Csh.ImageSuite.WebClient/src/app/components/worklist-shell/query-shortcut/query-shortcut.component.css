@@ -14,6 +14,34 @@
   width:100%;
 }
 
+.div-shortcut-header:hover {
+    color: #F90;
+}
+
+.div-shortcut-header:hover .div-shortcut-header-button{
+    color: #F90;
+    background-color:#444;
+    border: solid 1px #888;
+    border-radius: 2px;
+    margin-top: -2px;
+}
+
+.div-shortcut-header:hover .div-shortcut-header-button:active{
+    color: red;
+}
+
+.div-shortcut-header:hover .div-shortcut-header-button:focus{
+    
+}
+
+.div-shortcut-header-button {
+  padding:4px;
+  color: transparent;
+  background-color: transparent;
+  border:none;
+  outline:none;
+}
+
 .div-shortcut-item{
   padding-top: 3px;
   padding-bottom:3px;
@@ -31,6 +59,10 @@
 
 .div-shortcut-item:hover .shortcut-close-button{
     color: #ff9900;
+    background-color:#444;
+    border: solid 1px #888;
+    border-radius: 2px;
+    margin-top: -1px;
 }
 
 .div-shortcut-item:hover .shortcut-close-button:hover{

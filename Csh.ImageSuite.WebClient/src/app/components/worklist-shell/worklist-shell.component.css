@@ -133,26 +133,6 @@
     }
 }
 
-#queryTree .node-queryTree {
-    padding: 2px 15px;
-}
-
-.query {
-    background: url(../../../img/button/Query_All.png) no-repeat left top;
-}
-
-    .query:active {
-        background: url(../../../img/button/Query_All.png) no-repeat right top;
-    }
-
-.queryClear {
-    background: url(../../../img/button/ClearCondition_All.png) no-repeat left top;
-}
-
-    .queryClear:active {
-        background: url(../../../img/button/ClearCondition_All.png) no-repeat right top;
-    }
-
 /* horizontal panel*/
 
 .sp_panel-container {
@@ -167,7 +147,7 @@
     flex: 0 0 auto;
     /* only manually resize */
     padding: 4px;
-    width: 170px;
+    width: 200px;
     min-height: 200px;
     /*min-width: 1px;*/
     /*white-space: nowrap;*/

@@ -3,6 +3,7 @@
     <div class="div-shortcut-header">
       <i class="glyphicon glyphicon-hdd"></i>
       <button class="shortcut-name-button">Local Data Source</button>
+      <button class="pull-right glyphicon glyphicon-refresh div-shortcut-header-button"></button>
     </div>
   </div>
   <div class="row">
@@ -21,7 +22,7 @@
     <div class="div-shortcut-item">
       <i class="glyphicon glyphicon-search"></i>
       <button class="shortcut-name-button" (click)="onQuery(shortcut)">{{shortcut.name}}</button>
-      <button class="pull-right shortcut-close-button" (click)="onDeleteShortcut(shortcut)">X</button>
+      <button class="pull-right glyphicon glyphicon-remove div-shortcut-close-button" (click)="onDeleteShortcut(shortcut)"></button>
     </div>
   </div>
   <div class="row">
