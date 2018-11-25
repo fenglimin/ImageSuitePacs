@@ -57,4 +57,12 @@ export class Shortcut {
     this.studyId = shortcut.studyId;
     this.accessionNo = shortcut.accessionNo;
   }
+
+  clone(theObj) {
+    var obj = {}
+    for (var key in theObj) {
+      obj[key] = theObj[key];
+    }
+    return obj;
+  }
 }
