@@ -146,6 +146,7 @@ export class DatabaseService {
 
     series.id = this.id_series++;
     series.study = study;
+    series.modality = 'CR';
 
     series.imageList = new Array<Image>();
     for (let i = 0; i < imageCount; i++) {
