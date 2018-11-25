@@ -1,24 +1,39 @@
 <div class="container-fluid">
   <div *ngFor="let patient of viewerShellData.patientList" class="row patient-div">
     <div class="patient-header">
+      <div>
         <button class="patient-button" (click)="onClickPssi(patient)" title="Toggle to show/hide patient images"></button>
+      </div>
+      <table class="patient-info">
+        <tr>{{patient.id}}</tr>
+        <tr>{{patient.patientName}}</tr>
+      </table>
     </div>
     <div *ngFor="let study of patient.studyList"
          [style.visibility]= "getPssiVisibility(patient)" [style.height]="getPssiHeight(patient)">
       <div class="study-header">
-        <button class="study-button" (click)="onClickPssi(study)" title="Toggle to show/hide study images"></button>
+        <div>
+          <button class="study-button" (click)="onClickPssi(study)" title="Toggle to show/hide study images"></button>
+        </div>
+        <table class="study-info">
+          <tr>{{study.studyDateString}}</tr>
+        </table>
       </div>
       <div *ngFor="let series of study.seriesList"
            [style.visibility]= "getPssiVisibility(study)" [style.height]="getPssiHeight(study)">
         <div class="series-header">
-          <button class="series-button" (click)="onClickPssi(series)" title="Toggle to show/hide series images"></button>
+          <div>
+            <button class="series-button" (click)="onClickPssi(series)" title="Toggle to show/hide series images"></button>
+          </div>
+          <table class="series-info">
+            <tr>{{series.modality}}</tr>
+          </table>
         </div>
         <div *ngFor="let image of series.imageList"
              [style.visibility]= "getPssiVisibility(series)" [style.height]="getPssiHeight(series)">
           <div class="image-button">
             <p style="color:white">{{image.id}}</p>
           </div>
-            
         </div>
       </div>
     </div>
