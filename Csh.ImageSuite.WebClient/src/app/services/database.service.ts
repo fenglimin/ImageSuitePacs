@@ -66,7 +66,14 @@ export class DatabaseService {
   }
 
   getStudiesTest(): Study[] {
-    return this.localTestData;
+    
+
+    const aa = this.localTestData.sort(this.compareStudy);
+    return aa;
+  }
+
+  compareStudy(study1: Study, study2: Study): number {
+    return study1.patient.patientName > study2.patient.patientName ? 1 : -1;
   }
 
   private createStudiesTest(): Study[] {
