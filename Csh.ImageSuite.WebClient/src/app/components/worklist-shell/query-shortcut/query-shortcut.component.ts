@@ -25,7 +25,7 @@ export class QueryShortcutComponent implements OnInit {
   }
 
   ngOnInit() {
-   // this.databaseService.getShortcuts().subscribe(shortcuts => this.allShortcuts = shortcuts);
+    this.onRefreshShortcut();
   }
 
   onQuery(shortcut: Shortcut): void {
@@ -57,4 +57,11 @@ export class QueryShortcutComponent implements OnInit {
     }
   }
 
+  onRefreshShortcut() {
+    // this.databaseService.getShortcuts().subscribe(shortcuts => this.allShortcuts = shortcuts);
+  }
+
+  onRefreshThirdpartyPacs() {
+
+  }
 }

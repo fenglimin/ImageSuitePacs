@@ -3,10 +3,9 @@
   width: 250px;
   height: 250px;
   padding: 2px 2px;
-  
 }
 
-.div-shortcut-header {
+.shortcut-header {
   padding:4px;
   background-color: #555555;
   border-radius: 3px;
@@ -14,27 +13,7 @@
   width:100%;
 }
 
-.div-shortcut-header:hover {
-    color: #F90;
-}
-
-.div-shortcut-header:hover .div-shortcut-header-button{
-    color: #F90;
-    background-color:#444;
-    border: solid 1px #888;
-    border-radius: 2px;
-    margin-top: -2px;
-}
-
-.div-shortcut-header:hover .div-shortcut-header-button:active{
-    color: red;
-}
-
-.div-shortcut-header:hover .div-shortcut-header-button:focus{
-    
-}
-
-.div-shortcut-header-button {
+.shortcut-header-button {
   padding:4px;
   color: transparent;
   background-color: transparent;
@@ -42,7 +21,23 @@
   outline:none;
 }
 
-.div-shortcut-item{
+.shortcut-header:hover {
+    color: #F90;
+}
+
+.shortcut-header:hover .shortcut-header-button{
+    color: #F90;
+    background-color:#444;
+    border: solid 1px #888;
+    border-radius: 2px;
+    margin-top: -2px;
+}
+
+.shortcut-header:hover .shortcut-header-button:active{
+    color: red;
+}
+
+.shortcut-item{
   padding-top: 3px;
   padding-bottom:3px;
   padding-left:24px;
@@ -52,43 +47,40 @@
   width:100%;
 }
 
-.div-shortcut-item:hover{
-    color: #ff9900;
-    background-color:#999;
-}
-
-.div-shortcut-item:hover .shortcut-close-button{
-    color: #ff9900;
-    background-color:#444;
-    border: solid 1px #888;
-    border-radius: 2px;
-    margin-top: -1px;
-}
-
-.div-shortcut-item:hover .shortcut-close-button:hover{
-    color: red;
-}
-
-.div-shortcut-item:hover .shortcut-name-button:hover{
-    color: red;
-}
-
-.shortcut-close-button{
-  background-color:transparent;
-  border-width: 0px;
-  color:transparent;
-}
-
-.shortcut-close-button:focus{
-    outline:none;
-}
-
 .shortcut-name-button {
   background-color:transparent;
   border-width: 0px;
   color:inherit;
+  border:none;
+  outline:none;
 }
 
-.shortcut-name-button:focus{
-    outline:none;
+.shortcut-item:hover{
+    color: #ff9900;
+    background-color:#999;
+}
+
+.shortcut-item:hover .shortcut-close-button {
+    color: #F90;
+    background-color:#666;
+    border: solid 1px #aaa;
+    border-radius: 2px;
+    margin-top: -1px;
+    margin-right: 2px;
+}
+
+.shortcut-item:hover .shortcut-name-button:hover {
+    color: red;
+}
+
+.shortcut-item:hover .shortcut-close-button:active {
+    color: red;
+}
+
+.shortcut-close-button{
+  padding:4px;
+  color: transparent;
+  background-color: transparent;
+  border:none;
+  outline:none;
 }
