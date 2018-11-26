@@ -199,8 +199,15 @@
     background: #07090c;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
+    -ms-overflow-style:none;
+    overflow:-moz-hidden-unscrollable;
     /*color: white;*/
+}
+
+.sp_panel-left::-webkit-scrollbar{
+    display: none;
 }
 
 .sp_splitter {
