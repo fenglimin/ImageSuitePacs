@@ -13,7 +13,7 @@ import { GroupHangingProtocal } from '../../models/hanging-protocal';
 })
 export class ViewerShellComponent implements OnInit, AfterViewInit {
   Arr = Array; //Array type captured in a variable
-  hideMe = false;
+ 
   viewerShellData: ViewerShellData;
   subscriptionShellNavigated: Subscription;
 
@@ -22,7 +22,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   constructor(private shellNavigatorService: ShellNavigatorService, private hangingProtocalService: HangingProtocalService) {
     this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
       viewerShellData => {
-        this.hideMe = ( viewerShellData === null || viewerShellData.getId() !== this.viewerShellData.getId() );
+        this.viewerShellData.hide = ( viewerShellData === null || viewerShellData.getId() !== this.viewerShellData.getId() );
       });
   }
 

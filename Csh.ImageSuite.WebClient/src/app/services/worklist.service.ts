@@ -5,7 +5,7 @@ import { DatabaseService } from './database.service'
 import { ViewerShellData } from '../models/viewer-shell-data';
 import { HangingProtocalService } from './hanging-protocal.service';
 import { ShellNavigatorService } from './shell-navigator.service';
-import { Study } from '../models/pssi';
+import { Patient, Study } from '../models/pssi';
 import { DataSource } from '../models/shortcut';
 
 @Injectable({
@@ -60,21 +60,41 @@ export class WorklistService {
     return this.studies;
   }
 
-  onShowStudy(study: Study) {
+  onShowSingleStudy(study: Study) {
+
+    const viewerShellData = new ViewerShellData(this.hangingProtocalService.getDefaultGroupHangingProtocal(),
+      this.hangingProtocalService.getDefaultImageHangingPrococal());
+    
+    if (this.isUsingLocalTestData()) {
+      viewerShellData.addStudy(study);
+      this.shellNavigatorService.shellNavigate(viewerShellData);
+    } else {
+      this.databaseService.getStudy(study.id).subscribe(value => {
+        viewerShellData.addStudy(value);
+        // If the PSSI information changed, need to update worklist ??
+        // study = value;
+        // study = Study.clone(value, false);
+        // study.patient = Patient.clone(value.patient, false);
+        this.shellNavigatorService.shellNavigate(viewerShellData);
+      });
+    }
+  }
+
+  onShowAllCheckedStudy() {
     if (this.isUsingLocalTestData()) {
       const viewerShellData = new ViewerShellData(this.hangingProtocalService.getDefaultGroupHangingProtocal(),
         this.hangingProtocalService.getDefaultImageHangingPrococal());
-      this.studies.forEach(study1 => {
-        if (study1.checked) {
-          viewerShellData.addStudy(study1);
+      this.studies.forEach(study => {
+        if (study.checked) {
+          viewerShellData.addStudy(study);
         }
       });
 
       this.shellNavigatorService.shellNavigate(viewerShellData);
     } else {
-      this.studies.forEach(study1 => {
-        if (study1.checked) {
-          this.databaseService.getStudy(study1.id).subscribe(value => this.studyDetailsLoaded(this.studies.indexOf(study1), value));
+      this.studies.forEach(study => {
+        if (study.checked) {
+          this.databaseService.getStudy(study.id).subscribe(value => this.studyDetailsLoaded(this.studies.indexOf(study), value));
         }
       });
     }
@@ -124,11 +144,11 @@ export class WorklistService {
 
   private studyDetailsLoaded(index: number, studyNew: Study) {
 
-    studyNew.checked = true;
     studyNew.detailsLoaded = true;
+    studyNew.checked = true;
     this.studies[index] = studyNew;
 
-    if (this.studies.every(study => study.checked === study.detailsLoaded)) {
+    if (this.studies.every(study => !study.checked || (study.checked && study.detailsLoaded))) {
       const viewerShellData = new ViewerShellData(this.hangingProtocalService.getDefaultGroupHangingProtocal(),
         this.hangingProtocalService.getDefaultImageHangingPrococal());
       this.studies.forEach(value => {

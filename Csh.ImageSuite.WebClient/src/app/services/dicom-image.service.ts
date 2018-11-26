@@ -13,8 +13,13 @@ export class DicomImageService {
   private dicomImageUrl = 'dicomImage';
   constructor(private http: HttpClient) { }
 
-  getImage(image: Image): Observable<Blob> {
-    const imageUrl = `${this.dicomImageUrl}/details/${image.id}`;
+  getDicomFile(image: Image): Observable<Blob> {
+    const imageUrl = `${this.dicomImageUrl}/dicom/${image.id}`;
+    return this.http.get(imageUrl, { responseType: 'blob' });
+  }
+
+  getThumbnailFile(image: Image): Observable<Blob> {
+    const imageUrl = `${this.dicomImageUrl}/thumbnail/${image.id}`;
     return this.http.get(imageUrl, { responseType: 'blob' });
   }
 }

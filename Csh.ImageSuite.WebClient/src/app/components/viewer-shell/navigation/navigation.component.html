@@ -5,8 +5,8 @@
         <button class="patient-button" (click)="onClickPssi(patient)" title="Toggle to show/hide patient images"></button>
       </div>
       <table class="patient-info">
-        <tr>{{patient.id}}</tr>
         <tr>{{patient.patientName}}</tr>
+        <tr>{{patient.patientId}}</tr>
       </table>
     </div>
     <div *ngFor="let study of patient.studyList"
@@ -17,6 +17,7 @@
         </div>
         <table class="study-info">
           <tr>{{study.studyDateString}}</tr>
+          <tr>{{study.studyDesc}}</tr>
         </table>
       </div>
       <div *ngFor="let series of study.seriesList"
@@ -27,12 +28,22 @@
           </div>
           <table class="series-info">
             <tr>{{series.modality}}</tr>
+            <tr>{{series.imageCount}} image</tr>
           </table>
         </div>
-        <div *ngFor="let image of series.imageList"
+        <!--<div class="image-list" [style.visibility]="getPssiVisibility(series)" [style.height]="getPssiHeight(series)">
+          <table >
+            <tr *ngFor="let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index">
+              <td><app-thumbnail [image]="series.imageList[imageIndex*2]"></app-thumbnail></td>
+              <td *ngIf="imageIndex*2+1 < series.imageList.length"><app-thumbnail [image]="series.imageList[imageIndex*2+1]"></app-thumbnail></td>
+            </tr>
+          </table>
+        </div>-->
+        <div *ngFor="let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index"
              [style.visibility]= "getPssiVisibility(series)" [style.height]="getPssiHeight(series)">
           <div class="image-button">
-            <p style="color:white">{{image.id}}</p>
+            <app-thumbnail [image]="series.imageList[imageIndex*2]"></app-thumbnail>
+            <app-thumbnail *ngIf="imageIndex*2+1 < series.imageList.length" [image]="series.imageList[imageIndex*2+1]"></app-thumbnail>
           </div>
         </div>
       </div>

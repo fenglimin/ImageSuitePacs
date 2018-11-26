@@ -7,7 +7,7 @@ import { Patient, Study, Series, Image, Pssi } from '../../../models/pssi';
   styleUrls: ['./navigation.component.css']
 })
 export class NavigationComponent implements OnInit {
-
+  Arr = Array; //Array type captured in a variable
   @Input() viewerShellData: ViewerShellData;
 
   ngOnInit() {
@@ -19,12 +19,16 @@ export class NavigationComponent implements OnInit {
   }
 
   getPssiVisibility(pssi: Pssi) {
-    return pssi.hide ? 'hidden' : 'visible';
+    return (pssi.hide || this.viewerShellData.hide)? 'hidden' : 'visible';
   }
 
   getPssiHeight(pssi: Pssi) {
-    return pssi.hide ? '0px' : '100%';
+    return (pssi.hide || this.viewerShellData.hide)? '0px' : '100%';
   }
 
+  getThumbnailListRowCount(series: Series): number {
+    const count = Math.trunc((series.imageList.length+1)/2);
+    return count;
+  }
 }
 

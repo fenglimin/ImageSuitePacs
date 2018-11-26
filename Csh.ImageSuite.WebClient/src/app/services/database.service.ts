@@ -130,6 +130,7 @@ export class DatabaseService {
     study.studyTimeString = '12:11:12';
     study.modality = 'DX';
     study.checked = false;
+    study.studyDesc = 'Study Desc';
 
     study.seriesList = new Array<Series>();
     for (let i = 0; i < seriesCount; i++){
@@ -147,6 +148,7 @@ export class DatabaseService {
     series.id = this.id_series++;
     series.study = study;
     series.modality = 'CR';
+    series.imageCount = imageCount;
 
     series.imageList = new Array<Image>();
     for (let i = 0; i < imageCount; i++) {

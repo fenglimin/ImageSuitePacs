@@ -14,7 +14,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
   _imageData: ViewerImageData;
   @Input()
   set imageData(imageData: ViewerImageData) {
-    if (this._imageData != imageData) {
+    if (this._imageData !== imageData) {
       this._imageData = imageData;
       this.refreshImage();
     }
@@ -68,7 +68,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     this.isImageLoading = true;
 
 
-    this.dicomImageService.getImage(image).subscribe(data => {
+    this.dicomImageService.getThumbnailFile(image).subscribe(data => {
       this.createImageFromBlob(data);
       this.isImageLoading = false;
     }, error => {

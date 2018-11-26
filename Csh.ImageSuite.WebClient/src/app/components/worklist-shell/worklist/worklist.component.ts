@@ -45,7 +45,7 @@ export class WorklistComponent implements OnInit {
 
 
   ngOnInit() {
-    this.worklistService.onQueryStudies()
+    this.worklistService.onQueryStudies();
   }
 
   onStudyChecked(study: Study) {
@@ -58,6 +58,6 @@ export class WorklistComponent implements OnInit {
 
   doShowStudy(study: Study) {
     study.checked = true;
-    this.worklistService.onShowStudy(study);
+    this.worklistService.onShowSingleStudy(study);
   }
 }

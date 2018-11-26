@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { WorklistService } from '../../../services/worklist.service';
 
 @Component({
   selector: 'app-operate-toolbar',
@@ -9,7 +10,7 @@ export class OperateToolbarComponent implements OnInit {
 
   disableLoadImageButton:boolean;
 
-  constructor() {
+  constructor(private worklistService: WorklistService) {
     this.disableLoadImageButton = false;
   }
 
@@ -17,7 +18,7 @@ export class OperateToolbarComponent implements OnInit {
   }
 
   onLoadImage() {
-
+    this.worklistService.onShowAllCheckedStudy();
   }
 
   onLoadKeyImage() {

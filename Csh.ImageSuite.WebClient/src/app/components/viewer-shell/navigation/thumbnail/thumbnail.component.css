@@ -1,0 +1,15 @@
+.thumbnail {
+  padding: 2px;
+  width: 70px;
+  height: 70px;
+  margin-right: 4px;
+  background-color: black;
+}
+
+.img {
+  width: 70px;
+  height: 70px;
+  border: solid 1px #aaa;
+  background-color: black;
+  margin-right: 4px;
+}
