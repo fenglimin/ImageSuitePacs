@@ -14,7 +14,7 @@
   background-color: #555555;
   border-radius: 3px;
   color: white;
-  width:100%;
+  width: 184px;
   height: 48px;
   border: solid 1px #333;
   display:flex;
@@ -147,7 +147,7 @@
 
 .image-button {
   padding:4px;
-  background-color: #555555;
+  background-color: #555;
   border-radius: 3px;
   color: white;
   height: 80px;

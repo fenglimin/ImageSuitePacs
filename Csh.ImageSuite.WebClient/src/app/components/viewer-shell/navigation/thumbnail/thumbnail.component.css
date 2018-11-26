@@ -3,13 +3,14 @@
   width: 70px;
   height: 70px;
   margin-right: 4px;
+  border: solid 1px #888;
   background-color: black;
 }
 
 .img {
   width: 70px;
   height: 70px;
-  border: solid 1px #aaa;
+  
   background-color: black;
   margin-right: 4px;
 }
