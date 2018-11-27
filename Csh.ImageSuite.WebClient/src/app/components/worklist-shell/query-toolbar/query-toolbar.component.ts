@@ -11,7 +11,7 @@ import { MessageBoxType, MessageBoxContent, DialogResult } from '../../../models
 })
 export class QueryToolbarComponent implements OnInit {
 
-  constructor(private worklistService: WorklistService, private dialogService: DialogService) { }
+  constructor(public worklistService: WorklistService, private dialogService: DialogService) { }
 
   ngOnInit() {
   }

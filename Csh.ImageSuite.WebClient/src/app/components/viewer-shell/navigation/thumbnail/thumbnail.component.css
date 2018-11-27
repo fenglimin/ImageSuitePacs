@@ -5,7 +5,13 @@
   margin-right: 4px;
   border: solid 1px #888;
   background-color: black;
+  overflow: hidden;
 }
+
+.thumbnail:hover{
+  border: solid 1px #F90;
+}
+
 
 .img {
   width: 70px;
@@ -13,4 +19,5 @@
   
   background-color: black;
   margin-right: 4px;
+  overflow: hidden;
 }

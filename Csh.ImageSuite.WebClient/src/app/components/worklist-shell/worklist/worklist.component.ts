@@ -13,7 +13,7 @@ export class WorklistComponent implements OnInit {
   
   shortcutSelected: Subscription;
 
-  constructor(private worklistService: WorklistService) {
+  constructor(public worklistService: WorklistService) {
     this.shortcutSelected = this.worklistService.shortcutSelected$.subscribe(
       shortcut => this.onShortcutSelected(shortcut));
 
