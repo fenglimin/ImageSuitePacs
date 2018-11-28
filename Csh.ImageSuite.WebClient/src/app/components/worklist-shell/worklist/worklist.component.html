@@ -1,4 +1,4 @@
-<table id="tblStudies" class="table table-hover table-bordered table-condensed">
+<table id="tblStudies" class="table table-bordered table-condensed">
   <tr id="trStudiesHeader">
     <th *ngFor="let col of worklistColumns">
       <a href="#">{{col}}</a>
@@ -71,3 +71,9 @@
     <td>{{study.studyId}}</td>
   </tr>
 </table>
+
+<mat-progress-spinner [style.visibility]= "worklistService.querying? 'visible' : 'hidden'" class="loading-shade"
+                      [color]="color"
+                      [mode]="mode"
+                      [value]="value">
+</mat-progress-spinner>

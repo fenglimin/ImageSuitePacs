@@ -42,6 +42,32 @@
   vertical-align: middle;
 }
 
+#tblStudies tr:nth-child(2n+1){
+    background-color:#181818;
+}
+
+#tblStudies tr:nth-child(1){
+    background-color:black;
+}
+
+#tblStudies tr:nth-child(2){
+    background-color:black;
+}
+
+#tblStudies tr:hover{
+    background-color:#555;
+    color:#f90;
+}
+
+#tblStudies tr:nth-child(1):hover{
+    background-color:black;
+}
+
+#tblStudies tr:nth-child(2):hover{
+    background-color:black;
+    color: white;
+}
+
 #trStudiesQuery .dropdown {
   background-color:#555555;
   color:red;
@@ -53,19 +79,16 @@
   background-color:#555555;
 }
 
-.table-hover > tbody > tr:nth-child(n+3) {
-  color:#ccc;
-}
-
-.table-hover > tbody > tr:nth-child(n+3):hover {
-  background-color: #555555;
-  color:#ff9900;
-}
-
-.table-hover > tbody > tr:nth-child(1):hover {
-  background-color: black;
-}
-
-.table-hover > tbody > tr:nth-child(2):hover {
-  background-color: black;
+.loading-shade {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    margin: auto;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -11,6 +11,10 @@ import { WorklistService } from '../../../services/worklist.service';
 })
 export class WorklistComponent implements OnInit {
   
+  color = '#primary';
+  mode = 'indeterminate';
+  value = 50;
+
   shortcutSelected: Subscription;
 
   constructor(public worklistService: WorklistService) {

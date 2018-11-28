@@ -12,7 +12,8 @@ import { DataSource } from '../models/shortcut';
   providedIn: 'root'
 })
 export class WorklistService {
-  studies : Study[];
+  studies: Study[];
+  querying = false;
 
   private _shortcut : Shortcut;
   set shortcut(value: Shortcut) {
@@ -51,8 +52,10 @@ export class WorklistService {
 
   onQueryStudies(): Study[] {
 
+    this.querying = true;
     if (this.isUsingLocalTestData()) {
-      this.studies = this.databaseService.getStudiesTest();  
+      this.studies = this.databaseService.getStudiesTest();
+      this.querying = false;
     } else {
       this.databaseService.getStudies(this._shortcut).subscribe(studies => this.formatStudies(studies));  
     }
@@ -140,6 +143,7 @@ export class WorklistService {
     }
 
     this.studies = studies;
+    this.querying = false;
   }
 
   private studyDetailsLoaded(index: number, studyNew: Study) {
