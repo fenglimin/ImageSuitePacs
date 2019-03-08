@@ -26,7 +26,18 @@
               "src/styles.css",
               "src/bootStrap/css/bootstrap.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "src/bootstrap/js/bootstrap.min.js",
+              "src/lib/jCanvaScript.js",
+              "src/lib/extension.js",
+              "src/lib/jquery.resizable.js",
+              "src/lib/hammer.js",
+              "src/lib/cornerstone.js",
+              "src/lib/cornerstoneTools.js",
+              "src/lib/dicomparser.js",
+              "src/lib/cornerstoneWADOImageLoader.js"
+            ]
           },
           "configurations": {
             "production": {

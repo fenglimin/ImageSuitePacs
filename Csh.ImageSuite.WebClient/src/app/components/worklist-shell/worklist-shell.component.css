@@ -161,7 +161,7 @@
 .sp_splitter {
     flex: 0 0 auto;
     width: 8px;
-    background: url(../../../img/button/split_vertical_collapse.jpg) center center no-repeat #535353;
+    background: url(../../../assets/img/button/split_vertical_collapse.jpg) center center no-repeat #535353;
     min-height: 200px;
     cursor: pointer;
 }
@@ -201,7 +201,7 @@
 .sp_splitter-horizontal {
     flex: 0 0 auto;
     height: 8px;
-    background: url(../../../img/button/split_horizontal_collapse.jpg) center center no-repeat #535353;
+    background: url(../../../assets/img/button/split_horizontal_collapse.jpg) center center no-repeat #535353;
     cursor: pointer;
     z-index: 2;
 }

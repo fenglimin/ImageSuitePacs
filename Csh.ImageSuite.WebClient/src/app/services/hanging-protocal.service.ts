@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ViewerShellData } from '../models/viewer-shell-data';
 import { LayoutPosition, LayoutMatrix } from '../models/layout';
-import { GroupHangingProtocal, ImageHangingProtocal} from '../models/hanging-protocal';
+import { GroupHangingProtocal, ImageHangingProtocal, GroupHangingData, ImageHangingData } from '../models/hanging-protocal';
 import { Patient, Study, Series, Image } from '../models/pssi';
 import { ViewerGroupData } from '../models/viewer-group-data';
 import { ViewerImageData } from '../models/viewer-image-data';
@@ -15,6 +15,33 @@ export class HangingProtocalService {
 
   groupLayoutNumberList = [11, 11, 12, 22, 22];
   imageLayoutNumberList = [11, 11, 12, 22, 22, 23, 23, 33];
+
+  groupHangingDataList: GroupHangingData[] = [
+      { groupHangingProtocal: GroupHangingProtocal.ByPatent, name: "Patient", tip: "Group Image by Paitient" },
+      { groupHangingProtocal: GroupHangingProtocal.ByStudy,  name: "Study",   tip: "Group Image by Study" },
+      { groupHangingProtocal: GroupHangingProtocal.BySeries, name: "Series",  tip: "Group Image by Series" },
+      { groupHangingProtocal: GroupHangingProtocal.FreeHang, name: "FreeHang", tip: "Free Hang" }
+  ];
+
+  groupLayoutDataList: GroupHangingData[] = [
+      { groupHangingProtocal: GroupHangingProtocal.FreeHang_1X1, name: "Layout_1X1", tip: "Layout Group by 1X1" },
+      { groupHangingProtocal: GroupHangingProtocal.FreeHang_2X1, name: "Layout_1X2", tip: "Layout Group by 1X2" },
+      { groupHangingProtocal: GroupHangingProtocal.FreeHang_1X2, name: "Layout_2X1", tip: "Layout Group by 2X1" },
+      { groupHangingProtocal: GroupHangingProtocal.FreeHang_2X2, name: "Layout_2X2", tip: "Layout Group by 2X2" },
+      { groupHangingProtocal: GroupHangingProtocal.FreeHang_3X3, name: "Layout_3X3", tip: "Layout Group by 3X3" }
+  ];
+
+  imageLayoutDataList: ImageHangingData[] = [
+      { imageHangingProtocal: ImageHangingProtocal.Auto, name: "tile", tip: "Layout Image by Modality" },
+      { imageHangingProtocal: ImageHangingProtocal.FreeHang_1X1, name: "SubLayout_1X1", tip: "Layout Image by 1X1" },
+      { imageHangingProtocal: ImageHangingProtocal.FreeHang_2X1, name: "SubLayout_1X2", tip: "Layout Image by 1X2" },
+      { imageHangingProtocal: ImageHangingProtocal.FreeHang_1X2, name: "SubLayout_2X1", tip: "Layout Image by 2X1" },
+      { imageHangingProtocal: ImageHangingProtocal.FreeHang_2X2, name: "SubLayout_2X2", tip: "Layout Image by 2X2" },
+      { imageHangingProtocal: ImageHangingProtocal.FreeHang_3X3, name: "SubLayout_3X3", tip: "Layout Image by 3X3" },
+      { imageHangingProtocal: ImageHangingProtocal.FreeHang_4X3, name: "SubLayout_3X4", tip: "Layout Image by 3X4" },
+      { imageHangingProtocal: ImageHangingProtocal.FreeHang_6X5, name: "SubLayout_5X6", tip: "Layout Image by 5X6" }
+  ];
+
   constructor() { }
 
   getDefaultGroupHangingProtocal(): GroupHangingProtocal {
@@ -25,6 +52,29 @@ export class HangingProtocalService {
     return this.defaultImageHangingPrococal;
   }
 
+  getGroupHangingDataList(): GroupHangingData[] {
+      return this.groupHangingDataList;
+  }
+
+  getDefaultGroupHangingData(): GroupHangingData {
+      return this.groupHangingDataList[1];
+  }
+
+  getGroupLayoutDataList(): GroupHangingData[] {
+    return this.groupLayoutDataList;
+  }
+
+  getDefaultGroupLayoutData(): GroupHangingData {
+    return this.groupLayoutDataList[0];
+  }
+
+  getImageLayoutDataList(): ImageHangingData[] {
+    return this.imageLayoutDataList;
+  }
+
+  getDefaultImageLayoutData(): ImageHangingData {
+    return this.imageLayoutDataList[0];
+  }
 
   applyGroupHangingProtocal(viewerShellData: ViewerShellData, groupHangingProtocal: GroupHangingProtocal) {
 

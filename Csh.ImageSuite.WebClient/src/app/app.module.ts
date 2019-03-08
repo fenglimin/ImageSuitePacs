@@ -23,6 +23,7 @@ import { ImageViewerComponent } from './components/viewer-shell/group-viewer/ima
 import { QueryToolbarComponent } from './components/worklist-shell/query-toolbar/query-toolbar.component';
 import { OperateToolbarComponent } from './components/worklist-shell/operate-toolbar/operate-toolbar.component';
 import { MessageBoxComponent } from './components/common/message-box/message-box.component';
+import { DropdownButtonMenuComponent } from './components/common/dropdown-button-menu/dropdown-button-menu.component';
 
 import {
   MatDatepickerModule,
@@ -41,6 +42,8 @@ import {MatTabsModule} from '@angular/material/tabs';
 
 import {ReactiveFormsModule} from "@angular/forms";
 import {MatMomentDateModule} from "@angular/material-moment-adapter";
+import { AnnotationModule } from './annotation/annotation.module';
+
 
 @NgModule({
   declarations: [
@@ -57,7 +60,8 @@ import {MatMomentDateModule} from "@angular/material-moment-adapter";
     ImageViewerComponent,
     QueryToolbarComponent,
     OperateToolbarComponent,
-    MessageBoxComponent
+    MessageBoxComponent,
+    DropdownButtonMenuComponent
   ],
   imports: [
     BrowserModule,
@@ -82,7 +86,8 @@ import {MatMomentDateModule} from "@angular/material-moment-adapter";
     MatDialogModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    AnnotationModule
 
   ],
   providers: [],

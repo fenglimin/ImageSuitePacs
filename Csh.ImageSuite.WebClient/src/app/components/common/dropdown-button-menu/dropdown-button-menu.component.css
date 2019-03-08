@@ -1,0 +1,24 @@
+li.dropdown.open {
+    margin: -20px 0 0;
+    width: 35px;
+}
+
+li.dropdown {
+    margin: -20px 0 0;
+    width: 35px;
+}
+
+.dropdown-button-menu {
+    padding-bottom: 0;
+    min-width: 33px;
+    margin: -24px 0 0;
+    background-color: transparent;
+}
+
+.dropdown-button-menu-button {
+    width: 33px;
+    height: 33px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+}

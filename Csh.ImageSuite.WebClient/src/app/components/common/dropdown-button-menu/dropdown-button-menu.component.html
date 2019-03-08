@@ -1,0 +1,12 @@
+<li class="dropdown">
+    <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <button class="dropdown-button-menu-button" [style.background-image]="getButtonBackground(selectedButton.name)" role="button" [title]="selectedButton.tip" style="margin-top: -20px;" 
+                (click)="onButtonSelected(selectedButton)" (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)"></button>
+    </a>
+    <ul class="dropdown-menu dropdown-button-menu" >
+        <li *ngFor="let menuButton of menuButtonList">
+            <button class="dropdown-button-menu-button" [style.background-image]="getButtonBackground(menuButton.name)" role="button" [title]="menuButton.tip" 
+                    (click)="onButtonSelected(menuButton)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)"></button>
+        </li>
+    </ul>
+</li>

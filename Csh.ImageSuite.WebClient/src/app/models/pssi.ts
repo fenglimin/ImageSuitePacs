@@ -147,20 +147,85 @@ export class Series extends Pssi{
 }
 
 export class Image extends Pssi {
-  
-  series: Series;
-  objectFile: string;
 
-  setHide(hide: boolean) {
-    this.hide = hide;
-  }
+    series: Series;
+    objectFile: string;
+    imageColumns: number;
+    imageRows: number;
 
-  static clone(image: Image, cloneChild: boolean): Image {
-    const clonedImage = new Image();
+    annotations: Array<any>;
+    serializeJson: string;
+    transformMatrix: any;
+    windowCenter: number;
+    windowWidth: number;
 
-    clonedImage.id = image.id;
-    clonedImage.objectFile = image.objectFile;
+    setHide(hide: boolean) {
+        this.hide = hide;
+    }
 
-    return clonedImage;
-  }
+    width() {
+        return this.imageColumns;
+    }
+
+    height() {
+        return this.imageRows;
+    }
+
+    getRotateAngle(): number {
+        if (!this.transformMatrix)
+            return 0;
+
+        var transImg = this.transformMatrix;
+        var n1 = transImg[0][0], //x scale
+            n3 = transImg[0][1], //
+            n5 = transImg[0][2], //transform dx
+            n2 = transImg[1][0], //
+            n4 = transImg[1][1], //y scale
+            n6 = transImg[1][2]; //transform dy
+
+        var a = n1, b = n3, c = n2, d = n4;
+
+        var scale = Math.sqrt(a * a + b * b);
+
+        // arc sin, convert from radians to degrees, round
+        var sin = b / scale;
+        // next line works for 30deg but not 130deg (returns 50);
+        // var angle = Math.round(Math.asin(sin) * (180/Math.PI));
+        var angle = Math.round(Math.atan2(b, a) * (180 / Math.PI));
+
+        return angle;
+    }
+
+    getScaleValue(): number {
+        if (!this.transformMatrix)
+            return 1;
+
+        var transImg = this.transformMatrix;
+        var n1 = transImg[0][0], //x scale
+            n3 = transImg[0][1], //
+            n5 = transImg[0][2], //transform dx
+            n2 = transImg[1][0], //
+            n4 = transImg[1][1], //y scale
+            n6 = transImg[1][2]; //transform dy
+
+        var a = n1, b = n3, c = n2, d = n4;
+
+        var scale = Math.sqrt(a * a + b * b);
+    }
+
+    static clone(image: Image, cloneChild: boolean): Image {
+        const clonedImage = new Image();
+
+        clonedImage.id = image.id;
+        clonedImage.objectFile = image.objectFile;
+        clonedImage.imageColumns = image.imageColumns;
+        clonedImage.imageRows = image.imageRows;
+
+        return clonedImage;
+    }
 }
+
+export class MultiframeImage extends Image {
+    
+}
+

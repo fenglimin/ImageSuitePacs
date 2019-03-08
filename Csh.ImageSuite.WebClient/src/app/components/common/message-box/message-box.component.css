@@ -29,6 +29,8 @@
     width: 100px;
     padding: 3px;
     margin-left: 6px;
+  background-color: #444;
+  color: white;
 }
 
 .mat-raised-button:disabled:hover {

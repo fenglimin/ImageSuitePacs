@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterContentInit } from '@angular/core';
+import { Component, OnInit, Input, AfterContentInit, ViewChildren, QueryList } from '@angular/core';
 import { ImageSelectorService } from '../../../services/image-selector.service';
 import { HangingProtocalService } from '../../../services/hanging-protocal.service';
 import { Subscription }   from 'rxjs';
@@ -6,6 +6,7 @@ import { ViewerShellData } from '../../../models/viewer-shell-data';
 import { LayoutPosition, LayoutMatrix } from '../../../models/layout';
 import { ImageHangingProtocal } from '../../../models/hanging-protocal';
 import { ViewerGroupData } from '../../../models/viewer-group-data';
+import { ImageViewerComponent } from './image-viewer/image-viewer.component';
 
 @Component({
   selector: 'app-group-viewer',
@@ -14,8 +15,10 @@ import { ViewerGroupData } from '../../../models/viewer-group-data';
 })
 export class GroupViewerComponent implements OnInit, AfterContentInit {
   Arr = Array; //Array type captured in a variable
-
   _groupData: ViewerGroupData;
+
+  @ViewChildren(ImageViewerComponent) childImages: QueryList<ImageViewerComponent>;
+
   @Input()
   set groupData(groupData: ViewerGroupData) {
     this._groupData = groupData;
@@ -74,10 +77,20 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   setImageLayout(imageLayoutStyle: number): void {
-    this.hangingProtocalService.applyImageHangingProtocal(this.groupData, imageLayoutStyle);
+      this.hangingProtocalService.applyImageHangingProtocal(this.groupData, imageLayoutStyle);
+      this.onResize();
   }
 
   getId(): string {
     return 'DivLayoutViewer' + this.groupData.getId();
+  }
+
+  onResize() {
+      if (!this.childImages)
+          return;
+
+      this.childImages.forEach((imageViewer, index) => {
+          imageViewer.onResize();
+      });
   }
 }

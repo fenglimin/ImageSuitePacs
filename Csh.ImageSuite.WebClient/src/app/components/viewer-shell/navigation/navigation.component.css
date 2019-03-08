@@ -2,6 +2,43 @@
   margin-left: 1px;
 }
 
+.hangingProtocol-div {
+    background-color:#333;
+    padding:2px;
+    margin-bottom:3px;
+    border-radius: 2px;
+    height: 44px;
+}
+
+/*.open>.hangingProtocal-menu {
+    display: block;
+}*/
+
+li.dropdown.open {
+    margin: -20px 0 0;
+    width: 44px;
+}
+
+li.dropdown {
+    margin: -20px 0 0;
+    width: 44px;
+}
+
+.hangingProtocol-menu {
+    padding-bottom: 0;
+    min-width: 40px;
+    margin: -24px 0 0;
+    background-color: #333;
+}
+
+.hangingProtocol-menu-button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    outline: none;
+    background-color: #333;
+}
+
 .patient-div {
     background-color:#333;
     padding:2px;
@@ -25,11 +62,11 @@
 }
 
 .patient-header:hover .patient-button{
-  background: url(../../../../img/DicomViewer/Patient_N2.gif) no-repeat left top;
+  background: url(../../../../assets/img/DicomViewer/Patient_N2.gif) no-repeat left top;
 }
 
 .patient-header:hover .patient-button:active {
-  background: url(../../../../img/DicomViewer/Patient_N3.gif) no-repeat left top;
+  background: url(../../../../assets/img/DicomViewer/Patient_N3.gif) no-repeat left top;
 }
 
 .patient-button {
@@ -37,7 +74,7 @@
   height: 40px;
   border: none;
   outline: none;
-  background: url(../../../../img/DicomViewer/Patient_N1.gif) no-repeat left top;
+  background: url(../../../../assets/img/DicomViewer/Patient_N1.gif) no-repeat left top;
 }
 
 .patient-info{
@@ -63,11 +100,11 @@
 }
 
 .study-header:hover .study-button{
-  background: url(../../../../img/DicomViewer/Study_N2.gif) no-repeat left top;
+  background: url(../../../../assets/img/DicomViewer/Study_N2.gif) no-repeat left top;
 }
 
 .study-header:hover .study-button:active{
-  background: url(../../../../img/DicomViewer/Study_N3.gif) no-repeat left top;
+  background: url(../../../../assets/img/DicomViewer/Study_N3.gif) no-repeat left top;
 }
 
 .study-button {
@@ -75,7 +112,7 @@
   height: 40px;
   border: none;
   outline: none;
-  background: url(../../../../img/DicomViewer/Study_N1.gif) no-repeat left top;
+  background: url(../../../../assets/img/DicomViewer/Study_N1.gif) no-repeat left top;
 }
 
 .study-info{
@@ -102,11 +139,11 @@
 }
 
 .series-header:hover .series-button{
-  background: url(../../../../img/DicomViewer/Series_N2.gif) no-repeat left top;
+  background: url(../../../../assets/img/DicomViewer/Series_N2.gif) no-repeat left top;
 }
 
 .series-header:hover .series-button:active{
-  background: url(../../../../img/DicomViewer/Series_N3.gif) no-repeat left top;
+  background: url(../../../../assets/img/DicomViewer/Series_N3.gif) no-repeat left top;
 }
 
 .series-button {
@@ -114,7 +151,7 @@
   height: 40px;
   border: none;
   outline: none;
-  background: url(../../../../img/DicomViewer/Series_N1.gif) no-repeat left top;
+  background: url(../../../../assets/img/DicomViewer/Series_N1.gif) no-repeat left top;
 }
 
 .series-info{

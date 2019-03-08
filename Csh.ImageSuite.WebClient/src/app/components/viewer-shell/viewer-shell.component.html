@@ -1,6 +1,6 @@
 <div [style.visibility]= "viewerShellData.hide? 'hidden' : 'visible'" id="divContainer" class="sp_panel-container">
   <div class="sp_panel-left">
-    <app-navigation [viewerShellData]="viewerShellData"></app-navigation>
+    <app-navigation [viewerShellData]="viewerShellData" (layout)="onChangeGroupLayout($event)"></app-navigation>
   </div>
 
   <div class="sp_splitter">
@@ -14,7 +14,7 @@
     <div class="DivViewerBack">
       <div class="div-flex-column" *ngFor="let b of Arr(viewerShellData.groupMatrix.colCount).fill(1); let colIndex = index">
         <div class="div-flex-row" *ngFor="let a of Arr(viewerShellData.groupMatrix.rowCount).fill(1); let rowIndex = index">
-          <app-group-viewer [groupData]="viewerShellData.getGroup(rowIndex, colIndex)">
+          <app-group-viewer [groupData]="viewerShellData.getGroup(rowIndex, colIndex)" class="div-flex-row">
           </app-group-viewer>
         </div>
       </div>

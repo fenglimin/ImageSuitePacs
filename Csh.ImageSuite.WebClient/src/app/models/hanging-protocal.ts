@@ -17,7 +17,19 @@ export enum ImageHangingProtocal {
   FreeHang_1X2 = 12,
   FreeHang_2X1 = 21,
   FreeHang_2X2 = 22,
-  FreeHang_2X3 = 23,
-  FreeHang_3X2 = 32,
-  FreeHang_3X3 = 33
+  FreeHang_3X3 = 33,
+  FreeHang_4X3 = 43,
+  FreeHang_6X5 = 65
+}
+
+export class GroupHangingData {
+    groupHangingProtocal: GroupHangingProtocal;
+    name: string;
+    tip: string;
+}
+
+export class ImageHangingData {
+    imageHangingProtocal: ImageHangingProtocal;
+    name: string;
+    tip: string;
 }

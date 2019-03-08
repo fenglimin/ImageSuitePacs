@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import '../node_modules/@angular/material/prebuilt-themes/purple-green.css';
+@import './carestream-orange.css';
 
 .mat-dialog-container {
   background-color: #555;
@@ -91,6 +91,7 @@ textarea {
 
 .div-flex-row
 {
+    display:flex;
   flex: 1;
   flex-direction:row;
   /*height:100%;*/

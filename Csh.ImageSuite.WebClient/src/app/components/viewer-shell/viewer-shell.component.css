@@ -163,19 +163,19 @@
 }
 
 .query {
-    background: url(../../../img/button/Query_All.png) no-repeat left top;
+    background: url(../../../assets/img/button/Query_All.png) no-repeat left top;
 }
 
     .query:active {
-        background: url(../../../img/button/Query_All.png) no-repeat right top;
+        background: url(../../../assets/img/button/Query_All.png) no-repeat right top;
     }
 
 .queryClear {
-    background: url(../../../img/button/ClearCondition_All.png) no-repeat left top;
+    background: url(../../../assets/img/button/ClearCondition_All.png) no-repeat left top;
 }
 
     .queryClear:active {
-        background: url(../../../img/button/ClearCondition_All.png) no-repeat right top;
+        background: url(../../../assets/img/button/ClearCondition_All.png) no-repeat right top;
     }
 
 /* horizontal panel*/
@@ -213,7 +213,7 @@
 .sp_splitter {
     flex: 0 0 auto;
     width: 8px;
-    background: url(../../../img/button/split_vertical_collapse.jpg) center center no-repeat #535353;
+    background: url(../../../assets/img/button/split_vertical_collapse.jpg) center center no-repeat #535353;
     min-height: 200px;
     cursor: pointer;
 }
@@ -254,7 +254,7 @@
 .sp_splitter-horizontal {
     flex: 0 0 auto;
     height: 8px;
-    background: url(../../../img/button/split_horizontal_collapse.jpg) center center no-repeat #535353;
+    background: url(../../../assets/img/button/split_horizontal_collapse.jpg) center center no-repeat #535353;
     cursor: pointer;
     z-index: 2;
 }

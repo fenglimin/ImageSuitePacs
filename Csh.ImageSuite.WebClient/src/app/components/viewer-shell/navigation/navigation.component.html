@@ -1,52 +1,92 @@
 <div class="container-fluid">
-  <div *ngFor="let patient of viewerShellData.patientList" class="row patient-div">
-    <div class="patient-header">
-      <div>
-        <button class="patient-button" (click)="onClickPssi(patient)" title="Toggle to show/hide patient images"></button>
-      </div>
-      <table class="patient-info">
-        <tr>{{patient.patientName}}</tr>
-        <tr>{{patient.patientId}}</tr>
-      </table>
-    </div>
-    <div *ngFor="let study of patient.studyList"
-         [style.visibility]= "getPssiVisibility(patient)" [style.height]="getPssiHeight(patient)">
-      <div class="study-header">
-        <div>
-          <button class="study-button" (click)="onClickPssi(study)" title="Toggle to show/hide study images"></button>
-        </div>
-        <table class="study-info">
-          <tr>{{study.studyDateString}}</tr>
-          <tr>{{study.studyDesc}}</tr>
-        </table>
-      </div>
-      <div *ngFor="let series of study.seriesList"
-           [style.visibility]= "getPssiVisibility(study)" [style.height]="getPssiHeight(study)">
-        <div class="series-header">
-          <div>
-            <button class="series-button" (click)="onClickPssi(series)" title="Toggle to show/hide series images"></button>
-          </div>
-          <table class="series-info">
-            <tr>{{series.modality}}</tr>
-            <tr>{{series.imageCount}} image</tr>
-          </table>
-        </div>
-        <!--<div class="image-list" [style.visibility]="getPssiVisibility(series)" [style.height]="getPssiHeight(series)">
-          <table >
-            <tr *ngFor="let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index">
-              <td><app-thumbnail [image]="series.imageList[imageIndex*2]"></app-thumbnail></td>
-              <td *ngIf="imageIndex*2+1 < series.imageList.length"><app-thumbnail [image]="series.imageList[imageIndex*2+1]"></app-thumbnail></td>
+    <div class="row hangingProtocol-div">
+        <table>
+            <tr>
+                <td>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(selectedGroupHangingData.name)" role="button" [title]="selectedGroupHangingData.tip" style="margin-top: -20px;" 
+                                    (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)"></button>
+                        </a>
+                        <ul class="dropdown-menu hangingProtocol-menu" >
+                            <li *ngFor="let groupHangingData of hangingProtocalService.getGroupHangingDataList()">
+                                <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(groupHangingData.name)" role="button" [title]="groupHangingData.tip" 
+                                        (click)="onSelectGroupHangingProtocol(groupHangingData)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)"></button>
+                            </li>
+                        </ul>
+                    </li>
+                </td>
+                <td>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(selectedGroupLayoutData.name)" role="button" [title]="selectedGroupLayoutData.tip" style="margin-top: -20px;"
+                                    (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)"></button>
+                        </a>
+                        <ul class="dropdown-menu hangingProtocol-menu">
+                            <li *ngFor="let groupLayoutData of hangingProtocalService.getGroupLayoutDataList()">
+                                <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(groupLayoutData.name)" role="button" [title]="groupLayoutData.tip"
+                                        (click)="onSelectGroupLayout(groupLayoutData)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)"></button>
+                            </li>
+                        </ul>
+                    </li>
+                </td>
+                <td>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(selectedImageLayoutData.name)" role="button" [title]="selectedImageLayoutData.tip" style="margin-top: -20px;"
+                                    (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)"></button>
+                        </a>
+                        <ul class="dropdown-menu hangingProtocol-menu">
+                            <li *ngFor="let imageLayoutData of hangingProtocalService.getImageLayoutDataList()">
+                                <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(imageLayoutData.name)" role="button" [title]="imageLayoutData.tip"
+                                        (click)="onSelectImageLayout(imageLayoutData)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)"></button>
+                            </li>
+                        </ul>
+                    </li>
+                </td>
             </tr>
-          </table>
-        </div>-->
-        <div *ngFor="let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index"
-             [style.visibility]= "getPssiVisibility(series)" [style.height]="getPssiHeight(series)">
-          <div class="image-button">
-            <app-thumbnail [image]="series.imageList[imageIndex*2]"></app-thumbnail>
-            <app-thumbnail *ngIf="imageIndex*2+1 < series.imageList.length" [image]="series.imageList[imageIndex*2+1]"></app-thumbnail>
-          </div>
-        </div>
-      </div>
+        </table>
     </div>
-  </div>
+    <div *ngFor="let patient of viewerShellData.patientList" class="row patient-div">
+        <div class="patient-header">
+            <div>
+                <button class="patient-button" (click)="onClickPssi(patient)" title="Toggle to show/hide patient images"></button>
+            </div>
+            <table class="patient-info">
+                <tr>{{patient.patientName}}</tr>
+                <tr>{{patient.patientId}}</tr>
+            </table>
+        </div>
+        <div *ngFor="let study of patient.studyList"
+             [style.visibility]="getPssiVisibility(patient)" [style.height]="getPssiHeight(patient)">
+            <div class="study-header">
+                <div>
+                    <button class="study-button" (click)="onClickPssi(study)" title="Toggle to show/hide study images"></button>
+                </div>
+                <table class="study-info">
+                    <tr>{{study.studyDateString}}</tr>
+                    <tr>{{study.studyDesc}}</tr>
+                </table>
+            </div>
+            <div *ngFor="let series of study.seriesList"
+                 [style.visibility]="getPssiVisibility(study)" [style.height]="getPssiHeight(study)">
+                <div class="series-header">
+                    <div>
+                        <button class="series-button" (click)="onClickPssi(series)" title="Toggle to show/hide series images"></button>
+                    </div>
+                    <table class="series-info">
+                        <tr>{{series.modality}}</tr>
+                        <tr>{{series.imageCount}} image</tr>
+                    </table>
+                </div>
+                <div *ngFor="let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index"
+                     [style.visibility]="getPssiVisibility(series)" [style.height]="getPssiHeight(series)">
+                    <div class="image-button">
+                        <app-thumbnail [image]="series.imageList[imageIndex*2]"></app-thumbnail>
+                        <app-thumbnail *ngIf="imageIndex*2+1 < series.imageList.length" [image]="series.imageList[imageIndex*2+1]"></app-thumbnail>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

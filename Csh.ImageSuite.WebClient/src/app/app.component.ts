@@ -9,57 +9,74 @@ import { Subscription }   from 'rxjs';
 import { ViewerShellData } from './models/viewer-shell-data';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'AngularPacsDemo';
-  @ViewChild("shellContainer", { read: ViewContainerRef }) container;
-  createComponents: Array<any> = [];
+    title = 'AngularPacsDemo';
+    @ViewChild("shellContainer", { read: ViewContainerRef }) container;
+    createComponents: Array<any> = [];
 
-  subscriptionShellCreated: Subscription;
-  subscriptionShellDeleted: Subscription;
+    subscriptionShellCreated: Subscription;
+    subscriptionShellDeleted: Subscription;
 
-  constructor(private resolver: ComponentFactoryResolver, private shellNavigatorService: ShellNavigatorService) {
-    this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(
-      viewerShellData => {
-        this.createViewerShell(viewerShellData);
-      });
+    constructor(private resolver: ComponentFactoryResolver, private shellNavigatorService: ShellNavigatorService) {
+        this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(
+            viewerShellData => {
+                this.createViewerShell(viewerShellData);
+            });
 
 
-    this.subscriptionShellDeleted = shellNavigatorService.shellDeleted$.subscribe(
-      viewerShellData => {
-        this.deleteViewerShell(viewerShellData);
-      }
-    );
-  }
-
-  ngOnInit() {
-    this.createWorklistShell();
-  }
-
-  createWorklistShell() {
-    let componentFactory = this.resolver.resolveComponentFactory(WorklistShellComponent);
-    let componentRef = this.container.createComponent(componentFactory);
-    componentRef.instance.hideMe = false;
-  }
-
-  createViewerShell(viewerShellData: ViewerShellData) {
-    let componentFactory = this.resolver.resolveComponentFactory(ViewerShellComponent);
-    let componentRef = this.container.createComponent(componentFactory);
-    componentRef.instance.hideMe = false;
-    componentRef.instance.viewerShellData = viewerShellData;
-
-    this.createComponents.push(componentRef);
-  }
-
-  deleteViewerShell(viewerShellData: ViewerShellData) {
-    const studyCom = this.createComponents.filter((value, index, array) => value.instance.viewerShellData.getId() === viewerShellData.getId());
-    if (studyCom.length !== 0) {
-      studyCom[0].destroy();
+        this.subscriptionShellDeleted = shellNavigatorService.shellDeleted$.subscribe(
+            viewerShellData => {
+                this.deleteViewerShell(viewerShellData);
+            }
+        );
     }
 
-    this.createComponents = this.createComponents.filter((value, index, array) => value.instance.viewerShellData.getId() !== viewerShellData.getId());
-  }
+    ngOnInit() {
+        this.createWorklistShell();
+        this.initConerstone();
+    }
+
+    createWorklistShell() {
+        let componentFactory = this.resolver.resolveComponentFactory(WorklistShellComponent);
+        let componentRef = this.container.createComponent(componentFactory);
+        componentRef.instance.hideMe = false;
+    }
+
+    createViewerShell(viewerShellData: ViewerShellData) {
+        let componentFactory = this.resolver.resolveComponentFactory(ViewerShellComponent);
+        let componentRef = this.container.createComponent(componentFactory);
+        componentRef.instance.hideMe = false;
+        componentRef.instance.viewerShellData = viewerShellData;
+
+        this.createComponents.push(componentRef);
+    }
+
+    deleteViewerShell(viewerShellData: ViewerShellData) {
+        const studyCom = this.createComponents.filter((value, index, array) => value.instance.viewerShellData.getId() === viewerShellData.getId());
+        if (studyCom.length !== 0) {
+            studyCom[0].destroy();
+        }
+
+        this.createComponents = this.createComponents.filter((value, index, array) => value.instance.viewerShellData.getId() !== viewerShellData.getId());
+    }
+
+    private initConerstone() {
+        cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+        cornerstoneTools.external.cornerstone = cornerstone;
+
+        //var baseUrl = dicom.baseUrl;
+        var config = {
+            webWorkerPath: './assets/script/cornerstoneWADOImageLoaderWebWorker.js',
+            taskConfiguration: {
+                'decodeTask': {
+                    codecsPath: './cornerstoneWADOImageLoaderCodecs.js'
+                }
+            }
+        };
+        cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
+    }
 }

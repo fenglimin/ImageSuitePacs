@@ -17,7 +17,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   viewerShellData: ViewerShellData;
   subscriptionShellNavigated: Subscription;
 
-  @ViewChildren(GroupViewerComponent) groups: QueryList<GroupViewerComponent>;
+  @ViewChildren(GroupViewerComponent) childGroups: QueryList<GroupViewerComponent>;
 
   constructor(private shellNavigatorService: ShellNavigatorService, private hangingProtocalService: HangingProtocalService) {
     this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
@@ -31,9 +31,34 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+      let self = this;
+      $(".sp_panel-left").spResizable({
+          handleSelector: ".sp_splitter",
+          resizeHeight: false
+      });
+
+      $(window).resize(function () {
+          self.onResize();
+      });
+
+      this.onResize();
   }
 
   onChangeGroupLayout(groupHangingProtocalNumber: number): void {
-    this.hangingProtocalService.applyGroupHangingProtocal(this.viewerShellData, groupHangingProtocalNumber);
+      this.hangingProtocalService.applyGroupHangingProtocal(this.viewerShellData, groupHangingProtocalNumber);
+      this.onResize();
   }
+
+  onResize(): void {
+      //if (this.viewerShellData.hide)
+      //    return;
+
+      if (!this.childGroups)
+          return;
+
+      this.childGroups.forEach((groupViewer) => {
+          groupViewer.onResize();
+      });
+  }
+
 }

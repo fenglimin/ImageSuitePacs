@@ -1,20 +1,194 @@
-Layout:
-<button class="image-button" (click)="createGroupLayoutMatrix(1)">By Patient</button>
-<button class="image-button" (click)="createGroupLayoutMatrix(2)">By Study</button>
-<button class="image-button" (click)="createGroupLayoutMatrix(3)">By Series</button>
-<button class="image-button" (click)="createGroupLayoutMatrix(11)">1 X 1</button>
-<button class="image-button" (click)="createGroupLayoutMatrix(12)">1 X 2</button>
-<button class="image-button" (click)="createGroupLayoutMatrix(21)">2 X 1</button>
-<button class="image-button" (click)="createGroupLayoutMatrix(22)">2 X 2</button>
-<button class="image-button" (click)="createGroupLayoutMatrix(33)">3 X 3</button>
+<!--<button class="image-button" (click)="onRotate(30)">Rotate</button>
+<button class="image-button" (click)="onAddRuler()">Ruler</button>
+-->
 
-
-ImageLayout:
-<button class="image-button" (click)="doSplitImageLayout(1)">Auto</button>
-<button class="image-button" (click)="doSplitImageLayout(11)">1 X 1</button>
-<button class="image-button" (click)="doSplitImageLayout(12)">1 X 2</button>
-<button class="image-button" (click)="doSplitImageLayout(21)">2 X 1</button>
-<button class="image-button" (click)="doSplitImageLayout(22)">2 X 2</button>
-<button class="image-button" (click)="doSplitImageLayout(32)">3 X 2</button>
-<button class="image-button" (click)="doSplitImageLayout(23)">2 X 3</button>
-<button class="image-button" (click)="doSplitImageLayout(33)">3 X 3</button>
+<div class="container-fluid">
+    <div class="row imageOperate-div">
+        <table>
+            <tr>
+                <td>
+                    <app-dropdown-button-menu [menuButtonList]="selectPanButtonMenuList"></app-dropdown-button-menu>
+                </td>
+                <td>
+                    <app-dropdown-button-menu [menuButtonList]="rotateFlipButtonMenuList"></app-dropdown-button-menu>
+                </td>
+                <td>
+                    <app-dropdown-button-menu [menuButtonList]="zoomButtonMenuList"></app-dropdown-button-menu>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+    <!--
+    <div class="collapse navbar-collapse" id="navTopToggle">
+        <ul id="navBarGroup" class="nav navbar-nav">
+            <li class="">
+                <a href="#" class="nav">
+                    <img class="btnSelect" alt="Select" title="Select" src="../../../../assets/img/Toolbar/selection/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnPan" alt="Pan" title="Pan" src="../../../../assets/img/Toolbar/Pan/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img class="btnRotate" alt="RotateCCW" title="RotateCCW" src="../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif" />
+                </a>
+                <ul class="dropdown-menu swith-menu">
+                    <li>
+                        <img class="btnRotate" alt="RotateCCW" title="RotateCCW" src="../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif" />
+                    </li>
+                    <li>
+                        <img class="btnRotate" alt="RotateCW" title="RotateCW" src="../../../../assets/img/Toolbar/Rotatecw/normal/bitmap_h.gif" />
+                    </li>
+                    <li>
+                        <img class="btnRotate" alt="VFlip" title="VFlip" src="../../../../assets/img/Toolbar/FlipV/normal/bitmap_h.gif" />
+                    </li>
+                    <li>
+                        <img class="btnRotate" alt="HFlip" title="HFlip" src="../../../../assets/img/Toolbar/FlipH/normal/bitmap_h.gif" />
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img class="btnZoom" alt="Zoom" title="Zoom" src="../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif" />
+                </a>
+                <ul class="dropdown-menu swith-menu">
+                    <li>
+                        <img class="btnZoom" alt="Zoom" title="Zoom" src="../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif" />
+                    </li>
+                    <li>
+                        <img class="btnZoom" alt="MagnifyX2" title="MagnifyX2" src="../../../../assets/img/Toolbar/magnify2/normal/bitmap_h.gif" />
+                    </li>
+                    <li>
+                        <img class="btnZoom" alt="MagnifyX4" title="MagnifyX4" src="../../../../assets/img/Toolbar/magnify4/normal/bitmap_h.gif" />
+                    </li>
+                    <li>
+                        <img class="btnZoom" alt="ROIZoom" title="ROI Zoom" src="../../../../assets/img/Toolbar/rectzoom/normal/bitmap_h.gif" />
+                    </li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img class="btnScoutLine" alt="ScoutLine" title="ScoutLine" src="../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif" />
+                </a>
+                <ul class="dropdown-menu swith-menu">
+                    <li>
+                        <img class="btnScoutLine" alt="ScoutLine" title="Set ScoutLine" src="../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif" />
+                    </li>
+                    <li>
+                        <img class="btnScoutLine" alt="ScoutLineAll" title="Set ScoutLine All" src="../../../../assets/img/Toolbar/scoutline_set_all/normal/bitmap_h.gif" />
+                    </li>
+                    <li>
+                        <img class="btnScoutLine" alt="ScoutLineSrc" title="Set ScoutLine Source" src="../../../../assets/img/Toolbar/scoutline_src_set/normal/bitmap_h.gif" />
+                    </li>
+                    <li>
+                        <img class="btnScoutLine" alt="ScoutLineDest" title="Set ScoutLine Destination" src="../../../../assets/img/Toolbar/scoutline_dst_set/normal/bitmap_h.gif" />
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnWL" alt="W/L" title="W/L" src="../../../../assets/img/Toolbar/WL/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnInvert" alt="Invert" title="Invert" src="../../../../assets/img/Toolbar/Invert/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnReset" alt="TrueSize" title="TrueSize" src="../../../../assets/img/Toolbar/Reset/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li class="dropdown">
+                <a class="nav">
+                    <img title="Markers" src="../../../../assets/img/Toolbar/ann_stamp/normal/bitmap.gif" />
+                </a>
+                <ul class="dropdown-menu">
+                    <li id="liMarkerTab">
+                        <ul class="nav nav-tabs nav-justified">
+                            <li class="active"><a id="tabMarkerPanel1" data-toggle="tab" href="#divMarkerPanel1">Favorites</a></li>
+                            <li><a id="tabMarkerPanel2" data-toggle="tab" href="#divMarkerPanel2">Panel 2</a></li>
+                            <li><a id="tabMarkerPanel3" data-toggle="tab" href="#divMarkerPanel3">Panel 3</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="divMarkerPanel1" class="tab-pane in active">
+                                <div>
+                                    <table class="table table-bordered table-marker">
+                                        <tbody id="tblMarkerTable1"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="divMarkerPanel2" class="tab-pane">
+                                <table class="table table-bordered table-marker">
+                                    <tbody id="tblMarkerTable2"></tbody>
+                                </table>
+                            </div>
+                            <div id="divMarkerPanel3" class="tab-pane">
+                                <table class="table table-bordered table-marker">
+                                    <tbody id="tblMarkerTable3"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnBestFit" alt="BestFit" title="BestFit" src="../../../../assets/img/Toolbar/fitwindow/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnAddRect" alt="annRect" title="Rect" src="../../../../assets/img/Toolbar/ann_rectangle/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnAddRuler" alt="annLine" title="Ruler" src="../../../../assets/img/Toolbar/Ruler/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnAddCurve" alt="annCurve" title="Curve" src="../../../../assets/img/Toolbar/ann_cervicalcurve/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnAddAngle" alt="annAngle" title="Angle" src="../../../../assets/img/Toolbar/ann_angle/normal/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnShowOverlay" alt="ShowOverlay" title="Show Overlay" src="../../../../assets/img/Toolbar/showoverlay/down/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnShowAnnotation" alt="ShowAnnotation" title="Show Annotation" src="../../../../assets/img/Toolbar/showannotation/down/bitmap.gif" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnShowRuler" alt="ShowRuler" title="Show Ruler" src="../../../../assets/img/Toolbar/showruler/down/bitmap.gif" />
+                </a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnDelete" alt="Delete" title="Delete" src="../../../../assets/img/Toolbar/Delete.png" />
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav">
+                    <img class="btnSave" alt="Save" title="Save" src="../../../../assets/img/Toolbar/Save.png" />
+                </a>
+            </li>
+        </ul>
+    </div>
+    -->

@@ -1,12 +1,15 @@
-<div class="DivImageViewer" [id]="getId()" (click)="onSelected()">
-    <div *ngIf="imageData.image !== null" class="DivImageViewer">
-      <p>
-        Name : {{imageData.image.series.study.patient.patientName}} | 
-        AccNo : {{imageData.image.series.study.accessionNo}} | 
-        Modality : {{imageData.image.series.modality}} | 
-        ImageID : {{imageData.image.id}}
-      </p>
-      <img [src]="imageToShow" alt="Loading image..." />
 
+<div class="DivImageViewer" [id]="getId()" (click)="onSelected()">
+    <div *ngIf="worklistService.isUsingLocalTestData()" style="width: 500px">
+        <p>
+            **************************************
+            Name : {{imageData.image.series.study.patient.patientName}} | 
+            AccNo : {{imageData.image.series.study.accessionNo}} | 
+            Modality : {{imageData.image.series.modality}} | 
+            ImageID : {{imageData.image.id}}
+        </p>
     </div>
+    <canvas [id]="getCanvasId()" #viewerCanvas class="viewerCanvas"></canvas>
 </div>
+
+<div #helpElement class="helpElement"></div>

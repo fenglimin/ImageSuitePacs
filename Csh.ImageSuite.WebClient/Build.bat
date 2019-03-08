@@ -1,0 +1,1 @@
+ng build & xcopy ..\Csh.ImageSuite.WebHost\AngularDist\* ..\Csh.ImageSuite.WebHost /E /Y
