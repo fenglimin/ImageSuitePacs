@@ -23,6 +23,8 @@ export class DropdownButtonMenuComponent implements OnInit {
       $(this).addClass('open');
     }).mouseout(function () {
       $(this).removeClass('open');
+    }).click(function () {
+      $(this).addClass('open');
     });
   }
 
