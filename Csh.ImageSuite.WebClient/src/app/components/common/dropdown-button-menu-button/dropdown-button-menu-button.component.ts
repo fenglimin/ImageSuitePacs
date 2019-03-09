@@ -40,11 +40,8 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
       return backgroundUrl;
   }
 
-  onMouseOver(event, triggerClick: boolean) {
+  onMouseOver(event) {
       event.target.style.backgroundImage = this.createBackgroundUrl(this.buttonStyleToken.over);
-      if (triggerClick) {
-          //event.target.click();
-      }
   }
 
   onMouseOut(event) {

@@ -16,6 +16,14 @@ export class DropdownButtonMenuComponent implements OnInit {
 
   ngOnInit() {
     this.selectedButton = this.menuButtonList[0];
+
+    var $dropdownLi = $('li.dropdown');
+
+    $dropdownLi.mouseover(function () {
+      $(this).addClass('open');
+    }).mouseout(function () {
+      $(this).removeClass('open');
+    });
   }
 
   onSelectChanged(menuButton: SelectedButtonData) {
