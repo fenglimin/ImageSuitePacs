@@ -12,14 +12,24 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
   buttonStyleToken: ButtonStyleToken;
   baseUrl: string;
   isCheckStyle: boolean;
-  isChecked: boolean;
   defaultStyle: string;
+  private _isChecked: boolean;
 
   @Output() selected = new EventEmitter<SelectedButtonData>();
 
     @Input() buttonData: SelectedButtonData;
     @Input() isTopButton: boolean;
-    @Input() showArrow: boolean;
+  @Input() showArrow: boolean;
+  @Input()
+  set isChecked(value: boolean) {
+    this._isChecked = value;
+    if (this.isCheckStyle) {
+      this.defaultStyle = this.getDefaultStyle();
+    }
+  }
+  get isChecked() {
+    return this._isChecked;
+  }
 
     constructor(private viewContext: ViewContextService, private configurationService: ConfigurationService) {
       this.buttonStyleToken = { normal: "normal", over: "focus", down: "down", disable: "disable" };
@@ -29,7 +39,7 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
   ngOnInit() {
     const op = this.buttonData.operationData.type;
     this.isCheckStyle = (op == OperationEnum.ToggleKeyImage || op == OperationEnum.ShowAnnotation || op == OperationEnum.ShowGraphicOverlay ||
-      op == OperationEnum.ShowOverlay || op == OperationEnum.ShowRuler);
+      op == OperationEnum.ShowOverlay || op == OperationEnum.ShowRuler) || !this.isTopButton;
     this.isChecked = (op == OperationEnum.ShowAnnotation || op == OperationEnum.ShowOverlay || op == OperationEnum.ShowRuler);;
     this.defaultStyle = this.getDefaultStyle();
   }
@@ -76,9 +86,8 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
       this.selected.emit(this.buttonData);
     this.viewContext.onOperation(this.buttonData.operationData);
 
-    if (this.isCheckStyle) {
+    if (this.isCheckStyle && this.isTopButton) {
       this.isChecked = !this.isChecked;
-      this.setBackgroundImage(event, this.isChecked ? this.buttonStyleToken.down : this.buttonStyleToken.normal);
       this.defaultStyle = this.getDefaultStyle();
     }
   }
