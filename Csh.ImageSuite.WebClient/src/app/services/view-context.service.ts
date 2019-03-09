@@ -8,7 +8,11 @@ export enum ViewContextEnum {
     Zoom = 4,
     Magnifier = 5,
     ROIZoom = 6,
-    Create = 7
+    Create = 7,
+    ROIWL = 8,
+    MagnifyX2,
+    MagnifyX4,
+    MagnifyX8
 }
 
 export enum OperationEnum {
@@ -19,7 +23,16 @@ export enum OperationEnum {
     ShowOverlay = 5,
     ShowRuler = 6,
     DeleteAnnotation = 7,
-    Save = 8
+    Save = 8,
+    SetContext = 9,
+    ManualWL = 10,
+    FitHeight,
+    FitWidth,
+    FitWindow,
+    FitOriginal,
+    Reset,
+    ShowGraphicOverlay,
+    ToggleKeyImage
 }
 
 export class OperationData {

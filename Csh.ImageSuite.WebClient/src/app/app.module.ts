@@ -24,6 +24,7 @@ import { QueryToolbarComponent } from './components/worklist-shell/query-toolbar
 import { OperateToolbarComponent } from './components/worklist-shell/operate-toolbar/operate-toolbar.component';
 import { MessageBoxComponent } from './components/common/message-box/message-box.component';
 import { DropdownButtonMenuComponent } from './components/common/dropdown-button-menu/dropdown-button-menu.component';
+import { DropdownButtonMenuButtonComponent } from './components/common/dropdown-button-menu-button/dropdown-button-menu-button.component';
 
 import {
   MatDatepickerModule,
@@ -45,6 +46,7 @@ import {MatMomentDateModule} from "@angular/material-moment-adapter";
 import { AnnotationModule } from './annotation/annotation.module';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -61,7 +63,8 @@ import { AnnotationModule } from './annotation/annotation.module';
     QueryToolbarComponent,
     OperateToolbarComponent,
     MessageBoxComponent,
-    DropdownButtonMenuComponent
+    DropdownButtonMenuComponent,
+    DropdownButtonMenuButtonComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,4 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 
 import { ImageSelectorService } from '../../../services/image-selector.service';
 import { OperationEnum, ViewContextEnum, OperationData, ViewContextService } from '../../../services/view-context.service';
@@ -8,6 +7,7 @@ import { GroupHangingProtocal } from '../../../models/hanging-protocal';
 import { AnnObject } from '../../../annotation/ann-object';
 import { AnnRuler } from '../../../annotation/ann-ruler';
 import { SelectedButtonData, ButtonStyleToken } from '../../../models/dropdown-button-menu-data';
+import { ConfigurationService } from '../../../services/configuration.service';
 
 @Component({
     selector: 'app-viewer-toolbar',
@@ -16,10 +16,11 @@ import { SelectedButtonData, ButtonStyleToken } from '../../../models/dropdown-b
 })
 export class ViewerToolbarComponent implements OnInit {
   @Output() layout = new EventEmitter<number>();
+  buttonDivideSrc: string;
 
   selectPanButtonMenuList: SelectedButtonData[] = [
-    { name: "selection", tip: "Select", operationData: { type: OperationEnum.Save, data: 1 } },
-    { name: "Pan", tip: "Pan", operationData: { type: OperationEnum.Save, data: 1 }}
+    { name: "selection", tip: "Select", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.Select } },
+    { name: "Pan", tip: "Pan", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.Pan }}
   ];
 
   rotateFlipButtonMenuList: SelectedButtonData[] = [
@@ -30,71 +31,50 @@ export class ViewerToolbarComponent implements OnInit {
   ];
 
   zoomButtonMenuList: SelectedButtonData[] = [
-    { name: "Zoom", tip: "Zoom", operationData: { type: OperationEnum.Save, data: 1 } },
-    { name: "magnify2", tip: "Magnify X 2", operationData: { type: OperationEnum.Save, data: 1 } },
-    { name: "magnify4", tip: "Magnify X 4", operationData: { type: OperationEnum.Save, data: 1 } },
-    { name: "rectzoom", tip: "ROI Zoom", operationData: { type: OperationEnum.Save, data: 1 } }
+    { name: "Zoom", tip: "Zoom", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.Zoom } },
+    { name: "rectzoom", tip: "ROI Zoom", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.ROIZoom } }
+  ];
+
+  magnifyButtonMenuList: SelectedButtonData[] = [
+    { name: "magnify2", tip: "Magnify X 2", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.MagnifyX2 } },
+    { name: "magnify4", tip: "Magnify X 4", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.MagnifyX4 } },
+    { name: "magnify8", tip: "Magnify X 8", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.MagnifyX8 } },
   ];
 
   fitButtonMenuList: SelectedButtonData[] = [
-      { name: "fitheight", tip: "Fit Height", operationData: { type: OperationEnum.Save, data: 1 } },
-      { name: "magnify2", tip: "Magnify X 2", operationData: { type: OperationEnum.Save, data: 1 } },
-      { name: "magnify4", tip: "Magnify X 4", operationData: { type: OperationEnum.Save, data: 1 } },
-      { name: "rectzoom", tip: "ROI Zoom", operationData: { type: OperationEnum.Save, data: 1 } }
+      { name: "fitheight", tip: "Fit Height", operationData: { type: OperationEnum.FitHeight, data: null } },
+      { name: "fitoriginal", tip: "Fit Original", operationData: { type: OperationEnum.FitOriginal, data: null } },
+      { name: "fitwidth", tip: "Fit Width", operationData: { type: OperationEnum.FitWidth, data: null } },
+      { name: "fitwindow", tip: "Scale to Fit", operationData: { type: OperationEnum.FitWindow, data: null } }
   ];
+
+  wlButtonMenuList: SelectedButtonData[] = [
+    { name: "WL", tip: "W/L", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.WL } },
+    { name: "ROI", tip: "ROI W/L", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.ROIWL } },
+    { name: "ManualWL", tip: "Manual W/L", operationData: { type: OperationEnum.ManualWL, data: null } },
+    { name: "Invert", tip: "Invert", operationData: { type: OperationEnum.Invert, data: null } }
+  ];
+
+  keyImageButtonMenu: SelectedButtonData = { name: "SetKeyImage", tip: "Key Image", operationData: { type: OperationEnum.ToggleKeyImage, data: null } };
+  resetButtonMenu: SelectedButtonData = { name: "Reset", tip: "Reset", operationData: { type: OperationEnum.Reset, data: null } };
+  showAnnotationButtonMenu: SelectedButtonData = { name: "showannotation", tip: "Show Annotation", operationData: { type: OperationEnum.ShowAnnotation, data: null } };
+  showOverlayButtonMenu: SelectedButtonData = { name: "showoverlay", tip: "Show Overlay", operationData: { type: OperationEnum.ShowOverlay, data: null } };
+  showRulerButtonMenu: SelectedButtonData = { name: "showruler", tip: "Show Ruler", operationData: { type: OperationEnum.ShowRuler, data: null } };
+  showGraphicOverlayButtonMenu: SelectedButtonData = { name: "showgraphicoverlay", tip: "Show Graphic Overlay", operationData: { type: OperationEnum.ShowGraphicOverlay, data: null } };
 
   private baseUrl: string;
 
 
     constructor(private imageSelectorService: ImageSelectorService, private viewContext: ViewContextService,
-        private locationStrategy: LocationStrategy) {
-
+        private configurationService: ConfigurationService) {
+      this.buttonDivideSrc = this.configurationService.getBaseUrl() + "assets/img/DicomViewer/fenge2.png";
     }
 
     ngOnInit() {
-        this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
-    }
-
-    onRotate(angle: number) {
-        let data: OperationData = new OperationData(OperationEnum.Rotate, { angle: angle });
-        this.viewContext.onOperation(data);
-    }
-
-    onAddRuler() {
-        this.viewContext.setContext(ViewContextEnum.Create, { type: AnnRuler });
-    }
-
-    onMouseOver(event, triggerClick: boolean) {
-      event.target.style.backgroundImage = event.target.style.backgroundImage.replace('/normal/', '/focus/');
-        if (triggerClick) {
-            //event.target.click();
         }
-    }
 
-    onMouseOut(event) {
-      const imageUrl = event.target.style.backgroundImage.replace('/focus/', '/normal/');
-        if (imageUrl === event.target.style.backgroundImage) {
-          event.target.style.backgroundImage = event.target.style.backgroundImage.replace('/down/', '/normal/');
-        } else {
-            event.target.style.backgroundImage = imageUrl;
-        }
-    }
-
-    onMouseDown(event) {
-      event.target.style.backgroundImage = event.target.style.backgroundImage.replace('/focus/', '/down/');
-    }
-
-    onMouseUp(event) {
-      event.target.style.backgroundImage = event.target.style.backgroundImage.replace('/down/', '/normal/');
-    }
-
-    getMenuBackground(name:string) {
-      const background = `url(${this.baseUrl}assets/img/Toolbar/${name}/normal/bitmap.gif)`;
-        return background;
-    }
-
-    getMenuTip() {
-
+    getButtonDivideSrc():string {
+        return this.buttonDivideSrc;
     }
 }
 
