@@ -17,8 +17,8 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
 
   @Output() selected = new EventEmitter<SelectedButtonData>();
 
-    @Input() buttonData: SelectedButtonData;
-    @Input() isTopButton: boolean;
+  @Input() buttonData: SelectedButtonData;
+  @Input() isTopButton: boolean;
   @Input() showArrow: boolean;
   @Input()
   set isChecked(value: boolean) {
@@ -31,10 +31,10 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
     return this._isChecked;
   }
 
-    constructor(private viewContext: ViewContextService, private configurationService: ConfigurationService) {
-      this.buttonStyleToken = { normal: "normal", over: "focus", down: "down", disable: "disable" };
-      this.baseUrl = this.configurationService.getBaseUrl();
-    }
+  constructor(private viewContext: ViewContextService, private configurationService: ConfigurationService) {
+    this.buttonStyleToken = { normal: "normal", over: "focus", down: "down", disable: "disable" };
+    this.baseUrl = this.configurationService.getBaseUrl();
+  }
 
   ngOnInit() {
     const op = this.buttonData.operationData.type;
@@ -71,7 +71,11 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
   }
 
   onMouseDown(event) {
-    this.setBackgroundImage(event, this.buttonStyleToken.down);
+    if (this.isCheckStyle && this.isChecked) {
+      this.setBackgroundImage(event, this.buttonStyleToken.normal);
+    } else {
+      this.setBackgroundImage(event, this.buttonStyleToken.down);
+    }
   }
 
   onMouseUp(event) {
@@ -93,7 +97,7 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
 
     if (this.isCheckStyle && this.isTopButton) {
       this.isChecked = !this.isChecked;
-      this.defaultStyle = this.getDefaultStyle();
+     // this.defaultStyle = this.getDefaultStyle();
     }
   }
 }
