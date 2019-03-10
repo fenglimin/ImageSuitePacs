@@ -9,6 +9,7 @@ import { ViewerImageData } from '../../../../models/viewer-image-data';
 import { AnnObject, EventType, StepEnum } from '../../../../annotation/ann-object';
 import { AnnRuler } from '../../../../annotation/ann-ruler';
 import { WorklistService } from '../../../../services/worklist.service';
+import { ConfigurationService } from '../../../../services/configuration.service';
 
 @Component({
     selector: 'app-image-viewer',
@@ -81,7 +82,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     constructor(private imageSelectorService: ImageSelectorService, private dicomImageService: DicomImageService,
-      private locationStrategy: LocationStrategy, private viewContext: ViewContextService, public worklistService: WorklistService) {
+      private configurationService: ConfigurationService, private viewContext: ViewContextService, public worklistService: WorklistService) {
 
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
             imageViewerId => {
@@ -100,7 +101,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     ngOnInit() {
-        this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
+      this.baseUrl = this.configurationService.getBaseUrl();
     }
 
     ngAfterContentInit() {

@@ -83,8 +83,13 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
   }
 
   onClick() {
-      this.selected.emit(this.buttonData);
-    this.viewContext.onOperation(this.buttonData.operationData);
+    this.selected.emit(this.buttonData);
+    if (this.buttonData.operationData.type === OperationEnum.SetContext) {
+      this.viewContext.setContext(this.buttonData.operationData.data);
+    } else {
+      this.viewContext.onOperation(this.buttonData.operationData);
+    }
+    
 
     if (this.isCheckStyle && this.isTopButton) {
       this.isChecked = !this.isChecked;
