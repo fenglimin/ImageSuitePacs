@@ -52,8 +52,10 @@ export class QueryShortcutComponent implements OnInit {
   }
 
   onConfirmDeleteCallback(val: any, shortcut: Shortcut) {
-    if (val.dialogResult === DialogResult.Yes) {
-      alert('delete shortcut ' + shortcut.name);
+      if (val.dialogResult === DialogResult.Yes) {
+          this.worklistService.onDeleteShortcut(shortcut);
+
+      //alert('delete shortcut ' + shortcut.name);
     }
   }
 

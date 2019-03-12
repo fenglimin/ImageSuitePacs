@@ -90,8 +90,9 @@ import { AnnotationModule } from './annotation/annotation.module';
     AppRoutingModule,
     ReactiveFormsModule,
     MatMomentDateModule,
-    AnnotationModule
+    AnnotationModule,
 
+    MatDatepickerModule
   ],
   providers: [],
   bootstrap: [AppComponent],

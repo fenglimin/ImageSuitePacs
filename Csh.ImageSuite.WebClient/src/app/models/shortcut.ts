@@ -14,7 +14,8 @@ export class Shortcut {
   gender: string;
   modality: string;
   studyDate: string;
-  birthDate: string;
+    birthDateFrom: Date;
+    birthDateTo: Date;
   studyId: string;
   accessionNo: string;
 
@@ -42,7 +43,9 @@ export class Shortcut {
     this.gender = '';
     this.modality = '';
     this.studyDate = '';
-    this.birthDate = '';
+      this.birthDateFrom = null;
+      this.birthDateTo = null;
+
     this.studyId = '';
     this.accessionNo = '';
   }
@@ -53,7 +56,9 @@ export class Shortcut {
     this.gender = shortcut.gender;
     this.modality = shortcut.modality;
     this.studyDate = shortcut.studyDate;
-    this.birthDate = shortcut.birthDate;
+      this.birthDateFrom = shortcut.birthDateFrom;
+      this.birthDateTo = shortcut.birthDateTo;
+
     this.studyId = shortcut.studyId;
     this.accessionNo = shortcut.accessionNo;
   }

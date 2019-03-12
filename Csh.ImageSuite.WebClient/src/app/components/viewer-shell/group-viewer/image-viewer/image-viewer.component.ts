@@ -67,6 +67,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private mouseEventHelper: any = {};
     private eventHandlers: any = {};
 
+    private originalWindowWidth: number;
+    private originalWindowCenter: number;
+
     @Input()
     set imageData(imageData: ViewerImageData) {
         if (this._imageData !== imageData) {
@@ -221,6 +224,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.setContext(this.viewContext.curContext);
         //fit window
         this.fitWindow();
+
+        // Save the original window center/width for later reset.
+        this.originalWindowCenter = this.ctImage.windowCenter;
+        this.originalWindowWidth = this.ctImage.windowWidth;
     }
 
     private createLayers(canvasId) {
@@ -324,18 +331,32 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
                 
                 break;
             }
+            case OperationEnum.FitWidth:
+            case OperationEnum.FitHeight:
+            case OperationEnum.FitOriginal:
+            case OperationEnum.FitWindow: {
+                this.doFit(operation.type);
+                break;
+            }
+            case OperationEnum.Reset:
+            {
+                this.doReset();
+                break;
+            }
         }
     }
 
     private setCursor() {
         var canvas = this.canvas;
         var curContext = this.viewContext.curContext;
-        var cursorUrl = this.baseUrl + '/assets/img';
+        var cursorUrl = this.baseUrl + '/assets/img/cursor';
+
         if (curContext.action == ViewContextEnum.WL) {
             var u = cursorUrl + '/adjustwl.cur';
             canvas.style.cursor = "url('{0}'),move".format(u);
         } else if (curContext.action == ViewContextEnum.Pan) {
-            canvas.style.cursor = "move";
+            var u = cursorUrl + '/hand.cur';
+            canvas.style.cursor = "url('{0}'),move".format(u);
         } else if (curContext.action == ViewContextEnum.Select) {
             canvas.style.cursor = "default";
         } else if (curContext.action == ViewContextEnum.Zoom) {
@@ -346,6 +367,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             canvas.style.cursor = "url('{0}'),move".format(u);
         } else if (curContext.action == ViewContextEnum.ROIZoom) {
             var u = cursorUrl + '/rectzoom.cur';
+            canvas.style.cursor = "url('{0}'),move".format(u);
+        } else if (curContext.action == ViewContextEnum.SelectAnn) {
+            var u = cursorUrl + '/select.cur';
             canvas.style.cursor = "url('{0}'),move".format(u);
         } else if (curContext.action == ViewContextEnum.Create) {
             canvas.style.cursor = "default";
@@ -475,6 +499,90 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.rotate(curRotate);
     }
 
+    doReset() {
+        if (!this.isImageLoaded)
+            return;
+
+        var width = this.image.width(),
+            height = this.image.height(),
+            canvasWidth = this.canvas.width,
+            canvasHeight = this.canvas.height;
+
+        var widthScale = canvasWidth / width,
+            heightScale = canvasHeight / height;
+
+        this.imgLayer.transform(1, 0, 0, 1, 0, 0, true);
+
+        if (widthScale < heightScale) {
+            this.scale(widthScale);
+            this.translate((canvasWidth - width * widthScale) / 2, (canvasHeight - height * widthScale) / 2);
+        } else {
+            this.scale(heightScale);
+            this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
+        }
+
+        // Reset W/L
+        this.ctImage.windowWidth = this.originalWindowWidth;
+        this.ctImage.windowCenter = this.originalWindowCenter;
+
+        var viewPort = cornerstone.getViewport(this.helpElement);
+        viewPort.voi.windowCenter = this.originalWindowCenter;
+        viewPort.voi.windowWidth = this.originalWindowWidth;
+
+        // Reset Flip status
+        viewPort.vflip = false;
+        viewPort.hflip = false;
+
+        cornerstone.setViewport(this.helpElement, viewPort);
+    }
+
+    doFit(fitType: OperationEnum) {
+
+        if (!this.isImageLoaded)
+            return;
+
+        var width = this.image.width(),
+            height = this.image.height(),
+            canvasWidth = this.canvas.width,
+            canvasHeight = this.canvas.height;
+
+        var widthScale = canvasWidth / width,
+            heightScale = canvasHeight / height;
+
+        var curRotate = 0 - this.getRotate();//get rotate return the minus value
+        // Sail : currently ignore the free rotate, since free rotate will change both width and height,
+        // rotate 90 only switch width and height
+        if (curRotate / 180 !== 0) {
+            widthScale = canvasWidth / height;
+            heightScale = canvasHeight / width;
+        }
+
+        
+        this.imgLayer.transform(1, 0, 0, 1, 0, 0, true);
+
+
+        if (fitType === OperationEnum.FitWindow) {
+            if (widthScale < heightScale) {
+                this.scale(widthScale);
+                this.translate((canvasWidth - width * widthScale) / 2, (canvasHeight - height * widthScale) / 2);
+            } else {
+                this.scale(heightScale);
+                this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
+            }
+        } else if (fitType === OperationEnum.FitHeight) {
+            this.scale(heightScale);
+            this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
+        } else if (fitType === OperationEnum.FitWidth) {
+            this.scale(widthScale);
+            this.translate((canvasWidth - width * widthScale) / 2, (canvasHeight - height * widthScale) / 2);
+        } else if (fitType === OperationEnum.FitOriginal) {
+            this.translate((canvasWidth - width) / 2, (canvasHeight - height) / 2);
+        }
+        
+
+        this.rotate(curRotate);
+    }
+
     showOverlay(visible) {
         if (!this.isImageLoaded) {
             return;
@@ -568,6 +676,25 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             //    self.updateTag(dicomTag.windowCenter, dcmImg.windowCenter);
             //});
         }
+    }
+
+    private doZoom(delta) {
+        if (!this.isImageLoaded)
+            return;
+
+        let scaleValue = 1;
+        if (delta > 0) {
+            scaleValue = 1.05;
+        } else {
+            scaleValue = 0.95;
+        }
+
+        var preWidth = this.imgLayer.getRect().width;
+        this.scale(scaleValue);
+        var afterWidth = this.imgLayer.getRect().width;
+
+        delta = (afterWidth - preWidth) / 2;
+        this.translate(-delta, -delta);
     }
 
     private registerImgLayerEvents() {
@@ -826,9 +953,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             } else if (curContext.action == ViewContextEnum.WL) {
                 self.doWL(deltaX, deltaY);
             } else if (curContext.action == ViewContextEnum.Zoom) {
-                var delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : -deltaY;
-                //if (Math.abs(delta) > 0)
-                //self.doZoom(delta);
+                var delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
+                if (Math.abs(delta) > 0) {
+                    self.doZoom(delta);
+                }
+                
             } else if (curContext.action == ViewContextEnum.ROIZoom) {
                 var curPosCvs = {
                     x: evt.offsetX,

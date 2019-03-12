@@ -10,15 +10,6 @@
                     <app-dropdown-button-menu [menuButtonList]="selectPanButtonMenuList"></app-dropdown-button-menu>
                 </td>
                 <td>
-                    <app-dropdown-button-menu-button [buttonData]="resetButtonMenu" [isTopButton]="true" [showArrow]="false"></app-dropdown-button-menu-button>
-                </td>
-                <td>
-                    <app-dropdown-button-menu-button [buttonData]="keyImageButtonMenu" [isTopButton]="true" [showArrow]="false"></app-dropdown-button-menu-button>
-                </td>
-                <td>
-                    <img [src]="getButtonDivideSrc()" style="margin-top: -24px"/>
-                </td>
-                <td>
                     <app-dropdown-button-menu [menuButtonList]="zoomButtonMenuList"></app-dropdown-button-menu>
                 </td>
                 <td>
@@ -26,6 +17,12 @@
                 </td>
                 <td>
                     <app-dropdown-button-menu [menuButtonList]="wlButtonMenuList"></app-dropdown-button-menu>
+                </td>
+                <td>
+                    <app-dropdown-button-menu-button [buttonData]="selectAnnotationButtonMenu" [isTopButton]="true" [showArrow]="false"></app-dropdown-button-menu-button>
+                </td>
+                <td>
+                    <img [src]="getButtonDivideSrc()" style="margin-top: -24px" />
                 </td>
                 <td>
                     <app-dropdown-button-menu [menuButtonList]="fitButtonMenuList"></app-dropdown-button-menu>
@@ -36,6 +33,15 @@
                 <td>
                     <img [src]="getButtonDivideSrc()" style="margin-top: -24px"/>
                 </td>
+                <td>
+                    <app-dropdown-button-menu-button [buttonData]="resetButtonMenu" [isTopButton]="true" [showArrow]="false"></app-dropdown-button-menu-button>
+                </td>
+                <td>
+                    <app-dropdown-button-menu-button [buttonData]="keyImageButtonMenu" [isTopButton]="true" [showArrow]="false"></app-dropdown-button-menu-button>
+                </td>
+                <td>
+                    <img [src]="getButtonDivideSrc()" style="margin-top: -24px" />
+                </td>                
                 <td>
                     <app-dropdown-button-menu-button [buttonData]="showAnnotationButtonMenu" [isTopButton]="true" [showArrow]="false"></app-dropdown-button-menu-button>
                 </td>

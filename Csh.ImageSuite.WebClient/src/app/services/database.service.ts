@@ -36,14 +36,35 @@ export class DatabaseService {
   }
 
 
-  /** GET shortcut from the server */
-  getShortcuts (): Observable<Shortcut[]> {
-    return this.http.get<Shortcut[]>(this.shortcutUrl)
-      .pipe(
-        tap(heroes => this.log('fetched heroes')),
-        catchError(this.handleError('getHeroes', []))
-      );
-  }
+    /** GET shortcut from the server */
+    getShortcuts(): Observable<Shortcut[]> {
+        const url = `${this.shortcutUrl}/search/`;
+        return this.http.get<Shortcut[]>(url)
+          .pipe(
+            tap(shortcuts => this.log('fetched shortcuts')),
+            catchError(this.handleError('getShortcuts', []))
+          );
+    }
+
+    /** Save shortcut to the server */
+    saveShortcut(shortcut: Shortcut): Observable<Shortcut[]> {
+        const url = `${this.shortcutUrl}/create/`;
+        return this.http.post<Shortcut[]>(url, shortcut, httpOptions)
+            .pipe(
+            tap(shortcut => this.log('save shortcut')),
+                catchError(this.handleError('saveShortcut', []))
+            );
+    }
+
+    /** Delete shortcut to the server */
+    deleteShortcut(shortcut: Shortcut): Observable<Shortcut[]> {
+        const url = `${this.shortcutUrl}/delete`;
+        return this.http.post<Shortcut[]>(url, shortcut, httpOptions)
+            .pipe(
+                tap(shortcut => this.log('delete shortcut')),
+                catchError(this.handleError('deleteShortcut', []))
+            );
+    }
 
   /** GET studies from the server */
   getStudies (shortcut: Shortcut): Observable<Study[]> {

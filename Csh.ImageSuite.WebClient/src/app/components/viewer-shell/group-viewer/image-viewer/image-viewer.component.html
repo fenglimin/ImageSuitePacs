@@ -1,6 +1,6 @@
 
 <div class="DivImageViewer" [id]="getId()" (click)="onSelected()">
-    <!--<div *ngIf="worklistService.isUsingLocalTestData() && imageData != null" style="width: 500px">
+    <div *ngIf="worklistService.isUsingLocalTestData()" style="width: 500px">
         <p>
             **************************************
             Name : {{imageData.image.series.study.patient.patientName}} | 
@@ -8,7 +8,7 @@
             Modality : {{imageData.image.series.modality}} | 
             ImageID : {{imageData.image.id}}
         </p>
-    </div>-->
+    </div>
     <canvas [id]="getCanvasId()" #viewerCanvas class="viewerCanvas"></canvas>
 </div>
 

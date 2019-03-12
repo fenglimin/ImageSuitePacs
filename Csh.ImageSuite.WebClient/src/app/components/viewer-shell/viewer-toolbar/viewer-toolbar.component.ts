@@ -61,6 +61,7 @@ export class ViewerToolbarComponent implements OnInit {
   showOverlayButtonMenu: SelectedButtonData = { name: "showoverlay", tip: "Show Overlay", operationData: { type: OperationEnum.ShowOverlay, data: null } };
   showRulerButtonMenu: SelectedButtonData = { name: "showruler", tip: "Show Ruler", operationData: { type: OperationEnum.ShowRuler, data: null } };
   showGraphicOverlayButtonMenu: SelectedButtonData = { name: "showgraphicoverlay", tip: "Show Graphic Overlay", operationData: { type: OperationEnum.ShowGraphicOverlay, data: null } };
+  selectAnnotationButtonMenu: SelectedButtonData = { name: "ann_selection", tip: "Select Annotation", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.SelectAnn } };
 
   private baseUrl: string;
 

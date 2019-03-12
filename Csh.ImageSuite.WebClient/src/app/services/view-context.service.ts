@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject }  from 'rxjs';
+import { SelectedButtonData, ButtonStyleToken } from '../models/dropdown-button-menu-data';
 
 export enum ViewContextEnum {
     Select = 1,
@@ -12,7 +13,8 @@ export enum ViewContextEnum {
     ROIWL = 8,
     MagnifyX2,
     MagnifyX4,
-    MagnifyX8
+    MagnifyX8,
+    SelectAnn
 }
 
 export enum OperationEnum {
@@ -74,6 +76,7 @@ export class ViewContextService {
     private _showAnnotation: boolean = true;
     private _showOverlay: boolean = true;
     private _showRuler: boolean = true;
+    private _showGraphicOverlay: boolean = false;
 
     private viewContextChangedSource = new Subject<ViewContext>();
     viewContextChanged$ = this.viewContextChangedSource.asObservable();
@@ -82,7 +85,7 @@ export class ViewContextService {
     onOperation$ = this.operationSource.asObservable();
 
     constructor() {
-        this._curContext = new ViewContext(ViewContextEnum.Pan);
+        this._curContext = new ViewContext(ViewContextEnum.Select);
     }
 
     get curContext(): ViewContext {
@@ -142,4 +145,28 @@ export class ViewContextService {
             this.viewContextChangedSource.next(this._curContext);
         }
     }
+
+    isImageToolBarButtonChecked(buttonData: SelectedButtonData): boolean {
+      switch (buttonData.operationData.type) {
+        case OperationEnum.ShowAnnotation: return this._showAnnotation;
+        case OperationEnum.ShowOverlay: return this._showOverlay;
+        case OperationEnum.ShowRuler: return this._showRuler;
+        case OperationEnum.ShowGraphicOverlay: return this._showGraphicOverlay;
+        default: return buttonData.operationData.data == this._curContext.action;
+        }
+    }
+
+    isImageToolBarButtonCheckStyle(buttonData: SelectedButtonData): boolean {
+      switch (buttonData.operationData.type) {
+        case OperationEnum.ShowAnnotation:
+        case OperationEnum.ShowOverlay:
+        case OperationEnum.ShowRuler:
+        case OperationEnum.ShowGraphicOverlay:
+        case OperationEnum.SetContext:
+            return true;
+        default:
+            return false;
+      }
+    }
+
 }

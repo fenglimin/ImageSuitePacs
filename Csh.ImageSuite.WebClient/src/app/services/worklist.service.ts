@@ -12,7 +12,8 @@ import { DataSource } from '../models/shortcut';
   providedIn: 'root'
 })
 export class WorklistService {
-  studies: Study[];
+    studies: Study[];
+    shortcuts: Shortcut[];
   querying = false;
 
   private _shortcut : Shortcut;
@@ -63,6 +64,41 @@ export class WorklistService {
     return this.studies;
   }
 
+    onQueryShortcuts(): Shortcut[] {
+
+        this.querying = true;
+        if (this.isUsingLocalTestData()) {
+            //this.shortcuts = this.databaseService.getShortcuts();
+            this.querying = false;
+        } else {
+            this.databaseService.getShortcuts().subscribe(shortcuts => this.formatShortcuts(shortcuts));
+        }
+
+        return this.shortcuts;
+    }
+
+    onSaveShortcut(name: string) {
+        if (this.isUsingLocalTestData()) {
+            //this.studies = this.databaseService.getStudiesTest();
+            //this.querying = false;
+        } else {
+            this._shortcut.name = name;
+            this.databaseService.saveShortcut(this._shortcut).subscribe(shortcuts => this.afterDeleteShortcut());
+        }
+
+    }
+
+    onDeleteShortcut(shortcut: Shortcut) {
+        if (this.isUsingLocalTestData()) {
+            //this.studies = this.databaseService.getStudiesTest();
+            //this.querying = false;
+        } else {
+            //this._shortcut.name = name;
+            this.databaseService.deleteShortcut(shortcut).subscribe(shortcuts => this.afterDeleteShortcut());
+        }
+
+    }
+
   onShowSingleStudy(study: Study) {
 
     const viewerShellData = new ViewerShellData(this.hangingProtocalService.getDefaultGroupHangingProtocal(),
@@ -109,7 +145,8 @@ export class WorklistService {
   
   setDataSource(dataSource: DataSource) {
     this._shortcut.dataSource = dataSource;
-    this.studies = this.onQueryStudies();
+      this.studies = this.onQueryStudies();
+      this.shortcuts = this.onQueryShortcuts();
   }
 
   onCleanCondition() {
@@ -118,7 +155,8 @@ export class WorklistService {
 
   onQueryAllStudies() {
     this.shortcut.clearCondition();
-    this.onQueryStudies();
+      this.onQueryStudies();
+      this.onQueryShortcuts();
   }
 
   onQueryTodayStudy() {
@@ -144,7 +182,20 @@ export class WorklistService {
 
     this.studies = studies;
     this.querying = false;
-  }
+    }
+
+    private formatShortcuts(shortcuts) {
+        //for (let i = 0; i < shortcuts.length; i++) {
+        //    let shortcurtName = shortcuts[i].name.split('|');
+
+        //}
+        this.shortcuts = shortcuts;
+    }
+
+    private afterDeleteShortcut() {
+        this.onQueryStudies();
+        this.onQueryShortcuts();
+    }
 
   private studyDetailsLoaded(index: number, studyNew: Study) {
 

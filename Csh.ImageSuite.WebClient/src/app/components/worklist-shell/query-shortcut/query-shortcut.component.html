@@ -27,6 +27,14 @@
               title="Delete shortcut" (click)="onDeleteShortcut(shortcut)"></button>
     </div>
   </div>
+    <div *ngFor="let shortcut of worklistService.shortcuts" class="row">
+        <div class="shortcut-item">
+            <i class="glyphicon glyphicon-search"></i>
+            <button class="shortcut-name-button" (click)="onQuery(shortcut)">{{shortcut.name}}</button>
+            <button class="pull-right glyphicon glyphicon-remove shortcut-close-button"
+                    title="Delete shortcut" (click)="onDeleteShortcut(shortcut)"></button>
+         </div>
+     </div>
   <div class="row">
     <div class="shortcut-header">
       <i class="glyphicon glyphicon-cloud"></i>

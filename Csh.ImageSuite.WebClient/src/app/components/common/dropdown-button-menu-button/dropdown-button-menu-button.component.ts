@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Subscription }   from 'rxjs';
+
 import { SelectedButtonData, ButtonStyleToken } from '../../../models/dropdown-button-menu-data';
 import { OperationEnum, ViewContextEnum, OperationData, ViewContextService } from '../../../services/view-context.service';
 import { ConfigurationService } from '../../../services/configuration.service';
@@ -11,20 +13,44 @@ import { ConfigurationService } from '../../../services/configuration.service';
 export class DropdownButtonMenuButtonComponent implements OnInit {
   buttonStyleToken: ButtonStyleToken;
   baseUrl: string;
+
+  backgroundUrl: string;
   isCheckStyle: boolean;
   defaultStyle: string;
-  private _isChecked: boolean;
+  
+
+  private subscriptionViewContextChange: Subscription;
 
   @Output() selected = new EventEmitter<SelectedButtonData>();
-
-  @Input() buttonData: SelectedButtonData;
   @Input() isTopButton: boolean;
   @Input() showArrow: boolean;
+
+
+
+  private _buttonData: SelectedButtonData;
+  @Input()
+  set buttonData(value: SelectedButtonData) {
+    this._buttonData = value;
+    if (this.isTopButton && this.isCheckStyle) {
+      if (this._buttonData.operationData.type === OperationEnum.SetContext) {
+          this.defaultStyle = this.buttonStyleToken.down;
+      } else {
+          this.defaultStyle = this.buttonStyleToken.normal;
+      }
+    }
+    this.backgroundUrl = this.createBackgroundUrl(this.defaultStyle);
+  }
+  get buttonData() {
+      return this._buttonData;
+  }
+
+  private _isChecked: boolean;
   @Input()
   set isChecked(value: boolean) {
     this._isChecked = value;
     if (this.isCheckStyle) {
       this.defaultStyle = this.getDefaultStyle();
+      this.backgroundUrl = this.createBackgroundUrl(this.defaultStyle);
     }
   }
   get isChecked() {
@@ -34,22 +60,22 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
   constructor(private viewContext: ViewContextService, private configurationService: ConfigurationService) {
     this.buttonStyleToken = { normal: "normal", over: "focus", down: "down", disable: "disable" };
     this.baseUrl = this.configurationService.getBaseUrl();
+
+    this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(
+        context => {
+            this.setContext(context);
+      });
+
+    this.defaultStyle = this.buttonStyleToken.normal;
   }
 
   ngOnInit() {
-    const op = this.buttonData.operationData.type;
-    this.isCheckStyle = (op == OperationEnum.ToggleKeyImage || op == OperationEnum.ShowAnnotation || op == OperationEnum.ShowGraphicOverlay ||
-      op == OperationEnum.ShowOverlay || op == OperationEnum.ShowRuler) || !this.isTopButton;
-    this.isChecked = (op == OperationEnum.ShowAnnotation || op == OperationEnum.ShowOverlay || op == OperationEnum.ShowRuler);;
-    this.defaultStyle = this.getDefaultStyle();
+    this.isCheckStyle = this.viewContext.isImageToolBarButtonCheckStyle(this.buttonData);
+    this.isChecked = this.viewContext.isImageToolBarButtonChecked(this.buttonData);
   }
 
   getDefaultStyle():string {
     return this.isChecked ? this.buttonStyleToken.down : this.buttonStyleToken.normal;
-  }
-
-  getDefaultBackgroundUrl(): string {
-    return this.createBackgroundUrl(this.defaultStyle);
   }
 
   getDefaultMarginTop() {
@@ -58,46 +84,52 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
 
   createBackgroundUrl(styleToken: string): string {
     const arrowToken = this.showArrow ? "_h" : "";
-      const backgroundUrl = `url(${this.baseUrl}assets/img/Toolbar/${this.buttonData.name}/${styleToken}/bitmap${arrowToken}.gif)`;
-      return backgroundUrl;
+    const backgroundUrl = `url(${this.baseUrl}assets/img/Toolbar/${this.buttonData.name}/${styleToken}/bitmap${arrowToken}.gif)`;
+    return backgroundUrl;
   }
 
   onMouseOver(event) {
-    this.setBackgroundImage(event, this.buttonStyleToken.over);
+    this.setBackgroundImage(this.buttonStyleToken.over);
   }
 
   onMouseOut(event) {
-    this.setBackgroundImage(event, this.defaultStyle);
+    this.setBackgroundImage(this.defaultStyle);
   }
 
   onMouseDown(event) {
     if (this.isCheckStyle && this.isChecked) {
-      this.setBackgroundImage(event, this.buttonStyleToken.normal);
+      this.setBackgroundImage(this.buttonStyleToken.normal);
     } else {
-      this.setBackgroundImage(event, this.buttonStyleToken.down);
+      this.setBackgroundImage(this.buttonStyleToken.down);
     }
   }
 
   onMouseUp(event) {
-    this.setBackgroundImage(event, this.defaultStyle);
+    this.setBackgroundImage(this.defaultStyle);
   }
 
-  setBackgroundImage(event, style) {
-    event.target.style.backgroundImage = this.createBackgroundUrl(style);
+  setBackgroundImage(style) {
+    this.backgroundUrl = this.createBackgroundUrl(style);
   }
 
   onClick() {
-    this.selected.emit(this.buttonData);
+      if (!this.isTopButton) {
+          this.selected.emit(this.buttonData);
+      }
+    
     if (this.buttonData.operationData.type === OperationEnum.SetContext) {
       this.viewContext.setContext(this.buttonData.operationData.data);
     } else {
       this.viewContext.onOperation(this.buttonData.operationData);
+      if (this.isCheckStyle && this.isTopButton && !this.showArrow) {
+          this.isChecked = !this.isChecked;
+      }
     }
-    
+  }
 
-    if (this.isCheckStyle && this.isTopButton) {
-      this.isChecked = !this.isChecked;
-     // this.defaultStyle = this.getDefaultStyle();
+  setContext(viewContext) {
+    if (this.buttonData.operationData.type === OperationEnum.SetContext) {
+      this.isChecked = (viewContext.action === this.buttonData.operationData.data);
     }
   }
 }

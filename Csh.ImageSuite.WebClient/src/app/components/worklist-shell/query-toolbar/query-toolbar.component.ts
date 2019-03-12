@@ -3,6 +3,7 @@ import { WorklistService } from '../../../services/worklist.service';
 import { DataSource } from '../../../models/shortcut';
 import { DialogService } from '../../../services/dialog.service';
 import { MessageBoxType, MessageBoxContent, DialogResult } from '../../../models/messageBox';
+import { Shortcut } from '../../../models/shortcut';
 
 @Component({
   selector: 'app-query-toolbar',
@@ -39,8 +40,10 @@ export class QueryToolbarComponent implements OnInit {
   }
 
   onSaveShortcutCallback(val: any) {
-    if (val.dialogResult === DialogResult.Ok) {
-      alert('add shortcut ' + val.valueInput);
+      if (val.dialogResult === DialogResult.Ok) {
+          //const shortcut = new Shortcut();
+          //shortcut.name = "test";
+          this.worklistService.onSaveShortcut(val.valueInput);
     }
   }
 }
