@@ -70,6 +70,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private originalWindowWidth: number;
     private originalWindowCenter: number;
 
+    private label: any;
+
+
     @Input()
     set imageData(imageData: ViewerImageData) {
         if (this._imageData !== imageData) {
@@ -111,9 +114,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     ngAfterViewInit() {
-        if (!this.imageData || !this.imageData.image)
-            return;
-
         this.isViewInited = true;
         this.canvas = this.canvasRef.nativeElement;
         this.helpElement = this.helpElementRef.nativeElement;
@@ -174,7 +174,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     private loadImage() {
-        if (this.image !== null && this.isViewInited) {
+        if (this.image !== null) {
+
+            this.isViewInited = true;
             this.isImageLoaded = false;
 
             //TODO: the url in deploy environment
@@ -228,6 +230,33 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         // Save the original window center/width for later reset.
         this.originalWindowCenter = this.ctImage.windowCenter;
         this.originalWindowWidth = this.ctImage.windowWidth;
+
+        this.showTextOverlay();
+    }
+
+    private showTextOverlay() {
+
+        this.olLayer.visible(true);
+
+        var idLbl = this.getId() + "_ol";
+
+        var overlaySetting = {
+            color: '#ffffff',
+            font: 'Times New Roman',
+            fontSize: 17
+        };
+
+        var font = "{0}px {1}".format(overlaySetting.fontSize, overlaySetting.font);
+        jCanvaScript.text('Test', 5, 15).id(idLbl).layer(this.olLayerId).color('#ffffff').font(font).align('left');
+
+        this.label = jCanvaScript('#' + idLbl);
+
+
+        //this.label._x = 5;
+        //this.label._y = 34;
+
+        //this.label.align('left');
+        //this.label.string('aaaaa');
     }
 
     private createLayers(canvasId) {
@@ -248,7 +277,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         self.mgLayer.visible(false);
 
         self.olLayerId = canvasId + '_overlayLayer';
-        self.olLayer = jc.layer(self.olLayerId).level(10);//layer to show overlay
+        self.olLayer = jCanvaScript.layer(self.olLayerId).level(10);//layer to show overlay
 
         self.rulerLayerId = canvasId + '_rulerLayer';// layer to show ruler
         self.rulerLayer = jc.layer(self.rulerLayerId).level(9);
@@ -338,11 +367,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
                 this.doFit(operation.type);
                 break;
             }
-            case OperationEnum.Reset:
-            {
+            case OperationEnum.Reset:{
                 this.doReset();
                 break;
             }
+            case OperationEnum.ShowOverlay:{
+                this.olLayer.visible(operation.data.show);
+                break;
+            }
+
         }
     }
 

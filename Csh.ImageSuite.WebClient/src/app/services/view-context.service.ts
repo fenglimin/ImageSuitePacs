@@ -129,8 +129,39 @@ export class ViewContextService {
         return this._showRuler;
     }
 
-    onOperation(data: OperationData) {
+    set showGraphicOverlay(bShow: boolean) {
+        this._showGraphicOverlay = bShow;
+        let data: OperationData = new OperationData(OperationEnum.ShowGraphicOverlay, { show: bShow });
+
         this.operationSource.next(data);
+    }
+
+    get showGraphicOverlay(): boolean {
+        return this._showGraphicOverlay;
+    }
+
+    onOperation(data: OperationData) {
+        switch (data.type) {
+            case OperationEnum.ShowAnnotation:{
+                this.showAnnotation = !this.showAnnotation;
+                break;
+            }
+            case OperationEnum.ShowOverlay:{
+                this.showOverlay = !this.showOverlay;
+                break;
+            }
+            case OperationEnum.ShowRuler: {
+                this.showRuler = !this.showRuler;
+                break;
+            }
+            case OperationEnum.ShowGraphicOverlay: {
+                this.showGraphicOverlay = !this.showGraphicOverlay;
+                break;
+            }
+
+            default: this.operationSource.next(data);
+        }
+        
     }
 
     setContext(context: ViewContextEnum, data: any = undefined) {
