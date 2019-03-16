@@ -16,7 +16,7 @@ export class MessageBoxComponent implements OnInit {
   dialogResult: DialogResult;
   valueInput: string;
   needDisableYesButton = true;
-  content = new MessageBoxContent();
+  content: MessageBoxContent;
 
   constructor(
     private fb: FormBuilder,

@@ -1,0 +1,22 @@
+<h5 mat-dialog-title>Manual WL</h5>
+
+<mat-dialog-content [formGroup]="form">
+
+  <mat-form-field>
+    <input matInput
+           placeholder="Window Center"
+           formControlName="windowCenter"
+           (keyup)="onInput($event)">
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button class="mat-raised-button" (click)="onCancel()">
+    <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>Cancel
+  </button>
+
+  <button class="mat-raised-button" [disabled]="needDisableYesButton" (click)="onOk()">
+    <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Ok
+  </button>
+
+</mat-dialog-actions>

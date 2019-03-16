@@ -26,6 +26,8 @@ import { MessageBoxComponent } from './components/common/message-box/message-box
 import { DropdownButtonMenuComponent } from './components/common/dropdown-button-menu/dropdown-button-menu.component';
 import { DropdownButtonMenuButtonComponent } from './components/common/dropdown-button-menu-button/dropdown-button-menu-button.component';
 
+import { ManualWlDialogComponent } from './components/dialog/manual-wl-dialog/manual-wl-dialog.component';
+
 import {
   MatDatepickerModule,
   MatDialogModule,
@@ -47,6 +49,7 @@ import { AnnotationModule } from './annotation/annotation.module';
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,7 +67,8 @@ import { AnnotationModule } from './annotation/annotation.module';
     OperateToolbarComponent,
     MessageBoxComponent,
     DropdownButtonMenuComponent,
-    DropdownButtonMenuButtonComponent
+    DropdownButtonMenuButtonComponent,
+    ManualWlDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -96,6 +100,6 @@ import { AnnotationModule } from './annotation/annotation.module';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [MessageBoxComponent]
+  entryComponents: [MessageBoxComponent, ManualWlDialogComponent]
 })
 export class AppModule { }

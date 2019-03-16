@@ -10,6 +10,9 @@ import { AnnObject, EventType, StepEnum } from '../../../../annotation/ann-objec
 import { AnnRuler } from '../../../../annotation/ann-ruler';
 import { WorklistService } from '../../../../services/worklist.service';
 import { ConfigurationService } from '../../../../services/configuration.service';
+import { DialogService } from '../../../../services/dialog.service';
+import { WindowLevelData } from '../../../../models/dailog-data/image-process';
+import { MessageBoxType, MessageBoxContent, DialogResult } from '../../../../models/messageBox';
 
 @Component({
     selector: 'app-image-viewer',
@@ -89,7 +92,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     constructor(private imageSelectorService: ImageSelectorService, private dicomImageService: DicomImageService,
-      private configurationService: ConfigurationService, private viewContext: ViewContextService, public worklistService: WorklistService) {
+      private configurationService: ConfigurationService, private viewContext: ViewContextService,
+      public worklistService: WorklistService, private dialogService: DialogService) {
 
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
             viewerImageData => {
@@ -358,7 +362,22 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.setCursor();
     }
 
-    private onOperation(operation: OperationData) {
+  private onOperation(operation: OperationData) {
+
+    if (!this.selected)
+      return;
+
+    const windowLevelData = new WindowLevelData();
+    windowLevelData.windowCenter = 100;
+    windowLevelData.windowWidth = 200;
+    this.dialogService.showManualWlDialog(windowLevelData).subscribe(
+      val => {
+        if (val.dialogResult === DialogResult.Ok) {
+          alert(val.windowCenter);
+        }
+      });
+
+
         if (!this.isImageLoaded)
             return;
 
@@ -392,7 +411,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             case OperationEnum.ShowOverlay:{
                 this.olLayer.visible(operation.data.show);
                 break;
-            }
+          }
+          case OperationEnum.ManualWL: {
+           
+            break;
+          }
 
         }
     }
