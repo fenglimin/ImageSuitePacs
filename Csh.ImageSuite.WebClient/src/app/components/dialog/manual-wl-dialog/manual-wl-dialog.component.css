@@ -12,7 +12,7 @@
   color: white;
   font-size: 16px;
   padding: 10px 10px;
-  min-width: 400px;
+  
 }
 
 .mat-dialog-actions {
@@ -20,7 +20,7 @@
 }
 
 .mat-form-field {
-    min-width: 400px;
+   
 }
 
 .mat-raised-button {

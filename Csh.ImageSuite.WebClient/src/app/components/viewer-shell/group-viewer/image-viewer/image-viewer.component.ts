@@ -372,10 +372,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     windowLevelData.windowWidth = 200;
     this.dialogService.showManualWlDialog(windowLevelData).subscribe(
       val => {
-        if (val.dialogResult === DialogResult.Ok) {
-          alert(val.windowCenter);
+         alert(val.windowCenter);
         }
-      });
+      );
 
 
         if (!this.isImageLoaded)

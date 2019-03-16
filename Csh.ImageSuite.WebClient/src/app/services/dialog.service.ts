@@ -25,15 +25,24 @@ export class DialogService {
     return dialogRef.afterClosed();
   }
 
+  //showManualWlDialog(windowLevelData: WindowLevelData): Observable<any> {
+  //  const dialogConfig = new MatDialogConfig();
+
+  //  dialogConfig.disableClose = true;
+  //  dialogConfig.autoFocus = true;
+  //  dialogConfig.data = windowLevelData;
+
+  //  const dialogRef = this.dialog.open(ManualWlDialogComponent, dialogConfig);
+  //  return dialogRef.afterClosed();
+  //}
+
   showManualWlDialog(windowLevelData: WindowLevelData): Observable<any> {
-    const dialogConfig = new MatDialogConfig();
+    const dialogRef = this.dialog.open(ManualWlDialogComponent, {
+      autoFocus: true,
+      width: '420px',
+      data: windowLevelData
+    });
 
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.data = windowLevelData;
-
-    const dialogRef = this.dialog.open(ManualWlDialogComponent, dialogConfig);
     return dialogRef.afterClosed();
   }
-
 }

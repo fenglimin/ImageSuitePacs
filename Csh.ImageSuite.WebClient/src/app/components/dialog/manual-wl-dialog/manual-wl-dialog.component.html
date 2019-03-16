@@ -1,22 +1,29 @@
-<h5 mat-dialog-title>Manual WL</h5>
-
-<mat-dialog-content [formGroup]="form">
-
-  <mat-form-field>
-    <input matInput
-           placeholder="Window Center"
-           formControlName="windowCenter"
-           (keyup)="onInput($event)">
-  </mat-form-field>
+<h1 mat-dialog-title>Manual WL</h1>
+<mat-dialog-content>
+  <table>
+    <tr>
+      <td>Window Center</td>
+      <td>Window Width</td>
+    </tr>
+    <tr>
+      <td>
+        <mat-form-field>
+          <input matInput [(ngModel)]="data.windowCenter">
+        </mat-form-field>
+      </td>
+      <td>
+        <mat-form-field>
+          <input matInput [(ngModel)]="data.windowWidth">
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
 </mat-dialog-content>
-
 <mat-dialog-actions>
-  <button class="mat-raised-button" (click)="onCancel()">
+  <button class="mat-raised-button" (click)="onNoClick()">
     <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>Cancel
   </button>
-
-  <button class="mat-raised-button" [disabled]="needDisableYesButton" (click)="onOk()">
+  <button class="mat-raised-button" [mat-dialog-close]="data" cdkFocusInitial>
     <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Ok
   </button>
-
 </mat-dialog-actions>
