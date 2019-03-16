@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject }    from 'rxjs';
 import { ViewerImageData } from '../models/viewer-image-data';
+import { Study, Image } from '../models/pssi';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +14,16 @@ export class ImageSelectorService {
   // Observable number sources
   private imageLayoutChangedSource = new Subject<number>();
 
+  // Observable string sources
+    private thumbnailSelectedSource = new Subject<Image>();
+
   // Observable string streams
   imageSelected$ = this.imageSelectedSource.asObservable();
 
   // Observable number streams
-  imageLayoutChanged$ = this.imageLayoutChangedSource.asObservable();
+    imageLayoutChanged$ = this.imageLayoutChangedSource.asObservable();
+
+    thumbnailSelected$ = this.thumbnailSelectedSource.asObservable();
 
   // Service string commands
     selectImage(viewerImageData: ViewerImageData) {
@@ -27,5 +33,9 @@ export class ImageSelectorService {
   // Service number commands
   changeImageLayout(imageLayoutStyle: number) {
     this.imageLayoutChangedSource.next(imageLayoutStyle);
-  }
+    }
+
+    selectThumbnail(image: Image) {
+        this.thumbnailSelectedSource.next(image);
+    }
 }

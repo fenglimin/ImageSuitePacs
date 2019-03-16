@@ -29,6 +29,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private baseUrl: string;
     private isViewInited: boolean;
 
+    private subscriptionThumbnailSelection: Subscription
     private subscriptionImageSelection: Subscription;
     private subscriptionImageLayoutChange: Subscription;
     private subscriptionViewContextChange: Subscription;
@@ -93,6 +94,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
             viewerImageData => {
                 this.doSelectImage(viewerImageData);
+            });
+
+        this.subscriptionThumbnailSelection = imageSelectorService.thumbnailSelected$.subscribe(
+            image => {
+                this.doSelectImageByThumbnail(image);
             });
 
         this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(
@@ -309,6 +315,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
     doSelectImage(viewerImageData: ViewerImageData) {
         this.selected = (this._imageData === viewerImageData);
+    }
+
+    doSelectImageByThumbnail(image: Image) {
+        this.selected = (this.image === image);
     }
 
     //private doSelectById(id: string, selected: boolean): void {

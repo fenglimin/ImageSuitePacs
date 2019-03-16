@@ -8,6 +8,7 @@ import { ImageHangingProtocal } from '../../../models/hanging-protocal';
 import { ViewerGroupData } from '../../../models/viewer-group-data';
 import { ViewerImageData } from '../../../models/viewer-image-data';
 import { ImageViewerComponent } from './image-viewer/image-viewer.component';
+import { Study, Image } from '../../../models/pssi';
 
 @Component({
   selector: 'app-group-viewer',
@@ -30,7 +31,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
   }
 
   selected = false;
-  
+
+  subscriptionThumbnailSelection: Subscription
   subscriptionImageSelection: Subscription;
   subscriptionImageLayoutChange: Subscription;
   
@@ -39,6 +41,11 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         viewerImageData => {
             this.doSelectGroup(viewerImageData);
       });
+
+      this.subscriptionThumbnailSelection = imageSelectorService.thumbnailSelected$.subscribe(
+          image => {
+              this.doSelectGroupByThumbnail(image);
+          });
 
     this.subscriptionImageLayoutChange = imageSelectorService.imageLayoutChanged$.subscribe(
       imageLayoutStyle => {
@@ -58,6 +65,11 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
 
     doSelectGroup(viewerImageData: ViewerImageData) {
         this.selected = (this._groupData === viewerImageData.groupData);
+    }
+
+    doSelectGroupByThumbnail(image: Image) {
+        const find = this._groupData.imageDataList.find(imageData => imageData.image === image);
+        this.selected = (find !== undefined);
     }
 
     getBorderStyle(): string {

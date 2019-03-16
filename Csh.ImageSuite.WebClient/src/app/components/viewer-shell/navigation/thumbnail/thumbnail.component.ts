@@ -16,7 +16,10 @@ export class ThumbnailComponent implements OnInit {
   thumbnailToShow: any;
   isImageLoading:boolean;
     selected: boolean = false;
-    subscription: Subscription;
+    subscriptionImage: Subscription;
+    subscriptionThumbnail: Subscription;
+
+    borderStyle = '1px solid #555';
 
   _image: Image;
   @Input()
@@ -31,27 +34,38 @@ export class ThumbnailComponent implements OnInit {
   }
 
   constructor(private imageSelectorService: ImageSelectorService, private dicomImageService: DicomImageService, private worklistService: WorklistService) {
-        this.subscription = imageSelectorService.imageSelected$.subscribe(
-            viewerImageData => {
-                this.doSelectImage(viewerImageData);
-            });
-    }
+    this.subscriptionImage = imageSelectorService.imageSelected$.subscribe(
+        viewerImageData => { this.doSelectImage(viewerImageData.image);} );
+   
+      this.subscriptionImage = imageSelectorService.thumbnailSelected$.subscribe(
+        image => { this.doSelectImage(image); });
+  }
 
 
   ngOnInit() {
   }
 
     getBorderStyle(): string {
-        return this.selected ? '2px solid #F90' : '1px solid #555555';
+        return this.borderStyle;
     }
 
-    doSelectImage(viewerImageData: ViewerImageData) {
-        this.selected = (this.image === viewerImageData.image);
+    doSelectImage(image: Image) {
+        this.selected = (this.image === image);
+        this.borderStyle = this.selected ? '2px solid #F90' : '1px solid #555';
     }
 
     onSelected() {
-        //this.imageSelectorService.selectImage(this.imageData);
+        this.imageSelectorService.selectThumbnail(this.image);
     }
+
+    onMouseOver(event) {
+        this.borderStyle = '1px solid #F90';
+    }
+
+    onMouseOut(event) {
+        this.borderStyle = this.selected ? '2px solid #F90' : '1px solid #555';
+    }
+
   /*
   setSelectState(selected: boolean): void {
       var o = document.getElementById("thumbnail" + this.imageSop);
