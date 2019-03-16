@@ -4,7 +4,6 @@ import { Image } from '../../../../models/pssi';
 import { WorklistService } from '../../../../services/worklist.service';
 import { ImageSelectorService } from '../../../../services/image-selector.service';
 import { DicomImageService } from '../../../../services/dicom-image.service';
-import { ViewerImageData } from '../../../../../models/viewer-image-data';
 
 @Component({
   selector: 'app-thumbnail',

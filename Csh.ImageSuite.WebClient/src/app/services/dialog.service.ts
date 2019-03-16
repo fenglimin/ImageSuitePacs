@@ -16,15 +16,7 @@ export class DialogService {
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = messageBoxContent.messageType === MessageBoxType.Input;
-
-    const title = messageBoxContent.title;
-    const messageText = messageBoxContent.messageText;
-    const messageType = messageBoxContent.messageType;
-    dialogConfig.data = {
-      title,
-      messageText,
-      messageType
-    };
+    dialogConfig.data = messageBoxContent;
 
     const dialogRef = this.dialog.open(MessageBoxComponent, dialogConfig);
     return dialogRef.afterClosed();

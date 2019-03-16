@@ -21,11 +21,9 @@ export class MessageBoxComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<MessageBoxComponent>,
-    @Inject(MAT_DIALOG_DATA) { title, messageText, messageType }: MessageBoxContent) {
+      @Inject(MAT_DIALOG_DATA) messageBoxContent: MessageBoxContent) {
 
-    this.content.title = title;
-    this.content.messageText = messageText;
-    this.content.messageType = messageType;
+    this.content = messageBoxContent;
 
     this.form = fb.group({
       dialogResult: [DialogResult.Yes],
