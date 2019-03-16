@@ -39,7 +39,6 @@ export class DialogService {
   showManualWlDialog(windowLevelData: WindowLevelData): Observable<any> {
     const dialogRef = this.dialog.open(ManualWlDialogComponent, {
       autoFocus: true,
-      width: '420px',
       data: windowLevelData
     });
 
