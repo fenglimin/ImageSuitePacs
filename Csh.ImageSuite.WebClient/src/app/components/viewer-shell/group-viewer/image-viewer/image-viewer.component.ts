@@ -91,8 +91,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
       private configurationService: ConfigurationService, private viewContext: ViewContextService, public worklistService: WorklistService) {
 
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
-            imageViewerId => {
-                this.doSelectByImageViewerId(imageViewerId);
+            viewerImageData => {
+                this.doSelectImage(viewerImageData);
             });
 
         this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(
@@ -300,22 +300,30 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     onSelected() {
-        this.imageSelectorService.selectImage(this.imageData.getId());
+        this.imageSelectorService.selectImage(this.imageData);
     }
 
-    private doSelectById(id: string, selected: boolean): void {
-        const o = document.getElementById(id);
-        if (o !== undefined && o !== null) {
-            o.style.border = selected ? '1px solid green' : '1px solid #555555';
-        }
+    getBorderStyle(): string {
+        return this.selected ? '1px solid #F90' : '1px solid #555555';
     }
 
-    private doSelectByImageViewerId(imageViewerId: string): void {
-        var selectedDivId = "DivImageViewer" + imageViewerId;
-        var divId = 'DivImageViewer' + this.imageData.getId();
-        this.selected = selectedDivId === divId;
-        this.doSelectById(divId, this.selected);
+    doSelectImage(viewerImageData: ViewerImageData) {
+        this.selected = (this._imageData === viewerImageData);
     }
+
+    //private doSelectById(id: string, selected: boolean): void {
+    //    const o = document.getElementById(id);
+    //    if (o !== undefined && o !== null) {
+    //        o.style.border = selected ? '1px solid green' : '1px solid #555555';
+    //    }
+    //}
+
+    //private doSelectByImageViewerId(imageViewerId: string): void {
+    //    var selectedDivId = "DivImageViewer" + imageViewerId;
+    //    var divId = 'DivImageViewer' + this.imageData.getId();
+    //    this.selected = selectedDivId === divId;
+    //    this.doSelectById(divId, this.selected);
+    //}
 
     private setContext(context: ViewContext) {
         var draggable = (context.action == ViewContextEnum.Pan) || (context.action == ViewContextEnum.Select && this.curSelectObj == undefined);

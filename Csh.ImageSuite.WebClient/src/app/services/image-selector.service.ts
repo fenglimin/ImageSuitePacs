@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject }    from 'rxjs';
+import { ViewerImageData } from '../models/viewer-image-data';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,7 @@ import { Subject }    from 'rxjs';
 export class ImageSelectorService {
 
   // Observable string sources
-  private imageSelectedSource = new Subject<string>();
+    private imageSelectedSource = new Subject<ViewerImageData>();
 
   // Observable number sources
   private imageLayoutChangedSource = new Subject<number>();
@@ -19,8 +20,8 @@ export class ImageSelectorService {
   imageLayoutChanged$ = this.imageLayoutChangedSource.asObservable();
 
   // Service string commands
-  selectImage(imageSopSelected: string) {
-      this.imageSelectedSource.next(imageSopSelected);
+    selectImage(viewerImageData: ViewerImageData) {
+        this.imageSelectedSource.next(viewerImageData);
   }
 
   // Service number commands

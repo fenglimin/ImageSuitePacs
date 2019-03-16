@@ -4,6 +4,7 @@ import { Image } from '../../../../models/pssi';
 import { WorklistService } from '../../../../services/worklist.service';
 import { ImageSelectorService } from '../../../../services/image-selector.service';
 import { DicomImageService } from '../../../../services/dicom-image.service';
+import { ViewerImageData } from '../../../../../models/viewer-image-data';
 
 @Component({
   selector: 'app-thumbnail',
@@ -14,7 +15,7 @@ export class ThumbnailComponent implements OnInit {
 
   thumbnailToShow: any;
   isImageLoading:boolean;
-
+    selected: boolean = false;
     subscription: Subscription;
 
   _image: Image;
@@ -31,8 +32,8 @@ export class ThumbnailComponent implements OnInit {
 
   constructor(private imageSelectorService: ImageSelectorService, private dicomImageService: DicomImageService, private worklistService: WorklistService) {
         this.subscription = imageSelectorService.imageSelected$.subscribe(
-            imageSopSelected => {
-                //this.setSelectState(this.imageSop === imageSopSelected);
+            viewerImageData => {
+                this.doSelectImage(viewerImageData);
             });
     }
 
@@ -40,6 +41,17 @@ export class ThumbnailComponent implements OnInit {
   ngOnInit() {
   }
 
+    getBorderStyle(): string {
+        return this.selected ? '2px solid #F90' : '1px solid #555555';
+    }
+
+    doSelectImage(viewerImageData: ViewerImageData) {
+        this.selected = (this.image === viewerImageData.image);
+    }
+
+    onSelected() {
+        //this.imageSelectorService.selectImage(this.imageData);
+    }
   /*
   setSelectState(selected: boolean): void {
       var o = document.getElementById("thumbnail" + this.imageSop);
