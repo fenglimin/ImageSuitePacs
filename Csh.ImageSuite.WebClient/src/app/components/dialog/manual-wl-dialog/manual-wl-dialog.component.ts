@@ -24,7 +24,10 @@ export class ManualWlDialogComponent {
   }
 
   onOkClick(): void {
-    if (typeof this.data.windowCenter !== 'number') {
+    const windowCenter = Number(this.data.windowCenter);
+    const windowWidth = Number(this.data.windowWidth);
+
+    if (isNaN(windowCenter) || isNaN(windowWidth)) {
       const content = new MessageBoxContent();
       content.title = 'Input error';
       content.messageText = 'Only number is allowed for window center and width!';
