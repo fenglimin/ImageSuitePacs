@@ -16,7 +16,15 @@ export class ManualWlDialogComponent {
     public dialogRef: MatDialogRef<ManualWlDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: WindowLevelData) { }
 
-  onNoClick(): void {
+  onCancelClick(): void {
     this.dialogRef.close();
+  }
+
+  onOkClick(): void {
+    if (typeof this.data.windowCenter !== 'number') {
+
+    }
+
+    this.dialogRef.close(this.data);
   }
 }

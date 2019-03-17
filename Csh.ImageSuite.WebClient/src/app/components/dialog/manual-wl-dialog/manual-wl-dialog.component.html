@@ -3,6 +3,7 @@
   <table>
     <tr>
       <td>Window Center</td>
+      <td style="width:10px"></td>
       <td>Window Width</td>
     </tr>
     <tr>
@@ -11,6 +12,7 @@
           <input matInput [(ngModel)]="data.windowCenter">
         </mat-form-field>
       </td>
+      <td></td>
       <td>
         <mat-form-field>
           <input matInput [(ngModel)]="data.windowWidth">
@@ -20,10 +22,10 @@
   </table>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button class="mat-raised-button" (click)="onNoClick()">
+  <button class="mat-raised-button" (click)="onCancelClick()">
     <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>Cancel
   </button>
-  <button class="mat-raised-button" [mat-dialog-close]="data" cdkFocusInitial>
+  <button class="mat-raised-button" (click)="onOkClick()" cdkFocusInitial>
     <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Ok
   </button>
 </mat-dialog-actions>
