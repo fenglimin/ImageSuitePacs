@@ -1,4 +1,7 @@
-<h1 mat-dialog-title>Manual WL</h1>
+<h1 mat-dialog-title
+    cdkDrag
+   cdkDragRootElement=".cdk-overlay-pane" 
+   cdkDragHandle>Manual WL</h1>
 <mat-dialog-content>
   <table>
     <tr>
@@ -9,7 +12,7 @@
     <tr>
       <td>
         <mat-form-field>
-          <input matInput [(ngModel)]="data.windowCenter">
+          <input matInput [(ngModel)]="data.windowCenter" cdkFocusInitial>
         </mat-form-field>
       </td>
       <td></td>
@@ -25,7 +28,7 @@
   <button class="mat-raised-button" (click)="onCancelClick()">
     <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>Cancel
   </button>
-  <button class="mat-raised-button" (click)="onOkClick()" cdkFocusInitial>
+  <button class="mat-raised-button" (click)="onOkClick()">
     <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Ok
   </button>
 </mat-dialog-actions>
