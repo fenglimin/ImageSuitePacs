@@ -13,6 +13,7 @@ import { ConfigurationService } from '../../../../services/configuration.service
 import { DialogService } from '../../../../services/dialog.service';
 import { WindowLevelData } from '../../../../models/dailog-data/image-process';
 import { MessageBoxType, MessageBoxContent, DialogResult } from '../../../../models/messageBox';
+import { ManualWlDialogComponent } from '../../../../components/dialog/manual-wl-dialog/manual-wl-dialog.component';
 
 @Component({
     selector: 'app-image-viewer',
@@ -370,7 +371,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     const windowLevelData = new WindowLevelData();
     windowLevelData.windowCenter = 100;
     windowLevelData.windowWidth = 200;
-    this.dialogService.showManualWlDialog(windowLevelData).subscribe(
+    this.dialogService.showDialog(ManualWlDialogComponent, windowLevelData).subscribe(
       val => {
          alert(val.windowCenter);
         }

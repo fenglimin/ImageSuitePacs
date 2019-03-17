@@ -15,7 +15,7 @@ export class MessageBoxComponent implements OnInit {
   form: FormGroup;
   dialogResult: DialogResult;
   valueInput: string;
-  needDisableYesButton = true;
+  needDisableYesButton = false;
   content: MessageBoxContent;
 
   constructor(
@@ -33,7 +33,7 @@ export class MessageBoxComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.needDisableYesButton = this.content.messageType === MessageBoxType.Input;
   }
 
 
