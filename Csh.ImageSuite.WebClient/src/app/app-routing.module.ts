@@ -1,18 +1,18 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
 
-import { WorklistShellComponent } from './components/worklist-shell/worklist-shell.component';
-import { ViewerShellComponent } from './components/viewer-shell/viewer-shell.component';
+import { WorklistShellComponent } from "./components/worklist-shell/worklist-shell.component";
+import { ViewerShellComponent } from "./components/viewer-shell/viewer-shell.component";
 
 const routes: Routes = [
-  { path: '', redirectTo: '/worklist', pathMatch: 'full'},
-  { path: 'worklist', component: WorklistShellComponent},
-  { path: 'viewer', component: ViewerShellComponent }
+    { path: "", redirectTo: "/worklist", pathMatch: "full" },
+    { path: "worklist", component: WorklistShellComponent },
+    { path: "viewer", component: ViewerShellComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule]
 })
-
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

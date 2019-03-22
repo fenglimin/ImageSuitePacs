@@ -1,25 +1,27 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { WorklistComponent } from './worklist.component';
+import { WorklistComponent } from "./worklist.component";
 
-describe('WorklistComponent', () => {
-  let component: WorklistComponent;
-  let fixture: ComponentFixture<WorklistComponent>;
+describe("WorklistComponent",
+    () => {
+        let component: WorklistComponent;
+        let fixture: ComponentFixture<WorklistComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ WorklistComponent ]
-    })
-    .compileComponents();
-  }));
+        beforeEach(async(() => {
+            TestBed.configureTestingModule({
+                    declarations: [WorklistComponent]
+                })
+                .compileComponents();
+        }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(WorklistComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        beforeEach(() => {
+            fixture = TestBed.createComponent(WorklistComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+        });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+        it("should create",
+            () => {
+                expect(component).toBeTruthy();
+            });
+    });

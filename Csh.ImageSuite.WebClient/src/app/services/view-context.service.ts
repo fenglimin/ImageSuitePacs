@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Subject }  from 'rxjs';
-import { SelectedButtonData, ButtonStyleToken } from '../models/dropdown-button-menu-data';
+import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
+import { SelectedButtonData } from "../models/dropdown-button-menu-data";
 
 export enum ViewContextEnum {
     Select = 1,
@@ -48,7 +48,7 @@ export class OperationData {
 }
 
 export class ViewContext {
-    private _action: ViewContextEnum = ViewContextEnum.Pan;
+    private _action = ViewContextEnum.Pan;
     private _data: any;
 
     constructor(action: ViewContextEnum, data: any = undefined) {
@@ -66,17 +66,17 @@ export class ViewContext {
 }
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: "root"
 })
 export class ViewContextService {
 
     private _curContext: ViewContext;
     private _previousContext: ViewContext;
 
-    private _showAnnotation: boolean = true;
-    private _showOverlay: boolean = true;
-    private _showRuler: boolean = true;
-    private _showGraphicOverlay: boolean = false;
+    private _showAnnotation = true;
+    private _showOverlay = true;
+    private _showRuler = true;
+    private _showGraphicOverlay = false;
 
     private viewContextChangedSource = new Subject<ViewContext>();
     viewContextChanged$ = this.viewContextChangedSource.asObservable();
@@ -98,7 +98,7 @@ export class ViewContextService {
 
     set showAnnotation(bShow: boolean) {
         this._showAnnotation = bShow;
-        let data: OperationData = new OperationData(OperationEnum.ShowAnnotation, { show: bShow });
+        const data = new OperationData(OperationEnum.ShowAnnotation, { show: bShow });
 
         this.operationSource.next(data);
     }
@@ -109,7 +109,7 @@ export class ViewContextService {
 
     set showOverlay(bShow: boolean) {
         this._showOverlay = bShow;
-        let data: OperationData = new OperationData(OperationEnum.ShowOverlay, { show: bShow });
+        const data = new OperationData(OperationEnum.ShowOverlay, { show: bShow });
 
         this.operationSource.next(data);
     }
@@ -120,7 +120,7 @@ export class ViewContextService {
 
     set showRuler(bShow: boolean) {
         this._showRuler = bShow;
-        let data: OperationData = new OperationData(OperationEnum.ShowRuler, { show: bShow });
+        const data = new OperationData(OperationEnum.ShowRuler, { show: bShow });
 
         this.operationSource.next(data);
     }
@@ -131,7 +131,7 @@ export class ViewContextService {
 
     set showGraphicOverlay(bShow: boolean) {
         this._showGraphicOverlay = bShow;
-        let data: OperationData = new OperationData(OperationEnum.ShowGraphicOverlay, { show: bShow });
+        const data = new OperationData(OperationEnum.ShowGraphicOverlay, { show: bShow });
 
         this.operationSource.next(data);
     }
@@ -142,30 +142,35 @@ export class ViewContextService {
 
     onOperation(data: OperationData) {
         switch (data.type) {
-            case OperationEnum.ShowAnnotation:{
-                this.showAnnotation = !this.showAnnotation;
-                break;
-            }
-            case OperationEnum.ShowOverlay:{
-                this.showOverlay = !this.showOverlay;
-                break;
-            }
-            case OperationEnum.ShowRuler: {
-                this.showRuler = !this.showRuler;
-                break;
-            }
-            case OperationEnum.ShowGraphicOverlay: {
-                this.showGraphicOverlay = !this.showGraphicOverlay;
-                break;
-            }
-
-            default: this.operationSource.next(data);
+        case OperationEnum.ShowAnnotation:
+        {
+            this.showAnnotation = !this.showAnnotation;
+            break;
         }
-        
+        case OperationEnum.ShowOverlay:
+        {
+            this.showOverlay = !this.showOverlay;
+            break;
+        }
+        case OperationEnum.ShowRuler:
+        {
+            this.showRuler = !this.showRuler;
+            break;
+        }
+        case OperationEnum.ShowGraphicOverlay:
+        {
+            this.showGraphicOverlay = !this.showGraphicOverlay;
+            break;
+        }
+
+        default:
+            this.operationSource.next(data);
+        }
+
     }
 
     setContext(context: ViewContextEnum, data: any = undefined) {
-        let curContext = new ViewContext(context, data);
+        const curContext = new ViewContext(context, data);
         this._previousContext = this._curContext;
         this._curContext = curContext;
 
@@ -178,17 +183,22 @@ export class ViewContextService {
     }
 
     isImageToolBarButtonChecked(buttonData: SelectedButtonData): boolean {
-      switch (buttonData.operationData.type) {
-        case OperationEnum.ShowAnnotation: return this._showAnnotation;
-        case OperationEnum.ShowOverlay: return this._showOverlay;
-        case OperationEnum.ShowRuler: return this._showRuler;
-        case OperationEnum.ShowGraphicOverlay: return this._showGraphicOverlay;
-        default: return buttonData.operationData.data == this._curContext.action;
+        switch (buttonData.operationData.type) {
+        case OperationEnum.ShowAnnotation:
+            return this._showAnnotation;
+        case OperationEnum.ShowOverlay:
+            return this._showOverlay;
+        case OperationEnum.ShowRuler:
+            return this._showRuler;
+        case OperationEnum.ShowGraphicOverlay:
+            return this._showGraphicOverlay;
+        default:
+            return buttonData.operationData.data == this._curContext.action;
         }
     }
 
     isImageToolBarButtonCheckStyle(buttonData: SelectedButtonData): boolean {
-      switch (buttonData.operationData.type) {
+        switch (buttonData.operationData.type) {
         case OperationEnum.ShowAnnotation:
         case OperationEnum.ShowOverlay:
         case OperationEnum.ShowRuler:
@@ -197,7 +207,7 @@ export class ViewContextService {
             return true;
         default:
             return false;
-      }
+        }
     }
 
 }

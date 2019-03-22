@@ -1,34 +1,36 @@
 <h1 mat-dialog-title
     cdkDrag
-   cdkDragRootElement=".cdk-overlay-pane" 
-   cdkDragHandle>Manual WL</h1>
+    cdkDragRootElement=".cdk-overlay-pane"
+    cdkDragHandle>
+    Manual WL
+</h1>
 <mat-dialog-content>
-  <table>
-    <tr>
-      <td>Window Center</td>
-      <td style="width:10px"></td>
-      <td>Window Width</td>
-    </tr>
-    <tr>
-      <td>
-        <mat-form-field>
-          <input matInput [(ngModel)]="data.windowCenter" cdkFocusInitial>
-        </mat-form-field>
-      </td>
-      <td></td>
-      <td>
-        <mat-form-field>
-          <input matInput [(ngModel)]="data.windowWidth">
-        </mat-form-field>
-      </td>
-    </tr>
-  </table>
+    <table>
+        <tr>
+            <td>Window Center</td>
+            <td style="width: 10px"></td>
+            <td>Window Width</td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <input matInput [(ngModel)]="data.windowWidth" cdkFocusInitial>
+                </mat-form-field>
+            </td>
+            <td></td>
+            <td>
+                <mat-form-field>
+                    <input matInput [(ngModel)]="data.windowCenter">
+                </mat-form-field>
+            </td>
+        </tr>
+    </table>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button class="mat-raised-button" (click)="onCancelClick()">
-    <i class="glyphicon glyphicon-remove-circle" style="padding-right:8px"></i>Cancel
-  </button>
-  <button class="mat-raised-button" (click)="onOkClick()">
-    <i class="glyphicon glyphicon-ok-circle" style="padding-right:8px"></i>Ok
-  </button>
+    <button class="mat-raised-button" (click)="onCancelClick()">
+        <i class="glyphicon glyphicon-remove-circle" style="padding-right: 8px"></i>Cancel
+    </button>
+    <button class="mat-raised-button" (click)="onOkClick()">
+        <i class="glyphicon glyphicon-ok-circle" style="padding-right: 8px"></i>Ok
+    </button>
 </mat-dialog-actions>

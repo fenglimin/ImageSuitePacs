@@ -11,7 +11,14 @@ namespace Csh.ImageSuite.WebHost
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
+            routes.IgnoreRoute("");
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            routes.MapRoute(
+                name: "Wado",
+                url: "wado",
+                defaults: new { controller = "WadoUri", action = "GetStudyInstances", id = UrlParameter.Optional }
+            );
 
             routes.MapRoute(
                 name: "Default",

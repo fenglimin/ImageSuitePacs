@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using Csh.ImageSuite.MiniPacs.Interface;
@@ -23,10 +24,10 @@ namespace Csh.ImageSuite.WebHost.Controllers
             return View();
         }
 
-        // GET: DicomImage/Details/5
-        public ActionResult Details(string id)
+        // GET: DicomImage/Dicom/5
+        public ActionResult Dicom(string id)
         {
-            var jpgFile = _miniPacsDicomHelper.GetJpgFile(Convert.ToInt32(id));
+            var jpgFile = _miniPacsDicomHelper.GetDicomFile(Convert.ToInt32(id));
             if (jpgFile == string.Empty)
             {
                 return null;
@@ -37,6 +38,33 @@ namespace Csh.ImageSuite.WebHost.Controllers
             fs.Read(buffer, 0, (int)fs.Length);
             fs.Close();
             
+            return File(buffer, "image/jpeg", "fileName.dcm");
+        }
+
+        // GET: DicomImage/Thumbnail/5
+        public ActionResult Thumbnail(string id)
+        {
+            var jpgFile = _miniPacsDicomHelper.GetThumbnailFile(Convert.ToInt32(id));
+            if (jpgFile == string.Empty)
+            {
+                return null;
+            }
+
+            FileStream fs;
+            try
+            {
+                fs = new FileStream(jpgFile, FileMode.Open);
+            }
+            catch (Exception)
+            {
+                Thread.Sleep(1000);
+                fs = new FileStream(jpgFile, FileMode.Open);
+            }
+            
+            var buffer = new byte[fs.Length];
+            fs.Read(buffer, 0, (int)fs.Length);
+            fs.Close();
+
             return File(buffer, "image/jpeg", "fileName.jpg");
         }
 

@@ -1,105 +1,107 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { Component, OnInit, Input, EventEmitter, Output } from "@angular/core";
+import { LocationStrategy } from "@angular/common";
 
-import { ViewerShellData } from '../../../models/viewer-shell-data';
-import { Patient, Study, Series, Image, Pssi } from '../../../models/pssi';
-import { GroupHangingProtocal, ImageHangingProtocal, GroupHangingData, ImageHangingData} from '../../../models/hanging-protocal';
-import { HangingProtocalService } from '../../../services/hanging-protocal.service';
-import { ImageSelectorService } from '../../../services/image-selector.service';
+import { ViewerShellData } from "../../../models/viewer-shell-data";
+import { Series, Pssi } from "../../../models/pssi";
+import { GroupHangingData, ImageHangingData } from "../../../models/hanging-protocol";
+import { HangingProtocolService } from "../../../services/hanging-protocol.service";
+import { ImageSelectorService } from "../../../services/image-selector.service";
 
 @Component({
-  selector: 'app-navigation',
-  templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.css']
+    selector: "app-navigation",
+    templateUrl: "./navigation.component.html",
+    styleUrls: ["./navigation.component.css"]
 })
 export class NavigationComponent implements OnInit {
-  Arr = Array; //Array type captured in a variable
-  @Input() viewerShellData: ViewerShellData;
-  @Output() layout = new EventEmitter<number>();
+    Arr = Array; //Array type captured in a variable
+    @Input()
+    viewerShellData: ViewerShellData;
+    @Output()
+    layout = new EventEmitter<number>();
 
-  private baseUrl: string;
+    private baseUrl: string;
 
-  groupLayoutList = ["1X1", "1X2", "2X1", "2X2", "3X3"];
-  imageHangingList = ["1X1", "1X2", "2X1", "2X2", "3X3", "3X4", "5X6"];
+    groupLayoutList = ["1X1", "1X2", "2X1", "2X2", "3X3"];
+    imageHangingList = ["1X1", "1X2", "2X1", "2X2", "3X3", "3X4", "5X6"];
 
-  selectedGroupHangingData: GroupHangingData;
-  selectedGroupLayoutData: GroupHangingData;
-  selectedImageLayoutData: ImageHangingData;
-  
-  groupLayout = "1X1";
-  imageLayout = "1X1";
+    selectedGroupHangingData: GroupHangingData;
+    selectedGroupLayoutData: GroupHangingData;
+    selectedImageLayoutData: ImageHangingData;
 
-  constructor(public hangingProtocalService: HangingProtocalService, private imageSelectorService: ImageSelectorService,
-      private locationStrategy: LocationStrategy) {
-    this.selectedGroupHangingData = this.hangingProtocalService.getDefaultGroupHangingData();
-    this.selectedGroupLayoutData = this.hangingProtocalService.getDefaultGroupLayoutData();
-    this.selectedImageLayoutData = this.hangingProtocalService.getDefaultImageLayoutData();
-  }
+    groupLayout = "1X1";
+    imageLayout = "1X1";
 
-  ngOnInit() {
-      this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
-  }
+    constructor(public hangingProtocolService: HangingProtocolService,
+        private imageSelectorService: ImageSelectorService,
+        private locationStrategy: LocationStrategy) {
+        this.selectedGroupHangingData = this.hangingProtocolService.getDefaultGroupHangingData();
+        this.selectedGroupLayoutData = this.hangingProtocolService.getDefaultGroupLayoutData();
+        this.selectedImageLayoutData = this.hangingProtocolService.getDefaultImageLayoutData();
+    }
 
-  onClickPssi(pssi: Pssi) {
-    const hide = !pssi.hide;
-    pssi.setHide(hide);
-  }
+    ngOnInit() {
+        this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
+    }
 
-  getPssiVisibility(pssi: Pssi) {
-    return (pssi.hide || this.viewerShellData.hide)? 'hidden' : 'visible';
-  }
+    onClickPssi(pssi: Pssi) {
+        const hide = !pssi.hide;
+        pssi.setHide(hide);
+    }
 
-  getPssiHeight(pssi: Pssi) {
-    return (pssi.hide || this.viewerShellData.hide)? '0px' : '100%';
-  }
+    getPssiVisibility(pssi: Pssi) {
+        return (pssi.hide || this.viewerShellData.hide) ? "hidden" : "visible";
+    }
 
-  getThumbnailListRowCount(series: Series): number {
-    const count = Math.trunc((series.imageList.length+1)/2);
-    return count;
-  }
+    getPssiHeight(pssi: Pssi) {
+        return (pssi.hide || this.viewerShellData.hide) ? "0px" : "100%";
+    }
 
-  getHpMenuBackground(name: string) {
-    const background = `url(${this.baseUrl}assets/img/DicomViewer/${name}_N1.gif)`;
-      return background;
-  }
+    getThumbnailListRowCount(series: Series): number {
+        const count = Math.trunc((series.imageList.length + 1) / 2);
+        return count;
+    }
 
-  onMouseOver(event, triggerClick:boolean) {
-      event.target.style.backgroundImage = event.target.style.backgroundImage.replace('N1', 'N2');
-      if (triggerClick) {
-          //event.target.click();
-      }
-  }
+    getHpMenuBackground(name: string) {
+        const background = `url(${this.baseUrl}assets/img/DicomViewer/${name}_N1.gif)`;
+        return background;
+    }
 
-  onMouseOut(event) {
-      const imageUrl = event.target.style.backgroundImage.replace('N2', 'N1');
-      if (imageUrl === event.target.style.backgroundImage) {
-          event.target.style.backgroundImage = event.target.style.backgroundImage.replace('N3', 'N1');
-      } else {
-          event.target.style.backgroundImage = imageUrl;
-      }
-  }
+    onMouseOver(event, triggerClick: boolean) {
+        event.target.style.backgroundImage = event.target.style.backgroundImage.replace("N1", "N2");
+        if (triggerClick) {
+            //event.target.click();
+        }
+    }
 
-  onMouseDown(event) {
-      event.target.style.backgroundImage = event.target.style.backgroundImage.replace('N2', 'N3');
-  }
+    onMouseOut(event) {
+        const imageUrl = event.target.style.backgroundImage.replace("N2", "N1");
+        if (imageUrl === event.target.style.backgroundImage) {
+            event.target.style.backgroundImage = event.target.style.backgroundImage.replace("N3", "N1");
+        } else {
+            event.target.style.backgroundImage = imageUrl;
+        }
+    }
 
-  onMouseUp(event) {
-      event.target.style.backgroundImage = event.target.style.backgroundImage.replace('N3', 'N1');
-  }
+    onMouseDown(event) {
+        event.target.style.backgroundImage = event.target.style.backgroundImage.replace("N2", "N3");
+    }
 
-  onSelectGroupHangingProtocol(groupHangingData: GroupHangingData) {
-    this.selectedGroupHangingData = groupHangingData;
-    this.layout.emit(this.selectedGroupHangingData.groupHangingProtocal);
-  }
+    onMouseUp(event) {
+        event.target.style.backgroundImage = event.target.style.backgroundImage.replace("N3", "N1");
+    }
 
-  onSelectGroupLayout(groupHangingData: GroupHangingData) {
-    this.selectedGroupLayoutData = groupHangingData;
-    this.layout.emit(this.selectedGroupLayoutData.groupHangingProtocal);
-  }
+    onSelectGroupHangingProtocol(groupHangingData: GroupHangingData) {
+        this.selectedGroupHangingData = groupHangingData;
+        this.layout.emit(this.selectedGroupHangingData.groupHangingProtocol);
+    }
 
-  onSelectImageLayout(imageLayoutData: ImageHangingData) {
-    this.selectedImageLayoutData = imageLayoutData;
-    this.imageSelectorService.changeImageLayout(this.selectedImageLayoutData.imageHangingProtocal);
-  }
+    onSelectGroupLayout(groupHangingData: GroupHangingData) {
+        this.selectedGroupLayoutData = groupHangingData;
+        this.layout.emit(this.selectedGroupLayoutData.groupHangingProtocol);
+    }
+
+    onSelectImageLayout(imageLayoutData: ImageHangingData) {
+        this.selectedImageLayoutData = imageLayoutData;
+        this.imageSelectorService.changeImageLayout(this.selectedImageLayoutData.imageHangingProtocol);
+    }
 }
-

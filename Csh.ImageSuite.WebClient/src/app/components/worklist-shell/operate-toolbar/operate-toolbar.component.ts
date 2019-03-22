@@ -1,67 +1,67 @@
-import { Component, OnInit } from '@angular/core';
-import { WorklistService } from '../../../services/worklist.service';
+import { Component, OnInit } from "@angular/core";
+import { WorklistService } from "../../../services/worklist.service";
 
 @Component({
-  selector: 'app-operate-toolbar',
-  templateUrl: './operate-toolbar.component.html',
-  styleUrls: ['./operate-toolbar.component.css']
+    selector: "app-operate-toolbar",
+    templateUrl: "./operate-toolbar.component.html",
+    styleUrls: ["./operate-toolbar.component.css"]
 })
 export class OperateToolbarComponent implements OnInit {
 
-  disableLoadImageButton:boolean;
+    disableLoadImageButton: boolean;
 
-  constructor(private worklistService: WorklistService) {
-    this.disableLoadImageButton = false;
-  }
+    constructor(private worklistService: WorklistService) {
+        this.disableLoadImageButton = false;
+    }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
-  onLoadImage() {
-    this.worklistService.onShowAllCheckedStudy();
-  }
+    onLoadImage() {
+        this.worklistService.onShowAllCheckedStudy();
+    }
 
-  onLoadKeyImage() {
+    onLoadKeyImage() {
 
-  }
+    }
 
-  onSetRead() {
+    onSetRead() {
 
-  }
+    }
 
-  onSetUnread() {
+    onSetUnread() {
 
-  }
+    }
 
-  onChangeImageSeriesOrder() {
+    onChangeImageSeriesOrder() {
 
-  }
+    }
 
-  onReassign() {
+    onReassign() {
 
-  }
+    }
 
-  onTransfer() {
+    onTransfer() {
 
-  }
+    }
 
-  onTagEdit() {
+    onTagEdit() {
 
-  }
+    }
 
-  onDeletePrevent() {
+    onDeletePrevent() {
 
-  }
+    }
 
-  onDeleteAllow() {
+    onDeleteAllow() {
 
-  }
+    }
 
-  onDelete() {
+    onDelete() {
 
-  }
+    }
 
-  onImport() {
-    
-  }
+    onImport() {
+
+    }
 }

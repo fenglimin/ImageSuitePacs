@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { Injectable } from "@angular/core";
+import { LocationStrategy } from "@angular/common";
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: "root"
 })
 export class ConfigurationService {
 
     baseUrl: string;
-  constructor(private locationStrategy: LocationStrategy) {
-      this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
-  }
 
-  getBaseUrl(): string {
-    return this.baseUrl;
-  }
+    constructor(private locationStrategy: LocationStrategy) {
+        this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
+    }
+
+    getBaseUrl(): string {
+        return this.baseUrl;
+    }
 }

@@ -2,6 +2,7 @@
 using Csh.ImageSuite.Common.Interface;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Csh.ImageSuite.Model.Dicom;
 
 namespace Csh.ImageSuite.WebHost.Controllers
 {
@@ -41,20 +42,28 @@ namespace Csh.ImageSuite.WebHost.Controllers
             return ret;
         }
 
+        // POST: Pssi/Search/
+        public string Search()
+        {
+            var shortcuts = _dbHelper.LoadQueryShortcuts();
+            return _commonTool.GetJsonStringFromObject(shortcuts);
+        }
+
         // GET: Shortcut/Create
         public ActionResult Create()
         {
+            //_dbHelper.SaveShortcut(shortcut);
             return View();
         }
 
         // POST: Shortcut/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(QueryShortcut shortcut)
         {
             try
             {
                 // TODO: Add insert logic here
-
+                _dbHelper.SaveShortcut(shortcut);
                 return RedirectToAction("Index");
             }
             catch
@@ -86,18 +95,20 @@ namespace Csh.ImageSuite.WebHost.Controllers
         }
 
         // GET: Shortcut/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete()
         {
+
             return View();
         }
 
         // POST: Shortcut/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(QueryShortcut shortcut)
         {
             try
             {
                 // TODO: Add delete logic here
+                _dbHelper.DeleteShortcut(shortcut.Name);
 
                 return RedirectToAction("Index");
             }

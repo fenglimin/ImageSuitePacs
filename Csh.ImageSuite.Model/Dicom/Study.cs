@@ -30,6 +30,7 @@ namespace Csh.ImageSuite.Model.Dicom
         [Display(Name = "Accession Number")]
         public string AccessionNo { get; set; }
 
+        public string StudyDesc { get; set; }
         //public DateTime StudyDate { get; }
 
         //public DateTime StudyTime { get; }

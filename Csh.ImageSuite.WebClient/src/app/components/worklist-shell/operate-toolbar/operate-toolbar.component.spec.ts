@@ -1,25 +1,27 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { OperateToolbarComponent } from './operate-toolbar.component';
+import { OperateToolbarComponent } from "./operate-toolbar.component";
 
-describe('OperateToolbarComponent', () => {
-  let component: OperateToolbarComponent;
-  let fixture: ComponentFixture<OperateToolbarComponent>;
+describe("OperateToolbarComponent",
+    () => {
+        let component: OperateToolbarComponent;
+        let fixture: ComponentFixture<OperateToolbarComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ OperateToolbarComponent ]
-    })
-    .compileComponents();
-  }));
+        beforeEach(async(() => {
+            TestBed.configureTestingModule({
+                    declarations: [OperateToolbarComponent]
+                })
+                .compileComponents();
+        }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(OperateToolbarComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        beforeEach(() => {
+            fixture = TestBed.createComponent(OperateToolbarComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+        });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+        it("should create",
+            () => {
+                expect(component).toBeTruthy();
+            });
+    });

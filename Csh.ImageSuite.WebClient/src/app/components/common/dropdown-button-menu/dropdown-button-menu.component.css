@@ -9,16 +9,16 @@ li.dropdown {
 }
 
 .dropdown-button-menu {
-    padding-bottom: 0;
-    min-width: 33px;
-    margin: -24px 0 0;
     background-color: transparent;
+    margin: -24px 0 0;
+    min-width: 33px;
+    padding-bottom: 0;
 }
 
 .dropdown-button-menu-button {
-    width: 33px;
-    height: 33px;
-    border: none;
-    outline: none;
     background-color: transparent;
+    border: none;
+    height: 33px;
+    outline: none;
+    width: 33px;
 }

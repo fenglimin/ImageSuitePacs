@@ -1,28 +1,28 @@
 <table>
-  <tr>
-    <td>
-      <button class="query" role="button" title="Query" (click)="onQuery()"></button>
-    </td>
-    <td>
-      <button class="queryClear" role="button" title="Clear Condition" (click)="onClearCondition()"></button>
-    </td>
-    <td>
-      <button class="querySave" role="button" title="Save Shortcut" (click)="onSaveShortcut()"></button>
-    </td>
+    <tr>
+        <td>
+            <button class="query" role="button" title="Query" (click)="onQuery()"></button>
+        </td>
+        <td>
+            <button class="queryClear" role="button" title="Clear Condition" (click)="onClearCondition()"></button>
+        </td>
+        <td>
+            <button class="querySave" role="button" title="Save Shortcut" (click)="onSaveShortcut()"></button>
+        </td>
 
-    <td style="padding-left: 6px">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" [(ngModel)]="worklistService.showHistoryStudies"/>Show History Study
-        </label>
-      </div>
-    </td>
-    <td style="padding-left: 6px">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" [ngModel]="worklistService.isUsingLocalTestData()"(click)="onChangeDataSource($event)"/>Using Local Test Data
-        </label>
-      </div>
-    </td>
-  </tr>
+        <td style="padding-left: 6px">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="worklistService.showHistoryStudies"/>Show History Study
+                </label>
+            </div>
+        </td>
+        <td style="padding-left: 6px">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [ngModel]="worklistService.isUsingLocalTestData()"(click)="onChangeDataSource($event)"/>Using Local Test Data
+                </label>
+            </div>
+        </td>
+    </tr>
 </table>

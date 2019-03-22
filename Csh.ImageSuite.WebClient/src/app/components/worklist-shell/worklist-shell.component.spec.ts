@@ -1,25 +1,27 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { WorklistShellComponent } from './worklist-shell.component';
+import { WorklistShellComponent } from "./worklist-shell.component";
 
-describe('WorklistShellComponent', () => {
-  let component: WorklistShellComponent;
-  let fixture: ComponentFixture<WorklistShellComponent>;
+describe("WorklistShellComponent",
+    () => {
+        let component: WorklistShellComponent;
+        let fixture: ComponentFixture<WorklistShellComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ WorklistShellComponent ]
-    })
-    .compileComponents();
-  }));
+        beforeEach(async(() => {
+            TestBed.configureTestingModule({
+                    declarations: [WorklistShellComponent]
+                })
+                .compileComponents();
+        }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(WorklistShellComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        beforeEach(() => {
+            fixture = TestBed.createComponent(WorklistShellComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+        });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+        it("should create",
+            () => {
+                expect(component).toBeTruthy();
+            });
+    });

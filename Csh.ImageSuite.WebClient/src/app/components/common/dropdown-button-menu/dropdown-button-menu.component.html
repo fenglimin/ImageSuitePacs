@@ -3,7 +3,7 @@
         <app-dropdown-button-menu-button [buttonData]="selectedButton" [isTopButton]="true" [showArrow]="true">
         </app-dropdown-button-menu-button>
     </a>
-    <ul class="dropdown-menu dropdown-button-menu" >
+    <ul class="dropdown-menu dropdown-button-menu">
         <li *ngFor="let menuButton of menuButtonList">
             <app-dropdown-button-menu-button [buttonData]="menuButton" [isTopButton]="false" [showArrow]="false" [isChecked]="selectedButton == menuButton" (selected)="onSelectChanged($event)"></app-dropdown-button-menu-button>
         </li>

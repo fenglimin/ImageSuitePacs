@@ -1,96 +1,77 @@
-﻿#tblStudies a{
-  color: white;
+﻿#tblStudies a { color: white; }
+
+#tblStudies td {
+    border: 1px solid #333;
+    color: #ccc
 }
 
-#tblStudies td{
-  border:1px solid #333;
-  color: #ccc
-}
+#tblStudies th { border: 1px solid #333; }
 
-#tblStudies th{
-  border:1px solid #333;
-}
+#tblStudies tr.cust-info td { background-color: #222; }
 
-#tblStudies tr.cust-info td{
-  background-color: #222;
-}
+#trStudiesHeader a { color: #ddd; }
 
-#trStudiesHeader a{
-  color: #ddd;
-}
-
-#trSeriesHeader a{
-  color: white;
-}
+#trSeriesHeader a { color: white; }
 
 
 #trStudiesQuery input[type=text] {
-  width: 100%;
-  vertical-align: middle;
-  background-color:black;
-  border: 1px solid #444;
+    background-color: black;
+    border: 1px solid #444;
+    vertical-align: middle;
+    width: 100%;
 }
 
 #trStudiesQuery select {
-  width: 100%;
-  background-color:black;
-  border: 1px solid #444;
+    background-color: black;
+    border: 1px solid #444;
+    width: 100%;
 }
 
-#trStudiesQuery td:nth-child(n+2) {
-  padding: 1px;
-  margin: 0px;
-  vertical-align: middle;
+#trStudiesQuery td:nth-child(n + 2) {
+    margin: 0px;
+    padding: 1px;
+    vertical-align: middle;
 }
 
-#tblStudies tr:nth-child(2n+1){
-    background-color:#181818;
+#tblStudies tr:nth-child(2n + 1) { background-color: #181818; }
+
+#tblStudies tr:nth-child(1) { background-color: black; }
+
+#tblStudies tr:nth-child(2) { background-color: black; }
+
+#tblStudies tr:hover {
+    background-color: #555;
+    color: #f90;
 }
 
-#tblStudies tr:nth-child(1){
-    background-color:black;
-}
+#tblStudies tr:nth-child(1):hover { background-color: black; }
 
-#tblStudies tr:nth-child(2){
-    background-color:black;
-}
-
-#tblStudies tr:hover{
-    background-color:#555;
-    color:#f90;
-}
-
-#tblStudies tr:nth-child(1):hover{
-    background-color:black;
-}
-
-#tblStudies tr:nth-child(2):hover{
-    background-color:black;
+#tblStudies tr:nth-child(2):hover {
+    background-color: black;
     color: white;
 }
 
 #trStudiesQuery .dropdown {
-  background-color:#555555;
-  color:red;
+    background-color: #555555;
+    color: red;
 }
 
 #trStudiesQuery .dropdown .btn {
-  padding: 1px 6px;
-  min-width: 70px;
-  background-color:#555555;
+    background-color: #555555;
+    min-width: 70px;
+    padding: 1px 6px;
 }
 
 .loading-shade {
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    right: 0px;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.15);
     bottom: 0px;
+    display: flex;
+    justify-content: center;
+    left: 0px;
     margin: auto;
-  background: rgba(0, 0, 0, 0.15);
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: fixed;
+    right: 0px;
+    top: 0px;
+    z-index: 1;
 }
-

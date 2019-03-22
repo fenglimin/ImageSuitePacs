@@ -1,62 +1,57 @@
-
 .nav-button {
-  text-decoration: none;
-  /*display: inline-block;*/
-  background-color: #555555;
-  border-radius: 1px;
-  margin-right: 2px;
-  margin-left: 2px;
-  border-width: 1px;
-  color: white;
+    /*display: inline-block;*/
+    background-color: #555555;
+    border-radius: 1px;
+    border-width: 1px;
+    color: white;
+    margin-left: 2px;
+    margin-right: 2px;
+    text-decoration: none;
 }
 
 /*.nav-button:visited {
   color: #607D8B;
 }*/
-.nav-button:hover {
-  color: #ff9900;
-}
+
+.nav-button:hover { color: #ff9900; }
+
 /*.nav-button:active {
   color: #039be5;
 }*/
 
 .company-name {
-  color: white;
-  font-size: 18px;
-  font-weight:600;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 .product-name {
-  padding: 15px 2px;
-  color: white;
-  font-size: 12px;
+    color: white;
+    font-size: 12px;
+    padding: 15px 2px;
 }
 
 .div-headerbar-nav {
-  text-decoration: none;
-  /*display: inline-block;*/
-  background-color: #555555;
-  border-radius: 1px;
-  margin-right: 2px;
-  margin-left: 2px;
-  border-width: 1px;
-  color: white;
+    /*display: inline-block;*/
+    background-color: #555555;
+    border-radius: 1px;
+    border-width: 1px;
+    color: white;
+    margin-left: 2px;
+    margin-right: 2px;
+    text-decoration: none;
 }
 
 .div-headerbar-button {
-  padding-top:3px;
-  text-decoration: none;
-  background-color: #555555;
-  border-radius: 2px;
-  border-width: 0px;
-  color: white;
-  height: 28px;
+    background-color: #555555;
+    border-radius: 2px;
+    border-width: 0px;
+    color: white;
+    height: 28px;
+    padding-top: 3px;
+    text-decoration: none;
 }
 
-.div-headerbar-button:hover {
-  color: #ff9900;
-}
+.div-headerbar-button:hover { color: #ff9900; }
 
-.div-headerbar-button:focus{
-    outline:none;
-}
+.div-headerbar-button:focus { outline: none; }

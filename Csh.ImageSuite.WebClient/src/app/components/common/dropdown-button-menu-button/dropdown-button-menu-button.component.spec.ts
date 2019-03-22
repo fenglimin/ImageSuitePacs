@@ -1,25 +1,27 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { DropdownButtonMenuButtonComponent } from './dropdown-button-menu-button.component';
+import { DropdownButtonMenuButtonComponent } from "./dropdown-button-menu-button.component";
 
-describe('DropdownButtonMenuButtonComponent', () => {
-  let component: DropdownButtonMenuButtonComponent;
-  let fixture: ComponentFixture<DropdownButtonMenuButtonComponent>;
+describe("DropdownButtonMenuButtonComponent",
+    () => {
+        let component: DropdownButtonMenuButtonComponent;
+        let fixture: ComponentFixture<DropdownButtonMenuButtonComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DropdownButtonMenuButtonComponent ]
-    })
-    .compileComponents();
-  }));
+        beforeEach(async(() => {
+            TestBed.configureTestingModule({
+                    declarations: [DropdownButtonMenuButtonComponent]
+                })
+                .compileComponents();
+        }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DropdownButtonMenuButtonComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        beforeEach(() => {
+            fixture = TestBed.createComponent(DropdownButtonMenuButtonComponent);
+            component = fixture.componentInstance;
+            fixture.detectChanges();
+        });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+        it("should create",
+            () => {
+                expect(component).toBeTruthy();
+            });
+    });

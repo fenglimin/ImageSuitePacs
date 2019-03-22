@@ -4,6 +4,8 @@
     {
         bool DicomP2P(string sopInstanceUid, string inputFile, string outputFile, int opMask);
 
-        string GetJpgFile(int serialNo);
+        string GetDicomFile(int serialNo);
+
+        string GetThumbnailFile(int serialNo);
     }
 }

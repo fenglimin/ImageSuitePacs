@@ -1,23 +1,21 @@
 .thumbnail {
-  padding: 2px;
-  width: 70px;
-  height: 70px;
-  margin-right: 4px;
-  border: solid 1px #888;
-  background-color: black;
-  overflow: hidden;
+    background-color: black;
+    border: solid 1px #888;
+    height: 70px;
+    margin-right: 4px;
+    overflow: hidden;
+    padding: 2px;
+    width: 70px;
 }
 
-.thumbnail:hover{
-  border: solid 2px #F90;
-}
+.thumbnail:hover { border: solid 2px #F90; }
 
 
 .img {
-  width: 70px;
-  height: 70px;
+    background-color: black;
+    height: 70px;
   
-  background-color: black;
-  margin-right: 4px;
-  overflow: hidden;
+    margin-right: 4px;
+    overflow: hidden;
+    width: 70px;
 }

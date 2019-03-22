@@ -37,7 +37,8 @@ namespace Csh.ImageSuite.Common
                 StudyDateString = _commonTool.GetSafeStrValue(row["StudyDate"]),
                 StudyTimeString = _commonTool.GetSafeStrValue(row["StudyTime"]),
                 SeriesCount = _commonTool.GetSafeIntValue(row["SeriesCount"]),
-                ImageCount = _commonTool.GetSafeIntValue(row["IC_Study"])
+                ImageCount = _commonTool.GetSafeIntValue(row["IC_Study"]),
+                StudyDesc = _commonTool.GetSafeStrValue(row["StudyDescription"])
             };
 
             return study;

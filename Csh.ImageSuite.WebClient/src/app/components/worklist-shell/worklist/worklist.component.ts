@@ -1,52 +1,44 @@
-import { Component, OnInit, OnChanges, SimpleChange, Input } from '@angular/core';
-import { NgModule } from '@angular/core';
-import { Shortcut } from '../../../models/shortcut';
-import { Subscription }   from 'rxjs';
-import { Study } from '../../../models/pssi';
-import { WorklistService } from '../../../services/worklist.service';
+import { Component, OnInit, SimpleChange } from "@angular/core";
+import { Shortcut } from "../../../models/shortcut";
+import { Subscription } from "rxjs";
+import { Study } from "../../../models/pssi";
+import { WorklistService } from "../../../services/worklist.service";
 import {
-    MatDatepickerModule,
-    MatInputModule,
     MatDatepickerInputEvent
-} from '@angular/material';
-import { FormControl } from '@angular/forms';
+} from "@angular/material";
 
 // Import DatePicker format
-import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-
-import * as moment from 'moment';
+import { MomentDateAdapter } from "@angular/material-moment-adapter";
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
 
 export const MY_FORMATS = {
     parse: {
-        dateInput: 'LL',
+        dateInput: "LL",
     },
     display: {
-        dateInput: 'LL',
-        monthYearLabel: 'MMM YYYY',
-        dateA11yLabel: 'LL',
-        monthYearA11yLabel: 'MMMM YYYY',
+        dateInput: "LL",
+        monthYearLabel: "MMM YYYY",
+        dateA11yLabel: "LL",
+        monthYearA11yLabel: "MMMM YYYY",
     },
 };
 
 @Component({
-  selector: 'app-worklist',
-  templateUrl: './worklist.component.html',
-    styleUrls: ['./worklist.component.css'],
+    selector: "app-worklist",
+    templateUrl: "./worklist.component.html",
+    styleUrls: ["./worklist.component.css"],
     providers: [
         // i18n
-        { provide: MAT_DATE_LOCALE, useValue: 'zh-CN' },
+        { provide: MAT_DATE_LOCALE, useValue: "zh-CN" },
         { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-
         { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
     ],
 })
-
 export class WorklistComponent implements OnInit {
-  
-  color = '#primary';
-  mode = 'indeterminate';
-  value = 50;
+
+    color = "#primary";
+    mode = "indeterminate";
+    value = 50;
 
     shortcutSelected: Subscription;
 
@@ -69,52 +61,51 @@ export class WorklistComponent implements OnInit {
         this.fromMaxDate = event.value;
     }
 
-  constructor(public worklistService: WorklistService) {
-    this.shortcutSelected = this.worklistService.shortcutSelected$.subscribe(
-      shortcut => this.onShortcutSelected(shortcut));
+    constructor(public worklistService: WorklistService) {
+        this.shortcutSelected = this.worklistService.shortcutSelected$.subscribe(
+            shortcut => this.onShortcutSelected(shortcut));
 
-  }
+    }
 
-  onShortcutSelected(shortcut: Shortcut) {
-    this.worklistService.shortcut = shortcut;
-  }
+    onShortcutSelected(shortcut: Shortcut) {
+        this.worklistService.shortcut = shortcut;
+    }
 
-  worklistColumns: string[] = [
-    "",
-    "Patient ID",
-    "Patient Name",
-    "Gender",
-    "BirthDate",
-    "AccessionNo",
-    "Modality",
-    "StudyDate",
-    "StudyTime",
-    "SeriesCount",
-    "ImageCount",
-    "StudyID"
-  ];
+    worklistColumns: string[] = [
+        "",
+        "Patient ID",
+        "Patient Name",
+        "Gender",
+        "BirthDate",
+        "AccessionNo",
+        "Modality",
+        "StudyDate",
+        "StudyTime",
+        "SeriesCount",
+        "ImageCount",
+        "StudyID"
+    ];
 
-  ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
-    //alert('aa');
-  }
+    ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
+        //alert('aa');
+    }
 
 
+    ngOnInit() {
+        this.worklistService.onQueryStudies();
+        this.worklistService.onQueryShortcuts();
+    }
 
-  ngOnInit() {
-      this.worklistService.onQueryStudies();
-      this.worklistService.onQueryShortcuts();
-  }
+    onStudyChecked(study: Study) {
+        study.checked = !study.checked;
+    }
 
-  onStudyChecked(study: Study) {
-    study.checked = !study.checked;
-  }
+    onAllStudyChecked(event) {
+        this.worklistService.studies.forEach(study => study.checked = event.target.checked);
+    }
 
-  onAllStudyChecked(event) {
-    this.worklistService.studies.forEach(study => study.checked = event.target.checked);
-  }
-
-  doShowStudy(study: Study) {
-    study.checked = true;
-    this.worklistService.onShowSingleStudy(study);
-  }
+    doShowStudy(study: Study) {
+        study.checked = true;
+        this.worklistService.onShowSingleStudy(study);
+    }
 }

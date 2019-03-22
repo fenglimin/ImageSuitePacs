@@ -1,198 +1,102 @@
-.loadImage, .loadKeyImage, .setRead, .setUnread, .changeImageSeriesOrder, .reassign, .transfer, .tagEdit, .deletePrevent, .deleteAllow, .delete, .import{
-  width: 40px;
-  height: 40px;
-  border: none;
-  outline: none;
+.loadImage, .loadKeyImage, .setRead, .setUnread, .changeImageSeriesOrder, .reassign, .transfer, .tagEdit, .deletePrevent, .deleteAllow, .delete, .import {
+    border: none;
+    height: 40px;
+    outline: none;
+    width: 40px;
 }
 
-.loadImage{
-  background: url(../../../../assets/img/button/LoadImage_40_40_All.png) no-repeat left top;
-}
+.loadImage { background: url(../../../../assets/img/button/LoadImage_40_40_All.png) no-repeat left top; }
 
-.loadImage:hover {
-  background: url(../../../../assets/img/button/LoadImage_40_40_All.png) no-repeat right top;
-}
+.loadImage:hover { background: url(../../../../assets/img/button/LoadImage_40_40_All.png) no-repeat right top; }
 
-.loadImage:active {
-  background: url(../../../../assets/img/button/LoadImage_40_40_All.png) no-repeat left bottom;
-}
+.loadImage:active { background: url(../../../../assets/img/button/LoadImage_40_40_All.png) no-repeat left bottom; }
 
-.loadImage:disabled {
-  background: url(../../../../assets/img/button/LoadImage_40_40_All.png) no-repeat right bottom;
-}
+.loadImage:disabled { background: url(../../../../assets/img/button/LoadImage_40_40_All.png) no-repeat right bottom; }
 
-.loadKeyImage{
-  background: url(../../../../assets/img/button/loadKeyImage_40_40_All.png) no-repeat left top;
-}
+.loadKeyImage { background: url(../../../../assets/img/button/loadKeyImage_40_40_All.png) no-repeat left top; }
 
-.loadKeyImage:hover {
-  background: url(../../../../assets/img/button/loadKeyImage_40_40_All.png) no-repeat right top;
-}
+.loadKeyImage:hover { background: url(../../../../assets/img/button/loadKeyImage_40_40_All.png) no-repeat right top; }
 
-.loadKeyImage:active {
-  background: url(../../../../assets/img/button/loadKeyImage_40_40_All.png) no-repeat left bottom;
-}
+.loadKeyImage:active { background: url(../../../../assets/img/button/loadKeyImage_40_40_All.png) no-repeat left bottom; }
 
-.loadKeyImage:disabled {
-  background: url(../../../../assets/img/button/loadKeyImage_40_40_All.png) no-repeat right bottom;
-}
+.loadKeyImage:disabled { background: url(../../../../assets/img/button/loadKeyImage_40_40_All.png) no-repeat right bottom; }
 
-.setRead{
-  background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat left top;
-}
+.setRead { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat left top; }
 
-.setRead:hover {
-  background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat right top;
-}
+.setRead:hover { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat right top; }
 
-.setRead:active {
-  background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat left bottom;
-}
+.setRead:active { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat left bottom; }
 
-.setRead:disabled {
-  background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat right bottom;
-}
+.setRead:disabled { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat right bottom; }
 
-.setUnread{
-  background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat left top;
-}
+.setUnread { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat left top; }
 
-.setUnread:hover {
-  background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat right top;
-}
+.setUnread:hover { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat right top; }
 
-.setUnread:active {
-  background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat left bottom;
-}
+.setUnread:active { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat left bottom; }
 
-.setUnread:disabled {
-  background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat right bottom;
-}
+.setUnread:disabled { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat right bottom; }
 
-.changeImageSeriesOrder{
-  background: url(../../../../assets/img/button/changeImageSeriesOrder_40_40_All.png) no-repeat left top;
-}
+.changeImageSeriesOrder { background: url(../../../../assets/img/button/changeImageSeriesOrder_40_40_All.png) no-repeat left top; }
 
-.changeImageSeriesOrder:hover {
-  background: url(../../../../assets/img/button/changeImageSeriesOrder_40_40_All.png) no-repeat right top;
-}
+.changeImageSeriesOrder:hover { background: url(../../../../assets/img/button/changeImageSeriesOrder_40_40_All.png) no-repeat right top; }
 
-.changeImageSeriesOrder:active {
-  background: url(../../../../assets/img/button/changeImageSeriesOrder_40_40_All.png) no-repeat left bottom;
-}
+.changeImageSeriesOrder:active { background: url(../../../../assets/img/button/changeImageSeriesOrder_40_40_All.png) no-repeat left bottom; }
 
-.changeImageSeriesOrder:disabled {
-  background: url(../../../../assets/img/button/changeImageSeriesOrder_40_40_All.png) no-repeat right bottom;
-}
+.changeImageSeriesOrder:disabled { background: url(../../../../assets/img/button/changeImageSeriesOrder_40_40_All.png) no-repeat right bottom; }
 
-.reassign{
-  background: url(../../../../assets/img/button/reassign_40_40_All.png) no-repeat left top;
-}
+.reassign { background: url(../../../../assets/img/button/reassign_40_40_All.png) no-repeat left top; }
 
-.reassign:hover {
-  background: url(../../../../assets/img/button/reassign_40_40_All.png) no-repeat right top;
-}
+.reassign:hover { background: url(../../../../assets/img/button/reassign_40_40_All.png) no-repeat right top; }
 
-.reassign:active {
-  background: url(../../../../assets/img/button/reassign_40_40_All.png) no-repeat left bottom;
-}
+.reassign:active { background: url(../../../../assets/img/button/reassign_40_40_All.png) no-repeat left bottom; }
 
-.reassign:disabled {
-  background: url(../../../../assets/img/button/reassign_40_40_All.png) no-repeat right bottom;
-}
+.reassign:disabled { background: url(../../../../assets/img/button/reassign_40_40_All.png) no-repeat right bottom; }
 
-.transfer{
-  background: url(../../../../assets/img/button/transferImage_40_40_All.png) no-repeat left top;
-}
+.transfer { background: url(../../../../assets/img/button/transferImage_40_40_All.png) no-repeat left top; }
 
-.transfer:hover {
-  background: url(../../../../assets/img/button/transferImage_40_40_All.png) no-repeat right top;
-}
+.transfer:hover { background: url(../../../../assets/img/button/transferImage_40_40_All.png) no-repeat right top; }
 
-.transfer:active {
-  background: url(../../../../assets/img/button/transferImage_40_40_All.png) no-repeat left bottom;
-}
+.transfer:active { background: url(../../../../assets/img/button/transferImage_40_40_All.png) no-repeat left bottom; }
 
-.transfer:disabled {
-  background: url(../../../../assets/img/button/transferImage_40_40_All.png) no-repeat right bottom;
-}
+.transfer:disabled { background: url(../../../../assets/img/button/transferImage_40_40_All.png) no-repeat right bottom; }
 
-.tagEdit{
-  background: url(../../../../assets/img/button/tagEdit_40_40_All.png) no-repeat left top;
-}
+.tagEdit { background: url(../../../../assets/img/button/tagEdit_40_40_All.png) no-repeat left top; }
 
-.tagEdit:hover {
-  background: url(../../../../assets/img/button/tagEdit_40_40_All.png) no-repeat right top;
-}
+.tagEdit:hover { background: url(../../../../assets/img/button/tagEdit_40_40_All.png) no-repeat right top; }
 
-.tagEdit:active {
-  background: url(../../../../assets/img/button/tagEdit_40_40_All.png) no-repeat left bottom;
-}
+.tagEdit:active { background: url(../../../../assets/img/button/tagEdit_40_40_All.png) no-repeat left bottom; }
 
-.tagEdit:disabled {
-  background: url(../../../../assets/img/button/tagEdit_40_40_All.png) no-repeat right bottom;
-}
+.tagEdit:disabled { background: url(../../../../assets/img/button/tagEdit_40_40_All.png) no-repeat right bottom; }
 
-.deletePrevent{
-  background: url(../../../../assets/img/button/deletePrevent_40_40_All.png) no-repeat left top;
-}
+.deletePrevent { background: url(../../../../assets/img/button/deletePrevent_40_40_All.png) no-repeat left top; }
 
-.deletePrevent:hover {
-  background: url(../../../../assets/img/button/deletePrevent_40_40_All.png) no-repeat right top;
-}
+.deletePrevent:hover { background: url(../../../../assets/img/button/deletePrevent_40_40_All.png) no-repeat right top; }
 
-.deletePrevent:active {
-  background: url(../../../../assets/img/button/deletePrevent_40_40_All.png) no-repeat left bottom;
-}
+.deletePrevent:active { background: url(../../../../assets/img/button/deletePrevent_40_40_All.png) no-repeat left bottom; }
 
-.deletePrevent:disabled {
-  background: url(../../../../assets/img/button/deletePrevent_40_40_All.png) no-repeat right bottom;
-}
+.deletePrevent:disabled { background: url(../../../../assets/img/button/deletePrevent_40_40_All.png) no-repeat right bottom; }
 
-.deleteAllow{
-  background: url(../../../../assets/img/button/deleteAllow_40_40_All.png) no-repeat left top;
-}
+.deleteAllow { background: url(../../../../assets/img/button/deleteAllow_40_40_All.png) no-repeat left top; }
 
-.deleteAllow:hover {
-  background: url(../../../../assets/img/button/deleteAllow_40_40_All.png) no-repeat right top;
-}
+.deleteAllow:hover { background: url(../../../../assets/img/button/deleteAllow_40_40_All.png) no-repeat right top; }
 
-.deleteAllow:active {
-  background: url(../../../../assets/img/button/deleteAllow_40_40_All.png) no-repeat left bottom;
-}
+.deleteAllow:active { background: url(../../../../assets/img/button/deleteAllow_40_40_All.png) no-repeat left bottom; }
 
-.deleteAllow:disabled {
-  background: url(../../../../assets/img/button/deleteAllow_40_40_All.png) no-repeat right bottom;
-}
+.deleteAllow:disabled { background: url(../../../../assets/img/button/deleteAllow_40_40_All.png) no-repeat right bottom; }
 
-.delete{
-  background: url(../../../../assets/img/button/delete_40_40_All.png) no-repeat left top;
-}
+.delete { background: url(../../../../assets/img/button/delete_40_40_All.png) no-repeat left top; }
 
-.delete:hover {
-  background: url(../../../../assets/img/button/delete_40_40_All.png) no-repeat right top;
-}
+.delete:hover { background: url(../../../../assets/img/button/delete_40_40_All.png) no-repeat right top; }
 
-.delete:active {
-  background: url(../../../../assets/img/button/delete_40_40_All.png) no-repeat left bottom;
-}
+.delete:active { background: url(../../../../assets/img/button/delete_40_40_All.png) no-repeat left bottom; }
 
-.delete:disabled {
-  background: url(../../../../assets/img/button/delete_40_40_All.png) no-repeat right bottom;
-}
+.delete:disabled { background: url(../../../../assets/img/button/delete_40_40_All.png) no-repeat right bottom; }
 
-.import{
-  background: url(../../../../assets/img/button/import_40_40_All.png) no-repeat left top;
-}
+.import { background: url(../../../../assets/img/button/import_40_40_All.png) no-repeat left top; }
 
-.import:hover {
-  background: url(../../../../assets/img/button/import_40_40_All.png) no-repeat right top;
-}
+.import:hover { background: url(../../../../assets/img/button/import_40_40_All.png) no-repeat right top; }
 
-.import:active {
-  background: url(../../../../assets/img/button/import_40_40_All.png) no-repeat left bottom;
-}
+.import:active { background: url(../../../../assets/img/button/import_40_40_All.png) no-repeat left bottom; }
 
-.import:disabled {
-  background: url(../../../../assets/img/button/import_40_40_All.png) no-repeat right bottom;
-}
+.import:disabled { background: url(../../../../assets/img/button/import_40_40_All.png) no-repeat right bottom; }

@@ -1,12 +1,14 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
 
-import { WorklistService } from './worklist.service';
+import { WorklistService } from "./worklist.service";
 
-describe('WorklistService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+describe("WorklistService",
+    () => {
+        beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
-    const service: WorklistService = TestBed.get(WorklistService);
-    expect(service).toBeTruthy();
-  });
-});
+        it("should be created",
+            () => {
+                const service: WorklistService = TestBed.get(WorklistService);
+                expect(service).toBeTruthy();
+            });
+    });

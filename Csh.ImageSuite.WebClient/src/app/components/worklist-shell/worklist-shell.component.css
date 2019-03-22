@@ -1,79 +1,73 @@
-#div-scroll{
+#div-scroll {
+    height: 100%;
     overflow: auto;
-    width:100%;
-    height:100%;
+    width: 100%;
 }
 
-#div-scroll::-webkit-scrollbar
-{
-	width: 12px;
-	background-color: #808080;
+#div-scroll::-webkit-scrollbar {
+    background-color: #808080;
+    width: 12px;
 }
 
-#div-scroll::-webkit-scrollbar-thumb
-{
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #555;
+#div-scroll::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #555;
+    border-radius: 10px;
 }
 
-    #div-scroll::-webkit-scrollbar-corner {
-        background-color: dimgray;
-    }
+#div-scroll::-webkit-scrollbar-corner { background-color: dimgray; }
 
 #divContainer {
-    position: absolute;
+    border-bottom: 2px solid #666;
+    bottom: 0px;
     left: 0px;
+    position: absolute;
     right: 0px;
     top: 40px;
-    bottom: 0px;
-  border-bottom: 2px solid #333;
 }
 
-.studyQueryToolbar
-{
-  display:block;
-  width: 100%;
-  margin:0 auto;
-  height: 40px;
-  padding: 3px;
-  background-color: black;
-  color: #F5F5F5;
+.studyQueryToolbar {
+    background-color: black;
+    color: #F5F5F5;
+    display: block;
+    height: 40px;
+    margin: 0 auto;
+    padding: 3px;
+    width: 100%;
 }
 
-.studyOpertionToolbar
-{
-  display:block;
-  width: 100%;
-  margin:0 auto;
-  height: 48px;
-  padding: 4px;
-  background-color: black;
-  color: #F5F5F5;
-  position: fixed;
-  bottom: 0;
-  border-top: 1px solid #333;
-  border-bottom: 2px solid #333;
+.studyOpertionToolbar {
+    background-color: black;
+    border-bottom: 2px solid #666;
+    border-top: 1px solid #333;
+    bottom: 0;
+    color: #F5F5F5;
+    display: block;
+    height: 48px;
+    margin: 0 auto;
+    padding: 4px;
+    position: fixed;
+    width: 100%;
 }
 
 #panelStudyDash {
-    padding: 5px 10px;
     background-color: black;
-    margin: 0px;
     border: none;
+    margin: 0px;
+    padding: 5px 10px;
     visibility: visible;
 }
 
 #panelStudyDash button {
-    height: 30px;
     border: none;
-    width: 100px;
+    height: 30px;
     outline: none;
+    width: 100px;
 }
 
 #panelStudyDash .save-query {
-    float: right;
     cursor: pointer;
+    float: right;
 }
 
 #panelStudyDash .checkbox {
@@ -81,15 +75,13 @@
     margin-right: 5px;
 }
 
-#panelStudyDash #statusLabel{
-    margin: 0px;
-}
+#panelStudyDash #statusLabel { margin: 0px; }
 
 #divStudies {
+    margin-bottom: 0px;
+    min-height: 200px;
     position: static;
     width: 100%;
-    min-height: 200px;
-    margin-bottom: 0px;
 }
 
 /*#divStudies::-webkit-scrollbar{
@@ -102,31 +94,26 @@
     border-radius: 10px;
 }*/
 
-@media (min-width: 768px){
-    
-    #panelStudyDash .checkbox {
-        top: -2px;
-    }
+@media (min-width: 768px) {    
+    #panelStudyDash .checkbox { top: -2px; }
 
-    #panelStudyDash .checkbox label input {
-        top: 2px;
-    }
+    #panelStudyDash .checkbox label input { top: 2px; }
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
     #divStudies {
-        position: absolute;
-        left: 1px;
-        right: 1px;
         border: none;
+        left: 1px;
+        position: absolute;
+        right: 1px;
         top: 42px;
         visibility: visible;
     }
 
     #panelStudyDash {
-        position: absolute;
-        padding: 5px 2px;
         left: 1px;
+        padding: 5px 2px;
+        position: absolute;
         right: 1px;
         visibility: visible;
     }
@@ -136,13 +123,9 @@
         margin: 0px;
     }
 
-    #panelStudyDash #statusLabel{
-        display: none;
-    }
+    #panelStudyDash #statusLabel { display: none; }
 
-    #panelStudyDash .save-query{
-        display: none;
-    }
+    #panelStudyDash .save-query { display: none; }
 
     #panelStudyDash .checkbox {
         margin-left: 5px;
@@ -167,35 +150,35 @@
 }
 
 .sp_panel-left {
-    flex: 0 0 auto;
-    /* only manually resize */
-    padding: 4px;
-    width: 200px;
-    min-height: 200px;
     /*min-width: 1px;*/
     /*white-space: nowrap;*/
     background: #07090c;
     display: flex;
+    flex: 0 0 auto;
     flex-direction: column;
+    min-height: 200px;
     overflow: hidden;
+    /* only manually resize */
+    padding: 4px;
+    width: 200px;
     /*color: white;*/
 }
 
 .sp_splitter {
-    flex: 0 0 auto;
-    width: 8px;
     background: url(../../../assets/img/button/split_vertical_collapse.jpg) center center no-repeat #535353;
-    min-height: 200px;
     cursor: pointer;
+    flex: 0 0 auto;
+    min-height: 200px;
+    width: 8px;
 }
 
 .sp_panel-right {
-    padding-bottom: 100px;
-    width: 100%;
+    background: black;
+    color: white;
     min-height: 200px;
     min-width: 200px;
-    background: black;
-    color:white;
+    padding-bottom: 100px;
+    width: 100%;
 }
 
 
@@ -213,19 +196,19 @@
     /*padding: 10px;*/
     height: 70%;
     min-height: 300px;
+    overflow-y: auto;
     width: 100%;
     /*white-space: nowrap;
   background: #838383;
   color: white;*/
     z-index: 0;
-    overflow-y: auto;
 }
 
 .sp_splitter-horizontal {
-    flex: 0 0 auto;
-    height: 8px;
     background: url(../../../assets/img/button/split_horizontal_collapse.jpg) center center no-repeat #535353;
     cursor: pointer;
+    flex: 0 0 auto;
+    height: 8px;
     z-index: 2;
 }
 
@@ -234,47 +217,33 @@
     /* resizable */
     /*padding: 10px;*/
     min-height: 200px;
+    overflow-y: auto;
     /*background: #eee;*/
     z-index: 1;
-    overflow-y: auto;
 }
 
-.navbar-right {
-    padding-right: 10px;
-}
+.navbar-right { padding-right: 10px; }
 
-.sp_panel-right .table{
-    white-space: nowrap;
-}
+.sp_panel-right .table { white-space: nowrap; }
 
-#trStudiesHeader a {
-    color: black;
-}
+#trStudiesHeader a { color: black; }
 
-#trSeriesHeader a {
-    color: black;
-}
+#trSeriesHeader a { color: black; }
 
 
-#leftPanelTop {
-    flex: 1 1 auto;
-}
+#leftPanelTop { flex: 1 1 auto; }
 
 #leftPanelBottom {
     flex: 0 0 auto;
     height: 20%;
 }
 
-#formUploadImage input[type=file] {
-    width: 600px;
-}
+#formUploadImage input[type=file] { width: 600px; }
 
-#tblSeries td:nth-child(1) {
-    text-align: center;
-}
+#tblSeries td:nth-child(1) { text-align: center; }
 
 #tblSeries img {
-    width: 50px;
     height: 50px;
     margin: auto;
+    width: 50px;
 }

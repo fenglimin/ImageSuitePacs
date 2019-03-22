@@ -8,13 +8,13 @@
         </tr>
         <tr id="trStudiesQuery">
             <td>
-                <input type="checkbox" (click)="onAllStudyChecked($event)" />
+                <input type="checkbox" (click)="onAllStudyChecked($event)"/>
             </td>
             <td>
-                <input id="queryPatientId" type="text" [(ngModel)]="worklistService.shortcut.patientId" />
+                <input id="queryPatientId" type="text" [(ngModel)]="worklistService.shortcut.patientId"/>
             </td>
             <td>
-                <input id="queryPatientName" type="text" [(ngModel)]="worklistService.shortcut.patientName" />
+                <input id="queryPatientName" type="text" [(ngModel)]="worklistService.shortcut.patientName"/>
             </td>
             <td>
                 <select id="queryGender" [(ngModel)]="worklistService.shortcut.gender">
@@ -25,59 +25,61 @@
                 </select>
             </td>
             <td>
-                <!--<input id="queryBirthDate" type="date" [(ngModel)]="worklistService.shortcut.birthDate"/>-->
-        <tr>
-            <td>
-                <mat-form-field>
-                    <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" (dateChange)="fromDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateFrom">
-                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
-                </mat-form-field>
-            </td>
-            <td>
-                <mat-form-field>
-                    <input matInput [matDatepicker]="picker2" [min]="toMinDate" [max]="toMaxDate" placeholder="To" (dateChange)="toDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateTo">
-                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker2></mat-datepicker>
-                </mat-form-field>
-            </td>
-        </tr>
+            <!--<input id="queryBirthDate" type="date" [(ngModel)]="worklistService.shortcut.birthDate"/>-->
+            <tr>
+                <td>
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" (dateChange)="fromDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateFrom">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                    </mat-form-field>
+                </td>
+                <td>
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="picker2" [min]="toMinDate" [max]="toMaxDate" placeholder="To" (dateChange)="toDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateTo">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                </td>
+            </tr>
 
-        </td>
-        <td>
-            <input id="queryAccessionNo" type="text" [(ngModel)]="worklistService.shortcut.accessionNo" />
-        </td>
-        <td>
-            <select id="queryModality" [(ngModel)]="worklistService.shortcut.modality">
-                <option value="">All</option>
-                <option>CR</option>
-                <option>CT</option>
-                <option>DX</option>
-                <option>MG</option>
-                <option>MR</option>
-                <option>US</option>
-            </select>
-        </td>
-        <td>
-            <select id="queryStudyDate" [(ngModel)]="worklistService.shortcut.studyDate">
-                <option value="">All</option>
-                <option>Today</option>
-                <option>Since Yesterday</option>
-                <option>Last 7 Days</option>
-                <option>Last 30 Days</option>
-                <option>Last 6 Months</option>
-            </select>
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>
-            <input id="queryStudyID" type="text" [(ngModel)]="worklistService.shortcut.studyId" />
-        </td>
+            </td>
+            <td>
+                <input id="queryAccessionNo" type="text" [(ngModel)]="worklistService.shortcut.accessionNo"/>
+            </td>
+            <td>
+                <select id="queryModality" [(ngModel)]="worklistService.shortcut.modality">
+                    <option value="">All</option>
+                    <option>CR</option>
+                    <option>CT</option>
+                    <option>DX</option>
+                    <option>MG</option>
+                    <option>MR</option>
+                    <option>US</option>
+                </select>
+            </td>
+            <td>
+                <select id="queryStudyDate" [(ngModel)]="worklistService.shortcut.studyDate">
+                    <option value="">All</option>
+                    <option>Today</option>
+                    <option>Since Yesterday</option>
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>Last 6 Months</option>
+                </select>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <input id="queryStudyID" type="text" [(ngModel)]="worklistService.shortcut.studyId"/>
+            </td>
         </tr>
         </thead>
         <tr *ngFor="let study of worklistService.studies" (click)="onStudyChecked(study)">
-            <td><input type="checkbox" [(ngModel)]="study.checked" /></td>
+            <td>
+                <input type="checkbox" [(ngModel)]="study.checked"/>
+            </td>
             <td style="cursor: pointer" (click)="doShowStudy(study)">{{study.patient.patientId}}</td>
             <td>{{study.patient.patientName}}</td>
             <td>{{study.patient.gender}}</td>

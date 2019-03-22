@@ -1,25 +1,23 @@
-<div [style.visibility]= "hideMe? 'hidden' : 'visible'" id="divContainer" class="sp_panel-container">
+<div [style.visibility]="hideMe? 'hidden' : 'visible'" id="divContainer" class="sp_panel-container">
 
-  <div class="sp_panel-left">
-    <app-query-shortcut></app-query-shortcut>
-  </div>
-
-  <div class="sp_splitter">
-  </div>
-
-  <div class="sp_panel-right">
-    <div class="studyQueryToolbar">
-      <app-query-toolbar></app-query-toolbar>
+    <div class="sp_panel-left">
+        <app-query-shortcut></app-query-shortcut>
     </div>
-    
-      <div id="div-scroll">
-          <app-worklist></app-worklist>
-      </div>
 
-    <div class="studyOpertionToolbar">
-      <app-operate-toolbar></app-operate-toolbar>
+    <div class="sp_splitter">
     </div>
-  </div>
+
+    <div class="sp_panel-right">
+        <div class="studyQueryToolbar">
+            <app-query-toolbar></app-query-toolbar>
+        </div>
+
+        <div id="div-scroll">
+            <app-worklist></app-worklist>
+        </div>
+
+        <div class="studyOpertionToolbar">
+            <app-operate-toolbar></app-operate-toolbar>
+        </div>
+    </div>
 </div>
-
-

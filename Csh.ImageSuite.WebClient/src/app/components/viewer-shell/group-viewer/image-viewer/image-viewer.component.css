@@ -1,40 +1,40 @@
 .DivImageViewer {
-    display: flex;
-    flex: 1;
+    align-items: right;
+    background-color: #000000;
     /*border-top: solid 2px #FFFFFF;
   border-bottom: solid 2px #FFFFFF;
   border-left: solid 2px #FFFFFF;
   border-right: solid 2px #FFFFFF;*/
     border: 1px solid #555555;
-    background-color: #000000;
     color: #F5F5F5;
-    width: 100%;
+    display: flex;
+    flex: 1;
     height: 100%;
-    overflow: hidden;
-    align-items: right;
     justify-content: normal;
+    overflow: hidden;
+    width: 100%;
 }
 
-    .DivImageViewer .viewerCanvas {
-        flex: 1;
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-        background-color: black;
+.DivImageViewer .viewerCanvas {
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
 
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -o-user-select: none;
-        user-select: none;
-    }
+    background-color: black;
+    flex: 1;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+    user-select: none;
+    width: auto;
+}
 
 .helpElement {
-    position:absolute;
-    visibility:hidden;
-    z-index:-10000000;
-    overflow:hidden;
+    overflow: hidden;
+    position: absolute;
+    visibility: hidden;
+    z-index: -10000000;
 }

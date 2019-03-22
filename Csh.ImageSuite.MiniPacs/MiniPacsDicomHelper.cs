@@ -22,7 +22,23 @@ namespace Csh.ImageSuite.MiniPacs
             return ret == 0;
         }
 
-        public string GetJpgFile(int serialNo)
+        public string GetDicomFile(int serialNo)
+        {
+            var image = _dbHelper.GetImage(serialNo);
+            if (image == null)
+            {
+                return string.Empty;
+            }
+
+            var dcmFile = Path.Combine(_dbHelper.GetImageRootDir(serialNo), image.FilePath);
+            var processedFile = "D:\\" + image.SopInstanceUid + ".dcm";
+
+            var ret = MiniPacsDllImporter.dicom_p2p(image.SopInstanceUid, string.Empty, dcmFile, processedFile, 3);
+            
+            return ret == 1 ? processedFile : string.Empty;
+        }
+
+        public string GetThumbnailFile(int serialNo)
         {
             var image = _dbHelper.GetImage(serialNo);
             if (image == null)
@@ -33,12 +49,6 @@ namespace Csh.ImageSuite.MiniPacs
             var dcmFile = Path.Combine(_dbHelper.GetImageRootDir(serialNo), image.FilePath);
             var bmpFile = dcmFile.Remove(dcmFile.Length - 3, 3) + "bmp";
             return bmpFile;
-            //var jpgFile = "D:\\" + image.SopInstanceUid + ".jpg";
-
-            //var ret = MiniPacsDllImporter.dicom2jpg(image.SopInstanceUid, dcmFile, jpgFile, 100, 100);//image.ImageColumns, image.ImageRows);
-            //var ret = MiniPacsDllImporter.dicom_p2p(image.SopInstanceUid, string.Empty, dcmFile, jpgFile, 3);
-            //var ret = MiniPacsDllImporter.dicom2jpg_vm(image.SopInstanceUid, 0, dcmFile, "RESET", "true|1|4095|2048|false|1|1|false|false|1|100|100", jpgFile, "");
-            //return ret == 1 ? jpgFile : string.Empty;
         }
     }
 }

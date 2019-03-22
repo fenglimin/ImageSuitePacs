@@ -24,12 +24,12 @@ namespace Csh.ImageSuite.WebHost
             app.UseWebApi(httpConfiguration);
 
             //Make .App folder as the default root for the static files
-            app.UseFileServer(new FileServerOptions
-            {
-                RequestPath = new Microsoft.Owin.PathString(string.Empty),
-                FileSystem = new PhysicalFileSystem("./AngularDist"),
-                EnableDirectoryBrowsing = true
-            });
+            //app.UseFileServer(new FileServerOptions
+            //{
+            //    RequestPath = new Microsoft.Owin.PathString(string.Empty),
+            //    FileSystem = new PhysicalFileSystem("./bin/AngularDist"),
+            //    EnableDirectoryBrowsing = true
+            //});
 
             app.UseStageMarker(PipelineStage.MapHandler);
 

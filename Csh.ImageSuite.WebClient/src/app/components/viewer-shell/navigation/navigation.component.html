@@ -5,13 +5,15 @@
                 <td>
                     <li class="dropdown">
                         <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                            <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(selectedGroupHangingData.name)" role="button" [title]="selectedGroupHangingData.tip" style="margin-top: -20px;" 
-                                    (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)"></button>
+                            <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(selectedGroupHangingData.name)" role="button" [title]="selectedGroupHangingData.tip" style="margin-top: -20px;"
+                                    (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)">
+                            </button>
                         </a>
-                        <ul class="dropdown-menu hangingProtocol-menu" >
-                            <li *ngFor="let groupHangingData of hangingProtocalService.getGroupHangingDataList()">
-                                <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(groupHangingData.name)" role="button" [title]="groupHangingData.tip" 
-                                        (click)="onSelectGroupHangingProtocol(groupHangingData)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)"></button>
+                        <ul class="dropdown-menu hangingProtocol-menu">
+                            <li *ngFor="let groupHangingData of hangingProtocolService.getGroupHangingDataList()">
+                                <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(groupHangingData.name)" role="button" [title]="groupHangingData.tip"
+                                        (click)="onSelectGroupHangingProtocol(groupHangingData)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)">
+                                </button>
                             </li>
                         </ul>
                     </li>
@@ -20,12 +22,14 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                             <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(selectedGroupLayoutData.name)" role="button" [title]="selectedGroupLayoutData.tip" style="margin-top: -20px;"
-                                    (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)"></button>
+                                    (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)">
+                            </button>
                         </a>
                         <ul class="dropdown-menu hangingProtocol-menu">
-                            <li *ngFor="let groupLayoutData of hangingProtocalService.getGroupLayoutDataList()">
+                            <li *ngFor="let groupLayoutData of hangingProtocolService.getGroupLayoutDataList()">
                                 <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(groupLayoutData.name)" role="button" [title]="groupLayoutData.tip"
-                                        (click)="onSelectGroupLayout(groupLayoutData)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)"></button>
+                                        (click)="onSelectGroupLayout(groupLayoutData)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)">
+                                </button>
                             </li>
                         </ul>
                     </li>
@@ -34,12 +38,14 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle nav navbar-collapse" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                             <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(selectedImageLayoutData.name)" role="button" [title]="selectedImageLayoutData.tip" style="margin-top: -20px;"
-                                    (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)"></button>
+                                    (mouseover)="onMouseOver($event, true)" (mouseout)="onMouseOut($event)">
+                            </button>
                         </a>
                         <ul class="dropdown-menu hangingProtocol-menu">
-                            <li *ngFor="let imageLayoutData of hangingProtocalService.getImageLayoutDataList()">
+                            <li *ngFor="let imageLayoutData of hangingProtocolService.getImageLayoutDataList()">
                                 <button class="hangingProtocol-menu-button" [style.background-image]="getHpMenuBackground(imageLayoutData.name)" role="button" [title]="imageLayoutData.tip"
-                                        (click)="onSelectImageLayout(imageLayoutData)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)"></button>
+                                        (click)="onSelectImageLayout(imageLayoutData)" (mouseover)="onMouseOver($event, false)" (mouseout)="onMouseOut($event)" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)">
+                                </button>
                             </li>
                         </ul>
                     </li>

@@ -1,86 +1,78 @@
 .mat-dialog-container {
-  background-color: #555;
-  width: 250px;
-  height: 250px;
-  padding: 2px 2px;
+    background-color: #555;
+    height: 250px;
+    padding: 2px 2px;
+    width: 250px;
 }
 
 .shortcut-header {
-  padding:4px;
-  background-color: #555555;
-  border-radius: 3px;
-  color: white;
-  width:100%;
+    background-color: #555555;
+    border-radius: 3px;
+    color: white;
+    padding: 4px;
+    width: 100%;
 }
 
 .shortcut-header-button {
-  padding:4px;
-  color: transparent;
-  background-color: transparent;
-  border:none;
-  outline:none;
+    background-color: transparent;
+    border: none;
+    color: transparent;
+    outline: none;
+    padding: 4px;
 }
 
-.shortcut-header:hover {
-    color: #F90;
-}
+.shortcut-header:hover { color: #F90; }
 
-.shortcut-header:hover .shortcut-header-button{
-    color: #F90;
-    background-color:#444;
+.shortcut-header:hover .shortcut-header-button {
+    background-color: #444;
     border: solid 1px #888;
     border-radius: 2px;
+    color: #F90;
     margin-top: -2px;
 }
 
-.shortcut-header:hover .shortcut-header-button:active{
-    color: red;
-}
+.shortcut-header:hover .shortcut-header-button:active { color: red; }
 
-.shortcut-item{
-  padding-top: 3px;
-  padding-bottom:3px;
-  padding-left:24px;
-  background-color: inherit;
-  border-radius: 3px;
-  color: white;
-  width:100%;
+.shortcut-item {
+    background-color: inherit;
+    border-radius: 3px;
+    color: white;
+    padding-bottom: 3px;
+    padding-left: 24px;
+    padding-top: 3px;
+    width: 100%;
 }
 
 .shortcut-name-button {
-  background-color:transparent;
-  border-width: 0px;
-  color:inherit;
-  border:none;
-  outline:none;
+    background-color: transparent;
+    border: none;
+    border-width: 0px;
+    color: inherit;
+    outline: none;
 }
 
-.shortcut-item:hover{
+.shortcut-item:hover {
+    background-color: #999;
     color: #ff9900;
-    background-color:#999;
 }
 
 .shortcut-item:hover .shortcut-close-button {
-    color: #F90;
-    background-color:#666;
+    background-color: #666;
     border: solid 1px #aaa;
     border-radius: 2px;
-    margin-top: -1px;
+    color: #F90;
     margin-right: 2px;
+    margin-top: -1px;
 }
 
-.shortcut-item:hover .shortcut-name-button:hover {
-    color: red;
-}
+.shortcut-item:hover .shortcut-name-button:hover { color: red; }
 
-.shortcut-item:hover .shortcut-close-button:active {
-    color: red;
-}
+.shortcut-item:hover .shortcut-close-button:active { color: red; }
 
-.shortcut-close-button{
-  padding:4px;
-  color: transparent;
-  background-color: transparent;
-  border:none;
-  outline:none;
+.shortcut-close-button {
+    background-color: transparent;
+    border: none;
+    color: transparent;
+    outline: none;
+    padding: 4px;
 }

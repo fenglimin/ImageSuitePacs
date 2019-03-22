@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Csh.ImageSuite.Common.Interface;
+using Csh.ImageSuite.Model.Dicom;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -33,6 +34,14 @@ namespace Csh.ImageSuite.WebHost.Controllers
             var study = _dbHelper.GetStudy(id);
             return _commonTool.GetJsonStringFromObject(study);
         }
+
+        // POST: Pssi/Search/
+        public string Search(QueryShortcut queryShortcut)
+        {
+            var studies = _dbHelper.GetStudies(queryShortcut);
+            return _commonTool.GetJsonStringFromObject(studies);
+        }
+
 
         // GET: Pssi/Create
         public ActionResult Create()

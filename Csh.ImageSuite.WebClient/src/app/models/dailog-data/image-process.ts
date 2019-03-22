@@ -1,4 +1,4 @@
 ﻿export class WindowLevelData {
-  windowCenter: number;
-  windowWidth: number;
+    windowCenter: number;
+    windowWidth: number;
 }

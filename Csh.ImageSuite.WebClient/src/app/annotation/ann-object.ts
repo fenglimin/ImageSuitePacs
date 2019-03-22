@@ -1,4 +1,4 @@
-import { ViewContextEnum, ViewContext, ViewContextService } from '../services/view-context.service'
+import { ViewContextEnum, ViewContextService } from "../services/view-context.service"
 
 export enum EventType {
     Click= 1,
@@ -21,11 +21,11 @@ export enum StepEnum {
 }
 
 export class Colors {
-    static white: string = '#ffffff';
-    static red: string = '#ff0000';
-    static yellow: string = '#ffff00';
-    static green: string = '#00FF00';
-    static blue: string = '#0000FF';
+    static white = "#ffffff";
+    static red = "#ff0000";
+    static yellow = "#ffff00";
+    static green = "#00FF00";
+    static blue = "#0000FF";
 };
 
 export abstract class AnnObject {
@@ -35,35 +35,35 @@ export abstract class AnnObject {
     protected isInEdit: boolean; //is current object selected and in edit status
     protected parent: AnnObject;
 
-    protected defaultCircleRadius: number = 5;
-    protected minCircleRadius: number = 2;
-    protected minLineWidth: number = 0.3;
+    protected defaultCircleRadius = 5;
+    protected minCircleRadius = 2;
+    protected minLineWidth = 0.3;
 
-    protected selectedLevel: number = 100;
-    protected defaultLevel: number = 1;
-    protected selectedColor: string = Colors.red;
-    protected defaultColor: string = Colors.white;
+    protected selectedLevel = 100;
+    protected defaultLevel = 1;
+    protected selectedColor = Colors.red;
+    protected defaultColor = Colors.white;
 
     constructor(protected viewContext: ViewContextService) {
     }
 
     static screenToImage(point: any, transform: any) {
-        var x = point.x,
-            y = point.y,
-            imgPt = [0, 0, 1],
-            scrennPt = [x, y, 1];
+        const x = point.x;
+        const y = point.y;
+        const imgPt = [0, 0, 1];
+        const scrennPt = [x, y, 1];
 
-        var a = x,
-            b = y,
-            n1 = transform[0][0],
-            n2 = transform[0][1],
-            n3 = transform[0][2],
-            n4 = transform[1][0],
-            n5 = transform[1][1],
-            n6 = transform[1][2];
+        const a = x;
+        const b = y;
+        const n1 = transform[0][0];
+        const n2 = transform[0][1];
+        const n3 = transform[0][2];
+        const n4 = transform[1][0];
+        const n5 = transform[1][1];
+        const n6 = transform[1][2];
 
-        var t = a * n4 - n3 * n4 - b * n1 + n1 * n6;
-        var t2 = n2 * n4 - n1 * n5;
+        let t = a * n4 - n3 * n4 - b * n1 + n1 * n6;
+        const t2 = n2 * n4 - n1 * n5;
 
         imgPt[1] = t / t2;
 
@@ -77,10 +77,10 @@ export abstract class AnnObject {
     }
 
     static imageToScreen(point: any, transform: any) {
-        var x = point.x,
-            y = point.y,
-            imgPt = [x, y, 1],
-            screenPt = [0, 0, 1];
+        const x = point.x;
+        const y = point.y;
+        const imgPt = [x, y, 1];
+        const screenPt = [0, 0, 1];
 
         screenPt[0] = transform[0][0] * imgPt[0] + transform[0][1] * imgPt[1] + transform[0][2] * imgPt[2];
         screenPt[1] = transform[1][0] * imgPt[0] + transform[1][1] * imgPt[1] + transform[1][2] * imgPt[2];
@@ -92,20 +92,20 @@ export abstract class AnnObject {
     }
 
     static countDistance(point1: any, point2: any): number {
-        var value = Math.pow((point1.x - point2.x), 2) + Math.pow((point1.y - point2.y), 2);
+        let value = Math.pow((point1.x - point2.x), 2) + Math.pow((point1.y - point2.y), 2);
         value = Math.sqrt(value);
 
         return value;
     }
 
     static countAngle(point1: any, point2: any): number {
-        var dPixSpacingX = 1.0;
-        var dPixSpacingY = 1.0;
+        const dPixSpacingX = 1.0;
+        const dPixSpacingY = 1.0;
 
-        var dx = (point2.x - point1.x) * dPixSpacingX;
-        var dy = (point1.y - point2.y) * dPixSpacingY;
+        const dx = (point2.x - point1.x) * dPixSpacingX;
+        const dy = (point1.y - point2.y) * dPixSpacingY;
 
-        return (180.0 / Math.PI) * Math.atan2(dy, dx);	
+        return (180.0 / Math.PI) * Math.atan2(dy, dx);
     }
 
     abstract startCreate(viewer: any, callback: any, param: any): void;
@@ -121,29 +121,29 @@ export abstract class AnnObject {
     }
 
     //set child jcObject's common mouse event hander, etc.
-    protected setChildMouseEvent (jcObj) {
+    protected setChildMouseEvent(jcObj) {
         var dv = this.viewer;
         var annObj = this;
         var curContext = this.viewContext.curContext;
 
-        jcObj.mouseover(function (arg) {
+        jcObj.mouseover(function(arg) {
             if (curContext.action == ViewContextEnum.Select) {
                 if (!this.mouseStyle) {
-                    this.mouseStyle = 'pointer';
+                    this.mouseStyle = "pointer";
                 }
                 dv.canvas.style.cursor = this.mouseStyle;
             }
         });
 
-        jcObj.mouseout(function () {
+        jcObj.mouseout(function() {
             if (curContext.action == ViewContextEnum.Select)
-                dv.canvas.style.cursor = 'auto';
+                dv.canvas.style.cursor = "auto";
         });
 
-        jcObj.mousedown(function (arg) {
+        jcObj.mousedown(function(arg) {
             //console.log('jcObj mousedown');
             if (curContext.action == ViewContextEnum.Select) {
-                var curObj = annObj.parent || annObj;
+                const curObj = annObj.parent || annObj;
                 if (dv.curSelectObj !== curObj) {
                     dv.selectObject(curObj);
                 }
@@ -151,11 +151,11 @@ export abstract class AnnObject {
             }
         });
 
-        jcObj.mouseup(function (arg) {
+        jcObj.mouseup(function(arg) {
             //console.log('jcObj mouseup');
         });
 
-        jcObj.click(function (arg) {
+        jcObj.click(function(arg) {
             //console.log('jcObj onClick');
         });
     }
@@ -166,32 +166,32 @@ export abstract class AnnObject {
         }
 
         var dv = this.viewer;
-        var canvas = dv.canvas;
+        const canvas = dv.canvas;
         var annObj = this;
 
         jcObj.draggable({
             disabled: !draggable,
-            start: function (arg) {
+            start: function(arg) {
                 this._lastPos = {};
                 if (this.mouseStyle) {
                     dv.canvas.style.cursor = this.mouseStyle;
                 }
             },
-            stop: function (arg) {
+            stop: function(arg) {
                 this._lastPos = {};
                 if (this.mouseStyle) {
-                    dv.canvas.style.cursor = 'auto';
+                    dv.canvas.style.cursor = "auto";
                 }
             },
-            drag: function (arg) {
+            drag: function(arg) {
                 //ptImg is mouse position, not the object's start position
                 //don't translate any annObject, always keep annObject's transform as clear.
-                var transTmp = dv.imgLayer.transform();
-                var ptImg = AnnObject.screenToImage(arg, transTmp);
+                const transTmp = dv.imgLayer.transform();
+                const ptImg = AnnObject.screenToImage(arg, transTmp);
 
-                if (typeof (this._lastPos.x) != 'undefined') {
-                    var deltaX = ptImg.x - this._lastPos.x;
-                    var deltaY = ptImg.y - this._lastPos.y;
+                if (typeof (this._lastPos.x) != "undefined") {
+                    const deltaX = ptImg.x - this._lastPos.x;
+                    const deltaY = ptImg.y - this._lastPos.y;
 
                     this._x += deltaX;
                     this._y += deltaY;
@@ -231,9 +231,9 @@ export abstract class AnnObject {
 
     protected deleteChild() {
         var thisObj = this;
-        var propertys = Object.getOwnPropertyNames(this);
-        propertys.forEach(function (prop) {
-            var obj = thisObj[prop];
+        const propertys = Object.getOwnPropertyNames(this);
+        propertys.forEach(function(prop) {
+            const obj = thisObj[prop];
             if ((obj instanceof AnnObject && obj != thisObj.parent) || thisObj.isChildJCObject(obj)) {
                 obj.del();
                 thisObj[prop] = undefined;
@@ -243,9 +243,9 @@ export abstract class AnnObject {
 
     protected selectChild(select: boolean) {
         var thisObj = this;
-        var propertys = Object.getOwnPropertyNames(this);
-        propertys.forEach(function (prop) {
-            var obj = thisObj[prop];
+        const propertys = Object.getOwnPropertyNames(this);
+        propertys.forEach(function(prop) {
+            const obj = thisObj[prop];
             if (obj instanceof AnnObject && obj != thisObj.parent) {
                 obj.select(select);
             } else if (thisObj.isChildJCObject(obj)) {

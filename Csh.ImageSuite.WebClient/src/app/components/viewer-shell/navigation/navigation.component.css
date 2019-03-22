@@ -1,16 +1,14 @@
-#main-nav {
-  margin-left: 1px;
-}
+#main-nav { margin-left: 1px; }
 
 .hangingProtocol-div {
-    background-color:#333;
-    padding:2px;
-    margin-bottom:3px;
+    background-color: #333;
     border-radius: 2px;
     height: 44px;
+    margin-bottom: 3px;
+    padding: 2px;
 }
 
-/*.open>.hangingProtocal-menu {
+/*.open>.hangingProtocol-menu {
     display: block;
 }*/
 
@@ -25,159 +23,141 @@ li.dropdown {
 }
 
 .hangingProtocol-menu {
-    padding-bottom: 0;
-    min-width: 40px;
-    margin: -24px 0 0;
     background-color: #333;
+    margin: -24px 0 0;
+    min-width: 40px;
+    padding-bottom: 0;
 }
 
 .hangingProtocol-menu-button {
-    width: 40px;
-    height: 40px;
-    border: none;
-    outline: none;
     background-color: #333;
+    border: none;
+    height: 40px;
+    outline: none;
+    width: 40px;
 }
 
 .patient-div {
-    background-color:#333;
-    padding:2px;
-    margin-bottom:3px;
+    background-color: #333;
     border-radius: 2px;
+    margin-bottom: 3px;
+    padding: 2px;
 }
 
 .patient-header {
-  padding:4px;
-  background-color: #555555;
-  border-radius: 3px;
-  color: white;
-  width: 184px;
-  height: 48px;
-  border: solid 1px #333;
-  display:flex;
+    background-color: #555555;
+    border: solid 1px #333;
+    border-radius: 3px;
+    color: white;
+    display: flex;
+    height: 48px;
+    padding: 4px;
+    width: 184px;
 }
 
-.patient-header:hover {
-    color: #F90;
-}
+.patient-header:hover { color: #F90; }
 
-.patient-header:hover .patient-button{
-  background: url(../../../../assets/img/DicomViewer/Patient_N2.gif) no-repeat left top;
-}
+.patient-header:hover .patient-button { background: url(../../../../assets/img/DicomViewer/Patient_N2.gif) no-repeat left top; }
 
-.patient-header:hover .patient-button:active {
-  background: url(../../../../assets/img/DicomViewer/Patient_N3.gif) no-repeat left top;
-}
+.patient-header:hover .patient-button:active { background: url(../../../../assets/img/DicomViewer/Patient_N3.gif) no-repeat left top; }
 
 .patient-button {
-  width: 40px;
-  height: 40px;
-  border: none;
-  outline: none;
-  background: url(../../../../assets/img/DicomViewer/Patient_N1.gif) no-repeat left top;
+    background: url(../../../../assets/img/DicomViewer/Patient_N1.gif) no-repeat left top;
+    border: none;
+    height: 40px;
+    outline: none;
+    width: 40px;
 }
 
-.patient-info{
-    width: 100%;
+.patient-info {
     height: 40px;
     margin-left: 6px;
+    width: 100%;
 }
 
 .study-header {
-  padding:4px;
-  background-color: #555555;
-  border-radius: 3px;
-  color: white;
-  height: 48px;
-  width: 174px;
-  margin-left:10px;
-  border: solid 1px #333;
-  display:flex;
+    background-color: #555555;
+    border: solid 1px #333;
+    border-radius: 3px;
+    color: white;
+    display: flex;
+    height: 48px;
+    margin-left: 10px;
+    padding: 4px;
+    width: 174px;
 }
 
-.study-header:hover {
-  color: #F90;
-}
+.study-header:hover { color: #F90; }
 
-.study-header:hover .study-button{
-  background: url(../../../../assets/img/DicomViewer/Study_N2.gif) no-repeat left top;
-}
+.study-header:hover .study-button { background: url(../../../../assets/img/DicomViewer/Study_N2.gif) no-repeat left top; }
 
-.study-header:hover .study-button:active{
-  background: url(../../../../assets/img/DicomViewer/Study_N3.gif) no-repeat left top;
-}
+.study-header:hover .study-button:active { background: url(../../../../assets/img/DicomViewer/Study_N3.gif) no-repeat left top; }
 
 .study-button {
-  width: 40px;
-  height: 40px;
-  border: none;
-  outline: none;
-  background: url(../../../../assets/img/DicomViewer/Study_N1.gif) no-repeat left top;
+    background: url(../../../../assets/img/DicomViewer/Study_N1.gif) no-repeat left top;
+    border: none;
+    height: 40px;
+    outline: none;
+    width: 40px;
 }
 
-.study-info{
-    margin-left: 6px;
-    width: 100%;
+.study-info {
     height: 40px;
-  overflow:hidden;
+    margin-left: 6px;
+    overflow: hidden;
+    width: 100%;
 }
 
 .series-header {
-  padding:4px;
-  background-color: #555555;
-  border-radius: 3px;
-  color: white;
-  height: 48px;
-  width: 164px;
-  margin-left:20px;
-  border: solid 1px #333;
-  display:flex;
+    background-color: #555555;
+    border: solid 1px #333;
+    border-radius: 3px;
+    color: white;
+    display: flex;
+    height: 48px;
+    margin-left: 20px;
+    padding: 4px;
+    width: 164px;
 }
 
-.series-header:hover {
-    color: #F90;
-}
+.series-header:hover { color: #F90; }
 
-.series-header:hover .series-button{
-  background: url(../../../../assets/img/DicomViewer/Series_N2.gif) no-repeat left top;
-}
+.series-header:hover .series-button { background: url(../../../../assets/img/DicomViewer/Series_N2.gif) no-repeat left top; }
 
-.series-header:hover .series-button:active{
-  background: url(../../../../assets/img/DicomViewer/Series_N3.gif) no-repeat left top;
-}
+.series-header:hover .series-button:active { background: url(../../../../assets/img/DicomViewer/Series_N3.gif) no-repeat left top; }
 
 .series-button {
-  width: 40px;
-  height: 40px;
-  border: none;
-  outline: none;
-  background: url(../../../../assets/img/DicomViewer/Series_N1.gif) no-repeat left top;
+    background: url(../../../../assets/img/DicomViewer/Series_N1.gif) no-repeat left top;
+    border: none;
+    height: 40px;
+    outline: none;
+    width: 40px;
 }
 
-.series-info{
+.series-info {
+    height: 40px;
     margin-left: 6px;
     width: 100%;
-    height: 40px;
 }
 
 .image-list {
-  padding:4px;
-  background-color: #555555;
-  border-radius: 3px;
-  color: white;
-  width: 154px;
-  margin-left: 30px;
-  border: solid 1px #333;
+    background-color: #555555;
+    border: solid 1px #333;
+    border-radius: 3px;
+    color: white;
+    margin-left: 30px;
+    padding: 4px;
+    width: 154px;
 }
 
 .image-button {
-  padding:4px;
-  background-color: #555;
-  border-radius: 3px;
-  color: white;
-  height: 80px;
-  width: 154px;
-  margin-left: 30px;
-  border: solid 1px #333;
-  display: flex;
+    background-color: #555;
+    border: solid 1px #333;
+    border-radius: 3px;
+    color: white;
+    display: flex;
+    height: 80px;
+    margin-left: 30px;
+    padding: 4px;
+    width: 154px;
 }
