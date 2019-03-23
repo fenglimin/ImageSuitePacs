@@ -7,6 +7,8 @@ import { ShellNavigatorService } from "./services/shell-navigator.service";
 import { Subscription } from "rxjs";
 
 import { ViewerShellData } from "./models/viewer-shell-data";
+import { DicomImageService } from "./services/dicom-image.service";
+import { WorklistService } from "./services/worklist.service";
 
 @Component({
     selector: "app-root",
@@ -22,7 +24,8 @@ export class AppComponent implements OnInit {
     subscriptionShellCreated: Subscription;
     subscriptionShellDeleted: Subscription;
 
-    constructor(private resolver: ComponentFactoryResolver, private shellNavigatorService: ShellNavigatorService) {
+    constructor(private resolver: ComponentFactoryResolver, private shellNavigatorService: ShellNavigatorService,
+        private dicomImageService: DicomImageService, private worklistService: WorklistService) {
         this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(
             viewerShellData => {
                 this.createViewerShell(viewerShellData);
@@ -48,6 +51,14 @@ export class AppComponent implements OnInit {
     }
 
     createViewerShell(viewerShellData: ViewerShellData) {
+
+        viewerShellData.patientList.forEach(patient =>
+            patient.studyList.forEach(study =>
+                study.seriesList.forEach(series =>
+                    series.imageList.forEach(image =>
+                        this.worklistService.isUsingLocalTestData() ? image.cornerStoneImage = null :
+                            this.dicomImageService.getCornerStoneImage(image)))));
+
         const componentFactory = this.resolver.resolveComponentFactory(ViewerShellComponent);
         const componentRef = this.container.createComponent(componentFactory);
         componentRef.instance.hideMe = false;

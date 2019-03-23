@@ -4,7 +4,6 @@ import { ShellNavigatorService } from "../../services/shell-navigator.service";
 import { HangingProtocolService } from "../../services/hanging-protocol.service";
 import { Subscription } from "rxjs";
 import { ViewerShellData } from "../../models/viewer-shell-data";
-import { DicomImageService } from "../../services/dicom-image.service";
 
 @Component({
     selector: "app-viewer-shell",
@@ -21,8 +20,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
     childGroups: QueryList<GroupViewerComponent>;
 
     constructor(private shellNavigatorService: ShellNavigatorService,
-        private hangingProtocolService: HangingProtocolService,
-        private dicomImageService: DicomImageService,) {
+        private hangingProtocolService: HangingProtocolService) {
         this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
             viewerShellData => {
                 this.viewerShellData.hide =
@@ -46,11 +44,6 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
         });
 
         this.onResize();
-
-        this.viewerShellData.patientList.forEach(patient =>
-            patient.studyList.forEach(study =>
-                study.seriesList.forEach(series =>
-                    series.imageList.forEach(image => this.dicomImageService.getCornerStoneImage(image)))));
     }
 
     onChangeGroupLayout(groupHangingProtocolNumber: number): void {

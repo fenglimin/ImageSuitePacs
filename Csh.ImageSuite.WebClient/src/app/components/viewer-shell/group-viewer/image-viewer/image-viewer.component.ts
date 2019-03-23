@@ -215,8 +215,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             } else {
                 this.initHelpElement();
                 this.ctImage = this.image.cornerStoneImage;
-                cornerstone.displayImage(this.helpElement, this.ctImage);
-                this.logService.debug(this._imageData.getId() + ': image is loaded, displaying it...');
+                if (this.ctImage) {
+                    cornerstone.displayImage(this.helpElement, this.ctImage);
+                    this.logService.debug(this._imageData.getId() + ': image is loaded, displaying it...');
+                }else {
+                    this.logService.debug(this._imageData.getId() + ': local test data, no image to show.');
+                }
             }
         }
     }
