@@ -11,6 +11,7 @@ import { AnnObject, EventType } from "../../../../annotation/ann-object";
 import { WorklistService } from "../../../../services/worklist.service";
 import { ConfigurationService } from "../../../../services/configuration.service";
 import { DialogService } from "../../../../services/dialog.service";
+import { LogService } from "../../../../services/log.service";
 import { WindowLevelData } from "../../../../models/dailog-data/image-process";
 import { ManualWlDialogComponent } from "../../../../components/dialog/manual-wl-dialog/manual-wl-dialog.component";
 
@@ -78,6 +79,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
     @Input()
     set imageData(imageData: ViewerImageData) {
+        let log = `Setting image data to ${imageData.getId()}, image `;
+        log += imageData.image === null ? 'is null' : 'id is ' + imageData.image.id;
+        this.logService.debug(log);
+
         if (this._imageData !== imageData) {
             this._imageData = imageData;
             this.image = this._imageData.image;
@@ -95,7 +100,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         private configurationService: ConfigurationService,
         private viewContext: ViewContextService,
         public worklistService: WorklistService,
-        private dialogService: DialogService) {
+        private dialogService: DialogService,
+        private logService: LogService) {
 
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
             viewerImageData => {
@@ -116,6 +122,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             operation => {
                 this.onOperation(operation);
             });
+
+        this.logService.debug("A new ImageViewerComponent is created!");
     }
 
     ngOnInit() {
@@ -195,17 +203,20 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
     private checkLoadImage() {
         if (!this.isViewInited || (this.image && this.image.cornerStoneImage === undefined)) {
+            this.logService.debug(this._imageData.getId() + ': view not inited or image not loaded, wait...');
             setTimeout(() => {
                 this.checkLoadImage();
             }, 100);
         } else {
 
             if (!this.image) {
-                this.jcanvas.clear()
+                this.jcanvas.clear();
+                this.logService.debug(this._imageData.getId() + ': image is null, clear the canvas.');
             } else {
                 this.initHelpElement();
                 this.ctImage = this.image.cornerStoneImage;
                 cornerstone.displayImage(this.helpElement, this.ctImage);
+                this.logService.debug(this._imageData.getId() + ': image is loaded, displaying it...');
             }
         }
     }
