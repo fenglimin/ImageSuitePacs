@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterContentInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit, Input, AfterContentInit, ViewChild, ElementRef, NgZone } from "@angular/core";
 import { Location, LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { ImageSelectorService } from "../../../../services/image-selector.service";
 import { DicomImageService } from "../../../../services/dicom-image.service";
@@ -75,12 +75,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private originalWindowCenter: number;
 
     private label: any;
-
+    private logPrefix: string;
 
     @Input()
     set imageData(imageData: ViewerImageData) {
-        let log = `Setting image data to ${imageData.getId()}, image `;
-        log += imageData.image === null ? 'is null' : 'id is ' + imageData.image.id;
+        this.logPrefix = "Image" + imageData.getId() + ": ";
+        const log = this.logPrefix + "set imageData, image " + (imageData.image === null ? 'is null' : 'id is ' + imageData.image.id);
         this.logService.debug(log);
 
         if (this._imageData !== imageData) {
@@ -101,7 +101,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         private viewContext: ViewContextService,
         public worklistService: WorklistService,
         private dialogService: DialogService,
-        private logService: LogService) {
+        private logService: LogService,
+        private ngZone: NgZone) {
 
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
             viewerImageData => {
@@ -123,41 +124,47 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
                 this.onOperation(operation);
             });
 
-        this.logService.debug("A new ImageViewerComponent is created!");
+        this.logService.debug("Image: a new ImageViewerComponent is created!");
     }
 
     ngOnInit() {
+        this.logService.debug(this.logPrefix + "ngOnInit");
         this.baseUrl = this.configurationService.getBaseUrl();
+        
     }
 
     ngAfterContentInit() {
+        this.logService.debug(this.logPrefix + "ngAfterContentInit");
     }
 
     ngAfterViewInit() {
-        this.canvas = this.canvasRef.nativeElement;
-        this.helpElement = this.helpElementRef.nativeElement;
-
-        const canvasId = this.getCanvasId();
-        jCanvaScript.start(canvasId, true);
-        this.jcanvas = jCanvaScript.canvas(canvasId);
-
-        const parent = this.canvas.parentElement;
-        this.canvas.width = parent.clientWidth;
-        this.canvas.height = parent.clientHeight;
-
-        this.jcanvas.width(this.canvas.width);
-        this.jcanvas.height(this.canvas.height);
-
-        this.createLayers(canvasId);
-        this.registerCanvasEvents();
-        this.registerImgLayerEvents();
-
+        this.logService.debug(this.logPrefix + "ngAfterViewInit");
         
+        //this.canvas = this.canvasRef.nativeElement;
+        //this.helpElement = this.helpElementRef.nativeElement;
 
+        //const canvasId = this.getCanvasId();
+        //jCanvaScript.start(canvasId, true);
+        //this.jcanvas = jCanvaScript.canvas(canvasId);
+
+        //const parent = this.canvas.parentElement;
+        //this.canvas.width = parent.clientWidth;
+        //this.canvas.height = parent.clientHeight;
+
+        //this.jcanvas.width(this.canvas.width);
+        //this.jcanvas.height(this.canvas.height);
+
+        //this.createLayers(canvasId);
+        //this.registerCanvasEvents();
+        //this.registerImgLayerEvents();
+      
         this.isViewInited = true;
     }
 
     ngAfterViewChecked() {
+
+        this.logService.debug(this.logPrefix + "ngAfterViewChecked");
+
         if (this.needResize && this.isImageLoaded) {
             const parent = this.canvas.parentElement;
             const curWidth = parent.clientWidth;
@@ -203,47 +210,71 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
     private checkLoadImage() {
         if (!this.isViewInited || (this.image && this.image.cornerStoneImage === undefined)) {
-            this.logService.debug(this._imageData.getId() + ': view not inited or image not loaded, wait...');
+            this.logService.debug(this.logPrefix + 'view not inited or image not loaded, wait...');
             setTimeout(() => {
                 this.checkLoadImage();
             }, 100);
         } else {
 
             if (!this.image) {
-                this.jcanvas.clear();
-                this.logService.debug(this._imageData.getId() + ': image is null, clear the canvas.');
+                if (this.jcanvas) {
+                    this.jcanvas.clear();
+                }
+                
+                this.logService.debug(this.logPrefix + 'image is null, clear the canvas.');
             } else {
                 this.initHelpElement();
                 this.ctImage = this.image.cornerStoneImage;
                 if (this.ctImage) {
+                    this.canvas = this.canvasRef.nativeElement;
+                    
+
+                    const canvasId = this.getCanvasId();
+                    jCanvaScript.start(canvasId, true);
+                    this.jcanvas = jCanvaScript.canvas(canvasId);
+
+                    const parent = this.canvas.parentElement;
+                    this.canvas.width = parent.clientWidth;
+                    this.canvas.height = parent.clientHeight;
+
+                    this.jcanvas.width(this.canvas.width);
+                    this.jcanvas.height(this.canvas.height);
+
+                    this.createLayers(canvasId);
+                    this.registerCanvasEvents();
+                    this.registerImgLayerEvents();
+
                     cornerstone.displayImage(this.helpElement, this.ctImage);
-                    this.logService.debug(this._imageData.getId() + ': image is loaded, displaying it...');
+                    this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
                 }else {
-                    this.logService.debug(this._imageData.getId() + ': local test data, no image to show.');
+                    this.logService.debug(this.logPrefix + 'local test data, no image to show.');
                 }
             }
         }
     }
 
     private initHelpElement() {
-        if (!this.hasInitedHelpElement) {
-            //TODO: the init canvas's height and width may too big, should scale to a smaller when first load
-            $(this.helpElement).width(this.image.imageColumns).height(this.image.imageRows);
-            cornerstone.enable(this.helpElement);
+        this.ngZone.runOutsideAngular(() => {
+            if (!this.hasInitedHelpElement) {
+                this.helpElement = this.helpElementRef.nativeElement;
+                //TODO: the init canvas's height and width may too big, should scale to a smaller when first load
+                $(this.helpElement).width(this.image.imageColumns).height(this.image.imageRows);
+                cornerstone.enable(this.helpElement);
 
-            var comp = this;
-            $(this.helpElement).on("cornerstoneimagerendered",
-                function(e, data) {
-                    if (comp.isImageLoaded) { //rendering, or invert
-                        comp.onImageRendered(e, data);
-                    } else { //first load
-                        comp.isImageLoaded = true;
-                        comp.onImageLoaded(e, data); //this will set w/l, which will call Rendered again
-                    }
-                });
+                var comp = this;
+                $(this.helpElement).on("cornerstoneimagerendered",
+                    function (e, data) {
+                        if (comp.isImageLoaded) { //rendering, or invert
+                            comp.onImageRendered(e, data);
+                        } else { //first load
+                            comp.isImageLoaded = true;
+                            comp.onImageLoaded(e, data); //this will set w/l, which will call Rendered again
+                        }
+                    });
 
-            this.hasInitedHelpElement = true;
-        }
+                this.hasInitedHelpElement = true;
+            }
+        });
     }
 
     private onImageRendered(e, data) {

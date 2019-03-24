@@ -6,6 +6,7 @@ import { Series, Pssi } from "../../../models/pssi";
 import { GroupHangingData, ImageHangingData } from "../../../models/hanging-protocol";
 import { HangingProtocolService } from "../../../services/hanging-protocol.service";
 import { ImageSelectorService } from "../../../services/image-selector.service";
+import { LogService } from "../../../services/log.service";
 
 @Component({
     selector: "app-navigation",
@@ -33,7 +34,8 @@ export class NavigationComponent implements OnInit {
 
     constructor(public hangingProtocolService: HangingProtocolService,
         private imageSelectorService: ImageSelectorService,
-        private locationStrategy: LocationStrategy) {
+        private locationStrategy: LocationStrategy,
+        private logService: LogService) {
         this.selectedGroupHangingData = this.hangingProtocolService.getDefaultGroupHangingData();
         this.selectedGroupLayoutData = this.hangingProtocolService.getDefaultGroupLayoutData();
         this.selectedImageLayoutData = this.hangingProtocolService.getDefaultImageLayoutData();
@@ -91,16 +93,22 @@ export class NavigationComponent implements OnInit {
     }
 
     onSelectGroupHangingProtocol(groupHangingData: GroupHangingData) {
+        this.logService.seperator();
+        this.logService.info("User: " + groupHangingData.tip);
         this.selectedGroupHangingData = groupHangingData;
         this.layout.emit(this.selectedGroupHangingData.groupHangingProtocol);
     }
 
     onSelectGroupLayout(groupHangingData: GroupHangingData) {
+        this.logService.seperator();
+        this.logService.info("User: " + groupHangingData.tip);
         this.selectedGroupLayoutData = groupHangingData;
         this.layout.emit(this.selectedGroupLayoutData.groupHangingProtocol);
     }
 
     onSelectImageLayout(imageLayoutData: ImageHangingData) {
+        this.logService.seperator();
+        this.logService.info("User: " + imageLayoutData.tip);
         this.selectedImageLayoutData = imageLayoutData;
         this.imageSelectorService.changeImageLayout(this.selectedImageLayoutData.imageHangingProtocol);
     }

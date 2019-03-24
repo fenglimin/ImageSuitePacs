@@ -23,6 +23,10 @@ export class LogService {
         this.logInternal(log, 'D');
     }
 
+    seperator() {
+        console.log('');
+    }
+
     private formatNumberToString(num: number, maxLen: number = 2): string {
         if (maxLen == 2) {
             return num < 10 ? '0' + num : '' + num;

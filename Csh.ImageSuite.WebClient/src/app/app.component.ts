@@ -9,6 +9,7 @@ import { Subscription } from "rxjs";
 import { ViewerShellData } from "./models/viewer-shell-data";
 import { DicomImageService } from "./services/dicom-image.service";
 import { WorklistService } from "./services/worklist.service";
+import { LogService } from "./services/log.service";
 
 @Component({
     selector: "app-root",
@@ -25,7 +26,8 @@ export class AppComponent implements OnInit {
     subscriptionShellDeleted: Subscription;
 
     constructor(private resolver: ComponentFactoryResolver, private shellNavigatorService: ShellNavigatorService,
-        private dicomImageService: DicomImageService, private worklistService: WorklistService) {
+        private dicomImageService: DicomImageService, private worklistService: WorklistService,
+        private logService: LogService) {
         this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(
             viewerShellData => {
                 this.createViewerShell(viewerShellData);
@@ -51,6 +53,9 @@ export class AppComponent implements OnInit {
     }
 
     createViewerShell(viewerShellData: ViewerShellData) {
+
+        this.logService.seperator();
+        this.logService.info('User: Open study - ' + viewerShellData.getName());
 
         viewerShellData.patientList.forEach(patient =>
             patient.studyList.forEach(study =>

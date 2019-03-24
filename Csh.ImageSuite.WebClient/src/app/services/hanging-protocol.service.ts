@@ -6,6 +6,7 @@ import { GroupHangingProtocol, ImageHangingProtocol, GroupHangingData, ImageHang
 import { Image } from "../models/pssi";
 import { ViewerGroupData } from "../models/viewer-group-data";
 import { ViewerImageData } from "../models/viewer-image-data";
+import { LogService } from "./log.service";
 
 @Injectable({
     providedIn: "root"
@@ -43,7 +44,7 @@ export class HangingProtocolService {
         { imageHangingProtocol: ImageHangingProtocol.FreeHang_6X5, name: "SubLayout_5X6", tip: "Layout Image by 5X6" }
     ];
 
-    constructor() {}
+    constructor(private logService: LogService) {}
 
     getDefaultGroupHangingProtocol(): GroupHangingProtocol {
         return this.defaultGroupHangingProtocol;
@@ -79,6 +80,7 @@ export class HangingProtocolService {
 
     applyGroupHangingProtocol(viewerShellData: ViewerShellData, groupHangingProtocol: GroupHangingProtocol) {
 
+        this.logService.info("HP service: applyGroupHangingProtocol to viewer " + viewerShellData.getName() + ", protocol is " + GroupHangingProtocol[groupHangingProtocol]);
         if (groupHangingProtocol >= GroupHangingProtocol.FreeHang) {
             const groupMatrix = LayoutMatrix.fromNumber(groupHangingProtocol);
             if (!groupMatrix.equal(viewerShellData.groupMatrix)) {
@@ -128,6 +130,8 @@ export class HangingProtocolService {
     }
 
     applyImageHangingProtocol(groupData: ViewerGroupData, imageHangingProtocol: ImageHangingProtocol) {
+
+        this.logService.info("HP service: applyImageHangingProtocol to Group" + groupData.getId() + ", protocol is " + ImageHangingProtocol[imageHangingProtocol]);
 
         if (groupData.imageCount === 0) {
             // This is the first time to apply 

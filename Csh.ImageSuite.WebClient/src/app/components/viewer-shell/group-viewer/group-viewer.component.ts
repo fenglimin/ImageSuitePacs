@@ -1,11 +1,13 @@
 import { Component, OnInit, Input, AfterContentInit, ViewChildren, QueryList } from "@angular/core";
 import { ImageSelectorService } from "../../../services/image-selector.service";
+import { ImageHangingProtocol } from "../../../models/hanging-protocol";
 import { HangingProtocolService } from "../../../services/hanging-protocol.service";
 import { Subscription } from "rxjs";
 import { ViewerGroupData } from "../../../models/viewer-group-data";
 import { ViewerImageData } from "../../../models/viewer-image-data";
 import { ImageViewerComponent } from "./image-viewer/image-viewer.component";
 import { Image } from "../../../models/pssi";
+import { LogService } from "../../../services/log.service";
 
 @Component({
     selector: "app-group-viewer",
@@ -15,12 +17,17 @@ import { Image } from "../../../models/pssi";
 export class GroupViewerComponent implements OnInit, AfterContentInit {
     Arr = Array; //Array type captured in a variable
     _groupData: ViewerGroupData;
+    logPrefix: string;
 
     @ViewChildren(ImageViewerComponent)
     childImages: QueryList<ImageViewerComponent>;
 
     @Input()
     set groupData(groupData: ViewerGroupData) {
+        this.logPrefix = "Group" + groupData.getId() + ": ";
+        const log = this.logPrefix + "set groupData, protocol is " + ImageHangingProtocol[groupData.imageHangingProtocol];
+        this.logService.debug(log);
+
         this._groupData = groupData;
         this.setImageLayout(this.groupData.imageHangingProtocol);
     }
@@ -36,7 +43,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     subscriptionImageLayoutChange: Subscription;
 
     constructor(private imageSelectorService: ImageSelectorService,
-        private hangingProtocolService: HangingProtocolService) {
+        private hangingProtocolService: HangingProtocolService,
+        private logService: LogService) {
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
             viewerImageData => {
                 this.doSelectGroup(viewerImageData);
@@ -51,6 +59,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
             imageLayoutStyle => {
                 this.onChangeImageLayout(imageLayoutStyle);
             });
+
+        this.logService.debug("Group: a new GroupViewerComponent is created!");
     }
 
     ngOnInit() {

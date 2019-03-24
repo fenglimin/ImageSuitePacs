@@ -184,6 +184,8 @@ export class DatabaseService {
 
         image.id = this.id_image++;
         image.series = series;
+        image.imageColumns = 1;
+        image.imageRows = 1;
 
         return image;
     }
