@@ -1,10 +1,10 @@
 import { Component, OnInit, SimpleChange } from "@angular/core";
 import { Shortcut } from "../../../models/shortcut";
 import { Subscription } from "rxjs";
-import { Study } from "../../../models/pssi";
+import { Study, WorklistColumn } from "../../../models/pssi";
 import { WorklistService } from "../../../services/worklist.service";
 import {
-    MatDatepickerInputEvent
+    MatDatepickerInputEvent, MatButton
 } from "@angular/material";
 
 // Import DatePicker format
@@ -44,14 +44,16 @@ export class WorklistComponent implements OnInit {
 
     events: string[] = [];
 
-    //dateFrom = new FormControl(moment());
-    //dateTo = new FormControl(moment());
-
     fromMinDate = new Date(1900, 1, 1);
     fromMaxDate = new Date();
 
     toMinDate = new Date();
     toMaxDate = new Date();
+
+    currentPage = 1;
+
+    isDesc = false;
+    orderHeader = "";    
 
     fromDateChanged(type: string, event: MatDatepickerInputEvent<Date>) {
         this.toMinDate = event.value;
@@ -71,10 +73,9 @@ export class WorklistComponent implements OnInit {
         this.worklistService.shortcut = shortcut;
     }
 
-    worklistColumns: string[] = [
-        "",
-        "Patient ID",
-        "Patient Name",
+    worklistColumnsTemp: string[] = [
+        "PatientID",
+        "PatientName",
         "Gender",
         "BirthDate",
         "AccessionNo",
@@ -92,12 +93,9 @@ export class WorklistComponent implements OnInit {
 
 
     ngOnInit() {
-        this.worklistService.onQueryStudies();
+        this.worklistService.onQueryStudies(1);
         this.worklistService.onQueryShortcuts();
-    }
-
-    onStudyChecked(study: Study) {
-        study.checked = !study.checked;
+        this.worklistService.onQueryWorklistCol();
     }
 
     onAllStudyChecked(event) {
@@ -107,5 +105,43 @@ export class WorklistComponent implements OnInit {
     doShowStudy(study: Study) {
         study.checked = true;
         this.worklistService.onShowSingleStudy(study);
+    }
+
+
+    onPrevPageClicked() {
+        this.currentPage = this.currentPage - 1;
+        this.worklistService.onQueryStudies(this.currentPage);
+    }
+
+    onNextPageClicked() {
+        this.currentPage = this.currentPage + 1;
+        this.worklistService.onQueryStudies(this.currentPage);
+    }
+
+    onCurrentPageClicked(i) {
+        this.currentPage = +i;
+        //this.currentPage = this.textPage;
+        this.worklistService.onQueryStudies(this.currentPage);
+    }
+
+    onWorklistHeaderClicked(clickedHeader) {
+        this.orderHeader = clickedHeader;
+
+        if (!this.isDesc) {
+            this.isDesc = true;
+            this.worklistService.onQueryStudies(this.currentPage, clickedHeader + "|Desc");
+
+
+        }
+        else {
+            this.isDesc = false;
+
+            this.worklistService.onQueryStudies(this.currentPage, clickedHeader + "|");
+
+        }
+
+
+
+
     }
 }

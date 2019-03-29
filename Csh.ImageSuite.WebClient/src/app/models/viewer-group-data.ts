@@ -3,15 +3,17 @@ import { ViewerShellData } from "../models/viewer-shell-data";
 import { LayoutPosition, LayoutMatrix } from "../models/layout";
 import { ViewerImageData } from "../models/viewer-image-data";
 import { Image } from "../models/pssi";
+import { LogService } from "../services/log.service";
 
 export class ViewerGroupData {
+    static logService: LogService;
     viewerShellData: ViewerShellData;
     imageHangingProtocol: ImageHangingProtocol;
     position: LayoutPosition;
 
     imageCount = 0;
     imageMatrix: LayoutMatrix;
-    imageDataList: Array<ViewerImageData>;
+    imageDataList = new Array<ViewerImageData>();
 
     constructor(viewerShellData: ViewerShellData,
         imageHangingProtocol: ImageHangingProtocol,
@@ -19,6 +21,8 @@ export class ViewerGroupData {
         this.viewerShellData = viewerShellData;
         this.imageHangingProtocol = imageHangingProtocol;
         this.position = position;
+
+        ViewerGroupData.logService.debug("ViewerGroupData " + this.getId() + " created!");
     }
 
     getId(): string {

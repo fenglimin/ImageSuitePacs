@@ -12,8 +12,11 @@ export class Patient extends Pssi {
     firstName: string;
     middleName: string;
     lastName: string;
-    birthDateString: string;
-    gender: string;
+    patientBirthDate: string;
+    patientSex: string;
+    patientAge: string;
+    breed: string;
+    species: string;
 
     studyList: Array<Study>;
 
@@ -31,8 +34,11 @@ export class Patient extends Pssi {
         clonedPatient.firstName = patient.firstName;
         clonedPatient.middleName = patient.middleName;
         clonedPatient.lastName = patient.lastName;
-        clonedPatient.birthDateString = patient.birthDateString;
-        clonedPatient.gender = patient.gender;
+        clonedPatient.patientBirthDate = patient.patientBirthDate;
+        clonedPatient.patientSex = patient.patientSex;
+        clonedPatient.patientAge = patient.patientAge;
+        clonedPatient.breed = patient.breed;
+        clonedPatient.species = patient.species;
 
         clonedPatient.studyList = new Array<Study>();
         if (cloneChild) {
@@ -54,13 +60,18 @@ export class Study extends Pssi {
 
     studyInstanceUid: string;
     studyId: string;
-    studyDateString: string;
-    studyTimeString: string;
+    studyDate: string;
+    studyTime: string;
     accessionNo: string;
     seriesCount: number;
     imageCount: number;
     modality: string;
-    studyDesc: string;
+    studyDescription: string;
+    referPhysician: string;
+    tokenId: string;
+    additionalPatientHistory: string
+    veterinarian: string;
+    requestedProcPriority: string;
 
     patient: Patient;
     seriesList: Array<Series>;
@@ -79,13 +90,18 @@ export class Study extends Pssi {
         clonedStudy.id = study.id;
         clonedStudy.studyId = study.studyId;
         clonedStudy.studyInstanceUid = study.studyInstanceUid;
-        clonedStudy.studyDateString = study.studyDateString;
-        clonedStudy.studyTimeString = study.studyTimeString;
+        clonedStudy.studyDate = study.studyDate;
+        clonedStudy.studyTime = study.studyTime;
         clonedStudy.accessionNo = study.accessionNo;
         clonedStudy.seriesCount = study.seriesCount;
         clonedStudy.imageCount = study.imageCount;
         clonedStudy.modality = study.modality;
-        clonedStudy.studyDesc = study.studyDesc;
+        clonedStudy.studyDescription = study.studyDescription;
+        clonedStudy.referPhysician = study.referPhysician;
+        clonedStudy.tokenId = study.tokenId;
+        clonedStudy.additionalPatientHistory = study.additionalPatientHistory;
+        clonedStudy.veterinarian = study.veterinarian;
+        clonedStudy.requestedProcPriority = study.requestedProcPriority;
 
         clonedStudy.seriesList = new Array<Series>();
         if (cloneChild) {
@@ -111,6 +127,13 @@ export class Series extends Pssi {
     viewPosition: string;
     seriesNumber: number;
     imageCount: number;
+    contrastBolus: string;
+    localBodyPart: string;
+    seriesDescription: string;
+    operatorName: string;
+    referHospital: string;
+    patientPosition: string;
+    localViewPosition: string;
 
     study: Study;
     imageList: Array<Image>;
@@ -132,6 +155,13 @@ export class Series extends Pssi {
         clonedSeries.viewPosition = series.viewPosition;
         clonedSeries.seriesNumber = series.seriesNumber;
         clonedSeries.imageCount = series.imageCount;
+        clonedSeries.contrastBolus = series.contrastBolus;
+        clonedSeries.localBodyPart = series.localBodyPart;
+        clonedSeries.seriesDescription = series.seriesDescription;
+        clonedSeries.operatorName = series.operatorName;
+        clonedSeries.referHospital = series.referHospital;
+        clonedSeries.patientPosition = series.patientPosition;
+        clonedSeries.localViewPosition = series.localViewPosition;
 
         clonedSeries.imageList = new Array<Image>();
         if (cloneChild) {
@@ -152,6 +182,15 @@ export class Image extends Pssi {
     objectFile: string;
     imageColumns: number;
     imageRows: number;
+    keyImage: string;
+    imageNo: string;
+    bitsAllocated: number;
+    acquisitionTime: string;
+    imageTime: string;
+    acquisitionDate: string;
+    imageDate: string;
+
+
 
     cornerStoneImage: any;
     annotations: Array<any>;
@@ -159,6 +198,24 @@ export class Image extends Pssi {
     transformMatrix: any;
     windowCenter: number;
     windowWidth: number;
+
+    static clone(image: Image, cloneChild: boolean): Image {
+        const clonedImage = new Image();
+
+        clonedImage.id = image.id;
+        clonedImage.objectFile = image.objectFile;
+        clonedImage.imageColumns = image.imageColumns;
+        clonedImage.imageRows = image.imageRows;
+        clonedImage.keyImage = image.keyImage;
+        clonedImage.imageNo = image.imageNo;
+        clonedImage.bitsAllocated = image.bitsAllocated;
+        clonedImage.acquisitionTime = image.acquisitionTime;
+        clonedImage.acquisitionDate = image.acquisitionDate;
+        clonedImage.imageTime = image.imageTime;
+        clonedImage.imageDate = image.imageDate;
+
+        return clonedImage;
+    }
 
     setHide(hide: boolean) {
         this.hide = hide;
@@ -220,18 +277,25 @@ export class Image extends Pssi {
         const scale = Math.sqrt(a * a + b * b);
     }
 
-    static clone(image: Image, cloneChild: boolean): Image {
-        const clonedImage = new Image();
 
-        clonedImage.id = image.id;
-        clonedImage.objectFile = image.objectFile;
-        clonedImage.imageColumns = image.imageColumns;
-        clonedImage.imageRows = image.imageRows;
-
-        return clonedImage;
-    }
 }
 
 export class MultiframeImage extends Image {
 
+}
+
+export class WorklistColumn {
+    columnId: string;
+    columnText: string;
+    sortDirection: string;
+    controlType: string;
+    valueList: string;
+    columnSequece: number;
+    visible: boolean;
+}
+
+export class RecWorklistData {
+    public studies: Study[];
+    public pageCount: number;
+    public worklistColumns: WorklistColumn[];
 }

@@ -5,7 +5,7 @@ import { DatabaseService } from "./database.service"
 import { ViewerShellData } from "../models/viewer-shell-data";
 import { HangingProtocolService } from "./hanging-protocol.service";
 import { ShellNavigatorService } from "./shell-navigator.service";
-import { Study } from "../models/pssi";
+import { Study, RecWorklistData, WorklistColumn } from "../models/pssi";
 import { DataSource } from "../models/shortcut";
 
 @Injectable({
@@ -14,18 +14,21 @@ import { DataSource } from "../models/shortcut";
 export class WorklistService {
     studies: Study[];
     shortcuts: Shortcut[];
+    worklistColumns: WorklistColumn[];
+    recWorklistData: RecWorklistData;
+    pageCount: number;
+    pages: number[];
     querying = false;
 
     private _shortcut: Shortcut;
-
     set shortcut(value: Shortcut) {
         this._shortcut.copyConditionFrom(value);
-        this.studies = this.onQueryStudies();
+        this.studies = this.onQueryStudies(1);
     }
-
     get shortcut(): Shortcut {
         return this._shortcut;
     }
+
 
     private _showHistoryStudies = true;
 
@@ -55,14 +58,14 @@ export class WorklistService {
         this._shortcut = new Shortcut();
     }
 
-    onQueryStudies(): Study[] {
+    onQueryStudies(pageIndex: number, sortItem: String = ""): Study[] {
 
         this.querying = true;
         if (this.isUsingLocalTestData()) {
             this.studies = this.databaseService.getStudiesTest();
             this.querying = false;
         } else {
-            this.databaseService.getStudies(this._shortcut).subscribe(studies => this.formatStudies(studies));
+            this.databaseService.getStudies(this._shortcut, pageIndex, sortItem).subscribe(recWorklistData => this.formatStudies(recWorklistData));
         }
 
         return this.studies;
@@ -81,15 +84,27 @@ export class WorklistService {
         return this.shortcuts;
     }
 
+    onQueryWorklistCol(): Shortcut[] {
+
+        this.querying = true;
+        if (this.isUsingLocalTestData()) {
+            //this.shortcuts = this.databaseService.getShortcuts();
+            this.querying = false;
+        } else {
+            this.databaseService.getWorklistCol().subscribe(shortcuts => this.formatShortcuts(shortcuts));
+        }
+
+        return this.shortcuts;
+    }
+
     onSaveShortcut(name: string) {
         if (this.isUsingLocalTestData()) {
             //this.studies = this.databaseService.getStudiesTest();
             //this.querying = false;
         } else {
             this._shortcut.name = name;
-            this.databaseService.saveShortcut(this._shortcut).subscribe(shortcuts => this.afterDeleteShortcut());
+            this.databaseService.saveShortcut(this._shortcut).subscribe(shortcuts => this.refreshShortcuts());
         }
-
     }
 
     onDeleteShortcut(shortcut: Shortcut) {
@@ -98,13 +113,11 @@ export class WorklistService {
             //this.querying = false;
         } else {
             //this._shortcut.name = name;
-            this.databaseService.deleteShortcut(shortcut).subscribe(shortcuts => this.afterDeleteShortcut());
+            this.databaseService.deleteShortcut(shortcut).subscribe(shortcuts => this.refreshShortcuts());
         }
-
     }
 
     onShowSingleStudy(study: Study) {
-
         const viewerShellData = new ViewerShellData(this.hangingProtocolService.getDefaultGroupHangingProtocol(),
             this.hangingProtocolService.getDefaultImageHangingPrococal());
 
@@ -150,7 +163,7 @@ export class WorklistService {
 
     setDataSource(dataSource: DataSource) {
         this._shortcut.dataSource = dataSource;
-        this.studies = this.onQueryStudies();
+        this.studies = this.onQueryStudies(1);
         this.shortcuts = this.onQueryShortcuts();
     }
 
@@ -160,14 +173,14 @@ export class WorklistService {
 
     onQueryAllStudies() {
         this.shortcut.clearCondition();
-        this.onQueryStudies();
+        this.onQueryStudies(1);
         this.onQueryShortcuts();
     }
 
     onQueryTodayStudy() {
         this.shortcut.clearCondition();
-        this.shortcut.studyDate = "Today";
-        this.onQueryStudies();
+        this.shortcut.studyDate = 'Today';
+        this.onQueryStudies(1);
     }
 
     onQueryStudyByShortcut(shortcut: Shortcut) {
@@ -176,29 +189,30 @@ export class WorklistService {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    private formatStudies(studies) {
-        for (let i = 0; i < studies.length; i++) {
-            studies[i].checked = false;
-            studies[i].detailsLoaded = false;
-            for (let j = 0; j < studies[i].seriesList.length; j++) {
-                studies[i].seriesList[j].study = studies[i];
+    private formatStudies(recWorklistData) {
+        var studiesList = recWorklistData.studyList;
+        for (let i = 0; i < studiesList.length; i++) {
+            studiesList[i].checked = false;
+            studiesList[i].detailsLoaded = false;
+            for (let j = 0; j < studiesList[i].seriesList.length; j++) {
+                studiesList[i].seriesList[j].study = studiesList[i];
             }
         }
 
-        this.studies = studies;
+        this.studies = studiesList;
+        this.pageCount = recWorklistData.pageCount;
+        this.worklistColumns = recWorklistData.worklistColumns;
+
+        this.pages = Array.from(Array(this.pageCount), (x, i) => i);
         this.querying = false;
     }
 
     private formatShortcuts(shortcuts) {
-        //for (let i = 0; i < shortcuts.length; i++) {
-        //    let shortcurtName = shortcuts[i].name.split('|');
-
-        //}
         this.shortcuts = shortcuts;
     }
 
-    private afterDeleteShortcut() {
-        this.onQueryStudies();
+    private refreshShortcuts() {
+        this.onQueryStudies(1);
         this.onQueryShortcuts();
     }
 

@@ -20,9 +20,9 @@ export class QueryToolbarComponent implements OnInit {
         this.worklistService.setDataSource(event.target.checked ? DataSource.LocalTestData : DataSource.MiniPacs);
     }
 
-    onQuery() {
-        this.worklistService.onQueryStudies();
-    }
+  onQuery() {
+    this.worklistService.onQueryStudies(1);
+  }
 
     onClearCondition() {
         this.worklistService.onCleanCondition();

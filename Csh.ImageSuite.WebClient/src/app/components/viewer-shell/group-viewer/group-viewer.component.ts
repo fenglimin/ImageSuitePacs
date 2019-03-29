@@ -19,6 +19,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     _groupData: ViewerGroupData;
     logPrefix: string;
 
+    imageDataList: ViewerImageData[];
+
     @ViewChildren(ImageViewerComponent)
     childImages: QueryList<ImageViewerComponent>;
 
@@ -29,6 +31,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         this.logService.debug(log);
 
         this._groupData = groupData;
+        
         this.setImageLayout(this.groupData.imageHangingProtocol);
     }
 
@@ -108,7 +111,9 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     }
 
     setImageLayout(imageLayoutStyle: number): void {
+        
         this.hangingProtocolService.applyImageHangingProtocol(this.groupData, imageLayoutStyle);
+        this.imageDataList = this.groupData.imageDataList;
         this.onResize();
     }
 
@@ -120,8 +125,16 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         if (!this.childImages)
             return;
 
+        this.logService.debug("Group: onResize()");
+
         this.childImages.forEach((imageViewer, index) => {
             imageViewer.onResize();
         });
+    }
+
+    getImageData(rowIndex: number, colIndex: number): ViewerImageData {
+        const imageIndex = rowIndex * this.groupData.imageMatrix.colCount + colIndex;
+        return this.imageDataList[imageIndex];
+       // return this.groupData.getImage(rowIndex, colIndex);
     }
 }

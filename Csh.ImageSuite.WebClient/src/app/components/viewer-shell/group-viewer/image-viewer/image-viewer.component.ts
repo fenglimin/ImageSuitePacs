@@ -74,6 +74,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private originalWindowWidth: number;
     private originalWindowCenter: number;
 
+    private waitingText: any;
     private label: any;
     private logPrefix: string;
 
@@ -140,31 +141,33 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     ngAfterViewInit() {
         this.logService.debug(this.logPrefix + "ngAfterViewInit");
         
-        //this.canvas = this.canvasRef.nativeElement;
-        //this.helpElement = this.helpElementRef.nativeElement;
+        this.canvas = this.canvasRef.nativeElement;
+        this.helpElement = this.helpElementRef.nativeElement;
 
-        //const canvasId = this.getCanvasId();
-        //jCanvaScript.start(canvasId, true);
-        //this.jcanvas = jCanvaScript.canvas(canvasId);
+        const canvasId = this.getCanvasId();
+        jCanvaScript.start(canvasId, true);
+        this.jcanvas = jCanvaScript.canvas(canvasId);
 
-        //const parent = this.canvas.parentElement;
-        //this.canvas.width = parent.clientWidth;
-        //this.canvas.height = parent.clientHeight;
+        const parent = this.canvas.parentElement;
+        this.canvas.width = parent.clientWidth;
+        this.canvas.height = parent.clientHeight;
 
-        //this.jcanvas.width(this.canvas.width);
-        //this.jcanvas.height(this.canvas.height);
+        this.jcanvas.width(this.canvas.width);
+        this.jcanvas.height(this.canvas.height);
 
-        //this.createLayers(canvasId);
-        //this.registerCanvasEvents();
-        //this.registerImgLayerEvents();
+        this.createLayers(canvasId);
+        this.registerCanvasEvents();
+        this.registerImgLayerEvents();
+
+        if (this.image) {
+            this.showWaitingText();
+        }
+        
       
         this.isViewInited = true;
     }
 
     ngAfterViewChecked() {
-
-        this.logService.debug(this.logPrefix + "ngAfterViewChecked");
-
         if (this.needResize && this.isImageLoaded) {
             const parent = this.canvas.parentElement;
             const curWidth = parent.clientWidth;
@@ -176,6 +179,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             this.jcanvas.height(this.canvas.height);
             this.jcanvas.restart();
 
+            this.logService.debug(this.logPrefix + 'ngAfterViewChecked() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
             if (this.image) {
                 this.fitWindow();
             } else {
@@ -240,10 +244,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
                     this.jcanvas.width(this.canvas.width);
                     this.jcanvas.height(this.canvas.height);
 
+                    this.logService.debug(this.logPrefix + 'checkLoadImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
+                     
                     this.createLayers(canvasId);
                     this.registerCanvasEvents();
                     this.registerImgLayerEvents();
 
+                    this.isImageLoaded = false;
                     cornerstone.displayImage(this.helpElement, this.ctImage);
                     this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
                 }else {
@@ -278,9 +285,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     private onImageRendered(e, data) {
+      this.logService.debug(this.logPrefix + 'onImageRendered() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
     }
 
     private onImageLoaded(e, data) {
+
+      this.logService.debug(this.logPrefix + 'onImageLoaded() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
+
         const ctCanvas = cornerstone.getEnabledElement(this.helpElement).canvas;
         this.jcImage = jCanvaScript.image(ctCanvas).layer(this.imgLayerId);
 
@@ -292,8 +303,29 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.originalWindowCenter = this.ctImage.windowCenter;
         this.originalWindowWidth = this.ctImage.windowWidth;
 
+        this.hideWaitingText();
         this.showTextOverlay();
     }
+
+    private showWaitingText() {
+        this.olLayer.visible(true);
+        const overlaySetting = {
+            color: "#ffffff",
+            font: "Times New Roman",
+            fontSize: 17
+        };
+
+        const font = "{0}px {1}".format(overlaySetting.fontSize, overlaySetting.font);
+        this.waitingText = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId).color("#ffffff").font(font).align('center');
+    }
+
+    private hideWaitingText() {
+        if (this.waitingText) {
+          this.waitingText.del();
+          this.waitingText = null;
+        }
+    }
+
 
     private showTextOverlay() {
 
@@ -304,11 +336,26 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         const overlaySetting = {
             color: "#ffffff",
             font: "Times New Roman",
-            fontSize: 17
+            fontSize: 15
         };
 
         const font = "{0}px {1}".format(overlaySetting.fontSize, overlaySetting.font);
-        jCanvaScript.text("Test", 5, 15).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
+
+        const overlayList = this.dicomImageService.getOverlayDisplayList(this.image, this.canvas.width, this.canvas.height);
+        overlayList.forEach(overlay => {
+            jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).id(idLbl).layer(this.olLayerId).color("#ffffff")
+                .font(font).align(overlay.align);
+        });
+
+        //this.configurationService.overlayList.forEach(overlay => {
+        //    var overlayValue = this.dicomImageService.getTextOverlayValue(this.image, overlay);
+        //    var displayText = overlay.prefix + overlayValue + overlay.suffix;
+        //    jCanvaScript.text(displayText, 5, 15+line*20).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
+        //    line++;
+        //});
+
+
+        //jCanvaScript.text("Test", 5, 15).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
 
         this.label = jCanvaScript(`#${idLbl}`);
 
@@ -584,6 +631,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     onResize() {
+
+        this.logService.debug("Image: onResize()");
         setTimeout(() => {
                 this.needResize = true;
             },
@@ -601,6 +650,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         const canvasHeight = this.canvas.height;
         const widthScale = canvasWidth / width;
         const heightScale = canvasHeight / height;
+
+        this.logService.debug(this.logPrefix + 'fitWindow() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
 
         //log('bestfit, canvas width:' + canvasWidth + ",height:" + canvasHeight);
 
@@ -667,6 +718,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
         let widthScale = canvasWidth / width;
         let heightScale = canvasHeight / height;
+
+        this.logService.debug(this.logPrefix + 'doFit() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
 
         const curRotate = 0 - this.getRotate(); //get rotate return the minus value
         // Sail : currently ignore the free rotate, since free rotate will change both width and height,

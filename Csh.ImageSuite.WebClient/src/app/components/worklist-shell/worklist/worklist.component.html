@@ -1,9 +1,25 @@
-<div>
+﻿<div>
     <table id="tblStudies" class="table table-bordered table-condensed">
         <thead>
+        <!--<tr>
+            <th *ngFor="let col of worklistService.worklistColumns ">
+                 <div class="worklistHeader">{{col.columnText}}</div>
+            </th>
+        </tr>-->
+
+
         <tr id="trStudiesHeader">
-            <th *ngFor="let col of worklistColumns">
-                <a href="#">{{col}}</a>
+            <th>
+            </th>
+            <th *ngFor="let colTemp of worklistColumnsTemp">
+            <tr>
+                <td>
+                    <div class="worklistHeader" (click)="onWorklistHeaderClicked(colTemp)">{{colTemp}}</div>
+                </td>
+                <td>
+                    <i id="orderIcon" *ngIf="colTemp == orderHeader" [className]="isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'"></i>
+                </td>
+            </tr>
             </th>
         </tr>
         <tr id="trStudiesQuery">
@@ -17,7 +33,7 @@
                 <input id="queryPatientName" type="text" [(ngModel)]="worklistService.shortcut.patientName"/>
             </td>
             <td>
-                <select id="queryGender" [(ngModel)]="worklistService.shortcut.gender">
+                <select id="queryGender" [(ngModel)]="worklistService.shortcut.patientSex">
                     <option value="">All</option>
                     <option value="F">Female</option>
                     <option value="M">Male</option>
@@ -25,7 +41,6 @@
                 </select>
             </td>
             <td>
-            <!--<input id="queryBirthDate" type="date" [(ngModel)]="worklistService.shortcut.birthDate"/>-->
             <tr>
                 <td>
                     <mat-form-field>
@@ -76,22 +91,55 @@
             </td>
         </tr>
         </thead>
-        <tr *ngFor="let study of worklistService.studies" (click)="onStudyChecked(study)">
-            <td>
-                <input type="checkbox" [(ngModel)]="study.checked"/>
-            </td>
-            <td style="cursor: pointer" (click)="doShowStudy(study)">{{study.patient.patientId}}</td>
-            <td>{{study.patient.patientName}}</td>
-            <td>{{study.patient.gender}}</td>
-            <td>{{study.patient.birthDateString}}</td>
-            <td>{{study.accessionNo}}</td>
-            <td>{{study.modality}}</td>
-            <td>{{study.studyDateString}}</td>
-            <td>{{study.studyTimeString}}</td>
-            <td>{{study.seriesCount}}</td>
-            <td>{{study.imageCount}}</td>
-            <td>{{study.studyId}}</td>
-        </tr>
+        <tfoot>
+            <tr id="trFoot">
+                <td colspan="5">
+                    <ul>
+                        <li>
+                            <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onCurrentPageClicked(1)" [disabled]="worklistService.pageCount == 1 || currentPage == 1">First</button>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onPrevPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == 1">Prev</button>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onNextPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Next</button>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onCurrentPageClicked(worklistService.pageCount)" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Last</button>
+                        </li>
+                        <li>
+                            <select id="ddlPageIndex" [(ngModel)]="currentPage">
+                                <option *ngFor="let page of worklistService.pages;">{{page+1}}</option>
+                            </select>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onCurrentPageClicked(currentPage)" [disabled]="worklistService.pageCount == 1">Goto</button>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tfoot>
+        <tbody>
+            <tr *ngFor="let study of worklistService.studies" (click)="onStudyChecked(study)">
+                <td>
+                    <input type="checkbox" [(ngModel)]="study.checked" />
+                </td>
+                <td style="cursor: pointer" (click)="doShowStudy(study)">{{study.patient.patientId}}</td>
+                <td>{{study.patient.patientName}}</td>
+                <td>{{study.patient.patientSex}}</td>
+                <td>{{study.patient.patientBirthDate}}</td>
+                <td>{{study.accessionNo}}</td>
+                <td>{{study.modality}}</td>
+                <td>{{study.studyDate}}</td>
+                <td>{{study.studyTime}}</td>
+                <td>{{study.seriesCount}}</td>
+                <td>{{study.imageCount}}</td>
+                <td>{{study.studyId}}</td>
+            </tr>
+        </tbody>
     </table>
 </div>
 

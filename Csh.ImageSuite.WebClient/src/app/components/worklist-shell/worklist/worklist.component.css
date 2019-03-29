@@ -1,18 +1,70 @@
-﻿#tblStudies a { color: white; }
+﻿#tblStudies a {
+    color: white;
+}
+
+ul {
+    list-style: none;
+    padding-inline-start: 0px;
+}
+
+li {
+    float: left;
+    padding: 2px;
+}
+
+    li button {
+        cursor: pointer;
+    }
+
+thead {
+    background: #444444;
+}
+
+thead tr {
+    background-color: #444444;
+}
+
+thead td {
+    background-color: #444444;
+}
+
+thead div {
+    font-weight: normal;
+}
+
+.worklistHeader {
+    cursor:pointer;
+}
+
+
 
 #tblStudies td {
     border: 1px solid #333;
-    color: #ccc
+    color: #ccc;
 }
 
-#tblStudies th { border: 1px solid #333; }
+#tblStudies th {
+    border: 1px solid #333;
+}
 
-#tblStudies tr.cust-info td { background-color: #222; }
+#tblStudies tr.cust-info td {
+    background-color: #222;
+}
 
-#trStudiesHeader a { color: #ddd; }
+#trStudiesHeader a {
+    color: #ddd;
+}
 
-#trSeriesHeader a { color: white; }
 
+
+#trSeriesHeader a {
+    color: white;
+}
+
+#trStudiesHeader tr td {
+    border:hidden;
+    padding-right:5px;
+}
 
 #trStudiesQuery input[type=text] {
     background-color: black;
@@ -21,46 +73,48 @@
     width: 100%;
 }
 
-#trStudiesQuery select {
+select {
     background-color: black;
     border: 1px solid #444;
     width: 100%;
 }
 
-#trStudiesQuery td:nth-child(n + 2) {
+#trStudiesQuery td:nth-child(n) {
     margin: 0px;
     padding: 1px;
     vertical-align: middle;
 }
 
-#tblStudies tr:nth-child(2n + 1) { background-color: #181818; }
+#tblStudies tbody tr:nth-child(2n + 1) {
+    background-color: #181818;
+}
 
-#tblStudies tr:nth-child(1) { background-color: black; }
+/*#tblStudies tr:nth-child(1) { background-color: black; }
 
-#tblStudies tr:nth-child(2) { background-color: black; }
+#tblStudies tr:nth-child(2) { background-color: black; }*/
 
-#tblStudies tr:hover {
+#tblStudies tbody tr:hover {
     background-color: #555;
     color: #f90;
 }
 
-#tblStudies tr:nth-child(1):hover { background-color: black; }
+/*#tblStudies tr:nth-child(1):hover { background-color: black; }
 
 #tblStudies tr:nth-child(2):hover {
     background-color: black;
     color: white;
-}
+}*/
 
 #trStudiesQuery .dropdown {
     background-color: #555555;
     color: red;
 }
 
-#trStudiesQuery .dropdown .btn {
-    background-color: #555555;
-    min-width: 70px;
-    padding: 1px 6px;
-}
+    #trStudiesQuery .dropdown .btn {
+        background-color: #555555;
+        min-width: 70px;
+        padding: 1px 6px;
+    }
 
 .loading-shade {
     align-items: center;
@@ -75,3 +129,15 @@
     top: 0px;
     z-index: 1;
 }
+
+.shortcut-name-button {
+    background-color: transparent;
+    border: none;
+    border-width: 0px;
+    color: inherit;
+    outline: none;
+}
+
+    .shortcut-name-button:disabled {
+        color: #555555;
+    }

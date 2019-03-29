@@ -4,6 +4,9 @@ import { ShellNavigatorService } from "../../services/shell-navigator.service";
 import { HangingProtocolService } from "../../services/hanging-protocol.service";
 import { Subscription } from "rxjs";
 import { ViewerShellData } from "../../models/viewer-shell-data";
+import { ViewerGroupData } from "../../models/viewer-group-data";
+import { LogService } from "../../services/log.service";
+
 
 @Component({
     selector: "app-viewer-shell",
@@ -14,13 +17,18 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
     Arr = Array; //Array type captured in a variable
 
     viewerShellData: ViewerShellData;
+    groupDataList: ViewerGroupData[];
+
     subscriptionShellNavigated: Subscription;
+
+    viewerGroupData: ViewerGroupData;
 
     @ViewChildren(GroupViewerComponent)
     childGroups: QueryList<GroupViewerComponent>;
 
     constructor(private shellNavigatorService: ShellNavigatorService,
-        private hangingProtocolService: HangingProtocolService) {
+        private hangingProtocolService: HangingProtocolService,
+        private logService: LogService) {
         this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
             viewerShellData => {
                 this.viewerShellData.hide =
@@ -47,7 +55,9 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
     }
 
     onChangeGroupLayout(groupHangingProtocolNumber: number): void {
+        
         this.hangingProtocolService.applyGroupHangingProtocol(this.viewerShellData, groupHangingProtocolNumber);
+        this.groupDataList = this.viewerShellData.groupDataList;
         this.onResize();
     }
 
@@ -58,9 +68,16 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
         if (!this.childGroups)
             return;
 
+        this.logService.debug("Viewer: onResize()");
+
         this.childGroups.forEach((groupViewer) => {
             groupViewer.onResize();
         });
     }
 
+    getGroupData(rowIndex: number, colIndex: number): ViewerGroupData {
+        const groupIndex = rowIndex * this.viewerShellData.groupMatrix.colCount + colIndex;
+        return this.groupDataList[groupIndex];
+        //return this.viewerShellData.getGroup(rowIndex, colIndex);
+    }
 }

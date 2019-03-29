@@ -70,8 +70,8 @@
                     <button class="study-button" (click)="onClickPssi(study)" title="Toggle to show/hide study images"></button>
                 </div>
                 <table class="study-info">
-                    <tr>{{study.studyDateString}}</tr>
-                    <tr>{{study.studyDesc}}</tr>
+                    <tr>{{study.studyDate}}</tr>
+                    <tr>{{study.studyDescription}}</tr>
                 </table>
             </div>
             <div *ngFor="let series of study.seriesList"

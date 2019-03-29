@@ -7,6 +7,8 @@ import { ShellNavigatorService } from "./services/shell-navigator.service";
 import { Subscription } from "rxjs";
 
 import { ViewerShellData } from "./models/viewer-shell-data";
+import { ViewerGroupData } from "./models/viewer-group-data";
+import { ViewerImageData } from "./models/viewer-image-data";
 import { DicomImageService } from "./services/dicom-image.service";
 import { WorklistService } from "./services/worklist.service";
 import { LogService } from "./services/log.service";
@@ -22,6 +24,8 @@ export class AppComponent implements OnInit {
     container;
     createComponents: Array<any> = [];
 
+    shellDataList: Array<ViewerShellData> = [];
+
     subscriptionShellCreated: Subscription;
     subscriptionShellDeleted: Subscription;
 
@@ -30,6 +34,7 @@ export class AppComponent implements OnInit {
         private logService: LogService) {
         this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(
             viewerShellData => {
+                this.shellDataList.push(viewerShellData);
                 this.createViewerShell(viewerShellData);
             });
 
@@ -37,8 +42,18 @@ export class AppComponent implements OnInit {
         this.subscriptionShellDeleted = shellNavigatorService.shellDeleted$.subscribe(
             viewerShellData => {
                 this.deleteViewerShell(viewerShellData);
+
+                const index = this.shellDataList.indexOf(viewerShellData, 0);
+                if (index > -1) {
+                    this.shellDataList.splice(index, 1);
+                }
             }
         );
+
+        ViewerShellData.logService = this.logService;
+        ViewerGroupData.logService = this.logService;
+        ViewerImageData.logService = this.logService;
+
     }
 
     ngOnInit() {

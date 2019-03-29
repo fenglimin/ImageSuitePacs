@@ -3,8 +3,9 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 
-import { Shortcut } from "../models/shortcut";
-import { Patient, Study, Series, Image } from "../models/pssi";
+import { Shortcut } from '../models/shortcut';
+import { Patient, Study, Series, Image, RecWorklistData } from '../models/pssi';
+import { Overlay } from '../models/overlay';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': "application/json" })
@@ -14,10 +15,14 @@ const httpOptions = {
 @Injectable({
     providedIn: "root"
 })
+
+
+
 export class DatabaseService {
 
     private shortcutUrl = "shortcut"; // URL to web api
     private pssiUrl = "pssi";
+    private overlayUrl = "overlay";
     private id_patient = 1;
     private id_study = 1;
     private id_series = 1;
@@ -35,9 +40,26 @@ export class DatabaseService {
         return this.http.get<Shortcut>(url);
     }
 
+    getOverlays(): Observable<Overlay[]> {
+        const url = `${this.overlayUrl}/`;
+        return this.http.get<Overlay[]>(url)
+            .pipe(
+                tap(Overlay => this.log("fetched Overlay")),
+                catchError(this.handleError("getOverlays", []))
+            );
+    }
 
     /** GET shortcut from the server */
     getShortcuts(): Observable<Shortcut[]> {
+        const url = `${this.shortcutUrl}/search/`;
+        return this.http.get<Shortcut[]>(url)
+            .pipe(
+                tap(shortcuts => this.log("fetched shortcuts")),
+                catchError(this.handleError("getShortcuts", []))
+            );
+    }
+
+    getWorklistCol(): Observable<Shortcut[]> {
         const url = `${this.shortcutUrl}/search/`;
         return this.http.get<Shortcut[]>(url)
             .pipe(
@@ -67,28 +89,27 @@ export class DatabaseService {
     }
 
     /** GET studies from the server */
-    getStudies(shortcut: Shortcut): Observable<Study[]> {
+    getStudies(shortcut: Shortcut, pageIndex: number, sortItem: String): Observable<RecWorklistData> {
         const url = `${this.pssiUrl}/search/`;
-        return this.http.post<Study[]>(url, shortcut, httpOptions)
+        let data = { shortcut: shortcut, pageIndex: pageIndex, sortItem: sortItem };
+        return this.http.post<RecWorklistData>(url, data, httpOptions)
             .pipe(
-                tap(studies => this.log("fetched studies")),
-                catchError(this.handleError("getStudies", []))
+            tap(recWorklistData => this.log('fetched recWorklistData')),
+            catchError(this.handleError<RecWorklistData>('getRecWorklistData'))
             );
     }
 
-    /** GET study from the server */
-    getStudy(id: number): Observable<Study> {
-        const url = `${this.pssiUrl}/details/${id}`;
-        return this.http.get<Study>(url)
-            .pipe(
-                tap(_ => this.log(`fetched Study id=${id}`)),
-                catchError(this.handleError<Study>(`getStudy id=${id}`))
-            );
-    }
+  /** GET study from the server */
+  getStudy (id: number): Observable<Study> {
+    const url = `${this.pssiUrl}/details/${id}`;
+    return this.http.get<Study>(url)
+      .pipe(
+        tap(_ => this.log(`fetched Study id=${id}`)),
+        catchError(this.handleError<Study>(`getStudy id=${id}`))
+      );
+  }
 
     getStudiesTest(): Study[] {
-
-
         const aa = this.localTestData.sort(this.compareStudy);
         return aa;
     }
@@ -131,7 +152,7 @@ export class DatabaseService {
         patient.id = this.id_patient++;
         patient.patientId = patientId;
         patient.patientName = patientName;
-        patient.gender = gender;
+        patient.patientSex = gender;
         patient.studyList = new Array<Study>();
 
         return patient;
@@ -147,11 +168,11 @@ export class DatabaseService {
         study.imageCount = seriesCount * seriesCount;
         study.studyId = `${study.id}`;
         study.accessionNo = study.studyId;
-        study.studyDateString = "2018-11-11";
-        study.studyTimeString = "12:11:12";
+        study.studyDate = "2018-11-11";
+        study.studyTime = "12:11:12";
         study.modality = "DX";
         study.checked = false;
-        study.studyDesc = "Study Desc";
+        study.studyDescription = "Study Desc";
 
         study.seriesList = new Array<Series>();
         for (let i = 0; i < seriesCount; i++) {

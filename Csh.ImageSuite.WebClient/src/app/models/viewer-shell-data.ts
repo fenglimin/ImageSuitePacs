@@ -2,8 +2,10 @@
 import { ViewerGroupData } from "../models/viewer-group-data";
 import { GroupHangingProtocol, ImageHangingProtocol } from "../models/hanging-protocol";
 import { LayoutPosition, LayoutMatrix } from "../models/layout";
+import { LogService } from "../services/log.service";
 
 export class ViewerShellData {
+    static logService: LogService;
     hide: boolean;
     patientList = new Array<Patient>();
 
@@ -19,6 +21,8 @@ export class ViewerShellData {
         this.defaultGroupHangingProtocol = defaultGroupHangingProtocol;
         this.defaultImageHangingProtocol = defaultImageHangingProtocol;
         this.hide = false;
+
+        ViewerShellData.logService.debug("ViewerShellData " + this.getId() + " created!");
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +114,7 @@ export class ViewerShellData {
             return null;
         }
 
+        ViewerShellData.logService.debug("ViewData: Get group for " + this.getId() + rowIndex + colIndex);
         return this.groupDataList[groupIndex];
     }
 
