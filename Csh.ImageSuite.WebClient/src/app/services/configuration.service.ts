@@ -3,6 +3,7 @@ import { LocationStrategy } from "@angular/common";
 import { DatabaseService } from "./database.service";
 import { Overlay, OverlayDisplayGroup } from '../models/overlay';
 import { LogService } from "../services/log.service";
+import { FontData } from '../models/misc-data';
 
 @Injectable({
     providedIn: "root"
@@ -11,6 +12,7 @@ export class ConfigurationService {
 
     private baseUrl: string;
     private overLayList: Overlay[] = [];
+    private textOverlayFont: FontData;
     
     constructor(private databaseService: DatabaseService, private locationStrategy: LocationStrategy,
         private logService: LogService) {
@@ -21,6 +23,10 @@ export class ConfigurationService {
         this.databaseService.getOverlays().subscribe(overlayList => {
             this.overLayList = overlayList;
         });
+
+        this.databaseService.getOverFont().subscribe(fontData => {
+            this.textOverlayFont = fontData;
+        });
     }
 
     getBaseUrl(): string {
@@ -30,6 +36,10 @@ export class ConfigurationService {
     getOverlayConfigList(): Overlay[] {
         return this.overLayList;
     }
-    //getOverlayFont()
+
+    getOverlayFont(): FontData {
+        this.textOverlayFont = new FontData("Times New Roman", "#FFF", 17);
+        return this.textOverlayFont;
+    }
     
 }

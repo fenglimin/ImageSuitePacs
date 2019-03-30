@@ -309,14 +309,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
     private showWaitingText() {
         this.olLayer.visible(true);
-        const overlaySetting = {
-            color: "#ffffff",
-            font: "Times New Roman",
-            fontSize: 17
-        };
 
-        const font = "{0}px {1}".format(overlaySetting.fontSize, overlaySetting.font);
-        this.waitingText = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId).color("#ffffff").font(font).align('center');
+        const font = this.configurationService.getOverlayFont();
+        this.waitingText = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
+            .color(font.color).font(font.getCanvasFontString()).align('center');
     }
 
     private hideWaitingText() {

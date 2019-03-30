@@ -6,6 +6,7 @@ import { catchError, tap } from "rxjs/operators";
 import { Shortcut } from '../models/shortcut';
 import { Patient, Study, Series, Image, RecWorklistData } from '../models/pssi';
 import { Overlay } from '../models/overlay';
+import { FontData } from '../models/misc-data';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': "application/json" })
@@ -38,6 +39,11 @@ export class DatabaseService {
     getShortcut(id: number): Observable<Shortcut> {
         const url = `${this.shortcutUrl}/details/${id}`;
         return this.http.get<Shortcut>(url);
+    }
+
+    getOverFont(): Observable<FontData> {
+        const url = `${this.overlayUrl}/font/`;
+        return this.http.get<FontData>(url);
     }
 
     getOverlays(): Observable<Overlay[]> {

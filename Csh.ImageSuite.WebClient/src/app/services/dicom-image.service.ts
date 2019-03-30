@@ -172,6 +172,7 @@ export class DicomImageService {
                 posY += fontHeight * overlayConfig.offsetY;
             }
 
+            displayItem.id = overlayConfig.overlayId;
             displayItem.text = overlayConfig.prefix + this.getTextOverlayValue(image, overlayConfig) + overlayConfig.suffix;
             displayItem.posX = posX;
             displayItem.posX += totalOverlayWidth;

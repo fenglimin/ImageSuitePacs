@@ -43,6 +43,7 @@ export class OverlayDisplayGroup {
 }
 
 export class OverlayDisplayItem {
+    id: string;
     posX: number;
     posY: number;
     text: string;
