@@ -319,7 +319,35 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
         const font = this.configurationService.getOverlayFont();
         this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
-            .color(font.color).font(font.getCanvasFontString()).align('center');
+            .color(font.color).font(font.getCanvasFontString()).align('center').draggable();
+
+        this.waitingLabel._x += 100;
+
+        var h = 4;
+        var line = jCanvaScript.line([[166 * h, 56 * h], [166 * h, 94 * h]], '#fff').draggable();
+
+        line._x1 = 100;
+        var circle = jc.circle(46 * h, 70 * h, 26 * h, '#fe9695', false).draggable();
+
+        //circle._x = 100;
+        circle._y = 200;
+
+        //circle.optns.redraw = 1;
+
+        //jCanvaScript.redraw(circle);
+
+        jc.rect(0, 130, 320 * h, 10 * h, '#f7f7f7', false).draggable();
+
+        jc.arc(60, 100, 60, 90, 180, 1, 'rgb(25,99,253)', 0).draggable();
+
+        var imgData = jc.imageData(100, 100); //设置渐变区域的大小
+        for (var i = 0; i < 100; i++) {
+            for (var j = 0; j < 100; j++) {
+                imgData.setPixel(i, j, 'rgba(' + i + ',' + j + ',' + (i + j) + ',' + (i / 100) + ')');
+                //绘制像素点i,j为像素点坐标
+            }
+        }
+        imgData.putData(0, 0).draggable(); //设置渐变区域的位置
     }
 
     private hideWaitingText() {
