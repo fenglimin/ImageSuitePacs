@@ -16,6 +16,7 @@ export class DicomImageService {
     private dicomImageUrl = "dicomImage";
     private baseUrl;
     private overlayDisplayGroupList: OverlayDisplayGroup[] = [];
+    private mlOverlayList: [string, Overlay];
 
     constructor(private http: HttpClient, private configurationService: ConfigurationService,
         private logService: LogService) {
@@ -64,8 +65,13 @@ export class DicomImageService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Text overlay funtctions
     private formatOverlayList(overlayList: Overlay[]) {
-        overlayList.forEach(overlay => this.addOverlayToGroup(overlay));
+
+        overlayList.forEach(overlay => {
+            this.addOverlayToGroup(overlay);
+        });
+
         this.overlayDisplayGroupList.forEach(group => {
+
             group.itemListAlignLeft = group.itemListAlignLeft.sort((n1, n2) => {
                 return (n1.gridX > n2.gridX) ? 1 : -1;
             });
@@ -97,7 +103,11 @@ export class DicomImageService {
     private getTextOverlayValue(image: Image, overlay: Overlay): string {
 
         let tagValue: string;
-        if (overlay.tableName && overlay.fieldName) {
+        if (overlay.overlayId === "wl") {
+            tagValue = "W: {0}, L: {1}";
+        } else if (overlay.overlayId === "zoom") {
+            tagValue = "{0}";
+        }else if (overlay.tableName && overlay.fieldName) {
 
             var obj: any;
             switch (overlay.tableName) {

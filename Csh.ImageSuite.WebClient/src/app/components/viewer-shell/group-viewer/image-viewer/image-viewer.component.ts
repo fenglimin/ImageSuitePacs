@@ -74,7 +74,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private originalWindowWidth: number;
     private originalWindowCenter: number;
 
-    private waitingText: any;
+    private waitingLabel: any;
+
+    private wlLabel: any;
+    private wlLabelFormat: string;
+
+    private zoomRatioLabel: any;
+    private zoomRatioFormat: string;
+
     private label: any;
     private logPrefix: string;
 
@@ -311,14 +318,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.olLayer.visible(true);
 
         const font = this.configurationService.getOverlayFont();
-        this.waitingText = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
+        this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
             .color(font.color).font(font.getCanvasFontString()).align('center');
     }
 
     private hideWaitingText() {
-        if (this.waitingText) {
-          this.waitingText.del();
-          this.waitingText = null;
+        if (this.waitingLabel) {
+          this.waitingLabel.del();
+          this.waitingLabel = null;
         }
     }
 
@@ -327,20 +334,21 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
         this.olLayer.visible(true);
 
-        const idLbl = this.getId() + "_ol";
-
-        const overlaySetting = {
-            color: "#ffffff",
-            font: "Times New Roman",
-            fontSize: 15
-        };
-
-        const font = "{0}px {1}".format(overlaySetting.fontSize, overlaySetting.font);
-
+        const font = this.configurationService.getOverlayFont();
         const overlayList = this.dicomImageService.getOverlayDisplayList(this.image, this.canvas.width, this.canvas.height);
+
         overlayList.forEach(overlay => {
-            jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).id(idLbl).layer(this.olLayerId).color("#ffffff")
-                .font(font).align(overlay.align);
+            let label = jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).layer(this.olLayerId)
+                .color(font.color).font(font.getCanvasFontString()).align(overlay.align);
+
+            if (overlay.id == "wl") {
+                this.wlLabel = label;
+                this.wlLabelFormat = overlay.text;
+                this.updateWlTextOverlay(this.image.cornerStoneImage.windowWidth, this.image.cornerStoneImage.windowHeight);
+            } else if (overlay.id == "zoom") {
+                this.zoomRatioLabel = label;
+                this.zoomRatioFormat = overlay.text;
+            }
         });
 
         //this.configurationService.overlayList.forEach(overlay => {
@@ -353,7 +361,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
         //jCanvaScript.text("Test", 5, 15).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
 
-        this.label = jCanvaScript(`#${idLbl}`);
+        //this.label = jCanvaScript(`#${idLbl}`);
 
 
         //this.label._x = 5;
@@ -1327,5 +1335,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
         this.ctImage.windowWidth = width;
         this.ctImage.windowCenter = center;
+
+        this.updateWlTextOverlay(width, center);
+    }
+
+    private updateWlTextOverlay(width: number, center: number) {
+        this.wlLabel.string(this.wlLabelFormat.format(width, center));
+    }
+
+    private updateZoomRatioTextOverlay(roomRatio: number) {
+        this.zoomRatioLabel.string(this.zoomRatioFormat.format(roomRatio));
     }
 }
