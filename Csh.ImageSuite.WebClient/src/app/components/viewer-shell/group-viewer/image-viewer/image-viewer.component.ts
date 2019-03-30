@@ -7,13 +7,17 @@ import { ViewContextEnum, ViewContext, OperationEnum, OperationData, ViewContext
 import { Subscription } from "rxjs";
 import { Image } from "../../../../models/pssi";
 import { ViewerImageData } from "../../../../models/viewer-image-data";
-import { AnnObject, EventType } from "../../../../annotation/ann-object";
+import { AnnObject, MouseEventType } from "../../../../annotation/ann-object";
 import { WorklistService } from "../../../../services/worklist.service";
 import { ConfigurationService } from "../../../../services/configuration.service";
 import { DialogService } from "../../../../services/dialog.service";
 import { LogService } from "../../../../services/log.service";
 import { WindowLevelData } from "../../../../models/dailog-data/image-process";
 import { ManualWlDialogComponent } from "../../../../components/dialog/manual-wl-dialog/manual-wl-dialog.component";
+
+import { AnnLine } from "../../../../annotation/ann-line";
+import { AnnCircle } from "../../../../annotation/ann-circle";
+import { AnnRectangle } from "../../../../annotation/ann-rectangle";
 
 @Component({
     selector: "app-image-viewer",
@@ -84,6 +88,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
     private label: any;
     private logPrefix: string;
+
+
+    private annLine: AnnLine = new AnnLine();
+    private annCircle: AnnCircle = new AnnCircle();
+    private annRectangle: AnnRectangle = new AnnRectangle();
+    
 
     @Input()
     set imageData(imageData: ViewerImageData) {
@@ -321,33 +331,16 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
             .color(font.color).font(font.getCanvasFontString()).align('center').draggable();
 
-        this.waitingLabel._x += 100;
+        //jc.arc(60, 100, 60, 90, 180, 1, 'rgb(25,99,253)', 0).draggable();
 
-        var h = 4;
-        var line = jCanvaScript.line([[166 * h, 56 * h], [166 * h, 94 * h]], '#fff').draggable();
-
-        line._x1 = 100;
-        var circle = jc.circle(46 * h, 70 * h, 26 * h, '#fe9695', false).draggable();
-
-        //circle._x = 100;
-        circle._y = 200;
-
-        //circle.optns.redraw = 1;
-
-        //jCanvaScript.redraw(circle);
-
-        jc.rect(0, 130, 320 * h, 10 * h, '#f7f7f7', false).draggable();
-
-        jc.arc(60, 100, 60, 90, 180, 1, 'rgb(25,99,253)', 0).draggable();
-
-        var imgData = jc.imageData(100, 100); //设置渐变区域的大小
-        for (var i = 0; i < 100; i++) {
-            for (var j = 0; j < 100; j++) {
-                imgData.setPixel(i, j, 'rgba(' + i + ',' + j + ',' + (i + j) + ',' + (i / 100) + ')');
-                //绘制像素点i,j为像素点坐标
-            }
-        }
-        imgData.putData(0, 0).draggable(); //设置渐变区域的位置
+        //var imgData = jc.imageData(100, 100); //设置渐变区域的大小
+        //for (var i = 0; i < 100; i++) {
+        //    for (var j = 0; j < 100; j++) {
+        //        imgData.setPixel(i, j, 'rgba(' + i + ',' + j + ',' + (i + j) + ',' + (i / 100) + ')');
+        //        //绘制像素点i,j为像素点坐标
+        //    }
+        //}
+        //imgData.putData(0, 0).draggable(); //设置渐变区域的位置
     }
 
     private hideWaitingText() {
@@ -949,21 +942,21 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             }
         }
 
-        self.emitEvent(evt, EventType.MouseDown, "onMouseDown");
+        self.emitEvent(evt, MouseEventType.MouseDown, "onMouseDown");
     }
 
     private onMouseMove(evt) {
-        this.emitEvent(evt, EventType.MouseMove, "onMouseMove");
+        this.emitEvent(evt, MouseEventType.MouseMove, "onMouseMove");
     }
 
     private onMouseOut(evt) {
         //log('viwer mouse out: ' + this.canvasId);
-        this.emitEvent(evt, EventType.MouseOut, "onMouseOut");
+        this.emitEvent(evt, MouseEventType.MouseOut, "onMouseOut");
     }
 
     private onMouseUp(evt) {
         //log('viwer mouse up: ' +this.canvasId);
-        this.emitEvent(evt, EventType.MouseUp, "onMouseUp");
+        this.emitEvent(evt, MouseEventType.MouseUp, "onMouseUp");
     }
 
     //image layer events
@@ -1117,9 +1110,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     private onCanvasMouseDown(evt) {
-        if (!this.isImageLoaded) {
-            return;
-        }
+        //if (!this.isImageLoaded) {
+        //    return;
+        //}
 
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
         this.mouseEventHelper._mouseDownPosCvs = { x: evt.offsetX, y: evt.offsetY };
@@ -1128,17 +1121,32 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             this.mouseEventHelper._lastContext = this.viewContext.curContext;
             this.viewContext.setContext(ViewContextEnum.WL);
         } else if (this.mouseEventHelper._mouseWhich == 1) {
-            if (this.viewContext.curContext.action == ViewContextEnum.Magnifier) {
-                //this._startMagnifier(evt);
+            //if (this.viewContext.curContext.action == ViewContextEnum.Magnifier) {
+            //    //this._startMagnifier(evt);
+            //}
+
+            if (this.annLine.isCreated()) {
+                this.annLine = new AnnLine();
             }
+            this.annLine.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
+
+            if (this.annCircle.isCreated()) {
+                this.annCircle = new AnnCircle();
+            }
+            this.annCircle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
+
+            if (this.annRectangle.isCreated()) {
+                this.annRectangle = new AnnRectangle();
+            }
+            this.annRectangle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
         }
     }
 
     private onCanvasMouseMove(evt) {
         const self = this;
-        if (!this.isImageLoaded) {
-            return;
-        }
+        //if (!this.isImageLoaded) {
+        //    return;
+        //}
 
         const curContext = this.viewContext.curContext;
 
@@ -1155,26 +1163,38 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             }
         } else if (self.mouseEventHelper._mouseWhich == 1) {
 
-            if (curContext.action == ViewContextEnum.Magnifier) {
-                //if (self._magnifying) {
-                //    self._loadMagnifierData(evt);
-                //}
-            } else if (curContext.action == ViewContextEnum.WL) {
-                self.doWL(deltaX, deltaY);
-            } else if (curContext.action == ViewContextEnum.Zoom) {
-                const delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
-                if (Math.abs(delta) > 0) {
-                    self.doZoom(delta);
-                }
-
-            } else if (curContext.action == ViewContextEnum.ROIZoom) {
-                const curPosCvs = {
-                    x: evt.offsetX,
-                    y: evt.offsetY
-                };
-
-                //self.drawROIZoom(self.mouseEventHelper._mouseDownPosCvs, curPosCvs);
+            if (!this.annLine.isCreated()) {
+                this.annLine.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
             }
+
+            if (!this.annCircle.isCreated()) {
+                this.annCircle.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
+            }
+
+            if (!this.annRectangle.isCreated()) {
+                this.annRectangle.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
+            }
+
+            //if (curContext.action == ViewContextEnum.Magnifier) {
+            //    //if (self._magnifying) {
+            //    //    self._loadMagnifierData(evt);
+            //    //}
+            //} else if (curContext.action == ViewContextEnum.WL) {
+            //    self.doWL(deltaX, deltaY);
+            //} else if (curContext.action == ViewContextEnum.Zoom) {
+            //    const delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
+            //    if (Math.abs(delta) > 0) {
+            //        self.doZoom(delta);
+            //    }
+
+            //} else if (curContext.action == ViewContextEnum.ROIZoom) {
+            //    const curPosCvs = {
+            //        x: evt.offsetX,
+            //        y: evt.offsetY
+            //    };
+
+            //    //self.drawROIZoom(self.mouseEventHelper._mouseDownPosCvs, curPosCvs);
+            //}
 
         }
 

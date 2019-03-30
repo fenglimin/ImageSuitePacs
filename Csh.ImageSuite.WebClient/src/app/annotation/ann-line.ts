@@ -1,0 +1,37 @@
+﻿import { Point } from '../models/annotation';
+import { MouseEventType } from './ann-object';
+
+export class AnnLine {
+    start: Point;
+    end: Point;
+    jcObj: any;
+    created: boolean;
+
+    constructor() {
+        this.created = false;
+    }    
+
+    isCreated() {
+        return this.created;
+    }
+
+    onMouseEvent(mouseEventType: MouseEventType, point: Point) {
+        if (mouseEventType === MouseEventType.MouseDown) {
+            if (!this.start) {
+                this.start = new Point(point.x, point.y);
+            } else {
+                this.end = new Point(point.x, point.y);
+                this.created = true;
+            }
+        } else if (mouseEventType === MouseEventType.MouseMove) {
+            if (this.start) {
+                if (this.jcObj) {
+                    this.jcObj._x1 = point.x;
+                    this.jcObj._y1 = point.y;
+                } else {
+                    this.jcObj = jCanvaScript.line([[this.start.x, this.start.y], [point.x, point.y]], "#FFF");
+                }
+            }
+        }
+    }
+}

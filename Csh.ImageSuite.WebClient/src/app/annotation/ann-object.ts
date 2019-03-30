@@ -1,6 +1,6 @@
 import { ViewContextEnum, ViewContextService } from "../services/view-context.service"
 
-export enum EventType {
+export enum MouseEventType {
     Click= 1,
     MouseDown= 2,
     MouseMove= 3,
