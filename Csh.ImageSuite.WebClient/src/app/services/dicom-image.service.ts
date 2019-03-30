@@ -1,21 +1,29 @@
 import { Injectable } from "@angular/core";
-
 import { HttpClient } from "@angular/common/http";
-
 import { Observable } from "rxjs";
+
 import { Image } from "../models/pssi";
 import { ConfigurationService } from "../services/configuration.service";
 import { Overlay, OverlayDisplayGroup, OverlayDisplayItem } from '../models/overlay';
+import { LogService } from "../services/log.service";
 
 @Injectable({
     providedIn: "root"
 })
 export class DicomImageService {
+
+    private logPrefix = "DicomImageService: ";
     private dicomImageUrl = "dicomImage";
     private baseUrl;
+    private overlayDisplayGroupList: OverlayDisplayGroup[] = [];
 
-    constructor(private http: HttpClient, private configurationService: ConfigurationService) {
+    constructor(private http: HttpClient, private configurationService: ConfigurationService,
+        private logService: LogService) {
+
         this.baseUrl = this.configurationService.getBaseUrl();
+
+        const overlayList = this.configurationService.getOverlayConfigList();
+        this.formatOverlayList(overlayList);
     }
 
     getDicomFile(image: Image): Observable<Blob> {
@@ -39,7 +47,56 @@ export class DicomImageService {
         });
     }
 
-    getTextOverlayValue(image: Image, overlay: Overlay): string {
+    getOverlayDisplayList(image: Image, canvasWidth: number, canvasHeight: number): OverlayDisplayItem[] {
+
+        var overlayDisplayList: OverlayDisplayItem[] = [];
+
+        const groupList = this.getOverlayDisplayGroup(image.series.modality);
+        groupList.forEach(group => {
+
+            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignLeft, true, image, canvasWidth, canvasHeight);
+            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignRight, false, image, canvasWidth, canvasHeight);
+        });
+
+        return overlayDisplayList;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Text overlay funtctions
+    private formatOverlayList(overlayList: Overlay[]) {
+        overlayList.forEach(overlay => this.addOverlayToGroup(overlay));
+        this.overlayDisplayGroupList.forEach(group => {
+            group.itemListAlignLeft = group.itemListAlignLeft.sort((n1, n2) => {
+                return (n1.gridX > n2.gridX) ? 1 : -1;
+            });
+
+            group.itemListAlignRight = group.itemListAlignRight.sort((n1, n2) => {
+                return (n1.gridX > n2.gridX) ? -1 : 1;
+            });
+        });
+    }
+
+    private addOverlayToGroup(overlay: Overlay) {
+        const filtered = this.overlayDisplayGroupList.filter(value => value.match(overlay));
+
+        let overlayGroup = null;
+        if (filtered.length === 0) {
+            overlayGroup = new OverlayDisplayGroup(overlay);
+            this.overlayDisplayGroupList.push(overlayGroup);
+        } else {
+            overlayGroup = filtered[0];
+        }
+
+        overlayGroup.add(overlay);
+    }
+
+    private getOverlayDisplayGroup(modality: string): OverlayDisplayGroup[] {
+        return this.overlayDisplayGroupList.filter(group => group.modality === modality);
+    }
+
+    private getTextOverlayValue(image: Image, overlay: Overlay): string {
+
+        let tagValue: string;
         if (overlay.tableName && overlay.fieldName) {
 
             var obj: any;
@@ -57,18 +114,20 @@ export class DicomImageService {
                 obj = image.series.study.patient;
                 break;
             default:
-                return "";
+                this.logService.error(this.logPrefix + "Invalid table name " + overlay.tableName);
+                return "Error!";
             }
 
-            return obj[overlay.fieldName];
+            tagValue = obj[overlay.fieldName];
         } else {
             const tagString = this.getTagString(overlay.groupNumber, overlay.elementNumber);
-            const tagValue = image.cornerStoneImage.data.string(tagString);
-            return  tagValue === undefined ? "" : tagValue;
+            tagValue = image.cornerStoneImage.data.string(tagString);
         }
+
+        return tagValue === undefined ? "" : tagValue;
     }
 
-    decimalToHexString(decimal: number, padding: number): string {
+    private decimalToHexString(decimal: number, padding: number): string {
         var hex = Number(decimal).toString(16);
         padding = typeof (padding) === "undefined" || padding === null ? 2 : padding;
 
@@ -79,11 +138,11 @@ export class DicomImageService {
         return hex;
     }
 
-    getTagString(group: number, element: number): string {
+    private getTagString(group: number, element: number): string {
         return 'x' + this.decimalToHexString(group, 4) + this.decimalToHexString(element, 4);
     }
 
-    addOverlayDisplayList(overlayDisplayList: OverlayDisplayItem[], overlayList: Overlay[],
+    private addOverlayDisplayList(overlayDisplayList: OverlayDisplayItem[], overlayList: Overlay[],
         alignLeft: boolean, image: Image, canvasWidth: number, canvasHeight: number) {
 
         let totalOverlayWidth = 0;
@@ -122,19 +181,5 @@ export class DicomImageService {
             overlayDisplayList.push(displayItem);
         });
 
-    }
-
-    getOverlayDisplayList(image: Image, canvasWidth: number, canvasHeight: number): OverlayDisplayItem[] {
-
-        var overlayDisplayList: OverlayDisplayItem[] = [];
-
-        const groupList = this.configurationService.getOverlayDisplayGroup(image.series.modality);
-        groupList.forEach(group => {
-
-            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignLeft, true, image, canvasWidth, canvasHeight);
-            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignRight, false, image, canvasWidth, canvasHeight);
-        });
-
-        return overlayDisplayList;
     }
 }
