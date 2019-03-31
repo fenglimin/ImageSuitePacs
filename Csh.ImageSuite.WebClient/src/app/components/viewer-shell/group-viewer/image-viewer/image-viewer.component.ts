@@ -90,9 +90,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private logPrefix: string;
 
 
-    private annLine: AnnLine = new AnnLine();
-    private annCircle: AnnCircle = new AnnCircle();
-    private annRectangle: AnnRectangle = new AnnRectangle();
+    private annLine: any;
+    private annCircle: any;
+    private annRectangle: any;
     
 
     @Input()
@@ -179,7 +179,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         if (this.image) {
             this.showWaitingText();
         }
-        
+
+        this.annLine = new AnnLine(this.annLayerId);
+        this.annCircle = new AnnCircle(this.annLayerId);
+        this.annRectangle = new AnnRectangle(this.annLayerId);
       
         this.isViewInited = true;
     }
@@ -1126,17 +1129,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             //}
 
             if (this.annLine.isCreated()) {
-                this.annLine = new AnnLine();
+                this.annLine = new AnnLine(this.annLayerId);
             }
             this.annLine.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
 
             if (this.annCircle.isCreated()) {
-                this.annCircle = new AnnCircle();
+                this.annCircle = new AnnCircle(this.annLayerId);
             }
             this.annCircle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
 
             if (this.annRectangle.isCreated()) {
-                this.annRectangle = new AnnRectangle();
+                this.annRectangle = new AnnRectangle(this.annLayerId);
             }
             this.annRectangle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
         }

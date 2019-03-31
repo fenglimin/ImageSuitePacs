@@ -6,8 +6,10 @@ export class AnnCircle {
     radius: number;
     jcObj: any;
     created: boolean;
+    layerId: string;
 
-    constructor() {
+    constructor(layerId: string) {
+        this.layerId = layerId;
         this.created = false;
     }    
 
@@ -28,7 +30,7 @@ export class AnnCircle {
                 if (this.jcObj) {
                     this.jcObj._radius = this.countDistance(this.center, point);
                 } else {
-                    this.jcObj = jCanvaScript.circle(this.center.x, this.center.y, this.radius, "#FFF");
+                    this.jcObj = jCanvaScript.circle(this.center.x, this.center.y, this.radius, "#FFF").layer(this.layerId);
                 }
             }
         }

@@ -6,8 +6,10 @@ export class AnnLine {
     end: Point;
     jcObj: any;
     created: boolean;
+    layerId: string;
 
-    constructor() {
+    constructor(layerId: string) {
+        this.layerId = layerId;
         this.created = false;
     }    
 
@@ -29,7 +31,7 @@ export class AnnLine {
                     this.jcObj._x1 = point.x;
                     this.jcObj._y1 = point.y;
                 } else {
-                    this.jcObj = jCanvaScript.line([[this.start.x, this.start.y], [point.x, point.y]], "#FFF");
+                    this.jcObj = jCanvaScript.line([[this.start.x, this.start.y], [point.x, point.y]], "#FFF").layer(this.layerId);
                 }
             }
         }

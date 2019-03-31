@@ -6,10 +6,12 @@ export class AnnRectangle {
     end: Point;
     jcObj: any;
     created: boolean;
+    layerId: string;
 
-    constructor() {
+    constructor(layerId: string) {
+        this.layerId = layerId;
         this.created = false;
-    }    
+    }     
 
     isCreated() {
         return this.created;
@@ -30,7 +32,7 @@ export class AnnRectangle {
                     this.jcObj._height = point.y - this.start.y;
                 } else {
                     this.jcObj = jCanvaScript.rect(this.start.x, this.start.y, 
-                        point.x-this.start.x, point.y-this.start.y, "#FFF");
+                        point.x - this.start.x, point.y - this.start.y, "#FFF").layer(this.layerId);
                 }
             }
         }
