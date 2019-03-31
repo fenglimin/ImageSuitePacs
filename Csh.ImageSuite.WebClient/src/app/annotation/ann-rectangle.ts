@@ -32,7 +32,7 @@ export class AnnRectangle {
                     this.jcObj._height = point.y - this.start.y;
                 } else {
                     this.jcObj = jCanvaScript.rect(this.start.x, this.start.y, 
-                        point.x - this.start.x, point.y - this.start.y, "#FFF").layer(this.layerId);
+                        point.x - this.start.x, point.y - this.start.y, "#FFF").layer(this.layerId).draggable();
                 }
             }
         }

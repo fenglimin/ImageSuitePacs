@@ -1729,6 +1729,8 @@
     proto.line = function () {
         this.draw = function (ctx) {
             if (this._x0 === undefined) return;
+
+            ctx.setLineDash([2, 2]);
             ctx.moveTo(this._x0, this._y0);
             for (var j = 1; j < this.shapesCount; j++) {
                 ctx.lineTo(this['_x' + j], this['_y' + j]);
@@ -1803,6 +1805,7 @@
             return getRect(this, { x: this._x, y: this._y, width: this._width, height: this._height }, type);
         }
         this.draw = function (ctx) {
+            ctx.setLineDash([2, 1]);
             ctx.rect(this._x, this._y, this._width, this._height);
         }
         this.base = function (x, y, width, height, color, fill) {

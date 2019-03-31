@@ -1128,20 +1128,22 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             //    //this._startMagnifier(evt);
             //}
 
-            if (this.annLine.isCreated()) {
-                this.annLine = new AnnLine(this.annLayerId);
-            }
-            this.annLine.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
+            if (this.viewContext.curContext.action === ViewContextEnum.SelectAnn) {
+                if (this.annLine.isCreated()) {
+                    this.annLine = new AnnLine(this.annLayerId);
+                }
+                this.annLine.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
 
-            if (this.annCircle.isCreated()) {
-                this.annCircle = new AnnCircle(this.annLayerId);
-            }
-            this.annCircle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
+                //if (this.annCircle.isCreated()) {
+                //    this.annCircle = new AnnCircle(this.annLayerId);
+                //}
+                //this.annCircle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
 
-            if (this.annRectangle.isCreated()) {
-                this.annRectangle = new AnnRectangle(this.annLayerId);
+                //if (this.annRectangle.isCreated()) {
+                //    this.annRectangle = new AnnRectangle(this.annLayerId);
+                //}
+                //this.annRectangle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
             }
-            this.annRectangle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
         }
     }
 
@@ -1166,16 +1168,18 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             }
         } else if (self.mouseEventHelper._mouseWhich == 1) {
 
-            if (!this.annLine.isCreated()) {
-                this.annLine.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
-            }
+            if (this.viewContext.curContext.action === ViewContextEnum.SelectAnn) {
+                if (!this.annLine.isCreated()) {
+                    this.annLine.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
+                }
 
-            if (!this.annCircle.isCreated()) {
-                this.annCircle.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
-            }
+                //if (!this.annCircle.isCreated()) {
+                //    this.annCircle.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
+                //}
 
-            if (!this.annRectangle.isCreated()) {
-                this.annRectangle.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
+                //if (!this.annRectangle.isCreated()) {
+                //    this.annRectangle.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
+                //}
             }
 
             //if (curContext.action == ViewContextEnum.Magnifier) {
