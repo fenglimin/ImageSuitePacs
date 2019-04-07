@@ -42,34 +42,21 @@ export class AnnLine {
                 this.setChildMouseEvent(this.jcEndPoint);
                 this.setChildMouseEvent(this.jcLine);
 
-                this.setChildDraggable(this, this.jcStartPoint, true, function (deltaX, deltaY) {//deltaX, deltaY is image coordinates
+                this.setChildDraggable(this, this.jcStartPoint, true, this.onDragStartPoint);
+                this.setChildDraggable(this, this.jcEndPoint, true, this.onDragEndPoint);
 
-                    //this.jcStartPoint._x += deltaX;
-                    //this.jcStartPoint._y += deltaY;
-                    this.jcLine._x0 = this.jcStartPoint._x;
-                    this.jcLine._y0 = this.jcStartPoint._y;
-                });
+                //this.setChildDraggable(this, this.jcLine, true, function (deltaX, deltaY) {//deltaX, deltaY is image coordinates
 
-                this.setChildDraggable(this, this.jcEndPoint, true, function (deltaX, deltaY) {//deltaX, deltaY is image coordinates
+                //    this.jcStartPoint._x += deltaX;
+                //    this.jcStartPoint._y += deltaY;
+                //    this.jcLine._x0 = this.jcStartPoint._x;
+                //    this.jcLine._y0 = this.jcStartPoint._y;
 
-                    //this.jcEndPoint._x += deltaX;
-                    //this.jcEndPoint._y += deltaY;
-                    this.jcLine._x1 = this.jcEndPoint._x;
-                    this.jcLine._y1 = this.jcEndPoint._y;
-                });
-
-                this.setChildDraggable(this, this.jcLine, true, function (deltaX, deltaY) {//deltaX, deltaY is image coordinates
-
-                    this.jcStartPoint._x += deltaX;
-                    this.jcStartPoint._y += deltaY;
-                    this.jcLine._x0 = this.jcStartPoint._x;
-                    this.jcLine._y0 = this.jcStartPoint._y;
-
-                    this.jcEndPoint._x += deltaX;
-                    this.jcEndPoint._y += deltaY;
-                    this.jcLine._x1 = this.jcEndPoint._x;
-                    this.jcLine._y1 = this.jcEndPoint._y;
-                });
+                //    this.jcEndPoint._x += deltaX;
+                //    this.jcEndPoint._y += deltaY;
+                //    this.jcLine._x1 = this.jcEndPoint._x;
+                //    this.jcLine._y1 = this.jcEndPoint._y;
+                //});
 
                 this.onSelected(true);
             }
@@ -136,7 +123,7 @@ export class AnnLine {
         };
     }
 
-    setChildDraggable(parent: any, child: any, draggable: boolean, onDrag: any) {
+    setChildDraggable(parent: any, child: any, draggable: boolean, onDrag: (deltaX, deltaY) => void) {
 
         child.draggable({
             disabled: !draggable,
@@ -172,5 +159,15 @@ export class AnnLine {
                 return true;
             }
         });
+    }
+
+    onDragStartPoint(deltaX: number, deltaY: number) {
+        this.jcLine._x0 = this.jcStartPoint._x;
+        this.jcLine._y0 = this.jcStartPoint._y;
+    }
+
+    onDragEndPoint(deltaX: number, deltaY: number) {
+        this.jcLine._x1 = this.jcEndPoint._x;
+        this.jcLine._y1 = this.jcEndPoint._y;
     }
 }
