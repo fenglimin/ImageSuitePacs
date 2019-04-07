@@ -1153,6 +1153,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         //    return;
         //}
 
+        console.log("Mouse move, X = " + evt.offsetX + ", Y = " + evt.offsetY);
+
         const curContext = this.viewContext.curContext;
 
         if (!self.mouseEventHelper._lastPosCvs) {
