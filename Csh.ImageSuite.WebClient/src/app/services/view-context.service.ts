@@ -9,7 +9,7 @@ export enum ViewContextEnum {
     Zoom = 4,
     Magnifier = 5,
     ROIZoom = 6,
-    Create = 7,
+    CreateAnn = 7,
     ROIWL = 8,
     MagnifyX2,
     MagnifyX4,
@@ -174,9 +174,9 @@ export class ViewContextService {
         this._previousContext = this._curContext;
         this._curContext = curContext;
 
-        if (this._curContext.action != this._previousContext.action) {
+        if (this._curContext.action !== this._previousContext.action) {
             this.viewContextChangedSource.next(this._curContext);
-        } else if (this._curContext.action == ViewContextEnum.Create) {
+        } else if (this._curContext.action == ViewContextEnum.CreateAnn) {
             //if want to create the same object even if current object is not finished yet, we still change context to delete it. 
             this.viewContextChangedSource.next(this._curContext);
         }

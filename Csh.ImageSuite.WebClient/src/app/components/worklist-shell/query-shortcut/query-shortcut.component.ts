@@ -16,11 +16,6 @@ export class QueryShortcutComponent implements OnInit {
     allShortcuts: Shortcut[] = [];
 
     constructor(private worklistService: WorklistService, private dialogService: DialogService) {
-        const shortcut = new Shortcut();
-        shortcut.name = "All CR";
-        shortcut.id = 1;
-        shortcut.modality = "CR";
-        this.allShortcuts.push(shortcut);
     }
 
     ngOnInit() {

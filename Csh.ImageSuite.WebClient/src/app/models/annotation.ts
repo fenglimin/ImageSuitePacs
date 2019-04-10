@@ -7,3 +7,9 @@
         this.y = y;
     }
 }
+
+export enum AnnType {
+    Line = 1,
+    Circle = 2,
+    Rectangle = 3
+}

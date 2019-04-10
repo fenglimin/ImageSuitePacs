@@ -1,145 +1,193 @@
 ﻿<div>
     <table id="tblStudies" class="table table-bordered table-condensed">
         <thead>
-        <!--<tr>
-            <th *ngFor="let col of worklistService.worklistColumns ">
-                 <div class="worklistHeader">{{col.columnText}}</div>
-            </th>
+            <tr id="trStudiesHeader">
+                <th>
+                </th>
+                <th *ngFor="let col of worklistService.worklistColumns ">
+                    <div id="headContent" class="worklistHeader">
+                        <tr>
+                            <td>
+                                <div (click)="onWorklistHeaderClicked(col.columnId)">{{col.columnText}}</div>
+                            </td>
+                            <td>
+                                <i id="orderIcon" *ngIf="col.columnId == orderHeader" [className]="isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'"></i>
+                            </td>
+                        </tr>
+                    </div>
+                </th>
+            </tr>
+            <tr id="trStudiesQuery">
+                <td>
+                    <input type="checkbox" (click)="onAllStudyChecked($event)" />
+                </td>
+                <td *ngFor="let col of worklistService.worklistColumns">
+                    <div *ngIf="col.controlType == 'TextBox'">
+                        <input type="text" [(ngModel)]="col.shortcutType[col.columnId]" />
+                    </div>
+                <div *ngIf="col.controlType == 'DropDownList'">
+                    <select>
+                        <option value="">All</option>
+                        <option *ngFor="let value of col.valueList | keyvalue" value={{value.key}}>{{value.value}}</option>
+                    </select>
+                </div>
+                <div *ngIf="col.controlType == 'Calendar'">
+                    <tr>
+                        <td>
+                            <mat-form-field>
+                                <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" (dateChange)="fromDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateFrom">
+                                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                <mat-datepicker #picker1></mat-datepicker>
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field>
+                                <input matInput [matDatepicker]="picker2" [min]="toMinDate" [max]="toMaxDate" placeholder="To" (dateChange)="toDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateTo">
+                                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                <mat-datepicker #picker2></mat-datepicker>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                </div>
+                <td>
+            </tr>
+        
+
+<!--<tr id="trStudiesHeader">
+    <th>
+    </th>
+    <th *ngFor="let colTemp of worklistColumnsTemp">
+    <tr>
+        <td>
+            <div class="worklistHeader" (click)="onWorklistHeaderClicked(colTemp)">{{colTemp}}</div>
+        </td>
+        <td>
+            <i id="orderIcon" *ngIf="colTemp == orderHeader" [className]="isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'"></i>
+        </td>
+    </tr>
+    </th>
+</tr>-->
+<!--<tr id="trStudiesQuery">
+    <td>
+        <input type="checkbox" (click)="onAllStudyChecked($event)" />
+    </td>
+    <td>
+        <input id="queryPatientId" type="text" [(ngModel)]="worklistService.shortcut.patientId" />
+    </td>
+    <td>
+        <input id="queryPatientName" type="text" [(ngModel)]="worklistService.shortcut.patientName" />
+    </td>
+    <td>
+        <select id="queryGender" [(ngModel)]="worklistService.shortcut.patientSex">
+            <option value="">All</option>
+            <option value="F">Female</option>
+            <option value="M">Male</option>
+            <option value="O">Other</option>
+        </select>
+    </td>
+    <td>
+<tr>
+    <td>
+        <mat-form-field>
+            <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" (dateChange)="fromDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateFrom">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+    </td>
+    <td>
+        <mat-form-field>
+            <input matInput [matDatepicker]="picker2" [min]="toMinDate" [max]="toMaxDate" placeholder="To" (dateChange)="toDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateTo">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+    </td>
+</tr>
+
+            </td>
+<td>
+    <input id="queryAccessionNo" type="text" [(ngModel)]="worklistService.shortcut.accessionNo" />
+</td>
+<td>
+    <select id="queryModality" [(ngModel)]="worklistService.shortcut.modality">
+        <option value="">All</option>
+        <option>CR</option>
+        <option>CT</option>
+        <option>DX</option>
+        <option>MG</option>
+        <option>MR</option>
+        <option>US</option>
+    </select>
+</td>
+<td>
+    <select id="queryStudyDate" [(ngModel)]="worklistService.shortcut.studyDate">
+        <option value="">All</option>
+        <option>Today</option>
+        <option>Since Yesterday</option>
+        <option>Last 7 Days</option>
+        <option>Last 30 Days</option>
+        <option>Last 6 Months</option>
+    </select>
+</td>
+<td></td>
+<td></td>
+<td></td>
+<td>
+    <input id="queryStudyID" type="text" [(ngModel)]="worklistService.shortcut.studyId" />
+</td>
         </tr>-->
-
-
-        <tr id="trStudiesHeader">
-            <th>
-            </th>
-            <th *ngFor="let colTemp of worklistColumnsTemp">
-            <tr>
-                <td>
-                    <div class="worklistHeader" (click)="onWorklistHeaderClicked(colTemp)">{{colTemp}}</div>
-                </td>
-                <td>
-                    <i id="orderIcon" *ngIf="colTemp == orderHeader" [className]="isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'"></i>
-                </td>
-            </tr>
-            </th>
-        </tr>
-        <tr id="trStudiesQuery">
-            <td>
-                <input type="checkbox" (click)="onAllStudyChecked($event)"/>
-            </td>
-            <td>
-                <input id="queryPatientId" type="text" [(ngModel)]="worklistService.shortcut.patientId"/>
-            </td>
-            <td>
-                <input id="queryPatientName" type="text" [(ngModel)]="worklistService.shortcut.patientName"/>
-            </td>
-            <td>
-                <select id="queryGender" [(ngModel)]="worklistService.shortcut.patientSex">
-                    <option value="">All</option>
-                    <option value="F">Female</option>
-                    <option value="M">Male</option>
-                    <option value="O">Other</option>
-                </select>
-            </td>
-            <td>
-            <tr>
-                <td>
-                    <mat-form-field>
-                        <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" (dateChange)="fromDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateFrom">
-                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                        <mat-datepicker #picker1></mat-datepicker>
-                    </mat-form-field>
-                </td>
-                <td>
-                    <mat-form-field>
-                        <input matInput [matDatepicker]="picker2" [min]="toMinDate" [max]="toMaxDate" placeholder="To" (dateChange)="toDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.birthDateTo">
-                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                        <mat-datepicker #picker2></mat-datepicker>
-                    </mat-form-field>
-                </td>
-            </tr>
-
-            </td>
-            <td>
-                <input id="queryAccessionNo" type="text" [(ngModel)]="worklistService.shortcut.accessionNo"/>
-            </td>
-            <td>
-                <select id="queryModality" [(ngModel)]="worklistService.shortcut.modality">
-                    <option value="">All</option>
-                    <option>CR</option>
-                    <option>CT</option>
-                    <option>DX</option>
-                    <option>MG</option>
-                    <option>MR</option>
-                    <option>US</option>
-                </select>
-            </td>
-            <td>
-                <select id="queryStudyDate" [(ngModel)]="worklistService.shortcut.studyDate">
-                    <option value="">All</option>
-                    <option>Today</option>
-                    <option>Since Yesterday</option>
-                    <option>Last 7 Days</option>
-                    <option>Last 30 Days</option>
-                    <option>Last 6 Months</option>
-                </select>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-                <input id="queryStudyID" type="text" [(ngModel)]="worklistService.shortcut.studyId"/>
-            </td>
-        </tr>
         </thead>
-        <tfoot>
-            <tr id="trFoot">
-                <td colspan="5">
-                    <ul>
-                        <li>
-                            <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>
-                        </li>
-                        <li>
-                            <button class="shortcut-name-button" (click)="onCurrentPageClicked(1)" [disabled]="worklistService.pageCount == 1 || currentPage == 1">First</button>
-                        </li>
-                        <li>
-                            <button class="shortcut-name-button" (click)="onPrevPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == 1">Prev</button>
-                        </li>
-                        <li>
-                            <button class="shortcut-name-button" (click)="onNextPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Next</button>
-                        </li>
-                        <li>
-                            <button class="shortcut-name-button" (click)="onCurrentPageClicked(worklistService.pageCount)" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Last</button>
-                        </li>
-                        <li>
-                            <select id="ddlPageIndex" [(ngModel)]="currentPage">
-                                <option *ngFor="let page of worklistService.pages;">{{page+1}}</option>
-                            </select>
-                        </li>
-                        <li>
-                            <button class="shortcut-name-button" (click)="onCurrentPageClicked(currentPage)" [disabled]="worklistService.pageCount == 1">Goto</button>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        </tfoot>
-        <tbody>
-            <tr *ngFor="let study of worklistService.studies" (click)="onStudyChecked(study)">
-                <td>
-                    <input type="checkbox" [(ngModel)]="study.checked" />
-                </td>
-                <td style="cursor: pointer" (click)="doShowStudy(study)">{{study.patient.patientId}}</td>
-                <td>{{study.patient.patientName}}</td>
-                <td>{{study.patient.patientSex}}</td>
-                <td>{{study.patient.patientBirthDate}}</td>
-                <td>{{study.accessionNo}}</td>
-                <td>{{study.modality}}</td>
-                <td>{{study.studyDate}}</td>
-                <td>{{study.studyTime}}</td>
-                <td>{{study.seriesCount}}</td>
-                <td>{{study.imageCount}}</td>
-                <td>{{study.studyId}}</td>
-            </tr>
-        </tbody>
+<tfoot>
+    <tr id="trFoot">
+        <td colspan="5">
+            <ul>
+                <li>
+                    <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>
+                </li>
+                <li>
+                    <button class="shortcut-name-button" (click)="onCurrentPageClicked(1)" [disabled]="worklistService.pageCount == 1 || currentPage == 1">First</button>
+                </li>
+                <li>
+                    <button class="shortcut-name-button" (click)="onPrevPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == 1">Prev</button>
+                </li>
+                <li>
+                    <button class="shortcut-name-button" (click)="onNextPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Next</button>
+                </li>
+                <li>
+                    <button class="shortcut-name-button" (click)="onCurrentPageClicked(worklistService.pageCount)" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Last</button>
+                </li>
+                <li>
+                    <select id="ddlPageIndex" [(ngModel)]="currentPage">
+                        <option *ngFor="let page of worklistService.pages;">{{page+1}}</option>
+                    </select>
+                </li>
+                <li>
+                    <button class="shortcut-name-button" (click)="onCurrentPageClicked(currentPage)" [disabled]="worklistService.pageCount == 1">Goto</button>
+                </li>
+            </ul>
+        </td>
+    </tr>
+</tfoot>
+<tbody>
+    <tr *ngFor="let study of worklistService.studies" (click)="onStudyChecked(study)">
+        <td>
+            <input type="checkbox" [(ngModel)]="study.checked" />
+        </td>
+        <td style="cursor: pointer" *ngFor="let col of worklistService.worklistColumns"  (click)="doShowStudy(study)">
+            <div *ngIf="study.patient[col.columnId]; else onlyStudy">{{study.patient[col.columnId]}}</div>
+            <ng-template #onlyStudy>{{study[col.columnId]}}</ng-template>
+        </td>
+        <!--<td>{{study.patient.patientName}}</td>
+        <td>{{study.patient.patientSex}}</td>
+        <td>{{study.patient.patientBirthDate}}</td>
+        <td>{{study.accessionNo}}</td>
+        <td>{{study.modality}}</td>
+        <td>{{study.studyDate}}</td>
+        <td>{{study.studyTime}}</td>
+        <td>{{study.seriesCount}}</td>
+        <td>{{study.imageCount}}</td>
+        <td>{{study.studyId}}</td>-->
+    </tr>
+</tbody>
     </table>
 </div>
 

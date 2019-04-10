@@ -1,4 +1,8 @@
-import { ViewContextEnum, ViewContextService } from "../services/view-context.service"
+import { Point } from '../models/annotation';
+import { Image } from "../models/pssi";
+import { IImageViewer } from "../interfaces/image-viewer-interface";
+import { IAnnotationObject } from "../interfaces/annotation-object-interface";
+import { ViewContext, ViewContextEnum } from "../services/view-context.service"
 
 export enum MouseEventType {
     Click= 1,
@@ -29,29 +33,67 @@ export class Colors {
 };
 
 export abstract class AnnObject {
+    protected created: boolean;
+    protected selected: boolean;
+    protected dragging: boolean;
 
-    protected viewer: any; //the parent compoent which hold this object
-    protected isCreated: boolean;
-    protected isInEdit: boolean; //is current object selected and in edit status
+    protected selectedColor = "#F90";
+    protected defaultColor = "#FFF";
+
+    protected image: Image;
+    protected layerId: string; 
+    protected canvas: string;
+
+    protected minLineWidth = 0.3;
+    protected minPointRadius = 2;
+
+    protected lineWidth: number;
+    protected circleRadius: number;
+
+    protected oldCursor: any;
+
+    protected imageViewer: IImageViewer;
+
     protected parent: AnnObject;
 
-    protected defaultCircleRadius = 5;
-    protected minCircleRadius = 2;
-    protected minLineWidth = 0.3;
+    constructor(imageViewer: IImageViewer) {
 
-    protected selectedLevel = 100;
-    protected defaultLevel = 1;
-    protected selectedColor = Colors.red;
-    protected defaultColor = Colors.white;
+        this.imageViewer = imageViewer;
+        this.image = imageViewer.getImage();
+        this.layerId = imageViewer.getAnnotationLayerId();
+        this.canvas = imageViewer.getCanvas();
 
-    constructor(protected viewContext: ViewContextService) {
+        this.created = false;
+        this.selected = false;
+        this.dragging = false;
+
+        this.lineWidth = this.getLineWidth();
+        this.circleRadius = this.getPointRadius();
+    }
+
+    isCreated() {
+        return this.created;
+    }
+
+    onDeleteChildren() {
+        const properties = Object.getOwnPropertyNames(this);
+        properties.forEach(prop => {
+            const obj = this[prop];
+            if (obj instanceof AnnObject && obj !== this.parent) {
+                const annObj = obj as AnnObject;
+                annObj.onDeleteChildren();
+                this[prop] = undefined;
+            }else if ( AnnObject.isJcanvasObject(obj) ) {
+                obj.del();
+                this[prop] = undefined;
+            }
+        });
     }
 
     static screenToImage(point: any, transform: any) {
         const x = point.x;
         const y = point.y;
         const imgPt = [0, 0, 1];
-        const scrennPt = [x, y, 1];
 
         const a = x;
         const b = y;
@@ -91,12 +133,136 @@ export abstract class AnnObject {
         };
     }
 
+    static isJcanvasObject(obj:any):boolean {
+        if (!obj) {
+            return false;
+        }
+
+        if (obj.optns) {
+            return true;
+        }
+
+        return false;
+    }
+
     static countDistance(point1: any, point2: any): number {
         let value = Math.pow((point1.x - point2.x), 2) + Math.pow((point1.y - point2.y), 2);
         value = Math.sqrt(value);
 
         return value;
     }
+
+    protected getLineWidth(): number {
+        let lineWidth = 1 / this.image.getScaleValue();
+        if (lineWidth < this.minLineWidth) {
+            lineWidth = this.minLineWidth;
+        }
+
+        return lineWidth;
+    }
+
+    protected getPointRadius(): number {
+        let circleRadius = 3 / this.image.getScaleValue();
+        if (circleRadius < this.minPointRadius) {
+            circleRadius = this.minPointRadius;
+        }
+
+        return circleRadius;
+    }
+
+    protected setChildDraggable(parent: any, child: any, draggable: boolean, onDrag: (draggedObj, deltaX, deltaY) => void) {
+
+        child.draggable({
+            disabled: !draggable,
+            start: arg => {
+                child._lastPos = {};
+
+            },
+            stop: arg => {
+                child._lastPos = {};
+                if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn) {
+                    parent.dragging = false;
+                    parent.canvas.style.cursor = parent.oldCursor;
+                }
+            },
+            drag: arg => {
+
+                if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn) {
+                    const point = AnnObject.screenToImage({ x: arg.x, y: arg.y }, parent.image.transformMatrix);
+
+                    parent.dragging = true;
+
+                    if (typeof (child._lastPos.x) != "undefined") {
+                        const deltaX = point.x - child._lastPos.x;
+                        const deltaY = point.y - child._lastPos.y;
+
+                        child._x += deltaX;
+                        child._y += deltaY;
+
+                        if (onDrag) {
+                            onDrag.call(parent, child, deltaX, deltaY);
+                        }
+                    }
+
+                    child._lastPos = point;
+                }
+                return true;
+            }
+        });
+    }
+
+    protected setChildMouseEvent(parent: any, child: any) {
+
+        child._onmouseover = arg => {
+            if (parent.needResponseToChildMouseEvent()) {
+                parent.onMouseEvent(MouseEventType.MouseOver, arg);
+                parent.oldCursor = parent.canvas.style.cursor;
+                parent.canvas.style.cursor = child.mouseStyle;
+            }
+        };
+
+        child._onmouseout = arg => {
+            if (parent.needResponseToChildMouseEvent()) {
+                parent.onMouseEvent(MouseEventType.MouseOut, arg);
+                parent.canvas.style.cursor = parent.oldCursor;
+            }
+        };
+
+        child._onmousedown = arg => {
+            if (parent.needResponseToChildMouseEvent()) {
+                parent.onSelect(true);
+            }
+        };
+    }
+
+    protected needResponseToChildMouseEvent(): boolean {
+        return !this.dragging && this.imageViewer.getContext().action === ViewContextEnum.SelectAnn;
+    }
+}
+
+/*
+export abstract class AnnObject {
+
+    protected viewer: any; //the parent compoent which hold this object
+    protected created: boolean;
+    protected isInEdit: boolean; //is current object selected and in edit status
+    protected parent: AnnObject;
+
+    protected defaultCircleRadius = 5;
+    protected minCircleRadius = 2;
+    protected minLineWidth = 0.3;
+
+    protected selectedLevel = 100;
+    protected defaultLevel = 1;
+    protected selectedColor = Colors.red;
+    protected defaultColor = Colors.white;
+
+    constructor(protected viewContext: ViewContextService) {
+    }
+
+    
+
+
 
     static countAngle(point1: any, point2: any): number {
         const dPixSpacingX = 1.0;
@@ -255,3 +421,4 @@ export abstract class AnnObject {
         });
     }
 }
+*/

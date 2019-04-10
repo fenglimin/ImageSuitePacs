@@ -8,7 +8,7 @@
             ImageID : {{imageData.image.id}}
         </p>
     </div>-->
-    <canvas [id]="getCanvasId()" #viewerCanvas class="viewerCanvas"></canvas>
+    <canvas [id]="getCanvasId()" #viewerCanvas class="viewerCanvas" (keyup)="onKeyUp($event)"  tabindex="0"></canvas>
 </div>
 
 <div #helpElement class="helpElement"></div>

@@ -16,15 +16,13 @@ export class DicomImageService {
     private dicomImageUrl = "dicomImage";
     private baseUrl;
     private overlayDisplayGroupList: OverlayDisplayGroup[] = [];
-    private mlOverlayList: [string, Overlay];
 
     constructor(private http: HttpClient, private configurationService: ConfigurationService,
         private logService: LogService) {
 
         this.baseUrl = this.configurationService.getBaseUrl();
 
-        const overlayList = this.configurationService.getOverlayConfigList();
-        this.formatOverlayList(overlayList);
+        
     }
 
     getDicomFile(image: Image): Observable<Blob> {
@@ -48,15 +46,19 @@ export class DicomImageService {
         });
     }
 
-    getOverlayDisplayList(image: Image, canvasWidth: number, canvasHeight: number): OverlayDisplayItem[] {
+    getOverlayDisplayList(image: Image, canvasWidth: number, canvasHeight: number, canvasContext: any): OverlayDisplayItem[] {
+        if (this.overlayDisplayGroupList.length === 0) {
+            const overlayList = this.configurationService.getOverlayConfigList();
+            this.formatOverlayList(overlayList);
+        }
 
         var overlayDisplayList: OverlayDisplayItem[] = [];
 
         const groupList = this.getOverlayDisplayGroup(image.series.modality);
         groupList.forEach(group => {
 
-            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignLeft, true, image, canvasWidth, canvasHeight);
-            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignRight, false, image, canvasWidth, canvasHeight);
+            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignLeft, true, image, canvasWidth, canvasHeight, canvasContext);
+            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignRight, false, image, canvasWidth, canvasHeight, canvasContext);
         });
 
         return overlayDisplayList;
@@ -73,11 +75,11 @@ export class DicomImageService {
         this.overlayDisplayGroupList.forEach(group => {
 
             group.itemListAlignLeft = group.itemListAlignLeft.sort((n1, n2) => {
-                return (n1.gridX > n2.gridX) ? 1 : -1;
+                return (n1.offsetX < n2.offsetX) ? -1 : 1;
             });
 
             group.itemListAlignRight = group.itemListAlignRight.sort((n1, n2) => {
-                return (n1.gridX > n2.gridX) ? -1 : 1;
+                return (n1.offsetX < n2.offsetX) ? 1 : -1;
             });
         });
     }
@@ -103,9 +105,9 @@ export class DicomImageService {
     private getTextOverlayValue(image: Image, overlay: Overlay): string {
 
         let tagValue: string;
-        if (overlay.overlayId === "wl") {
+        if (overlay.overlayId === "9003") {
             tagValue = "W: {0}, L: {1}";
-        } else if (overlay.overlayId === "zoom") {
+        } else if (overlay.overlayId === "9004") {
             tagValue = "{0}";
         }else if (overlay.tableName && overlay.fieldName) {
 
@@ -153,9 +155,9 @@ export class DicomImageService {
     }
 
     private addOverlayDisplayList(overlayDisplayList: OverlayDisplayItem[], overlayList: Overlay[],
-        alignLeft: boolean, image: Image, canvasWidth: number, canvasHeight: number) {
+        alignLeft: boolean, image: Image, canvasWidth: number, canvasHeight: number, canvasContext: any) {
 
-        let totalOverlayWidth = 0;
+        const lineWidth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         overlayList.forEach(overlayConfig => {
             const displayItem = new OverlayDisplayItem();
@@ -166,13 +168,15 @@ export class DicomImageService {
                 posX += 5;
             } else if (overlayConfig.gridX === 2) {
                 posX -= 5;
+            } else if (overlayConfig.gridX === 1) {
+                alignLeft? posX += 5 : posX -= 5;
             }
 
             let posY = overlayConfig.gridY / 2 * canvasHeight;
             if (overlayConfig.gridY === 0) {
                 posY += 18;
             } else if (overlayConfig.gridY === 2) {
-                posY -= 1;
+                posY += 15; // ? why
             }
 
             const fontHeight = 20;
@@ -184,11 +188,15 @@ export class DicomImageService {
 
             displayItem.id = overlayConfig.overlayId;
             displayItem.text = overlayConfig.prefix + this.getTextOverlayValue(image, overlayConfig) + overlayConfig.suffix;
+
+            const offSetY = overlayConfig.offsetY + 6;
+            
             displayItem.posX = posX;
-            displayItem.posX += totalOverlayWidth;
+            displayItem.posX += alignLeft ? lineWidth[offSetY] : -lineWidth[offSetY];
             displayItem.posY = posY;
 
-            //totalOverlayWidth += 
+            lineWidth[offSetY] += canvasContext.measureText(displayItem.text).width + 10;
+
             overlayDisplayList.push(displayItem);
         });
 

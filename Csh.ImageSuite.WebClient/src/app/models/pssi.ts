@@ -1,4 +1,8 @@
-﻿export abstract class Pssi {
+﻿//import Shortcut = require("./shortcut");
+import { Shortcut } from "../models/shortcut";
+//import Shortcut1 = Shortcut.Shortcut;
+
+export abstract class Pssi {
     id: number;
     hide: boolean;
 
@@ -69,9 +73,18 @@ export class Study extends Pssi {
     studyDescription: string;
     referPhysician: string;
     tokenId: string;
-    additionalPatientHistory: string
+    additionalPatientHistory: string;
     veterinarian: string;
     requestedProcPriority: string;
+
+    instanceAvailability: string;
+    printed: string;
+    reserved: string;
+    readed: string;
+    scanStatus: number;
+
+    accessGroups: string;
+    send: number;
 
     patient: Patient;
     seriesList: Array<Series>;
@@ -275,6 +288,7 @@ export class Image extends Pssi {
         const d = n4;
 
         const scale = Math.sqrt(a * a + b * b);
+        return scale;
     }
 
 
@@ -289,9 +303,11 @@ export class WorklistColumn {
     columnText: string;
     sortDirection: string;
     controlType: string;
-    valueList: string;
+    valueList: Array<string>;
     columnSequece: number;
     visible: boolean;
+    shortcutType: Shortcut;
+    studyCol: Study;
 }
 
 export class RecWorklistData {

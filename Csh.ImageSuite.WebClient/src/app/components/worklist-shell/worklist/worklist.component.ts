@@ -23,6 +23,14 @@ export const MY_FORMATS = {
     },
 };
 
+export interface PeriodicElement {
+    name: string;
+    position: number;
+    weight: number;
+    symbol: string;
+}
+
+
 @Component({
     selector: "app-worklist",
     templateUrl: "./worklist.component.html",
@@ -35,7 +43,6 @@ export const MY_FORMATS = {
     ],
 })
 export class WorklistComponent implements OnInit {
-
     color = "#primary";
     mode = "indeterminate";
     value = 50;
@@ -66,7 +73,6 @@ export class WorklistComponent implements OnInit {
     constructor(public worklistService: WorklistService) {
         this.shortcutSelected = this.worklistService.shortcutSelected$.subscribe(
             shortcut => this.onShortcutSelected(shortcut));
-
     }
 
     onShortcutSelected(shortcut: Shortcut) {
@@ -99,6 +105,7 @@ export class WorklistComponent implements OnInit {
     }
 
     onAllStudyChecked(event) {
+
         this.worklistService.studies.forEach(study => study.checked = event.target.checked);
     }
 
@@ -120,7 +127,6 @@ export class WorklistComponent implements OnInit {
 
     onCurrentPageClicked(i) {
         this.currentPage = +i;
-        //this.currentPage = this.textPage;
         this.worklistService.onQueryStudies(this.currentPage);
     }
 
@@ -139,9 +145,5 @@ export class WorklistComponent implements OnInit {
             this.worklistService.onQueryStudies(this.currentPage, clickedHeader + "|");
 
         }
-
-
-
-
     }
 }

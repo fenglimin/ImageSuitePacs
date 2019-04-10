@@ -38,7 +38,7 @@ export class ConfigurationService {
     }
 
     getOverlayFont(): FontData {
-        this.textOverlayFont = new FontData("Times New Roman", "#FFF", 17);
+        this.textOverlayFont = new FontData("Times New Roman", "#FFF", 15);
         return this.textOverlayFont;
     }
     

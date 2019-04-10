@@ -1,9 +1,13 @@
 import { Component, OnInit, EventEmitter, Output } from "@angular/core";
 
 import { ImageSelectorService } from "../../../services/image-selector.service";
-import { OperationEnum, ViewContextEnum, ViewContextService } from "../../../services/view-context.service";
+import { OperationEnum, ViewContextEnum, ViewContext, ViewContextService } from "../../../services/view-context.service";
 import { SelectedButtonData } from "../../../models/dropdown-button-menu-data";
 import { ConfigurationService } from "../../../services/configuration.service";
+
+import { AnnLine } from "../../../annotation/ann-line";
+import { AnnCircle } from "../../../annotation/ann-circle";
+import { AnnRectangle } from "../../../annotation/ann-rectangle";
 
 @Component({
     selector: "app-viewer-toolbar",
@@ -104,6 +108,11 @@ export class ViewerToolbarComponent implements OnInit {
         tip: "Select Annotation",
         operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.SelectAnn }
     };
+    simpleAnnotation1ButtonMenu: SelectedButtonData[] = [
+        { name: "ann_line", tip: "Line", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnLine) } },
+        { name: "ann_ellipse", tip: "Eclipse", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnCircle) } },
+        { name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnRectangle) } }
+    ];
 
     private baseUrl: string;
 

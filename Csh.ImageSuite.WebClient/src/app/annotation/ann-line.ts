@@ -1,172 +1,250 @@
 ﻿import { Point } from '../models/annotation';
-import { MouseEventType } from './ann-object';
-
-export class AnnLine {
-    start: Point;
-    end: Point;
-    jcLine: any;
-    jcStartPoint: any;
-    jcEndPoint: any;
-
-    created: boolean;
-    layerId: string;
-    dragging: boolean;
+import { MouseEventType, AnnObject } from './ann-object';
+import { Image } from "../models/pssi";
+import { IAnnotationObject } from "../interfaces/annotation-object-interface";
+import { IImageViewer } from "../interfaces/image-viewer-interface";
 
 
-    constructor(layerId: string) {
-        this.layerId = layerId;
-        this.created = false;
-        this.dragging = false;
+export class AnnBasePoint extends AnnObject implements IAnnotationObject{
+    
+    jcCenterPoint: any;
+    jcOuterCircle: any;
+    onDragParent: (draggedObjParent, deltaX, deltaY) => void;
+
+    constructor(parent: AnnObject, position: Point, imageViewer: IImageViewer, onDragParent: (draggedObjParent, deltaX, deltaY) => void) {
+
+        super(imageViewer);
+        this.parent = parent;
+        this.onDragParent = onDragParent;
+
+        this.jcCenterPoint = jCanvaScript.circle(position.x, position.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
+        this.jcOuterCircle = jCanvaScript.circle(position.x, position.y, this.circleRadius * 2, this.selectedColor, false).layer(this.layerId);
+        this.jcOuterCircle._lineWidth = this.lineWidth;
+        this.jcOuterCircle.mouseStyle = "crosshair";
     }
 
-    isCreated() {
-        return this.created;
+    private onDrag(draggedObj: any, deltaX: number, deltaY: number) {
+        this.jcCenterPoint._x = this.jcOuterCircle._x;
+        this.jcCenterPoint._y = this.jcOuterCircle._y;
+        if (this.onDragParent) {
+            this.onDragParent(this.parent, deltaX, deltaY);
+        }
+    }
+
+    onDrawEnd() {
+        this.setChildDraggable(this, this.jcOuterCircle, true, this.onDrag);
+    }
+
+    onSelect(selected: boolean) {
+        const color = selected ? this.selectedColor : this.defaultColor;
+
+        if (this.jcCenterPoint) {
+            this.jcCenterPoint.visible(selected);
+            this.jcCenterPoint.color(color);
+        }
+
+        if (this.jcOuterCircle) {
+            this.jcOuterCircle.visible(selected);
+            this.jcOuterCircle.color(color);
+        }
     }
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point) {
+        
+    }
+
+    onScale() {
+        this.setRadius(this.circleRadius);
+        this.jcOuterCircle._lineWidth = this.lineWidth;
+    }
+
+    onTranslate(deltaX: number, deltaY: number) {
+        this.jcCenterPoint._x += deltaX;
+        this.jcCenterPoint._y += deltaY;
+
+        this.jcOuterCircle._x += deltaX;
+        this.jcOuterCircle._y += deltaY;
+    }
+
+    setRadius(radius: number) {
+        this.jcCenterPoint._radius = radius;
+        this.jcOuterCircle._radius = radius*2;
+    }
+
+    moveTo(point: Point) {
+        this.jcCenterPoint._x = point.x;
+        this.jcCenterPoint._y = point.y;
+
+        this.jcOuterCircle._x = point.x;
+        this.jcOuterCircle._y = point.y;
+    }
+
+    getPosition(): Point {
+        return { x: this.jcOuterCircle._x, y: this.jcOuterCircle._y }
+    }
+}
+
+export class AnnLine extends AnnObject implements IAnnotationObject{
+
+    start: Point;
+    end: Point;
+    jcLine: any;
+    //jcStartPoint: any;
+    annStartPoint: AnnBasePoint;
+    jcEndPoint: any;
+
+    constructor(imageViewer: IImageViewer) {
+        super(imageViewer);
+    }    
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Implementation of interface IAnnotationObject
+
+    onMouseEvent(mouseEventType: MouseEventType, point: Point) {
+
+        point = AnnObject.screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === MouseEventType.MouseDown) {
+
             if (!this.start) {
                 this.start = new Point(point.x, point.y);
-                this.jcStartPoint = jCanvaScript.circle(this.start.x, this.start.y, 3, "#F90", true).layer(this.layerId);
+                //this.jcStartPoint = jCanvaScript.circle(this.start.x, this.start.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
+                this.annStartPoint = new AnnBasePoint(this, point, this.imageViewer, this.onDragStartPoint);
+                
+                console.log("Draw start point.");
             } else {
+
+                console.log("Start to end draw.");
                 this.end = new Point(point.x, point.y);
 
                 this.created = true;
+                this.imageViewer.onAnnotationCreated(this);
 
-                this.jcStartPoint.visible(false);
-                this.jcEndPoint.visible(false);
-               
-                this.setChildKeyEvent(this.jcStartPoint);
+                console.log("End draw.");
 
-                this.setChildMouseEvent(this.jcStartPoint);
-                this.setChildMouseEvent(this.jcEndPoint);
-                this.setChildMouseEvent(this.jcLine);
+                //this.jcStartPoint.mouseStyle = "crosshair";
+                this.jcEndPoint.mouseStyle = "crosshair";
+                this.jcLine.mouseStyle = "move";
 
-                this.setChildDraggable(this, this.jcStartPoint, true, this.onDragStartPoint);
+                //this.setChildDraggable(this, this.jcStartPoint, true, this.onDragStartPoint);
+                //this.setChildDraggable(this, this.annStartPoint.jcCenterPoint, true, this.onDragStartPoint);
+                this.annStartPoint.onDrawEnd();
                 this.setChildDraggable(this, this.jcEndPoint, true, this.onDragEndPoint);
+                this.setChildDraggable(this, this.jcLine, true, this.onDragLine);
 
-                //this.setChildDraggable(this, this.jcLine, true, function (deltaX, deltaY) {//deltaX, deltaY is image coordinates
+                this.setChildMouseEvent(this, this.annStartPoint.jcOuterCircle);
+                this.setChildMouseEvent(this, this.jcEndPoint);
+                this.setChildMouseEvent(this, this.jcLine);
 
-                //    this.jcStartPoint._x += deltaX;
-                //    this.jcStartPoint._y += deltaY;
-                //    this.jcLine._x0 = this.jcStartPoint._x;
-                //    this.jcLine._y0 = this.jcStartPoint._y;
-
-                //    this.jcEndPoint._x += deltaX;
-                //    this.jcEndPoint._y += deltaY;
-                //    this.jcLine._x1 = this.jcEndPoint._x;
-                //    this.jcLine._y1 = this.jcEndPoint._y;
-                //});
-
-                this.onSelected(true);
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
+            console.log("mouse move");
             if (this.start) {
+                console.log("Start pointed drawn.");
                 if (this.jcLine) {
+                    console.log("redraw line.");
                     this.jcLine._x1 = point.x;
                     this.jcLine._y1 = point.y;
 
                     if (!this.jcEndPoint) {
-                        this.jcEndPoint = jCanvaScript.circle(point.x, point.y, 3, "#F90", true).layer(this.layerId);
+                        this.jcEndPoint = jCanvaScript.circle(point.x, point.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
                     } else {
                         this.jcEndPoint._x = point.x;
                         this.jcEndPoint._y = point.y;
                     }
-
+                    
                 } else {
-                    this.jcLine = jCanvaScript.line([[this.start.x, this.start.y], [point.x, point.y]], "#F90").layer(this.layerId);
+                    console.log("Start to draw line.");
+                    this.jcLine = jCanvaScript.line([[this.start.x, this.start.y], [point.x, point.y]], this.selectedColor).layer(this.layerId);
+                    this.jcLine._lineWidth = this.lineWidth;
 
-                    // Delete the start point and redraw it, so that it is on the top the line
-                    // So that we can easily select it for moving
-                    if (this.jcStartPoint) {
-                        this.jcStartPoint.up();
-                    }
-                    //this.jcStartPoint = jCanvaScript.circle(this.start.x, this.start.y, 3, "#FFF", true).layer(this.layerId);
-                }
-            }
-        }
-    }
-
-    onSelected(selected: boolean) {
-
-        const color = selected ? "#F90" : "#FFF";
-
-        this.jcStartPoint.visible(selected);
-        this.jcEndPoint.visible(selected);
-
-        this.jcStartPoint.color(color);
-        this.jcEndPoint.color(color);
-        this.jcLine.color(color);
-    }
-
-    setChildKeyEvent(child: any) {
-        var annObject = this;
-
-        child._onkeydown = function (arg) {
-            let i = 1;
-        }
-    }
-
-    setChildMouseEvent(child: any) {
-        var annObject = this;
-
-        child._onmouseover = function (arg) {
-            if (!annObject.dragging) {
-                annObject.onSelected(true);
-            }            
-        };
-
-        child._onmouseout = function (arg) {
-            if (!annObject.dragging) {
-                annObject.onSelected(false);
-            }            
-        };
-    }
-
-    setChildDraggable(parent: any, child: any, draggable: boolean, onDrag: (deltaX, deltaY) => void) {
-
-        child.draggable({
-            disabled: !draggable,
-            start: function (arg) {
-                this._lastPos = {};
-                
-            },
-            stop: function (arg) {
-                this._lastPos = {};
-                parent.dragging = false;
-            },
-            drag: function (arg) {
-                //ptImg is mouse position, not the object's start position
-                //don't translate any annObject, always keep annObject's transform as clear.
-                parent.dragging = true;
-
-                if (typeof (this._lastPos.x) != "undefined") {
-                    const deltaX = arg.x - this._lastPos.x;
-                    const deltaY = arg.y - this._lastPos.y;
-
-                    this._x += deltaX;
-                    this._y += deltaY;
-
-                    if (onDrag) {
-                        onDrag.call(parent, deltaX, deltaY);
+                    // Make sure the start point is on the top the line So that we can easily select it for moving
+                    if (this.annStartPoint.jcOuterCircle) {
+                        this.annStartPoint.jcOuterCircle.up();
                     }
                 }
-
-                this._lastPos = {
-                    x: arg.x,
-                    y: arg.y
-                };
-                return true;
             }
-        });
+        } else if (mouseEventType === MouseEventType.MouseOver) {
+            if (!this.selected) {
+                this.setChild(true);
+            }
+        } else if (mouseEventType === MouseEventType.MouseOut) {
+            if (!this.selected) {
+                this.setChild(false);
+            }
+        } 
     }
 
-    onDragStartPoint(deltaX: number, deltaY: number) {
-        this.jcLine._x0 = this.jcStartPoint._x;
-        this.jcLine._y0 = this.jcStartPoint._y;
+    onSelect(selected: boolean) {
+        this.selected = selected;
+        this.setChild(selected);
+
+        if (this.selected) {
+            this.imageViewer.selectAnnotation(this);
+        }
+        
     }
 
-    onDragEndPoint(deltaX: number, deltaY: number) {
+    onScale() {
+        this.lineWidth = this.getLineWidth();
+        this.circleRadius = this.getPointRadius();
+
+        this.jcLine._lineWidth = this.getLineWidth();
+        //this.jcStartPoint._radius = this.circleRadius;
+        this.annStartPoint.onScale();
+        this.jcEndPoint._radius = this.circleRadius;
+
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+
+    private setChild(selected: boolean) {
+
+        const color = selected ? this.selectedColor : this.defaultColor;
+
+        //if (this.jcStartPoint) {
+        //    this.jcStartPoint.visible(selected);
+        //    this.jcStartPoint.color(color);
+        //}
+
+        this.annStartPoint.onSelect(selected);
+
+        if (this.jcEndPoint) {
+            this.jcEndPoint.visible(selected);
+            this.jcEndPoint.color(color);
+        }
+
+        if (this.jcLine) {
+            this.jcLine.color(color);
+        }
+    }    
+
+    private onDragStartPoint(draggedObjParent: any, deltaX: number, deltaY: number) {
+        const point = draggedObjParent.annStartPoint.getPosition();
+        draggedObjParent.jcLine._x0 = point.x;
+        draggedObjParent.jcLine._y0 = point.y;
+    }
+
+    private onDragEndPoint(draggedObj: any, deltaX: number, deltaY: number) {
+        this.jcLine._x1 = this.jcEndPoint._x;
+        this.jcLine._y1 = this.jcEndPoint._y;
+    }
+
+    private onDragLine(draggedObj: any, deltaX: number, deltaY: number) {
+
+        this.annStartPoint.onTranslate(deltaX, deltaY);
+        const point = this.annStartPoint.getPosition();
+        this.jcLine._x0 = point.x;
+        this.jcLine._y0 = point.y;
+
+        //this.jcStartPoint._x += deltaX;
+        //this.jcStartPoint._y += deltaY;
+        //this.jcLine._x0 = this.jcStartPoint._x;
+        //this.jcLine._y0 = this.jcStartPoint._y;
+
+        this.jcEndPoint._x += deltaX;
+        this.jcEndPoint._y += deltaY;
         this.jcLine._x1 = this.jcEndPoint._x;
         this.jcLine._y1 = this.jcEndPoint._y;
     }

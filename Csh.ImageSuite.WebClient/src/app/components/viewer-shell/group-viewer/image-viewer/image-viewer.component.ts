@@ -7,7 +7,6 @@ import { ViewContextEnum, ViewContext, OperationEnum, OperationData, ViewContext
 import { Subscription } from "rxjs";
 import { Image } from "../../../../models/pssi";
 import { ViewerImageData } from "../../../../models/viewer-image-data";
-import { AnnObject, MouseEventType } from "../../../../annotation/ann-object";
 import { WorklistService } from "../../../../services/worklist.service";
 import { ConfigurationService } from "../../../../services/configuration.service";
 import { DialogService } from "../../../../services/dialog.service";
@@ -15,9 +14,15 @@ import { LogService } from "../../../../services/log.service";
 import { WindowLevelData } from "../../../../models/dailog-data/image-process";
 import { ManualWlDialogComponent } from "../../../../components/dialog/manual-wl-dialog/manual-wl-dialog.component";
 
+import { IImageViewer } from "../../../../interfaces/image-viewer-interface";
+import { IAnnotationObject } from "../../../../interfaces/annotation-object-interface";
+
+import { Point } from '../../../../models/annotation';
+import { AnnObject, MouseEventType } from "../../../../annotation/ann-object";
 import { AnnLine } from "../../../../annotation/ann-line";
 import { AnnCircle } from "../../../../annotation/ann-circle";
 import { AnnRectangle } from "../../../../annotation/ann-rectangle";
+
 
 @Component({
     selector: "app-image-viewer",
@@ -25,7 +30,7 @@ import { AnnRectangle } from "../../../../annotation/ann-rectangle";
     styleUrls: ["./image-viewer.component.css"],
     providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }]
 })
-export class ImageViewerComponent implements OnInit, AfterContentInit {
+export class ImageViewerComponent implements OnInit, AfterContentInit, IImageViewer {
     private _imageData: ViewerImageData;
     private image: Image;
     private ctImage: any; //cornerstone image
@@ -70,8 +75,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private jcImage: any;
     private jcanvas: any;
 
-    private annotationList: Array<any> = [];
-    private curSelectObj: any;
+    
     private mouseEventHelper: any = {};
     private eventHandlers: any = {};
 
@@ -90,10 +94,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private logPrefix: string;
 
 
-    private annLine: any;
-    private annCircle: any;
-    private annRectangle: any;
-    
+    private curSelectObj: IAnnotationObject;
+    private annObjList = [];
 
     @Input()
     set imageData(imageData: ViewerImageData) {
@@ -148,7 +150,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     ngOnInit() {
         this.logService.debug(this.logPrefix + "ngOnInit");
         this.baseUrl = this.configurationService.getBaseUrl();
-        
+
     }
 
     ngAfterContentInit() {
@@ -157,7 +159,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
     ngAfterViewInit() {
         this.logService.debug(this.logPrefix + "ngAfterViewInit");
-        
+
         this.canvas = this.canvasRef.nativeElement;
         this.helpElement = this.helpElementRef.nativeElement;
 
@@ -180,10 +182,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             this.showWaitingText();
         }
 
-        this.annLine = new AnnLine(this.annLayerId);
-        this.annCircle = new AnnCircle(this.annLayerId);
-        this.annRectangle = new AnnRectangle(this.annLayerId);
-      
         this.isViewInited = true;
     }
 
@@ -205,8 +203,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             } else {
                 this.jcanvas.clear();
             }
-            
 
+            if (this.olLayer) {
+                this.olLayer.objects().del();
+                this.showTextOverlay();
+            }
             this.needResize = false;
         }
     }
@@ -221,6 +222,73 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         }
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Implementation of interface IImageViewer
+
+    getAnnotationLayerId(): string {
+        return this.annLayerId;
+    }
+
+    getImage(): Image {
+        return this.image;
+    }
+
+    getCanvas(): any {
+        return this.canvas;
+    }
+
+    getContext(): ViewContext {
+        return this.viewContext.curContext;
+    }
+
+    selectAnnotation(annObj: IAnnotationObject) {
+        if (annObj) {
+            if (this.curSelectObj !== annObj) {
+                if (this.curSelectObj) {
+                    this.curSelectObj.onSelect(false);
+                }
+
+                this.curSelectObj = annObj;
+                this.curSelectObj.onSelect(true);
+            }
+        } else {
+            if (this.curSelectObj) {
+                if (!this.curSelectObj.isCreated()) {
+                    this.deleteAnnotation(this.curSelectObj);
+                } else {
+                    this.curSelectObj.onSelect(false);
+                }
+
+            }
+
+            this.curSelectObj = undefined;
+        }
+    }
+
+    onAnnotationCreated(annObj: IAnnotationObject) {
+        if (this.curSelectObj !== annObj) {
+            alert("error in onAnnotationCreated");
+            return;
+        }
+
+        if (annObj.isCreated()) {
+            this.annObjList.push(this.curSelectObj);
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
+
+
+    onKeyUp(event) {
+
+        if (event.code === "Delete") {
+            if (this.curSelectObj) {
+                this.deleteAnnotation(this.curSelectObj);
+                this.curSelectObj = undefined;
+            }
+        }
+    }
+
     getId(): string {
         //TODO: make sure the viewid is unique, even two viewer opened the same image
         return `DivImageViewer${this.imageData.getId()}`;
@@ -230,7 +298,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         //TODO: make sure the canvas is unique, even two viewer opened the same image
         return `viewerCanvas_${this.imageData.getId()}`;
     }
-
 
     private checkLoadImage() {
         if (!this.isViewInited || (this.image && this.image.cornerStoneImage === undefined)) {
@@ -265,10 +332,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
                     this.jcanvas.height(this.canvas.height);
 
                     this.logService.debug(this.logPrefix + 'checkLoadImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
-                     
-                    this.createLayers(canvasId);
-                    this.registerCanvasEvents();
-                    this.registerImgLayerEvents();
 
                     this.isImageLoaded = false;
                     cornerstone.displayImage(this.helpElement, this.ctImage);
@@ -324,7 +387,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.originalWindowWidth = this.ctImage.windowWidth;
 
         this.hideWaitingText();
-        this.showTextOverlay();
+
+        // No need to show text overlay here, since ngAfterViewChecked will call it.
+        //this.showTextOverlay();
     }
 
     private showWaitingText() {
@@ -359,19 +424,24 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.olLayer.visible(true);
 
         const font = this.configurationService.getOverlayFont();
-        const overlayList = this.dicomImageService.getOverlayDisplayList(this.image, this.canvas.width, this.canvas.height);
+
+        const canvasContext = this.canvas.getContext("2d");
+        canvasContext.font = font.getCanvasFontString();
+
+        const overlayList = this.dicomImageService.getOverlayDisplayList(this.image, this.canvas.width, this.canvas.height, canvasContext);
 
         overlayList.forEach(overlay => {
             let label = jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).layer(this.olLayerId)
                 .color(font.color).font(font.getCanvasFontString()).align(overlay.align);
 
-            if (overlay.id == "wl") {
+            if (overlay.id === "9003") {
                 this.wlLabel = label;
                 this.wlLabelFormat = overlay.text;
-                this.updateWlTextOverlay(this.image.cornerStoneImage.windowWidth, this.image.cornerStoneImage.windowHeight);
-            } else if (overlay.id == "zoom") {
+                this.updateWlTextOverlay(this.image.cornerStoneImage.windowWidth, this.image.cornerStoneImage.windowCenter);
+            } else if (overlay.id === "9004") {
                 this.zoomRatioLabel = label;
                 this.zoomRatioFormat = overlay.text;
+                this.updateZoomRatioTextOverlay(this.getScale());
             }
         });
 
@@ -471,7 +541,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.draggable(draggable);
 
         //each time context changed, we should unselect cur selected object
-        this.selectObject(undefined);
+        this.selectAnnotation(undefined);
 
         //if (previousCtx == contextEnum.create && ctx != contextEnum.create && this.tooltips) {
         //    //hide all tooltips
@@ -530,6 +600,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
             this.olLayer.visible(operation.data.show);
             break;
         }
+        case OperationEnum.ShowAnnotation:
+        {
+            this.annLayer.visible(operation.data.show);
+            break;
+        }
         case OperationEnum.ManualWL:
         {
             this.doManualWl();
@@ -542,38 +617,30 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     private setCursor() {
         const canvas = this.canvas;
         const curContext = this.viewContext.curContext;
-        const cursorUrl = this.baseUrl + "/assets/img/cursor";
+        const cursorUrl = `url(${this.baseUrl}/assets/img/cursor/{0}.cur),move`;
 
-        if (curContext.action == ViewContextEnum.WL) {
-            var u = cursorUrl + "/adjustwl.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
-        } else if (curContext.action == ViewContextEnum.Pan) {
-            var u = cursorUrl + "/hand.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
-        } else if (curContext.action == ViewContextEnum.Select) {
+        if (curContext.action === ViewContextEnum.WL) {
+            canvas.style.cursor = cursorUrl.format("adjustwl");
+        } else if (curContext.action === ViewContextEnum.Pan) {
+            canvas.style.cursor = cursorUrl.format("hand");
+        } else if (curContext.action === ViewContextEnum.Select) {
             canvas.style.cursor = "default";
-        } else if (curContext.action == ViewContextEnum.Zoom) {
-            var u = cursorUrl + "/zoom.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
-        } else if (curContext.action == ViewContextEnum.Magnifier) {
-            var u = cursorUrl + "/zoom.cur"; //TODO: get a manifier icon
-            canvas.style.cursor = "url('{0}'),move".format(u);
-        } else if (curContext.action == ViewContextEnum.ROIZoom) {
-            var u = cursorUrl + "/rectzoom.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
-        } else if (curContext.action == ViewContextEnum.SelectAnn) {
-            var u = cursorUrl + "/select.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
-        } else if (curContext.action == ViewContextEnum.Create) {
-            canvas.style.cursor = "default";
-            const parm = curContext.data;
-            if (parm && parm.type) {
-                //if (parm.type.prototype.type == annType.stamp) {
-                //    var u = this.cursorUrl + '/ann_stamp.cur';
-                //    canvas.style.cursor = "url('{0}'),move".format(u);
-                //} else {
-                //    canvas.style.cursor = "crosshair";
-                //}
+        } else if (curContext.action === ViewContextEnum.Zoom) {
+            canvas.style.cursor = cursorUrl.format("zoom");
+        } else if (curContext.action === ViewContextEnum.Magnifier) {
+            canvas.style.cursor = cursorUrl.format("zoom");
+        } else if (curContext.action === ViewContextEnum.ROIZoom) {
+            canvas.style.cursor = cursorUrl.format("rectzoom");
+        } else if (curContext.action === ViewContextEnum.SelectAnn) {
+            canvas.style.cursor = cursorUrl.format("select");
+        } else if (curContext.action === ViewContextEnum.CreateAnn) {
+            
+            if (curContext.data === AnnLine) {
+                canvas.style.cursor = cursorUrl.format("ann_line");
+            }else if (curContext.data === AnnRectangle) {
+                canvas.style.cursor = cursorUrl.format("rect");
+            } else if (curContext.data === AnnCircle) {
+                canvas.style.cursor = cursorUrl.format("ellipse");
             }
         }
     }
@@ -586,7 +653,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.updateImageTransform();
 
         //var totalAngle = this.getRotate();
-        //this.annotationList.forEach(function (obj) {
+        //this.annObjList.forEach(function (obj) {
         //    if (obj.onRotate) {
         //        obj.onRotate(angle, totalAngle);
         //    }
@@ -613,7 +680,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
             //var totalScale = this.getScale();
             ////adjust objects' size
-            //this.annotationList.forEach(function (obj) {
+            //this.annObjList.forEach(function (obj) {
             //    if (obj.onScale) {
             //        obj.onScale(totalScale);
             //    }
@@ -631,7 +698,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.imgLayer.translate(x, y);
         this.updateImageTransform();
 
-        //this.annotationList.forEach(function (obj) {
+        //this.annObjList.forEach(function (obj) {
         //    if (obj.onTranslate) {
         //        obj.onTranslate();
         //    }
@@ -732,6 +799,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         viewPort.hflip = false;
 
         cornerstone.setViewport(this.helpElement, viewPort);
+
+        this.updateWlTextOverlay(this.originalWindowWidth, this.originalWindowCenter);
+        this.updateZoomRatioTextOverlay(this.getScale());
+
+        this.refreshUi();
     }
 
     doFit(fitType: OperationEnum) {
@@ -781,6 +853,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
 
         this.rotate(curRotate);
+        this.updateZoomRatioTextOverlay(this.getScale());
     }
 
     showOverlay(visible) {
@@ -815,7 +888,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.rulerLayer.visible(visible);
     }
 
-    draggable(draggable: Boolean) {
+    draggable(draggable: boolean) {
         var self = this;
         if (!self.isImageLoaded) {
             return;
@@ -827,17 +900,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         this.imgLayer.draggable({
             disabled: !draggable,
             start: function(arg) {
-                if (curContext.action == ViewContextEnum.Select || curContext.action == ViewContextEnum.Create) {
+                if (curContext.action == ViewContextEnum.Select || curContext.action == ViewContextEnum.CreateAnn) {
                     canvas.style.cursor = "move";
                 }
             },
             stop: function(arg) {
-                if (curContext.action == ViewContextEnum.Select || curContext.action == ViewContextEnum.Create) {
+                if (curContext.action == ViewContextEnum.Select || curContext.action == ViewContextEnum.CreateAnn) {
                     canvas.style.cursor = "auto";
                 }
             },
             drag: function(arg) {
-                self.annotationList.forEach(function(obj) {
+                self.annObjList.forEach(function(obj) {
                     if (obj.onTranslate) {
                         obj.onTranslate.call(obj);
                     }
@@ -889,6 +962,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
 
         delta = (afterWidth - preWidth) / 2;
         this.translate(-delta, -delta);
+
+        this.updateZoomRatioTextOverlay(this.getScale());
+
+        this.refreshUi();
+    }
+
+    private refreshUi() {
+        this.annObjList.forEach(annObject => annObject.onScale(this.getScale()));
     }
 
     private registerImgLayerEvents() {
@@ -927,19 +1008,20 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         //if in select context, and not click any object, will unselect all objects.
         if (viewContext.curContext.action == ViewContextEnum.Select) {
             if (!evt.event.cancelBubble) {
-                if (self.curSelectObj && self.curSelectObj.select) {
-                    self.curSelectObj.select(false);
-                    self.curSelectObj = undefined;
-                }
+                //if (self.curSelectObj && self.curSelectObj.select) {
+                //    self.curSelectObj.onSelect(false);
+                //    self.curSelectObj = undefined;
+                //}
+                self.selectAnnotation(null);
                 self.draggable(true);
             } else { //an annobject has been selected
                 self.draggable(false);
             }
-        } else if (viewContext.curContext.action == ViewContextEnum.Create) {
+        } else if (viewContext.curContext.action == ViewContextEnum.CreateAnn) {
             const parm = viewContext.curContext.data;
             if (parm && parm.type && !parm.objCreated) {
                 const newObj: AnnObject = new parm.type();
-                self.createAnnObject(newObj, parm);
+ //               self.createAnnObject(newObj, parm);
 
                 parm.objCreated = true; //stop create the annObject again
             }
@@ -1113,48 +1195,59 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     private onCanvasMouseDown(evt) {
-        //if (!this.isImageLoaded) {
-        //    return;
-        //}
+        if (!this.isImageLoaded) {
+            return;
+        }
 
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
-        this.mouseEventHelper._mouseDownPosCvs = { x: evt.offsetX, y: evt.offsetY };
+        const point = { x: evt.offsetX, y: evt.offsetY };
+        this.mouseEventHelper._mouseDownPosCvs = point;
 
-        if (this.mouseEventHelper._mouseWhich == 3) { //right mouse
-            this.mouseEventHelper._lastContext = this.viewContext.curContext;
-            this.viewContext.setContext(ViewContextEnum.WL);
-        } else if (this.mouseEventHelper._mouseWhich == 1) {
-            //if (this.viewContext.curContext.action == ViewContextEnum.Magnifier) {
-            //    //this._startMagnifier(evt);
-            //}
+        if (this.mouseEventHelper._mouseWhich === 3) { //right mouse
 
-            if (this.viewContext.curContext.action === ViewContextEnum.SelectAnn) {
-                if (this.annLine.isCreated()) {
-                    this.annLine = new AnnLine(this.annLayerId);
+            if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
+                // Right click to cancel the creation of an annotation.
+                this.deleteAnnotation(this.curSelectObj);
+                this.curSelectObj = undefined;
+            } else {
+                this.mouseEventHelper._lastContext = this.viewContext.curContext;
+                this.viewContext.setContext(ViewContextEnum.WL);
+            }
+            
+        } else if (this.mouseEventHelper._mouseWhich === 1) {
+            if (this.viewContext.curContext.action === ViewContextEnum.Magnifier) {
+                //this._startMagnifier(evt);
+            } else if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
+
+                
+                if (this.curSelectObj) {
+                    // There is annotation selected
+                    if (!this.curSelectObj.isCreated()) {
+                        // The selected annotation is creating
+                        this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point);
+                    } else {
+                        // The selected annotation is created
+                        this.selectAnnotation(null);
+                        // Start to create a new annotation and assign it as selected.
+                        this.startCreateAnnAtPoint(point);
+                    }
+                } else {
+                    // There is no annotation selected
+                    this.startCreateAnnAtPoint(point);
                 }
-                this.annLine.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
-
-                //if (this.annCircle.isCreated()) {
-                //    this.annCircle = new AnnCircle(this.annLayerId);
-                //}
-                //this.annCircle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
-
-                //if (this.annRectangle.isCreated()) {
-                //    this.annRectangle = new AnnRectangle(this.annLayerId);
-                //}
-                //this.annRectangle.onMouseEvent(MouseEventType.MouseDown, { x: evt.offsetX, y: evt.offsetY });
+            }
+            else if (this.viewContext.curContext.action === ViewContextEnum.SelectAnn) {
             }
         }
     }
 
     private onCanvasMouseMove(evt) {
         const self = this;
-        //if (!this.isImageLoaded) {
-        //    return;
-        //}
+        if (!this.isImageLoaded) {
+            return;
+        }
 
-        console.log("Mouse move, X = " + evt.offsetX + ", Y = " + evt.offsetY);
-
+        //console.log(evt.offsetX + "," + evt.offsetY);
         const curContext = this.viewContext.curContext;
 
         if (!self.mouseEventHelper._lastPosCvs) {
@@ -1163,48 +1256,41 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         const deltaX = evt.offsetX - self.mouseEventHelper._lastPosCvs.x;
         const deltaY = evt.offsetY - self.mouseEventHelper._lastPosCvs.y;
 
-        if (self.mouseEventHelper._mouseWhich == 3) {
 
-            if (curContext.action == ViewContextEnum.WL) {
-                self.doWL(deltaX, deltaY);
+        if (curContext.action === ViewContextEnum.CreateAnn) {
+            if (this.curSelectObj && !this.curSelectObj.isCreated()) {
+                const point = { x: evt.offsetX, y: evt.offsetY };
+                this.curSelectObj.onMouseEvent(MouseEventType.MouseMove, point);
             }
-        } else if (self.mouseEventHelper._mouseWhich == 1) {
+        } else {
+            if (self.mouseEventHelper._mouseWhich === 3) {
 
-            if (this.viewContext.curContext.action === ViewContextEnum.SelectAnn) {
-                if (!this.annLine.isCreated()) {
-                    this.annLine.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
+                if (curContext.action === ViewContextEnum.WL) {
+                    self.doWL(deltaX, deltaY);
                 }
+            } else if (self.mouseEventHelper._mouseWhich === 1) {
 
-                //if (!this.annCircle.isCreated()) {
-                //    this.annCircle.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
-                //}
+                if (curContext.action == ViewContextEnum.Magnifier) {
+                    //if (self._magnifying) {
+                    //    self._loadMagnifierData(evt);
+                    //}
+                } else if (curContext.action === ViewContextEnum.WL) {
+                    self.doWL(deltaX, deltaY);
+                } else if (curContext.action === ViewContextEnum.Zoom) {
+                    const delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
+                    if (Math.abs(delta) > 0) {
+                        self.doZoom(delta);
+                    }
 
-                //if (!this.annRectangle.isCreated()) {
-                //    this.annRectangle.onMouseEvent(MouseEventType.MouseMove, { x: evt.offsetX, y: evt.offsetY });
-                //}
+                } else if (curContext.action === ViewContextEnum.ROIZoom) {
+                    const curPosCvs = {
+                        x: evt.offsetX,
+                        y: evt.offsetY
+                    };
+
+                    //self.drawROIZoom(self.mouseEventHelper._mouseDownPosCvs, curPosCvs);
+                }
             }
-
-            //if (curContext.action == ViewContextEnum.Magnifier) {
-            //    //if (self._magnifying) {
-            //    //    self._loadMagnifierData(evt);
-            //    //}
-            //} else if (curContext.action == ViewContextEnum.WL) {
-            //    self.doWL(deltaX, deltaY);
-            //} else if (curContext.action == ViewContextEnum.Zoom) {
-            //    const delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
-            //    if (Math.abs(delta) > 0) {
-            //        self.doZoom(delta);
-            //    }
-
-            //} else if (curContext.action == ViewContextEnum.ROIZoom) {
-            //    const curPosCvs = {
-            //        x: evt.offsetX,
-            //        y: evt.offsetY
-            //    };
-
-            //    //self.drawROIZoom(self.mouseEventHelper._mouseDownPosCvs, curPosCvs);
-            //}
-
         }
 
         self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
@@ -1221,14 +1307,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         if (self.mouseEventHelper._mouseWhich == 3) {
 
             if (curContext.action == ViewContextEnum.WL) {
-                if (self.mouseEventHelper._lastContext.action == ViewContextEnum.Create) { //cancel create
+                if (self.mouseEventHelper._lastContext.action == ViewContextEnum.CreateAnn) { //cancel create
                     this.viewContext.setContext(ViewContextEnum.Select);
                 } else {
                     this.viewContext.setContext(self.mouseEventHelper._lastContext.action,
                         self.mouseEventHelper._lastContext.data);
                 }
             }
-        } else if (self.mouseEventHelper._mouseWhich == 1) {
+        } else if (self.mouseEventHelper._mouseWhich === 1) {
 
             //if (curContext.action == contextEnum.magnifier && self._magnifying) {
             //    self._endMagnifier();
@@ -1285,91 +1371,63 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
         //}
     }
 
-    private selectObject(obj) {
-        if (obj && obj instanceof AnnObject) {
-            if (this.curSelectObj !== obj) {
-                if (this.curSelectObj) {
-                    this.curSelectObj.select(false);
-                }
-                this.curSelectObj = obj;
-                this.curSelectObj.select(true);
-            }
-        } else { //call selectObject(undefined) to unselect all, e.g. user clicked the canvas
-            if (this.curSelectObj) {
-                if (this.curSelectObj.isCreated) {
-                    this.curSelectObj.select(false);
-                } else {
-                    this.deleteCurObject();
-                }
-            }
 
-            this.curSelectObj = undefined;
-        }
-    }
 
-    private createAnnObject(annObj: AnnObject, param: any) {
-        if (!this.isImageLoaded)
-            return;
+    //private createAnnObject(annObj: AnnObject, param: any) {
+    //    if (!this.isImageLoaded)
+    //        return;
 
-        var self = this;
-        if (annObj.hasToolTip()) {
-            //show tooltip
-        }
+    //    var self = this;
+    //    if (annObj.hasToolTip()) {
+    //        //show tooltip
+    //    }
 
-        self.showAnnotation(true); //in case user closed the annotation
+    //    self.showAnnotation(true); //in case user closed the annotation
 
-        if (self.curSelectObj) {
-            self.selectObject(undefined);
-        }
+    //    if (self.curSelectObj) {
+    //        self.selectObject(undefined);
+    //    }
 
-        self.curSelectObj = annObj;
-        annObj.startCreate(self,
-            function() {
-                const newObj = this;
-                if (newObj && newObj.isCreated) {
-                    //finish create
-                    if (self.annotationList.indexOf(newObj) < 0) {
-                        self.annotationList.push(newObj);
-                    }
+    //    self.curSelectObj = annObj;
+    //    annObj.startCreate(self,
+    //        function() {
+    //            const newObj = this;
+    //            if (newObj && newObj.isCreated) {
+    //                //finish create
+    //                if (self.annObjList.indexOf(newObj) < 0) {
+    //                    self.annObjList.push(newObj);
+    //                }
 
-                    self.viewContext.setContext(ViewContextEnum.Select);
-                    self.selectObject(newObj);
-                }
-            },
-            param);
+    //                self.viewContext.setContext(ViewContextEnum.Select);
+    //                self.selectObject(newObj);
+    //            }
+    //        },
+    //        param);
 
-        return annObj;
-    }
+    //    return annObj;
+    //}
 
-    private deleteCurObject() {
-        const curObj = this.curSelectObj;
-        if (curObj) {
-            this.deleteObject(curObj);
-            this.curSelectObj = undefined;
-        }
-    }
+    private deleteAnnotation(annObj: IAnnotationObject) {
 
-    private deleteObject(obj) {
-        if (obj && obj instanceof AnnObject) {
-            obj.del();
+        if (!annObj) return;
+
+        if (annObj.isCreated()) {
+            // If this annotation is already created, need to remove it from the list
+            const len = this.annObjList.length;
 
             let i = 0;
-            let found = false;
-            const len = this.annotationList.length;
-            for (i = 0; i < len; i++) {
-                if (this.annotationList[i] === obj) {
-                    found = true;
+            for (; i < len; i++) {
+                if (this.annObjList[i] === annObj) {
                     break;
                 }
             }
 
-            if (found) {
-                this.annotationList.splice(i, 1);
-                if (this.curSelectObj === obj) {
-                    this.curSelectObj = undefined;
-                }
+            if (i !== len) {
+                this.annObjList.splice(i, 1);
             }
         }
+
+        annObj.onDeleteChildren();
     }
 
     private doManualWl() {
@@ -1401,6 +1459,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit {
     }
 
     private updateZoomRatioTextOverlay(roomRatio: number) {
-        this.zoomRatioLabel.string(this.zoomRatioFormat.format(roomRatio));
+        this.zoomRatioLabel.string(this.zoomRatioFormat.format(roomRatio.toFixed(2)));
+    }
+
+    private startCreateAnnAtPoint(point: Point) {
+        this.updateImageTransform();
+        const annType = this.viewContext.curContext.data;
+        this.curSelectObj = new annType(this);
+        this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point);
     }
 }

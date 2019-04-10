@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from "@angular/core";
 import { Subscription } from "rxjs";
 
 import { SelectedButtonData, ButtonStyleToken } from "../../../models/dropdown-button-menu-data";
-import { OperationEnum, ViewContextService } from "../../../services/view-context.service";
+import { OperationEnum, ViewContext, ViewContextService } from "../../../services/view-context.service";
 import { ConfigurationService } from "../../../services/configuration.service";
 
 @Component({
@@ -125,7 +125,14 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
         }
 
         if (this.buttonData.operationData.type === OperationEnum.SetContext) {
-            this.viewContext.setContext(this.buttonData.operationData.data);
+            
+            if (this.buttonData.operationData.data instanceof ViewContext) {
+                const viewContext = this.buttonData.operationData.data as ViewContext;
+                this.viewContext.setContext(viewContext.action, viewContext.data);
+            } else {
+                this.viewContext.setContext(this.buttonData.operationData.data, null);
+            }
+            
         } else {
             this.viewContext.onOperation(this.buttonData.operationData);
             if (this.isCheckStyle && this.isTopButton && !this.showArrow) {
@@ -136,7 +143,14 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
 
     setContext(viewContext) {
         if (this.buttonData.operationData.type === OperationEnum.SetContext) {
-            this.isChecked = (viewContext.action === this.buttonData.operationData.data);
+            
+            if (this.buttonData.operationData.data instanceof ViewContext) {
+                const myViewContext = this.buttonData.operationData.data as ViewContext;
+                this.isChecked = (viewContext.action === myViewContext.action && viewContext.data === myViewContext.data);
+            } else {
+                this.isChecked = (viewContext.action === this.buttonData.operationData.data);
+            }
+            
         }
     }
 }
