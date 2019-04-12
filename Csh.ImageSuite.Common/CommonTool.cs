@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +47,32 @@ namespace Csh.ImageSuite.Common
             });
 
             return ret;
+        }
+
+        public string ChangeStringFirstCharCase(string value, bool toUpper)
+        {
+            if (string.IsNullOrEmpty(value))
+                return value;
+
+            if (toUpper)
+            {
+                return (value.Length > 1)? char.ToUpper(value[0]) + value.Substring(1) : char.ToUpper(value[0]).ToString();
+            }
+            else
+            {
+                return (value.Length > 1) ? char.ToLower(value[0]) + value.Substring(1) : char.ToLower(value[0]).ToString();
+            }
+            
+        }
+
+        public int GetSafeIntDbValue(DataRow row, string fieldName)
+        {
+            return row.Table.Columns.Contains(fieldName) ? GetSafeIntValue(row[fieldName]) : 0;
+        }
+
+        public string GetSafeStringDbValue(DataRow row, string fieldName)
+        {
+            return row.Table.Columns.Contains(fieldName) ? GetSafeStrValue(row[fieldName]) : string.Empty;
         }
     }
 }

@@ -185,6 +185,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\DicomImageController.cs" />
+    <Compile Include="Controllers\OverlayController.cs" />
     <Compile Include="Controllers\WadoController.cs" />
     <Compile Include="Controllers\PssiController.cs" />
     <Compile Include="Controllers\ShortcutController.cs" />
@@ -211,6 +212,7 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Views\DicomImage\" />
+    <Folder Include="Views\Overlay\" />
     <Folder Include="Views\Pssi\" />
     <Folder Include="Views\Shortcut\" />
   </ItemGroup>

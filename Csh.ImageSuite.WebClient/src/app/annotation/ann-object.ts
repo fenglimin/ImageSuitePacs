@@ -55,6 +55,10 @@ export abstract class AnnObject {
     protected imageViewer: IImageViewer;
 
     protected parent: AnnObject;
+    protected focusedObj: AnnObject;
+
+    protected onDragParent: (draggedObj, deltaX, deltaY) => void;
+    protected onSelectParent: (selectedObj) => void;
 
     constructor(imageViewer: IImageViewer) {
 
@@ -75,19 +79,58 @@ export abstract class AnnObject {
         return this.created;
     }
 
+    isSelected(): boolean {
+        return this.selected;
+    }
+
     onDeleteChildren() {
         const properties = Object.getOwnPropertyNames(this);
         properties.forEach(prop => {
-            const obj = this[prop];
+            let obj = this[prop];
             if (obj instanceof AnnObject && obj !== this.parent) {
                 const annObj = obj as AnnObject;
                 annObj.onDeleteChildren();
                 this[prop] = undefined;
+            } else if (obj instanceof Array) {
+                obj.forEach(item => {
+
+                    if (item instanceof AnnObject && item !== this.parent) {
+                        const annObj = item as AnnObject;
+                        annObj.onDeleteChildren();
+                    }
+
+                    obj = [];
+                });
             }else if ( AnnObject.isJcanvasObject(obj) ) {
                 obj.del();
                 this[prop] = undefined;
             }
         });
+    }
+
+    onKeyDown(keyEvent: any): void {
+
+        if (!this.focusedObj) return;
+
+        // Move 5 screen point by default, or move 1 screen point if ctrl key is pressed
+        const step = keyEvent.ctrlKey ? 1 : 5;
+
+        const posImageOld = this.focusedObj.getPosition();
+        let posScreen = AnnObject.imageToScreen(posImageOld, this.image.transformMatrix);
+
+        if (keyEvent.code === "ArrowUp") {
+            posScreen.y -= step;
+        } else if (keyEvent.code === "ArrowDown") {
+            posScreen.y += step;
+        } else if (keyEvent.code === "ArrowLeft") {
+            posScreen.x -= step;
+        } else if (keyEvent.code === "ArrowRight") {
+            posScreen.x += step;
+        }
+
+        const posImageNew = AnnObject.screenToImage(posScreen, this.image.transformMatrix);
+
+        this.focusedObj.onDrag(this.focusedObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
     }
 
     static screenToImage(point: any, transform: any) {
@@ -152,7 +195,8 @@ export abstract class AnnObject {
         return value;
     }
 
-    protected getLineWidth(): number {
+    
+    getLineWidth(): number {
         let lineWidth = 1 / this.image.getScaleValue();
         if (lineWidth < this.minLineWidth) {
             lineWidth = this.minLineWidth;
@@ -161,7 +205,7 @@ export abstract class AnnObject {
         return lineWidth;
     }
 
-    protected getPointRadius(): number {
+    getPointRadius(): number {
         let circleRadius = 3 / this.image.getScaleValue();
         if (circleRadius < this.minPointRadius) {
             circleRadius = this.minPointRadius;
@@ -196,8 +240,8 @@ export abstract class AnnObject {
                         const deltaX = point.x - child._lastPos.x;
                         const deltaY = point.y - child._lastPos.y;
 
-                        child._x += deltaX;
-                        child._y += deltaY;
+                        //child._x += deltaX;
+                        //child._y += deltaY;
 
                         if (onDrag) {
                             onDrag.call(parent, child, deltaX, deltaY);
@@ -230,13 +274,29 @@ export abstract class AnnObject {
 
         child._onmousedown = arg => {
             if (parent.needResponseToChildMouseEvent()) {
-                parent.onSelect(true);
+                parent.onMouseEvent(MouseEventType.MouseDown, arg);
             }
+
+            arg.event.cancelBubble = true;
+            arg.event.stopPropagation();
+            arg.event.stopImmediatePropagation();
+            arg.event.preventDefault();
+
+            // return false to make sure no other jc object's mouse event will be called
+            return false;
         };
     }
 
     protected needResponseToChildMouseEvent(): boolean {
         return !this.dragging && this.imageViewer.getContext().action === ViewContextEnum.SelectAnn;
+    }
+
+    protected onDrag(draggedObj: any, deltaX: number, deltaY: number): void {
+
+    }
+
+    protected getPosition(): Point {
+        return { x: 0, y: 0 }
     }
 }
 

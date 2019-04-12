@@ -22,15 +22,15 @@ namespace Csh.ImageSuite.Model.Dicom
         public string StudyId { get; set; }
 
         [Display(Name = "Study Date")]
-        public string StudyDateString{ get; set; }
+        public string StudyDate{ get; set; }
 
         [Display(Name = "Study Time")]
-        public string StudyTimeString { get; set; }
+        public string StudyTime { get; set; }
 
         [Display(Name = "Accession Number")]
         public string AccessionNo { get; set; }
 
-        public string StudyDesc { get; set; }
+        public string StudyDescription { get; set; }
         //public DateTime StudyDate { get; }
 
         //public DateTime StudyTime { get; }
@@ -39,11 +39,32 @@ namespace Csh.ImageSuite.Model.Dicom
 
         public List<Series> SeriesList { get; private set; }
 
+        public List<string> BodyPartList { get; set; }
+
+
         [Display(Name = "Series Count")]
         public int SeriesCount { get; set; }
 
         [Display(Name = "Image Count")]
         public int ImageCount { get; set; }
+
+        [Display(Name = "Printed")]
+        public string Printed { get; set; }
+
+        [Display(Name = "Reserved")]
+        public string Reserved { get; set; }
+
+        [Display(Name = "Readed")]
+        public string Readed { get; set; }
+
+        [Display(Name = "InstanceAvailability")]
+        public string InstanceAvailability { get; set; }
+
+        public int ScanStatus { get; set; }
+
+        //public string AccessGroups { get; set; }
+
+        public int Send { get; set; }
 
         public string Modality
         {
@@ -60,5 +81,15 @@ namespace Csh.ImageSuite.Model.Dicom
                 return ret;
             }
         }
+
+        public string ReferPhysician { get; set; }
+
+        public string TokenId { get; set; }
+
+        public string AdditionalPatientHistory { get; set; }
+
+        public string Veterinarian { get; set; }
+
+        public string RequestedProcPriority { get; set; }
     }
 }

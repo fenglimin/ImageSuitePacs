@@ -246,24 +246,42 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (annObj) {
             if (this.curSelectObj !== annObj) {
                 if (this.curSelectObj) {
-                    this.curSelectObj.onSelect(false);
+                    this.curSelectObj.onSelect(false, false);
                 }
 
                 this.curSelectObj = annObj;
-                this.curSelectObj.onSelect(true);
+                this.curSelectObj.onSelect(true, false);
             }
         } else {
             if (this.curSelectObj) {
                 if (!this.curSelectObj.isCreated()) {
                     this.deleteAnnotation(this.curSelectObj);
                 } else {
-                    this.curSelectObj.onSelect(false);
+                    this.curSelectObj.onSelect(false, false);
                 }
 
             }
 
             this.curSelectObj = undefined;
         }
+    }
+
+    selectNextAnnotation() {
+        const len = this.annObjList.length;
+        if (len === 0) return;
+
+        if (!this.curSelectObj) {
+            this.selectAnnotation(this.annObjList[0]);
+            return;
+        }
+
+        let i = 0;
+        for (; i < len; i++) {
+            if (this.curSelectObj === this.annObjList[i]) break;
+        }
+
+        if (i === len - 1) i = -1;
+        this.selectAnnotation(this.annObjList[i+1]);
     }
 
     onAnnotationCreated(annObj: IAnnotationObject) {
@@ -275,17 +293,28 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (annObj.isCreated()) {
             this.annObjList.push(this.curSelectObj);
         }
+
+        this.viewContext.setContext(ViewContextEnum.SelectAnn);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
 
 
-    onKeyUp(event) {
+    onKeyDown(event) {
+
+        if (!this.curSelectObj) return;
 
         if (event.code === "Delete") {
+            this.deleteAnnotation(this.curSelectObj);
+            this.curSelectObj = undefined;
+        }else if (event.code === "KeyA") {
+            this.selectNextAnnotation();
+        } else if (event.code === "KeyF") {
             if (this.curSelectObj) {
-                this.deleteAnnotation(this.curSelectObj);
-                this.curSelectObj = undefined;
+                this.curSelectObj.onSwitchFocus();
             }
+        }
+        else if (event.code === "ArrowUp" || event.code === "ArrowDown" || event.code === "ArrowLeft" || event.code === "ArrowRight") {
+            this.curSelectObj.onKeyDown(event);
         }
     }
 
@@ -377,6 +406,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         const ctCanvas = cornerstone.getEnabledElement(this.helpElement).canvas;
         this.jcImage = jCanvaScript.image(ctCanvas).layer(this.imgLayerId);
+
+        
 
         this.setContext(this.viewContext.curContext);
         //fit window
@@ -664,6 +695,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         const viewPort = cornerstone.getViewport(this.helpElement);
 
+        const rotateAngle = this.getRotate();
+        if (Math.abs(rotateAngle % 180) === 90) {
+            flipVertical = !flipVertical;
+        }
+
         if (flipVertical) {
             viewPort.vflip = !viewPort.vflip;
         } else {
@@ -671,6 +707,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
 
         cornerstone.setViewport(this.helpElement, viewPort);
+
+        this.annObjList.forEach(annObj => annObj.onFlip(flipVertical));
     }
 
     scale(value) {
@@ -802,6 +840,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.updateWlTextOverlay(this.originalWindowWidth, this.originalWindowCenter);
         this.updateZoomRatioTextOverlay(this.getScale());
+
+        this.deleteAllAnnotation();
+        this.curSelectObj = undefined;
 
         this.refreshUi();
     }
@@ -1406,6 +1447,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     //    return annObj;
     //}
+
+    private deleteAllAnnotation() {
+        this.annObjList.forEach(annObj => annObj.onDeleteChildren());
+        this.annObjList = [];
+    }
 
     private deleteAnnotation(annObj: IAnnotationObject) {
 

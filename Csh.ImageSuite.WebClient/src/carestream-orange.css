@@ -1475,6 +1475,10 @@ mat-footer-row, mat-header-row, mat-row, td.mat-cell, td.mat-footer-cell, th.mat
     color: rgba(0,0,0,.54);
 }
 
+.mat-form-field-wrapper .mat-form-field-flex {
+    background: black;
+}
+
 .mat-calendar-table-header {
     color: rgba(0,0,0,.38);
 }

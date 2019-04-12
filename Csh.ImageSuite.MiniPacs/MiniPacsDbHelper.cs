@@ -11,6 +11,8 @@ using Csh.ImageSuite.Model.Dicom;
 using System.Data.SqlClient;
 using System.Xml;
 using System.IO;
+using Csh.ImageSuite.Model.Enum;
+
 
 namespace Csh.ImageSuite.MiniPacs
 {
@@ -54,10 +56,12 @@ namespace Csh.ImageSuite.MiniPacs
         {
             DicOldWebPacsTransform.Add("PatientID", "PatientId");
             DicOldWebPacsTransform.Add("PatientsName", "PatientName");
-            DicOldWebPacsTransform.Add("PatientsSex", "Gender");
+            DicOldWebPacsTransform.Add("PatientsSex", "PatientSex");
             DicOldWebPacsTransform.Add("AccessionNumber", "AccessionNo");
-            //DicOldWebPacsTransform.Add("PatientsBirthDate", "studyId");
-            //DicOldWebPacsTransform.Add("Modality", "modality");
+            DicOldWebPacsTransform.Add("PatientsAge", "PatientAge");
+            DicOldWebPacsTransform.Add("PatientsBirthDate", "PatientBirthDate");
+            DicOldWebPacsTransform.Add("NumberOfStudyRelatedSeries", "SeriesCount");
+            DicOldWebPacsTransform.Add("NumberOfStudyRelatedInstances", "ImageCount");
         }
 
         public IList<QueryShortcut> LoadQueryShortcuts()
@@ -75,7 +79,6 @@ namespace Csh.ImageSuite.MiniPacs
                 lstParameter.Add(new SqlParameter("@UserName", "admin"));
                 lstParameter.Add(new SqlParameter("@RoleName", "administrator"));
                 lstParameter.Add(new SqlParameter("@PropertyName", string.Format("{0}{1}", "Web_WorklistShortcut", "%")));
-
 
                 ds = SqlHelper.ExecuteQuery(strSQL, lstParameter.ToArray(), _connectionString);
 
@@ -97,21 +100,44 @@ namespace Csh.ImageSuite.MiniPacs
                     {
                         if (node.Name == "TagPatientsBirthDate")
                         {
-                            DateTime datFrom = DateTime.MinValue;
-                            DateTime datTo = DateTime.MaxValue;
-
                             foreach (XmlNode _node in node.ChildNodes)
                             {
                                 if (_node.Name == "From")
                                 {
-                                    try { mdl.BirthDateFrom = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
+                                    try { mdl.PatientBirthDateFrom = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
                                     catch { }
                                 }
                                 else if (_node.Name == "To")
                                 {
-                                    try { mdl.BirthDateTo = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
+                                    try { mdl.PatientBirthDateTo = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
                                     catch { }
                                 }
+                            }
+
+                            continue;
+                        }
+
+                        if (node.Name == "TagStudyDate")
+                        {
+                            if (node.ChildNodes.Count == 2)
+                            {
+                                foreach (XmlNode _node in node.ChildNodes)
+                                {
+                                    if (_node.Name == "From")
+                                    {
+                                        try { mdl.StudyDateFrom = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
+                                        catch { }
+                                    }
+                                    else if (_node.Name == "To")
+                                    {
+                                        try { mdl.StudyDateTo = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
+                                        catch { }
+                                    }
+                                }
+                            }
+                            else if (node.ChildNodes.Count == 1)
+                            {
+                                mdl.StudyDate = node.InnerText;
                             }
 
                             continue;
@@ -145,16 +171,6 @@ namespace Csh.ImageSuite.MiniPacs
             {
                 throw;
             }
-
-            //return new[]
-            //{
-            //    new QueryShortcut() {Id = 3, Name = "aa"},
-            //    new QueryShortcut() {Id = 4, Name = "bb"},
-            //    new QueryShortcut() {Id = 5, Name = "cc"},
-            //    new QueryShortcut() {Id = 6, Name = "dd"},
-            //    new QueryShortcut() {Id = 7, Name = "ee"},
-            //    new QueryShortcut() {Id = 8, Name = "ff"}
-            //};
         }
 
         public void SaveShortcut(QueryShortcut shortcut)
@@ -180,17 +196,41 @@ namespace Csh.ImageSuite.MiniPacs
                 {
                     if (info.PropertyType == typeof(DateTime))
                     {
-                        if (propertyName == "BirthDateFrom")
+                        if (propertyName == "PatientBirthDateFrom")
                         {
                             writer.WriteStartElement("Tag" + "PatientsBirthDate");
                             writer.WriteStartElement("From");
-                            writer.WriteValue(propertyValue.ToString());
+                            writer.WriteValue(propertyValue);
                             writer.WriteEndElement();
                             writer.WriteStartElement("To");
-                            writer.WriteValue(shortcut.BirthDateTo.ToString());
+                            writer.WriteValue(shortcut.PatientBirthDateTo.ToString());
                             writer.WriteEndElement();
                             writer.WriteEndElement();
                             continue;
+                        }
+                    }
+
+                    if (propertyName == "StudyDate" || propertyName == "StudyDateFrom")
+                    {
+                        if (String.IsNullOrEmpty(shortcut.StudyDate) || shortcut.StudyDate == "7")
+                        {
+                            writer.WriteStartElement("Tag" + "StudyDate");
+                            writer.WriteStartElement("From");
+                            writer.WriteValue(shortcut.StudyDateFrom.ToString());
+                            writer.WriteEndElement();
+                            writer.WriteStartElement("To");
+                            writer.WriteValue(shortcut.StudyDateTo.ToString());
+                            writer.WriteEndElement();
+                            writer.WriteEndElement();
+                        }
+                        else
+                        {
+                            if (propertyName == "StudyDate")
+                            {
+                                writer.WriteStartElement("Tag" + propertyName);
+                                writer.WriteValue(propertyValue);
+                                writer.WriteEndElement();
+                            }
                         }
                     }
 
@@ -212,7 +252,6 @@ namespace Csh.ImageSuite.MiniPacs
             writer.WriteEndElement();
             writer.WriteEndDocument();
 
-            // ¹Ø±Õwriter
             writer.Close();
 
             string strCondition = Encoding.UTF8.GetString(stream.ToArray());
@@ -256,25 +295,204 @@ namespace Csh.ImageSuite.MiniPacs
             }
             catch (Exception ex)
             {
-
                 throw;
             }
-            
-            
+        }
+        public List<WorklistColumn> GetWorklistColumnConfig(string UserId, string UILanguage)
+        {
+            try
+            {
+                //
+                // Get All Modality Type
+                Dictionary<string, string> dicModality = new Dictionary<string, string>();
+                DataSet dsModality = GetAllModality();
+                foreach (DataRow row in dsModality.Tables[0].Rows)
+                {
+                    dicModality.Add(row["ModalityType"].ToString(), row["ModalityType"].ToString());
+                }
+
+                //
+                // Get Study Date Type
+                Dictionary<string, string> dicStudyDate = new Dictionary<string, string>();
+                foreach (int i in Enum.GetValues(typeof(StudyDateType)))
+                {
+                    String name = Enum.GetName(typeof(StudyDateType), i);
+                    dicStudyDate.Add(i.ToString(), name);
+                }
+
+                //
+                // Get Body Part Local Name
+                Dictionary<string, string> dicBodyPartLocalName = new Dictionary<string, string>();
+                DataTable tb = QueryBodyPartList("", "").Tables[0];
+
+                foreach (DataRow Row in tb.Rows)
+                {
+                    string bodyPartName = Row["BodyPartName"].ToString().Trim();
+                    string localName = Row["LocalName"].ToString().Trim();
+                    dicBodyPartLocalName.Add(bodyPartName, localName);
+                }
+
+
+                SqlWrapper sql = new SqlWrapper();
+                sql.CommandType = CommandType.StoredProcedure;
+                sql.SqlString = "[WGGC_SP_GetWorklistColumn]";
+                List<SqlParameter> lstParas = new List<SqlParameter>();
+                SqlParameter para1 = new SqlParameter("@UserName", UserId);
+                SqlParameter para2 = new SqlParameter("@LanguageType", UILanguage);
+                SqlParameter para3 = new SqlParameter("@PssiLevel", 3);
+                para3.DbType = DbType.Int32;
+                sql.Parameter = new SqlParameter[] { para1, para2, para3 };
+
+                DataSet ds = SqlHelper.ExecuteQuery(sql, _connectionString);
+
+                List<WorklistColumn> lstWorklistColumn = new List<WorklistColumn>();
+
+                // Use a list to check if duplicate
+                List<string> lstColumnId = new List<string>();
+
+                foreach (DataRow row in ds.Tables[0].Rows)
+                {
+                    WorklistColumn mdl = new WorklistColumn();
+                    mdl.ColumnSequence = Convert.ToInt16(row["ColumnIndex"]);
+
+                    mdl.ColumnId = row["PropertyValue"].ToString().Trim();
+
+                    foreach (var value in DicOldWebPacsTransform.Keys)
+                    {
+                        if (row["PropertyValue"].ToString() == value)
+                        {
+                            mdl.ColumnId = DicOldWebPacsTransform.FirstOrDefault(x => x.Key == value).Value;
+                        }
+                    }
+
+                    mdl.ColumnId = _commonTool.ChangeStringFirstCharCase(mdl.ColumnId, false);
+
+                    mdl.ColumnText = row["LanguageValue"].ToString();
+                    mdl.ControlType = row["ControlType"].ToString();
+                    
+                    string initValueList = row["ValueList"].ToString();
+                    if (initValueList != "")
+                    {
+                        string[] valueListOptions = initValueList.Split(',');
+                        Dictionary<string, string> dicValueList = new Dictionary<string, string>();
+
+                        foreach (string valueListOption in valueListOptions)
+                        {
+                            string[] initValueListKeyValue = valueListOption.Split('=');
+                            // Remove | from N|
+                            initValueListKeyValue[0] = initValueListKeyValue[0].Replace("|", "");
+                            initValueListKeyValue[1] = initValueListKeyValue[1].Replace("|", "");
+                            dicValueList.Add(initValueListKeyValue[1], initValueListKeyValue[0]);
+                        }
+
+                        mdl.ValueList = dicValueList;
+                    }
+
+                    if (mdl.ColumnId == "modality")
+                    {
+                        mdl.ControlType = "DropDownList";
+                        mdl.ValueList = dicModality;
+                    }
+
+                    if (mdl.ColumnId == "studyDate")
+                    {
+                        mdl.ControlType = "DropDownList";
+                        mdl.ValueList = dicStudyDate;
+                    }
+
+                    if (mdl.ColumnId == "bodyPartExamined")
+                    {
+                        mdl.ControlType = "DropDownList";
+                        mdl.ValueList = dicBodyPartLocalName;
+                    }
+
+                    mdl.OverlayID = row["OverlayID"].ToString();
+
+                    //user defined field
+                    if (row.Table.Columns.Contains("LocalName"))
+                    {
+                        if (mdl.ColumnText.StartsWith("UserDefinedField"))
+                        {
+                            string localName = row["LocalName"].ToString();
+                            if (!string.IsNullOrEmpty(localName))
+                            {
+                                mdl.UserDefinedName = localName;
+                            }
+                        }
+
+                        if (row["Visible"] != null)
+                        {
+                            string visible = row["Visible"].ToString();
+                            if (string.Compare(visible, "0", true) == 0)
+                            {
+                                mdl.Visible = false;
+                            }
+                        }
+                    }
+
+                    if (lstColumnId.Contains(mdl.ColumnId))
+                        continue;
+
+                    lstColumnId.Add(mdl.ColumnId);
+                    lstWorklistColumn.Add(mdl);
+                }
+                return lstWorklistColumn;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-
-        public IList<Study> GetStudies(QueryShortcut queryShortcut)
+        public DataSet GetAllModality()
         {
+            try
+            {
+                string strSQL = @"SELECT ModalityType FROM ModalityTypeList ORDER BY ModalityType";
+                DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+                return ds;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public List<Study> GetStudies(QueryShortcut queryShortcut, string sortPara, int pageIndex, out int pageCount)
+        {
+            string dateFormat = GetDateFormat();
+            string timeFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.LongTimePattern;
+            int studiesCount = GetStudiesCount(queryShortcut);
+            int pageSize = GetWorklistPageSize();
+            pageCount = studiesCount / pageSize + 1;
+
+            string orderByCondition = "ORDER BY PatientID ";
+            if (!String.IsNullOrEmpty(sortPara))
+            {
+                string sortName = (sortPara.Split('|'))[0];
+                string sortOrder = (sortPara.Split('|'))[1];
+                orderByCondition = "ORDER BY " + sortName + " " + sortOrder;
+            }
+            else
+            {
+                // Default sort by StudyDate DESC
+                orderByCondition = "ORDER BY " + "StudyDate" + " " + "DESC";
+            }
+
             var studies = new List<Study>();
 
-            var sqlStr = string.Format("SELECT " +
-                                       "P.SerialNo ID_Patient, P.PatientID, P.PatientName, P.PatientBirthDate, P.PatientSex, " +
-                                       "S.SerialNo ID_Study, S.StudyInstanceUID, S.AccessionNo, S.StudyID, S.StudyDate, S.StudyTime, S.SeriesCount, S.ImageCount IC_Study, S.StudyDescription, " +
-                                       "R.SerialNo ID_Series, R.SeriesInstanceUID, R.SeriesNo, R.SeriesDate, R.SeriesTime, R.BodyPart, R.ViewPosition, R.Modality, R.ImageCount IC_Series " +
-                                       "FROM Patient P, Study S, Series R " +
-                                       "WHERE R.StudyInstanceUID = S.StudyInstanceUID AND S.PatientGUID = P.PatientGUID");
-            sqlStr += BuildSqlCondition(queryShortcut);
+            var sqlStr = " SELECT *, R.SerialNo ID_Series, R.SeriesInstanceUID, R.SeriesNo, R.SeriesDate, R.SeriesTime, R.BodyPart, R.ViewPosition, R.Modality, R.ImageCount IC_Series FROM ( ";
+
+            sqlStr += string.Format("SELECT " +
+                                       "P.SerialNo ID_Patient, P.PatientID PatientID, P.PatientName, P.PatientBirthDate, P.PatientSex, " +
+                                       "S.SerialNo ID_Study, S.StudyInstanceUID, S.AccessionNo, S.StudyID, S.StudyDate, S.StudyTime, " +
+                                       "S.SeriesCount, S.ImageCount IC_Study, S.StudyDescription, S.Printed, S.Reserved, S.Readed, S.ReferPhysician, " +
+                                       "S.InstanceAvailability, S.AdditionalPatientHistory, S.ScanStatus, S.Send, " +
+                                       "ROW_NUMBER() OVER ("+ orderByCondition + ") as row " +
+                                       "FROM Patient P, Study S " +
+                                       "WHERE S.PatientGUID = P.PatientGUID ");
+
+            sqlStr += BuildSqlCondition(queryShortcut, pageIndex, pageSize);
 
             var result = SqlHelper.ExecuteQuery(sqlStr, _connectionString);
             foreach (DataRow row in result.Tables[0].Rows)
@@ -287,6 +505,25 @@ namespace Csh.ImageSuite.MiniPacs
                 {
                     study = _pssiObjectCreator.CreateStudy(row);
                     study.Patient = _pssiObjectCreator.CreatPatient(row);
+
+                    if (!String.IsNullOrEmpty(study.Patient.PatientBirthDate))
+                    {
+                        string today = System.DateTime.Now.ToString("yyyyMMdd");
+                        study.Patient.PatientAge = GetPatientAge(study.Patient.PatientBirthDate, today);
+                        study.Patient.PatientBirthDate = DateTime.ParseExact(study.Patient.PatientBirthDate, "yyyyMMdd", null).ToString(dateFormat);
+                        
+                    }
+
+                    if (!String.IsNullOrEmpty(study.StudyDate))
+                    {
+                        study.StudyDate = DateTime.ParseExact(study.StudyDate, "yyyyMMdd", null).ToString(dateFormat);
+                    }
+
+                    if (!String.IsNullOrEmpty(study.StudyTime))
+                    {
+                        study.StudyTime = FormatTimeString(study.StudyTime.Trim(), "HHmmss", timeFormat);
+                    }
+
                     studies.Add(study);
                 }
 
@@ -297,13 +534,38 @@ namespace Csh.ImageSuite.MiniPacs
             return studies;
         }
 
+        public int GetStudiesCount(QueryShortcut queryShortcut)
+        {
+            int studiesCount = 0;
+
+            var sqlStr = string.Format("SELECT " +
+                                      "COUNT(*) " +
+                                       "FROM Patient P, Study S " +
+                                       "WHERE S.PatientGUID = P.PatientGUID ");
+
+            sqlStr = BindingStudyCondition(queryShortcut, sqlStr);
+
+            if (!string.IsNullOrEmpty(queryShortcut.Modality))
+            {
+                sqlStr += $" AND S.StudyInstanceUID in (SELECT StudyInstanceUID FROM Series WHERE Series.Modality = '{queryShortcut.Modality}')";
+            }
+
+            studiesCount = Int32.Parse(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
+
+            return studiesCount;
+        }
+
         public Study GetStudy(int serialNo)
         {
             var sbSql = new StringBuilder();
             sbSql.Append("select Image.SerialNo ID_Image, Image.SOPInstanceUID, Image.ImageColumns, Image.ImageRows, Image.ObjectFile, ");//4
-            sbSql.Append("Series.SerialNo ID_Series, Series.SeriesInstanceUID, Series.BodyPart, Series.ViewPosition, Series.Modality,  Series.ImageCount IC_Series,");//9
+            sbSql.Append("Image.ImageDate, Image.ImageTime, Image.AcquisitionDate, Image.AcquisitionTime, Image.KeyImage, Image.BitsAllocated, ");//4
+            sbSql.Append("Series.SerialNo ID_Series, Series.SeriesInstanceUID, Series.BodyPart, Series.ViewPosition, Series.Modality,  Series.ImageCount IC_Series, ");//9
+            sbSql.Append("Series.ContrastBolus, Series.LocalBodyPart, Series.SeriesDescription, Series.OperatorName, Series.ReferHospital,  Series.PatientPosition, Series.LocalViewPosition, ");//9
             sbSql.Append("Study.SerialNo ID_Study, Study.StudyInstanceUID, Study.AccessionNo, Study.StudyID, Study.StudyDate, Study.StudyTime, Study.SeriesCount, Study.ImageCount IC_Study, Study.StudyDescription, ");//16
-            sbSql.Append("Patient.SerialNo ID_Patient, Patient.PatientID, Patient.PatientName, Patient.PatientBirthDate, Patient.PatientSex, Series.SeriesDate, Series.SeriesTime, Series.SeriesNo, Image.ImageNo  from Image ");
+            sbSql.Append("Study.ReferPhysician, Study.TokenId, Study.AdditionalPatientHistory, Study.Veterinarian, Study.RequestedProcPriority, ");
+            sbSql.Append("Patient.SerialNo ID_Patient, Patient.PatientID, Patient.PatientName, Patient.PatientBirthDate, Patient.PatientSex, Patient.PatientAge, Patient.Breed, Patient.Species, ");
+            sbSql.Append("Series.SeriesDate, Series.SeriesTime, Series.SeriesNo, Image.ImageNo  from Image ");
             sbSql.Append("join Series on Image.SeriesInstanceUID = Series.SeriesInstanceUID ");
             sbSql.Append("join Study on Series.StudyInstanceUID = Study.StudyInstanceUID ");
             sbSql.Append("join Patient on study.PatientGUID = Patient.PatientGUID ");
@@ -370,12 +632,185 @@ namespace Csh.ImageSuite.MiniPacs
             return DicStorageDirectory[storageAeName];
         }
 
-        private static string BuildSqlCondition(QueryShortcut queryShortcut)
+        public List<OverlayItemConfig> LoadOverlayConfig(string moduleName, string language)
+        {
+            try
+            {
+                var listConfig = new List<OverlayItemConfig>();
+
+                var sqlStr = $"SELECT PropertyValue FROM SystemProfile WHERE ModuleName = '{moduleName}' AND PropertyName = 'OverlayModality' AND Exportable='Overlay'";
+                var modalityList = SqlHelper.GetSingleReturnValue(sqlStr, _connectionString).Split(',');
+
+                foreach (var modality in modalityList)
+                {
+                    listConfig.AddRange(LoadOverlayConfig(moduleName, modality, language));
+                }
+
+                return listConfig;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        private List<OverlayItemConfig> LoadOverlayConfig(string moduleName, string modality, string language)
+        {
+            try
+            {
+                var sqlStr = $"SELECT PropertyValue FROM SystemProfile WHERE ModuleName = '{moduleName}' AND PropertyName = '{modality}.OverlayCnt' AND Exportable='Overlay'";
+                var overlayCount = Int32.Parse(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
+
+                var listConfig = new List<OverlayItemConfig>();
+
+                for (var i = 1; i <= overlayCount; i++)
+                {
+                    sqlStr = $"SELECT PropertyValue FROM SystemProfile WHERE ModuleName = '{moduleName}' AND PropertyName = '{modality}.Overlay.{i}' AND Exportable='Overlay'";
+                    var config = new OverlayItemConfig {Modality = modality};
+                    config.FromString(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
+
+                    LoadOverlayValueConfig(ref config, language);
+                    listConfig.Add(config);
+                }
+
+                
+                return listConfig;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        private bool LoadOverlayValueConfig(ref OverlayItemConfig config, string language)
+        {
+            try
+            {
+                var sqlStr = "SELECT OG.Name DicomName, OG.OverlayID, [Group], Element, TableName, FieldName, OL.Name OverlayName, OL.LanguageValue FROM OverlayGroup OG, Overlay_Language OL " + 
+                    $"WHERE OG.OverlayID = OL.OverlayID AND OL.OverlayUID={config.OverlayUid} AND OL.Language = '{language}'";
+
+                var result = SqlHelper.ExecuteQuery(sqlStr, _connectionString);
+                if (result.Tables[0].Rows.Count != 1)
+                    return false;
+
+                var row = result.Tables[0].Rows[0];
+                config.OverlayId = _commonTool.GetSafeStrValue(row["OverlayID"]);
+                config.LocalName = _commonTool.GetSafeStrValue(row["LanguageValue"]);
+                config.OverlayName = _commonTool.GetSafeStrValue(row["OverlayName"]);
+                config.DicomName = _commonTool.GetSafeStrValue(row["DicomName"]);
+                config.GroupNumber = (ushort)_commonTool.GetSafeIntValue(row["Group"]);
+                config.ElementNumber = (ushort)_commonTool.GetSafeIntValue(row["Element"]);
+                config.TableName = _commonTool.GetSafeStrValue(row["TableName"]);
+                config.FieldName = _commonTool.GetSafeStrValue(row["FieldName"]);
+
+                config.TableName = _commonTool.ChangeStringFirstCharCase(config.TableName, false);
+                config.FieldName = _commonTool.ChangeStringFirstCharCase(config.FieldName, false);
+
+                config.FieldName = config.FieldName.Replace("ID", "Id");
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        public List<OverlayItemConfig> LoadOverlays()
+        {
+            try
+            {
+                var uiLanguage = "zh-CN";
+
+                // Get UserDefinedField
+                SqlWrapper sql = new SqlWrapper();
+                var lstMdl = new List<OverlayItemConfig>();
+                OverlayItemConfig mdl;
+                sql.SqlString = @"select OL.OverlayUID [OverlayUID], OL.OverlayID [OverlayID], OL.LanguageValue [LanguageValue], UDF.LocalName [LocalName] " +
+                    "from [Overlay_language] OL, [OverlayGroup] OG, [UserDefinedField] UDF where OL.OverlayID = OG.OverlayID AND OL.Language = @Language AND OG.Name = UDF.FieldName";
+                sql.Parameter = new SqlParameter[] { new SqlParameter("@Language", uiLanguage) };
+                var _dsOverlay = SqlHelper.ExecuteQuery(sql.SqlString, sql.Parameter, _connectionString);
+                foreach (DataRow row in _dsOverlay.Tables[0].Rows)
+                {
+                    mdl = new OverlayItemConfig();
+                    mdl.OverlayUid = row["OverlayUID"].ToString();
+                    mdl.OverlayId = row["OverlayID"].ToString();
+                    mdl.LocalName = row["LocalName"].ToString();
+                    mdl.OverlayName = row["LanguageValue"].ToString();
+                    lstMdl.Add(mdl);
+                }
+
+                sql = new SqlWrapper
+                {
+                    SqlString = @"select [OverlayUID], [OverlayID], [LanguageValue], [Name] from [Overlay_Language] " +
+                                @"where [Language] = @Language order by [LanguageValue]",
+                    Parameter = new SqlParameter[] {new SqlParameter("@Language", uiLanguage)}
+                };
+
+                _dsOverlay = SqlHelper.ExecuteQuery(sql.SqlString, sql.Parameter, _connectionString);
+                foreach (DataRow row in _dsOverlay.Tables[0].Rows)
+                {
+                    mdl = new OverlayItemConfig();
+                    if (row["Name"].ToString().Contains("USERDEFINEDFIELD"))
+                    {
+                        continue;
+                    }
+
+                    mdl.OverlayUid = row["OverlayUID"].ToString();
+                    mdl.OverlayId = row["OverlayID"].ToString();
+                    mdl.OverlayName = row["LanguageValue"].ToString();
+                    lstMdl.Add(mdl);
+                }
+
+                return lstMdl;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public int GetWorklistPageSize()
+        {
+            int pagesize = 0;
+
+            var sbSql = new StringBuilder();
+            sbSql.Append("SELECT PropertyValue FROM SystemProfile WHERE PropertyName='PageSize' and Exportable='Web_GeneralConfig' ");
+
+            var sqlStr = sbSql.ToString();
+            pagesize = Int32.Parse(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
+
+            return pagesize;
+        }
+
+        private string BuildSqlCondition(QueryShortcut queryShortcut, int pageIndex, int pageSize)
         {
             var strCondition = string.Empty;
             if (queryShortcut == null)
             {
                 return strCondition;
+            }
+
+            strCondition = BindingStudyCondition(queryShortcut, strCondition);
+
+            int rowFrom = 0;
+            int rowTo = 0;
+            if (pageIndex != 0)
+            {
+                rowFrom = (pageIndex - 1) * pageSize;
+                rowTo = pageIndex * pageSize;
+            }
+
+            strCondition += " ) a , Series R WHERE a.row > " + rowFrom.ToString() + " and a.row <= " + rowTo.ToString() + " AND R.StudyInstanceUID = a.StudyInstanceUID";
+
+            return strCondition;
+        }
+
+        public string BindingStudyCondition(QueryShortcut queryShortcut, string strCondition)
+        {
+            if (!string.IsNullOrEmpty(queryShortcut.Modality))
+            {
+                strCondition += $" AND S.StudyInstanceUID in (SELECT StudyInstanceUID FROM Series WHERE Series.Modality = '{queryShortcut.Modality}')";
             }
 
             if (!string.IsNullOrEmpty(queryShortcut.PatientId))
@@ -388,17 +823,17 @@ namespace Csh.ImageSuite.MiniPacs
                 strCondition += $" AND P.PatientName LIKE '%{queryShortcut.PatientName}%'";
             }
 
-            if (!string.IsNullOrEmpty(queryShortcut.BirthDateFrom.ToString()) && !string.IsNullOrEmpty(queryShortcut.BirthDateTo.ToString()))
+            if (!string.IsNullOrEmpty(queryShortcut.PatientBirthDateFrom.ToString()) && !string.IsNullOrEmpty(queryShortcut.PatientBirthDateTo.ToString()))
             {
-                DateTime birthDateFrom = (DateTime)queryShortcut.BirthDateFrom;
-                DateTime birthDateTo = (DateTime)queryShortcut.BirthDateTo;
+                DateTime birthDateFrom = (DateTime)queryShortcut.PatientBirthDateFrom;
+                DateTime birthDateTo = (DateTime)queryShortcut.PatientBirthDateTo;
 
                 strCondition += $" AND P.PatientBirthDate BETWEEN '{birthDateFrom.ToString("yyyyMMdd")}' AND '{birthDateTo.ToString("yyyyMMdd")}'";
             }
 
-            if (!string.IsNullOrEmpty(queryShortcut.Gender))
+            if (!string.IsNullOrEmpty(queryShortcut.PatientSex))
             {
-                strCondition += $" AND P.PatientSex = '{queryShortcut.Gender}'";
+                strCondition += $" AND P.PatientSex = '{queryShortcut.PatientSex}'";
             }
 
             if (!string.IsNullOrEmpty(queryShortcut.StudyId))
@@ -406,40 +841,47 @@ namespace Csh.ImageSuite.MiniPacs
                 strCondition += $" AND S.StudyID LIKE '%{queryShortcut.StudyId}%'";
             }
 
-            if (!string.IsNullOrEmpty(queryShortcut.StudyDate))
+            if (!string.IsNullOrEmpty(queryShortcut.StudyDate) || 
+                (!string.IsNullOrEmpty(queryShortcut.StudyDateFrom.ToString()) && !string.IsNullOrEmpty(queryShortcut.StudyDateTo.ToString())))
             {
                 var today = DateTime.Today;
+                string paraStudyDate = String.Empty;
                 switch (queryShortcut.StudyDate)
                 {
-                    case "Today":
-                        queryShortcut.StudyDate = today.ToString("yyyyMMdd");
+                    case "0":
+                        //queryShortcut.StudyDate = null; //eqauls "All"
                         break;
-                    case "Since Yesterday":
-                        queryShortcut.StudyDate = today.AddDays(-1).ToString("yyyyMMdd");
+                    case "1":
+                        paraStudyDate = today.ToString("yyyyMMdd");
                         break;
-                    case "Last 7 Days":
-                        queryShortcut.StudyDate = today.AddDays(-7).ToString("yyyyMMdd");
+                    case "2":
+                        paraStudyDate = today.AddDays(-1).ToString("yyyyMMdd");
                         break;
-                    case "Last 30 Days":
-                        queryShortcut.StudyDate = today.AddDays(-30).ToString("yyyyMMdd");
+                    case "3":
+                        paraStudyDate = today.AddDays(-7).ToString("yyyyMMdd");
                         break;
-                    case "Last 6 Months":
-                        queryShortcut.StudyDate = today.AddMonths(-6).ToString("yyyyMMdd");
+                    case "4":
+                        paraStudyDate = today.AddDays(-30).ToString("yyyyMMdd");
+                        break;
+                    case "5":
+                        paraStudyDate = today.AddMonths(-6).ToString("yyyyMMdd");
+                        break;
+                    case "6":
+                        paraStudyDate = today.AddMonths(-12).ToString("yyyyMMdd");
                         break;
                     default:
-                        queryShortcut.StudyDate = null; //eqauls "Alll"
+                        DateTime studyDateFrom = (DateTime)queryShortcut.StudyDateFrom;
+                        DateTime studyDateTo = (DateTime)queryShortcut.StudyDateTo;
+
+                        strCondition +=
+                            $" AND S.StudyDate BETWEEN '{studyDateFrom.ToString("yyyyMMdd")}' AND '{studyDateTo.ToString("yyyyMMdd")}' ";
                         break;
                 }
 
-                if (!string.IsNullOrEmpty(queryShortcut.StudyDate))
+                if (queryShortcut.StudyDate != "0" && !String.IsNullOrEmpty(paraStudyDate))
                 {
-                    strCondition += $" AND S.StudyDate >= '{queryShortcut.StudyDate}'";
+                    strCondition += $" AND S.StudyDate >= '{paraStudyDate}'";
                 }
-            }
-
-            if (!string.IsNullOrEmpty(queryShortcut.Modality))
-            {
-                strCondition += $" AND R.Modality = '{queryShortcut.Modality}'";
             }
 
             if (!string.IsNullOrEmpty(queryShortcut.AccessionNo))
@@ -447,8 +889,141 @@ namespace Csh.ImageSuite.MiniPacs
                 strCondition += $" AND S.AccessionNo LIKE '%{queryShortcut.AccessionNo}%'";
             }
 
+            if (!string.IsNullOrEmpty(queryShortcut.Printed))
+            {
+                strCondition += $" AND S.Printed LIKE '%{queryShortcut.Printed}%'";
+            }
 
             return strCondition;
+        }
+
+        /// <summary>
+        /// Get DateFormat from DB
+        /// </summary>
+        /// <returns></returns>
+        public string GetDateFormat()
+        {
+            string strRet = GetSystemProfileProperty("DateFormat");
+            if (strRet.Length == 0)
+            {
+                strRet = "yyyy/MM/dd";
+            }
+            else
+            {
+                strRet = strRet.Replace("Y", "y").Replace("D", "d");
+            }
+            return strRet;
+        }
+
+        /// <summary>
+        /// This is a base function for others function to invoke
+        /// Query SystemProfile table to get specified PropertyValue by PropertyName
+        /// </summary>
+        /// <param name="strPropertyName"></param>
+        /// <returns></returns>
+        public string GetSystemProfileProperty(string strPropertyName)
+        {
+            try
+            {
+                SqlWrapper sql = new SqlWrapper();
+                sql.SqlString = @"SELECT PropertyValue FROM SystemProfile WHERE PropertyName = @PropertyName"; ;
+                sql.Parameter = new SqlParameter[] { new SqlParameter("@PropertyName", strPropertyName) };
+                DataSet ds = SqlHelper.ExecuteQuery(sql, _connectionString);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds.Tables[0].Rows[0][0].ToString().Trim();
+                }
+            }
+            catch { }
+            return "";
+        }
+
+        public string FormatTimeString(string TimeString, string oldTimeFormat, string newTimeFormat)
+        {
+            try
+            {
+                DateTime dat = DateTime.Now;
+
+                oldTimeFormat = oldTimeFormat.ToLower();
+                string hour = TimeString.Substring(oldTimeFormat.IndexOf("h"), oldTimeFormat.LastIndexOf("h") - oldTimeFormat.IndexOf("h") + 1);
+                string min = TimeString.Substring(oldTimeFormat.IndexOf("m"), oldTimeFormat.LastIndexOf("m") - oldTimeFormat.IndexOf("m") + 1);
+                string sec = TimeString.Substring(oldTimeFormat.IndexOf("s"), oldTimeFormat.LastIndexOf("s") - oldTimeFormat.IndexOf("s") + 1);
+
+                dat = new DateTime(dat.Year, dat.Month, dat.Day, Convert.ToInt16(hour), Convert.ToInt16(min), Convert.ToInt16(sec));
+                return dat.ToString(newTimeFormat);
+            }
+            catch (Exception)
+            {
+                return TimeString;
+            }
+        }
+
+        public DataSet QueryBodyPartList(string RegionName, string SPLocal)
+        {
+            try
+            {
+                SqlWrapper sql = new SqlWrapper();
+                sql.CommandType = CommandType.StoredProcedure;
+                sql.SqlString = "WGGC_SP_ACQ_GetBodyPartList";
+
+                List<SqlParameter> lstparas = new List<SqlParameter>();
+                SqlParameter para = new SqlParameter();
+                para.DbType = DbType.Int32;
+                para.ParameterName = "@IsVetApplication";
+                //para.Value = IsVetApplication ? 1 : 0;
+                para.Value = 0;
+                lstparas.Add(para);
+
+                para = new SqlParameter();
+                para.DbType = DbType.String;
+                para.ParameterName = "@RegionName";
+                para.Value = RegionName;
+                lstparas.Add(para);
+
+                para = new SqlParameter();
+                para.DbType = DbType.String;
+                para.ParameterName = "@SPLocal";
+                para.Value = SPLocal;
+                lstparas.Add(para);
+
+                para = new SqlParameter();
+                para.DbType = DbType.Int32;
+                para.ParameterName = "@LT_MAMMO";
+                //para.Value = MLicense.IsMammoEnable() ? 1 : 0;
+                para.Value = 1;
+                lstparas.Add(para);
+
+                para = new SqlParameter();
+                para.DbType = DbType.Int32;
+                para.ParameterName = "@LT_LLI_IMAGING";
+                para.Value = 1/*MLicense.Options[MLicenseType.LT_LLI_IMAGING] ? 1 : 0*/;
+                lstparas.Add(para);
+
+                sql.Parameter = lstparas.ToArray();
+                DataSet ds = SqlHelper.ExecuteQuery(sql, _connectionString);
+                return ds;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public string GetPatientAge(string StartDate, string EndDate)
+        {
+            string strSql = "EXECUTE [WGGC].[dbo].[WGGC_SP_GetPatientAge] @StartDate,@EndDate,@RetValue OUTPUT";
+
+            List<SqlParameter> lstParas = new List<SqlParameter>();
+            lstParas.Add(new SqlParameter("@StartDate", StartDate));
+            lstParas.Add(new SqlParameter("@EndDate", EndDate));
+
+            SqlParameter RetValue = new SqlParameter("@RetValue", SqlDbType.VarChar, 64);
+            RetValue.Direction = ParameterDirection.Output;
+            lstParas.Add(RetValue);
+
+            SqlHelper.ExecuteQuery(strSql, lstParas.ToArray(), _connectionString);
+
+            return RetValue.Value.ToString();
         }
     }
 }

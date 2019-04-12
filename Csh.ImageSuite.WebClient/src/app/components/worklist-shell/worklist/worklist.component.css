@@ -48,7 +48,7 @@ thead div {
 
 .worklistHeader {
     cursor:pointer;
-    min-width:150px;
+    min-width:50px;
 }
 
 #headContent td tr{
@@ -71,8 +71,6 @@ thead div {
 #trStudiesHeader a {
     color: #ddd;
 }
-
-
 
 #trSeriesHeader a {
     color: white;
@@ -155,6 +153,12 @@ select {
     outline: none;
 }
 
-    .shortcut-name-button:disabled {
-        color: #555555;
-    }
+.shortcut-name-button:disabled {
+    color: #555555;
+}
+
+.patientIdCol {
+    cursor: pointer;
+    text-decoration: underline;
+}
+

@@ -310,33 +310,359 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 
 /***/ }),
 
-/***/ "./src/app/annotation/ann-object.ts":
+/***/ "./src/app/annotation/ann-circle.ts":
 /*!******************************************!*\
-  !*** ./src/app/annotation/ann-object.ts ***!
+  !*** ./src/app/annotation/ann-circle.ts ***!
   \******************************************/
-/*! exports provided: EventType, StepEnum, Colors, AnnObject */
+/*! exports provided: AnnCircle */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EventType", function() { return EventType; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnCircle", function() { return AnnCircle; });
+/* harmony import */ var _ann_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ann-object */ "./src/app/annotation/ann-object.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+var AnnCircle = /** @class */ (function (_super) {
+    __extends(AnnCircle, _super);
+    function AnnCircle(imageViewer) {
+        return _super.call(this, imageViewer) || this;
+    }
+    AnnCircle.prototype.onSwitchFocus = function () { throw new Error("Not implemented"); };
+    AnnCircle.prototype.onFlip = function (vertical) { throw new Error("Not implemented"); };
+    AnnCircle.prototype.isCreated = function () {
+        return this.created;
+    };
+    AnnCircle.prototype.onMouseEvent = function (mouseEventType, point) {
+        point = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].screenToImage(point, this.image.transformMatrix);
+        if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
+            if (!this.center) {
+                this.center = point;
+                this.jcCenterPoint = jCanvaScript.circle(this.center.x, this.center.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
+            }
+            else {
+                this.radius = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].countDistance(this.center, point);
+                this.created = true;
+                this.jcTopPoint = jCanvaScript.circle(this.center.x, this.center.y - this.radius, this.circleRadius, this.selectedColor, true).layer(this.layerId);
+                this.jcBottomPoint = jCanvaScript.circle(this.center.x, this.center.y + this.radius, this.circleRadius, this.selectedColor, true).layer(this.layerId);
+                this.jcLeftPoint = jCanvaScript.circle(this.center.x - this.radius, this.center.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
+                this.jcRightPoint = jCanvaScript.circle(this.center.x + this.radius, this.center.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
+                this.imageViewer.onAnnotationCreated(this);
+                this.jcCircle.mouseStyle = "move";
+                this.jcTopPoint.mouseStyle = "crosshair";
+                this.jcBottomPoint.mouseStyle = "crosshair";
+                this.jcLeftPoint.mouseStyle = "crosshair";
+                this.jcRightPoint.mouseStyle = "crosshair";
+                this.setChildDraggable(this, this.jcCircle, true, this.onDragCircle);
+                this.setChildDraggable(this, this.jcTopPoint, true, this.onDragPoint);
+                this.setChildDraggable(this, this.jcBottomPoint, true, this.onDragPoint);
+                this.setChildDraggable(this, this.jcLeftPoint, true, this.onDragPoint);
+                this.setChildDraggable(this, this.jcRightPoint, true, this.onDragPoint);
+                this.setChildMouseEvent(this, this.jcCircle);
+                this.setChildMouseEvent(this, this.jcTopPoint);
+                this.setChildMouseEvent(this, this.jcBottomPoint);
+                this.setChildMouseEvent(this, this.jcLeftPoint);
+                this.setChildMouseEvent(this, this.jcRightPoint);
+            }
+        }
+        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
+            if (this.center) {
+                if (this.jcCircle) {
+                    this.jcCircle._radius = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].countDistance(this.center, point);
+                }
+                else {
+                    this.jcCircle = jCanvaScript.circle(this.center.x, this.center.y, this.radius, this.selectedColor).layer(this.layerId);
+                    this.jcCircle._lineWidth = this.lineWidth;
+                }
+            }
+        }
+        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOver) {
+            if (!this.selected) {
+                this.setChild(true);
+            }
+        }
+        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOut) {
+            if (!this.selected) {
+                this.setChild(false);
+            }
+        }
+    };
+    AnnCircle.prototype.onScale = function () {
+        this.lineWidth = this.getLineWidth();
+        this.circleRadius = this.getPointRadius();
+        this.jcCircle._lineWidth = this.getLineWidth();
+        this.jcCenterPoint._radius = this.circleRadius;
+        this.jcTopPoint._radius = this.circleRadius;
+        this.jcBottomPoint._radius = this.circleRadius;
+        this.jcLeftPoint._radius = this.circleRadius;
+        this.jcRightPoint._radius = this.circleRadius;
+    };
+    AnnCircle.prototype.onSelect = function (selected) {
+        this.selected = selected;
+        this.setChild(selected);
+        if (this.selected) {
+            this.imageViewer.selectAnnotation(this);
+        }
+    };
+    AnnCircle.prototype.setChild = function (selected) {
+        var color = selected ? this.selectedColor : this.defaultColor;
+        if (this.jcCenterPoint) {
+            this.jcCenterPoint.visible(selected);
+            this.jcCenterPoint.color(color);
+        }
+        if (this.jcTopPoint) {
+            this.jcTopPoint.visible(selected);
+            this.jcTopPoint.color(color);
+        }
+        if (this.jcBottomPoint) {
+            this.jcBottomPoint.visible(selected);
+            this.jcBottomPoint.color(color);
+        }
+        if (this.jcLeftPoint) {
+            this.jcLeftPoint.visible(selected);
+            this.jcLeftPoint.color(color);
+        }
+        if (this.jcRightPoint) {
+            this.jcRightPoint.visible(selected);
+            this.jcRightPoint.color(color);
+        }
+        if (this.jcCircle) {
+            this.jcCircle.color(color);
+        }
+    };
+    AnnCircle.prototype.onDragCircle = function (draggedObj, deltaX, deltaY) {
+        this.center.x += deltaX;
+        this.center.y += deltaY;
+        this.jcCenterPoint._x = this.center.x;
+        this.jcCenterPoint._y = this.center.y;
+        this.jcTopPoint._x += deltaX;
+        this.jcTopPoint._y += deltaY;
+        this.jcBottomPoint._x += deltaX;
+        this.jcBottomPoint._y += deltaY;
+        this.jcLeftPoint._x += deltaX;
+        this.jcLeftPoint._y += deltaY;
+        this.jcRightPoint._x += deltaX;
+        this.jcRightPoint._y += deltaY;
+    };
+    AnnCircle.prototype.onDragPoint = function (draggedObj, deltaX, deltaY) {
+        var deltaRadius = 0;
+        if (draggedObj === this.jcTopPoint) {
+            deltaRadius = -deltaY;
+        }
+        else if (draggedObj === this.jcBottomPoint) {
+            deltaRadius = deltaY;
+        }
+        else if (draggedObj === this.jcLeftPoint) {
+            deltaRadius = -deltaX;
+        }
+        else if (draggedObj === this.jcRightPoint) {
+            deltaRadius = deltaX;
+        }
+        this.radius += deltaRadius;
+        if (this.radius < 0) {
+            this.radius = -this.radius;
+        }
+        this.jcCircle._radius = this.radius;
+        this.jcTopPoint._x = this.center.x;
+        this.jcTopPoint._y = this.center.y - this.radius;
+        this.jcBottomPoint._x = this.center.x;
+        this.jcBottomPoint._y = this.center.y + this.radius;
+        this.jcLeftPoint._x = this.center.x - this.radius;
+        this.jcLeftPoint._y = this.center.y;
+        this.jcRightPoint._x = this.center.x + this.radius;
+        this.jcRightPoint._y = this.center.y;
+    };
+    return AnnCircle;
+}(_ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"]));
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/ann-line.ts":
+/*!****************************************!*\
+  !*** ./src/app/annotation/ann-line.ts ***!
+  \****************************************/
+/*! exports provided: AnnLine */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnLine", function() { return AnnLine; });
+/* harmony import */ var _ann_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ann-object */ "./src/app/annotation/ann-object.ts");
+/* harmony import */ var _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./base-object/ann-base-point */ "./src/app/annotation/base-object/ann-base-point.ts");
+/* harmony import */ var _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./base-object/ann-base-line */ "./src/app/annotation/base-object/ann-base-line.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+var AnnLine = /** @class */ (function (_super) {
+    __extends(AnnLine, _super);
+    function AnnLine(imageViewer) {
+        return _super.call(this, imageViewer) || this;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Implementation of interface IAnnotationObject
+    AnnLine.prototype.onMouseEvent = function (mouseEventType, point) {
+        point = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].screenToImage(point, this.image.transformMatrix);
+        if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
+            if (this.created) {
+                this.onSelect(true, false);
+                return;
+            }
+            if (!this.annStartPoint) {
+                this.annStartPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, point, this.imageViewer);
+            }
+            else {
+                this.annStartPoint.onDrawEnded(this.onStartPointDragged, this.onChildSelected);
+                this.annEndPoint.onDrawEnded(this.onEndPointDragged, this.onChildSelected);
+                this.annLine.onDrawEnded(this.onLineDragged, this.onChildSelected);
+                this.focusedObj = this.annEndPoint;
+                this.created = true;
+                this.imageViewer.onAnnotationCreated(this);
+            }
+        }
+        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
+            if (this.annStartPoint) {
+                if (this.annLine) {
+                    this.annLine.moveEndTo(point);
+                    this.annEndPoint.moveTo(point);
+                }
+                else {
+                    this.annEndPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, point, this.imageViewer);
+                    this.annLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, this.annStartPoint.getPosition(), point, this.imageViewer);
+                    // Make sure the start point is on the top the line So that we can easily select it for moving
+                    if (this.annStartPoint.jcCenterPoint) {
+                        this.annStartPoint.jcCenterPoint.up();
+                    }
+                }
+            }
+        }
+        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOver) {
+            if (!this.selected) {
+                this.setChild(true);
+            }
+        }
+        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOut) {
+            if (!this.selected) {
+                this.setChild(false);
+            }
+        }
+    };
+    AnnLine.prototype.onChildSelected = function (selectedObj) {
+        this.selected = true;
+        this.focusedObj = selectedObj;
+        this.setChild(true);
+    };
+    AnnLine.prototype.onSelect = function (selected, focused) {
+        console.log("onSelect AnnLine");
+        if (this.isSelected() !== selected) {
+            this.selected = selected;
+            this.setChild(selected);
+        }
+    };
+    AnnLine.prototype.onScale = function () {
+        this.annLine.onScale();
+        this.annStartPoint.onScale();
+        this.annEndPoint.onScale();
+    };
+    AnnLine.prototype.onFlip = function (vertical) {
+        this.annLine.onFlip(vertical);
+        this.annStartPoint.onFlip(vertical);
+        this.annEndPoint.onFlip(vertical);
+    };
+    AnnLine.prototype.onSwitchFocus = function () {
+        if (!this.focusedObj || this.focusedObj === this.annLine) {
+            this.onChildSelected(this.annStartPoint);
+        }
+        else if (this.focusedObj === this.annStartPoint) {
+            this.onChildSelected(this.annEndPoint);
+        }
+        else {
+            this.onChildSelected(this.annLine);
+        }
+    };
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    AnnLine.prototype.setChild = function (selected) {
+        this.annStartPoint.onSelect(selected, this.focusedObj === this.annStartPoint);
+        this.annEndPoint.onSelect(selected, this.focusedObj === this.annEndPoint);
+        this.annLine.onSelect(selected, this.focusedObj === this.annEndPoint);
+        if (this.selected) {
+            this.imageViewer.selectAnnotation(this);
+        }
+    };
+    AnnLine.prototype.onStartPointDragged = function (draggedObj, deltaX, deltaY) {
+        var point = this.annStartPoint.getPosition();
+        this.annLine.moveStartTo(point);
+    };
+    AnnLine.prototype.onEndPointDragged = function (draggedObj, deltaX, deltaY) {
+        var point = this.annEndPoint.getPosition();
+        this.annLine.moveEndTo(point);
+    };
+    AnnLine.prototype.onLineDragged = function (draggedObj, deltaX, deltaY) {
+        this.annStartPoint.onTranslate(deltaX, deltaY);
+        this.annLine.onTranslate(deltaX, deltaY);
+        this.annEndPoint.onTranslate(deltaX, deltaY);
+    };
+    return AnnLine;
+}(_ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"]));
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/ann-object.ts":
+/*!******************************************!*\
+  !*** ./src/app/annotation/ann-object.ts ***!
+  \******************************************/
+/*! exports provided: MouseEventType, StepEnum, Colors, AnnObject */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MouseEventType", function() { return MouseEventType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StepEnum", function() { return StepEnum; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Colors", function() { return Colors; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnObject", function() { return AnnObject; });
 /* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/view-context.service */ "./src/app/services/view-context.service.ts");
 
-var EventType;
-(function (EventType) {
-    EventType[EventType["Click"] = 1] = "Click";
-    EventType[EventType["MouseDown"] = 2] = "MouseDown";
-    EventType[EventType["MouseMove"] = 3] = "MouseMove";
-    EventType[EventType["MouseUp"] = 4] = "MouseUp";
-    EventType[EventType["MouseOver"] = 5] = "MouseOver";
-    EventType[EventType["MouseOut"] = 6] = "MouseOut";
-    EventType[EventType["RightClick"] = 7] = "RightClick";
-    EventType[EventType["DblClick"] = 8] = "DblClick";
-    EventType[EventType["MouseWheel"] = 9] = "MouseWheel";
-})(EventType || (EventType = {}));
+var MouseEventType;
+(function (MouseEventType) {
+    MouseEventType[MouseEventType["Click"] = 1] = "Click";
+    MouseEventType[MouseEventType["MouseDown"] = 2] = "MouseDown";
+    MouseEventType[MouseEventType["MouseMove"] = 3] = "MouseMove";
+    MouseEventType[MouseEventType["MouseUp"] = 4] = "MouseUp";
+    MouseEventType[MouseEventType["MouseOver"] = 5] = "MouseOver";
+    MouseEventType[MouseEventType["MouseOut"] = 6] = "MouseOut";
+    MouseEventType[MouseEventType["RightClick"] = 7] = "RightClick";
+    MouseEventType[MouseEventType["DblClick"] = 8] = "DblClick";
+    MouseEventType[MouseEventType["MouseWheel"] = 9] = "MouseWheel";
+})(MouseEventType || (MouseEventType = {}));
 var StepEnum;
 (function (StepEnum) {
     StepEnum[StepEnum["Step1"] = 1] = "Step1";
@@ -358,21 +684,78 @@ var Colors = /** @class */ (function () {
 
 ;
 var AnnObject = /** @class */ (function () {
-    function AnnObject(viewContext) {
-        this.viewContext = viewContext;
-        this.defaultCircleRadius = 5;
-        this.minCircleRadius = 2;
+    function AnnObject(imageViewer) {
+        this.selectedColor = "#F90";
+        this.defaultColor = "#FFF";
         this.minLineWidth = 0.3;
-        this.selectedLevel = 100;
-        this.defaultLevel = 1;
-        this.selectedColor = Colors.red;
-        this.defaultColor = Colors.white;
+        this.minPointRadius = 2;
+        this.imageViewer = imageViewer;
+        this.image = imageViewer.getImage();
+        this.layerId = imageViewer.getAnnotationLayerId();
+        this.canvas = imageViewer.getCanvas();
+        this.created = false;
+        this.selected = false;
+        this.dragging = false;
+        this.lineWidth = this.getLineWidth();
+        this.circleRadius = this.getPointRadius();
     }
+    AnnObject.prototype.isCreated = function () {
+        return this.created;
+    };
+    AnnObject.prototype.isSelected = function () {
+        return this.selected;
+    };
+    AnnObject.prototype.onDeleteChildren = function () {
+        var _this = this;
+        var properties = Object.getOwnPropertyNames(this);
+        properties.forEach(function (prop) {
+            var obj = _this[prop];
+            if (obj instanceof AnnObject && obj !== _this.parent) {
+                var annObj = obj;
+                annObj.onDeleteChildren();
+                _this[prop] = undefined;
+            }
+            else if (obj instanceof Array) {
+                obj.forEach(function (item) {
+                    if (item instanceof AnnObject && item !== _this.parent) {
+                        var annObj = item;
+                        annObj.onDeleteChildren();
+                    }
+                    obj = [];
+                });
+            }
+            else if (AnnObject.isJcanvasObject(obj)) {
+                obj.del();
+                _this[prop] = undefined;
+            }
+        });
+    };
+    AnnObject.prototype.onKeyDown = function (keyEvent) {
+        if (!this.focusedObj)
+            return;
+        // Move 5 screen point by default, or move 1 screen point if ctrl key is pressed
+        var step = keyEvent.ctrlKey ? 1 : 5;
+        var posImageOld = this.focusedObj.getPosition();
+        var posScreen = AnnObject.imageToScreen(posImageOld, this.image.transformMatrix);
+        if (keyEvent.code === "ArrowUp") {
+            posScreen.y -= step;
+        }
+        else if (keyEvent.code === "ArrowDown") {
+            posScreen.y += step;
+        }
+        else if (keyEvent.code === "ArrowLeft") {
+            posScreen.x -= step;
+        }
+        else if (keyEvent.code === "ArrowRight") {
+            posScreen.x += step;
+        }
+        var posImageNew = AnnObject.screenToImage(posScreen, this.image.transformMatrix);
+        this.focusedObj.onDrag(this.focusedObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
+    };
     AnnObject.screenToImage = function (point, transform) {
         var x = point.x;
         var y = point.y;
         var imgPt = [0, 0, 1];
-        var scrennPt = [x, y, 1];
         var a = x;
         var b = y;
         var n1 = transform[0][0];
@@ -403,103 +786,7 @@ var AnnObject = /** @class */ (function () {
             y: screenPt[1]
         };
     };
-    AnnObject.countDistance = function (point1, point2) {
-        var value = Math.pow((point1.x - point2.x), 2) + Math.pow((point1.y - point2.y), 2);
-        value = Math.sqrt(value);
-        return value;
-    };
-    AnnObject.countAngle = function (point1, point2) {
-        var dPixSpacingX = 1.0;
-        var dPixSpacingY = 1.0;
-        var dx = (point2.x - point1.x) * dPixSpacingX;
-        var dy = (point1.y - point2.y) * dPixSpacingY;
-        return (180.0 / Math.PI) * Math.atan2(dy, dx);
-    };
-    AnnObject.prototype.hasToolTip = function () {
-        return false;
-    };
-    AnnObject.prototype.del = function () {
-    };
-    AnnObject.prototype.select = function (select) {
-    };
-    //set child jcObject's common mouse event hander, etc.
-    AnnObject.prototype.setChildMouseEvent = function (jcObj) {
-        var dv = this.viewer;
-        var annObj = this;
-        var curContext = this.viewContext.curContext;
-        jcObj.mouseover(function (arg) {
-            if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__["ViewContextEnum"].Select) {
-                if (!this.mouseStyle) {
-                    this.mouseStyle = "pointer";
-                }
-                dv.canvas.style.cursor = this.mouseStyle;
-            }
-        });
-        jcObj.mouseout(function () {
-            if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__["ViewContextEnum"].Select)
-                dv.canvas.style.cursor = "auto";
-        });
-        jcObj.mousedown(function (arg) {
-            //console.log('jcObj mousedown');
-            if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__["ViewContextEnum"].Select) {
-                var curObj = annObj.parent || annObj;
-                if (dv.curSelectObj !== curObj) {
-                    dv.selectObject(curObj);
-                }
-                arg.event.cancelBubble = true;
-            }
-        });
-        jcObj.mouseup(function (arg) {
-            //console.log('jcObj mouseup');
-        });
-        jcObj.click(function (arg) {
-            //console.log('jcObj onClick');
-        });
-    };
-    AnnObject.prototype.setChildDraggable = function (jcObj, draggable, onDrag) {
-        if (!jcObj) {
-            return;
-        }
-        var dv = this.viewer;
-        var canvas = dv.canvas;
-        var annObj = this;
-        jcObj.draggable({
-            disabled: !draggable,
-            start: function (arg) {
-                this._lastPos = {};
-                if (this.mouseStyle) {
-                    dv.canvas.style.cursor = this.mouseStyle;
-                }
-            },
-            stop: function (arg) {
-                this._lastPos = {};
-                if (this.mouseStyle) {
-                    dv.canvas.style.cursor = "auto";
-                }
-            },
-            drag: function (arg) {
-                //ptImg is mouse position, not the object's start position
-                //don't translate any annObject, always keep annObject's transform as clear.
-                var transTmp = dv.imgLayer.transform();
-                var ptImg = AnnObject.screenToImage(arg, transTmp);
-                if (typeof (this._lastPos.x) != "undefined") {
-                    var deltaX = ptImg.x - this._lastPos.x;
-                    var deltaY = ptImg.y - this._lastPos.y;
-                    this._x += deltaX;
-                    this._y += deltaY;
-                    if (onDrag) {
-                        onDrag.call(annObj, deltaX, deltaY);
-                    }
-                }
-                this._lastPos = {
-                    x: ptImg.x,
-                    y: ptImg.y
-                };
-                return true;
-            }
-        });
-    };
-    AnnObject.prototype.isChildJCObject = function (obj) {
+    AnnObject.isJcanvasObject = function (obj) {
         if (!obj) {
             return false;
         }
@@ -508,39 +795,466 @@ var AnnObject = /** @class */ (function () {
         }
         return false;
     };
-    AnnObject.prototype.translateChild = function (child, deltaX, deltaY) {
+    AnnObject.countDistance = function (point1, point2) {
+        var value = Math.pow((point1.x - point2.x), 2) + Math.pow((point1.y - point2.y), 2);
+        value = Math.sqrt(value);
+        return value;
+    };
+    AnnObject.prototype.getLineWidth = function () {
+        var lineWidth = 1 / this.image.getScaleValue();
+        if (lineWidth < this.minLineWidth) {
+            lineWidth = this.minLineWidth;
+        }
+        return lineWidth;
+    };
+    AnnObject.prototype.getPointRadius = function () {
+        var circleRadius = 3 / this.image.getScaleValue();
+        if (circleRadius < this.minPointRadius) {
+            circleRadius = this.minPointRadius;
+        }
+        return circleRadius;
+    };
+    AnnObject.prototype.setChildDraggable = function (parent, child, draggable, onDrag) {
+        var _this = this;
+        child.draggable({
+            disabled: !draggable,
+            start: function (arg) {
+                child._lastPos = {};
+            },
+            stop: function (arg) {
+                child._lastPos = {};
+                if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__["ViewContextEnum"].SelectAnn) {
+                    parent.dragging = false;
+                    parent.canvas.style.cursor = parent.oldCursor;
+                }
+            },
+            drag: function (arg) {
+                if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__["ViewContextEnum"].SelectAnn) {
+                    var point = AnnObject.screenToImage({ x: arg.x, y: arg.y }, parent.image.transformMatrix);
+                    parent.dragging = true;
+                    if (typeof (child._lastPos.x) != "undefined") {
+                        var deltaX = point.x - child._lastPos.x;
+                        var deltaY = point.y - child._lastPos.y;
+                        //child._x += deltaX;
+                        //child._y += deltaY;
+                        if (onDrag) {
+                            onDrag.call(parent, child, deltaX, deltaY);
+                        }
+                    }
+                    child._lastPos = point;
+                }
+                return true;
+            }
+        });
+    };
+    AnnObject.prototype.setChildMouseEvent = function (parent, child) {
+        child._onmouseover = function (arg) {
+            if (parent.needResponseToChildMouseEvent()) {
+                parent.onMouseEvent(MouseEventType.MouseOver, arg);
+                parent.oldCursor = parent.canvas.style.cursor;
+                parent.canvas.style.cursor = child.mouseStyle;
+            }
+        };
+        child._onmouseout = function (arg) {
+            if (parent.needResponseToChildMouseEvent()) {
+                parent.onMouseEvent(MouseEventType.MouseOut, arg);
+                parent.canvas.style.cursor = parent.oldCursor;
+            }
+        };
+        child._onmousedown = function (arg) {
+            if (parent.needResponseToChildMouseEvent()) {
+                parent.onMouseEvent(MouseEventType.MouseDown, arg);
+            }
+            arg.event.cancelBubble = true;
+            arg.event.stopPropagation();
+            arg.event.stopImmediatePropagation();
+            arg.event.preventDefault();
+            // return false to make sure no other jc object's mouse event will be called
+            return false;
+        };
+    };
+    AnnObject.prototype.needResponseToChildMouseEvent = function () {
+        return !this.dragging && this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__["ViewContextEnum"].SelectAnn;
+    };
+    AnnObject.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
+    };
+    AnnObject.prototype.getPosition = function () {
+        return { x: 0, y: 0 };
+    };
+    return AnnObject;
+}());
+
+/*
+export abstract class AnnObject {
+
+    protected viewer: any; //the parent compoent which hold this object
+    protected created: boolean;
+    protected isInEdit: boolean; //is current object selected and in edit status
+    protected parent: AnnObject;
+
+    protected defaultCircleRadius = 5;
+    protected minCircleRadius = 2;
+    protected minLineWidth = 0.3;
+
+    protected selectedLevel = 100;
+    protected defaultLevel = 1;
+    protected selectedColor = Colors.red;
+    protected defaultColor = Colors.white;
+
+    constructor(protected viewContext: ViewContextService) {
+    }
+
+    
+
+
+
+    static countAngle(point1: any, point2: any): number {
+        const dPixSpacingX = 1.0;
+        const dPixSpacingY = 1.0;
+
+        const dx = (point2.x - point1.x) * dPixSpacingX;
+        const dy = (point1.y - point2.y) * dPixSpacingY;
+
+        return (180.0 / Math.PI) * Math.atan2(dy, dx);
+    }
+
+    abstract startCreate(viewer: any, callback: any, param: any): void;
+
+    hasToolTip(): boolean {
+        return false;
+    }
+
+    del() {
+    }
+
+    select(select: boolean) {
+    }
+
+    //set child jcObject's common mouse event hander, etc.
+    protected setChildMouseEvent(jcObj) {
+        var dv = this.viewer;
+        var annObj = this;
+        var curContext = this.viewContext.curContext;
+
+        jcObj.mouseover(function(arg) {
+            if (curContext.action == ViewContextEnum.Select) {
+                if (!this.mouseStyle) {
+                    this.mouseStyle = "pointer";
+                }
+                dv.canvas.style.cursor = this.mouseStyle;
+            }
+        });
+
+        jcObj.mouseout(function() {
+            if (curContext.action == ViewContextEnum.Select)
+                dv.canvas.style.cursor = "auto";
+        });
+
+        jcObj.mousedown(function(arg) {
+            //console.log('jcObj mousedown');
+            if (curContext.action == ViewContextEnum.Select) {
+                const curObj = annObj.parent || annObj;
+                if (dv.curSelectObj !== curObj) {
+                    dv.selectObject(curObj);
+                }
+                arg.event.cancelBubble = true;
+            }
+        });
+
+        jcObj.mouseup(function(arg) {
+            //console.log('jcObj mouseup');
+        });
+
+        jcObj.click(function(arg) {
+            //console.log('jcObj onClick');
+        });
+    }
+
+    protected setChildDraggable(jcObj, draggable, onDrag) {
+        if (!jcObj) {
+            return;
+        }
+
+        var dv = this.viewer;
+        const canvas = dv.canvas;
+        var annObj = this;
+
+        jcObj.draggable({
+            disabled: !draggable,
+            start: function(arg) {
+                this._lastPos = {};
+                if (this.mouseStyle) {
+                    dv.canvas.style.cursor = this.mouseStyle;
+                }
+            },
+            stop: function(arg) {
+                this._lastPos = {};
+                if (this.mouseStyle) {
+                    dv.canvas.style.cursor = "auto";
+                }
+            },
+            drag: function(arg) {
+                //ptImg is mouse position, not the object's start position
+                //don't translate any annObject, always keep annObject's transform as clear.
+                const transTmp = dv.imgLayer.transform();
+                const ptImg = AnnObject.screenToImage(arg, transTmp);
+
+                if (typeof (this._lastPos.x) != "undefined") {
+                    const deltaX = ptImg.x - this._lastPos.x;
+                    const deltaY = ptImg.y - this._lastPos.y;
+
+                    this._x += deltaX;
+                    this._y += deltaY;
+
+                    if (onDrag) {
+                        onDrag.call(annObj, deltaX, deltaY);
+                    }
+                }
+
+                this._lastPos = {
+                    x: ptImg.x,
+                    y: ptImg.y
+                };
+                return true;
+            }
+        });
+    }
+
+    protected isChildJCObject(obj) {
+        if (!obj) {
+            return false;
+        }
+
+        if (obj.optns) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected translateChild(child, deltaX, deltaY) {
         if (child) {
             child._x += deltaX;
             child._y += deltaY;
         }
-    };
-    AnnObject.prototype.deleteChild = function () {
+    }
+
+    protected deleteChild() {
         var thisObj = this;
-        var propertys = Object.getOwnPropertyNames(this);
-        propertys.forEach(function (prop) {
-            var obj = thisObj[prop];
+        const propertys = Object.getOwnPropertyNames(this);
+        propertys.forEach(function(prop) {
+            const obj = thisObj[prop];
             if ((obj instanceof AnnObject && obj != thisObj.parent) || thisObj.isChildJCObject(obj)) {
                 obj.del();
                 thisObj[prop] = undefined;
             }
         });
-    };
-    AnnObject.prototype.selectChild = function (select) {
+    }
+
+    protected selectChild(select: boolean) {
         var thisObj = this;
-        var propertys = Object.getOwnPropertyNames(this);
-        propertys.forEach(function (prop) {
-            var obj = thisObj[prop];
+        const propertys = Object.getOwnPropertyNames(this);
+        propertys.forEach(function(prop) {
+            const obj = thisObj[prop];
             if (obj instanceof AnnObject && obj != thisObj.parent) {
                 obj.select(select);
-            }
-            else if (thisObj.isChildJCObject(obj)) {
+            } else if (thisObj.isChildJCObject(obj)) {
                 obj.color(select ? thisObj.selectedColor : thisObj.defaultColor);
                 obj.level(select ? thisObj.selectedLevel : thisObj.defaultLevel);
             }
         });
+    }
+}
+*/ 
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/ann-rectangle.ts":
+/*!*********************************************!*\
+  !*** ./src/app/annotation/ann-rectangle.ts ***!
+  \*********************************************/
+/*! exports provided: AnnRectangle */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnRectangle", function() { return AnnRectangle; });
+/* harmony import */ var _ann_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ann-object */ "./src/app/annotation/ann-object.ts");
+/* harmony import */ var _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./base-object/ann-base-point */ "./src/app/annotation/base-object/ann-base-point.ts");
+/* harmony import */ var _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./base-object/ann-base-line */ "./src/app/annotation/base-object/ann-base-line.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     };
-    return AnnObject;
-}());
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+var AnnRectangle = /** @class */ (function (_super) {
+    __extends(AnnRectangle, _super);
+    function AnnRectangle(imageViewer) {
+        var _this = _super.call(this, imageViewer) || this;
+        /*
+             P0                   L0                    P1
+                --------------------------------------
+                |                                    |
+             L1 |                                    |  L2
+                |                                    |
+                --------------------------------------
+             P2                   L3                    P3
+    
+        */
+        _this.annLineList = new Array();
+        _this.annPointList = new Array();
+        _this.width = 0;
+        _this.height = 0;
+        return _this;
+    }
+    AnnRectangle.prototype.onMouseEvent = function (mouseEventType, point) {
+        var _this = this;
+        point = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].screenToImage(point, this.image.transformMatrix);
+        if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
+            if (this.created) {
+                this.onSelect(true, false);
+                return;
+            }
+            if (this.annPointList.length === 0) {
+                this.topLeftPoint = point;
+                var annTopLeftPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, point, this.imageViewer);
+                this.annPointList.push(annTopLeftPoint);
+            }
+            else {
+                this.annPointList.forEach(function (annObj) { return annObj.onDrawEnded(_this.onPointDragged, _this.onChildSelected); });
+                this.annLineList.forEach(function (annObj) { return annObj.onDrawEnded(_this.onLineDragged, _this.onChildSelected); });
+                this.focusedObj = this.annPointList[3];
+                this.created = true;
+                this.imageViewer.onAnnotationCreated(this);
+            }
+        }
+        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
+            if (this.annPointList.length !== 0) {
+                var topRightPoint = { x: point.x, y: this.topLeftPoint.y };
+                var bottomLeftPoint = { x: this.topLeftPoint.x, y: point.y };
+                if (this.annLineList.length === 4) {
+                    this.annPointList[1].moveTo(topRightPoint);
+                    this.annPointList[2].moveTo(bottomLeftPoint);
+                    this.annPointList[3].moveTo(point);
+                    this.redraw(this.topLeftPoint, topRightPoint, bottomLeftPoint, point);
+                }
+                else {
+                    var annTopRightPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, topRightPoint, this.imageViewer);
+                    this.annPointList.push(annTopRightPoint);
+                    var annBottomLeftPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, bottomLeftPoint, this.imageViewer);
+                    this.annPointList.push(annBottomLeftPoint);
+                    var annBottomRightPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, point, this.imageViewer);
+                    this.annPointList.push(annBottomRightPoint);
+                    var annTopLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, this.topLeftPoint, topRightPoint, this.imageViewer);
+                    this.annLineList.push(annTopLine);
+                    var annLeftLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, this.topLeftPoint, bottomLeftPoint, this.imageViewer);
+                    this.annLineList.push(annLeftLine);
+                    var annRightLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, topRightPoint, point, this.imageViewer);
+                    this.annLineList.push(annRightLine);
+                    var annBottomLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, bottomLeftPoint, point, this.imageViewer);
+                    this.annLineList.push(annBottomLine);
+                    // Make sure the start point is on the top the line So that we can easily select it for moving
+                    if (this.annPointList[0].jcCenterPoint) {
+                        this.annPointList[0].jcCenterPoint.up();
+                    }
+                }
+            }
+        }
+    };
+    AnnRectangle.prototype.onChildSelected = function (selectedObj) {
+        this.selected = true;
+        this.focusedObj = selectedObj;
+        this.setChild(true);
+    };
+    AnnRectangle.prototype.onSelect = function (selected, focused) {
+        if (this.isSelected() !== selected) {
+            this.selected = selected;
+            this.setChild(selected);
+        }
+    };
+    AnnRectangle.prototype.onScale = function () {
+        this.annLineList.forEach(function (annObj) { return annObj.onScale(); });
+        this.annPointList.forEach(function (annObj) { return annObj.onScale(); });
+    };
+    AnnRectangle.prototype.onFlip = function (vertical) {
+        this.annLineList.forEach(function (annObj) { return annObj.onFlip(vertical); });
+        this.annPointList.forEach(function (annObj) { return annObj.onFlip(vertical); });
+    };
+    AnnRectangle.prototype.onSwitchFocus = function () {
+        var _this = this;
+        if (!this.focusedObj || this.annLineList.some(function (annObj) { return annObj === _this.focusedObj; })) {
+            this.onChildSelected(this.annPointList[0]);
+        }
+        else {
+            var index = this.annPointList.findIndex(function (annObj) { return annObj === _this.focusedObj; });
+            this.onChildSelected(index === 3 ? this.annLineList[0] : this.annPointList[index + 1]);
+        }
+    };
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    AnnRectangle.prototype.setChild = function (selected) {
+        var _this = this;
+        this.annLineList.forEach(function (annObj) { return annObj.onSelect(selected, _this.focusedObj === annObj); });
+        this.annPointList.forEach(function (annObj) { return annObj.onSelect(selected, _this.focusedObj === annObj); });
+        if (this.selected) {
+            this.imageViewer.selectAnnotation(this);
+        }
+    };
+    AnnRectangle.prototype.onLineDragged = function (draggedObj, deltaX, deltaY) {
+        this.annLineList.forEach(function (annObj) { return annObj.onTranslate(deltaX, deltaY); });
+        this.annPointList.forEach(function (annObj) { return annObj.onTranslate(deltaX, deltaY); });
+    };
+    AnnRectangle.prototype.onPointDragged = function (draggedObj, deltaX, deltaY) {
+        var topLeftPoint = this.annPointList[0].getPosition();
+        var topRightPoint = this.annPointList[1].getPosition();
+        var bottomLeftPoint = this.annPointList[2].getPosition();
+        var bottomRightPoint = this.annPointList[3].getPosition();
+        if (draggedObj === this.annPointList[0]) {
+            topRightPoint.y = topLeftPoint.y;
+            bottomLeftPoint.x = topLeftPoint.x;
+        }
+        else if (draggedObj === this.annPointList[1]) {
+            topLeftPoint.y = topRightPoint.y;
+            bottomRightPoint.x = topRightPoint.x;
+        }
+        else if (draggedObj === this.annPointList[2]) {
+            bottomRightPoint.y = bottomLeftPoint.y;
+            topLeftPoint.x = bottomLeftPoint.x;
+        }
+        else if (draggedObj === this.annPointList[3]) {
+            bottomLeftPoint.y = bottomRightPoint.y;
+            topRightPoint.x = bottomRightPoint.x;
+        }
+        this.redraw(topLeftPoint, topRightPoint, bottomLeftPoint, bottomRightPoint);
+    };
+    AnnRectangle.prototype.redraw = function (topLeftPoint, topRightPoint, bottomLeftPoint, bottomRightPoint) {
+        this.annPointList[0].moveTo(topLeftPoint);
+        this.annPointList[1].moveTo(topRightPoint);
+        this.annPointList[2].moveTo(bottomLeftPoint);
+        this.annPointList[3].moveTo(bottomRightPoint);
+        this.annLineList[0].moveStartTo(topLeftPoint);
+        this.annLineList[0].moveEndTo(topRightPoint);
+        this.annLineList[1].moveStartTo(topLeftPoint);
+        this.annLineList[1].moveEndTo(bottomLeftPoint);
+        this.annLineList[2].moveStartTo(topRightPoint);
+        this.annLineList[2].moveEndTo(bottomRightPoint);
+        this.annLineList[3].moveStartTo(bottomLeftPoint);
+        this.annLineList[3].moveEndTo(bottomRightPoint);
+    };
+    return AnnRectangle;
+}(_ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"]));
 
 
 
@@ -579,6 +1293,223 @@ var AnnotationModule = /** @class */ (function () {
     ], AnnotationModule);
     return AnnotationModule;
 }());
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/base-object/ann-base-line.ts":
+/*!*********************************************************!*\
+  !*** ./src/app/annotation/base-object/ann-base-line.ts ***!
+  \*********************************************************/
+/*! exports provided: AnnBaseLine */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnBaseLine", function() { return AnnBaseLine; });
+/* harmony import */ var _ann_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ann-object */ "./src/app/annotation/ann-object.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+var AnnBaseLine = /** @class */ (function (_super) {
+    __extends(AnnBaseLine, _super);
+    function AnnBaseLine(parent, posStart, posEnd, imageViewer) {
+        var _this = _super.call(this, imageViewer) || this;
+        _this.parent = parent;
+        _this.jcLine = jCanvaScript.line([[posStart.x, posStart.y], [posEnd.x, posEnd.y]], _this.selectedColor).layer(_this.layerId);
+        _this.jcLine._lineWidth = _this.lineWidth;
+        _this.jcLine.mouseStyle = "move";
+        return _this;
+    }
+    AnnBaseLine.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
+        if (this.onDragParent) {
+            this.onDragParent.call(this.parent, this, deltaX, deltaY);
+        }
+    };
+    AnnBaseLine.prototype.onDrawEnded = function (onDragParent, onSelectParent) {
+        this.onDragParent = onDragParent;
+        this.onSelectParent = onSelectParent;
+        this.setChildDraggable(this, this.jcLine, true, this.onDrag);
+        this.setChildMouseEvent(this, this.jcLine);
+    };
+    AnnBaseLine.prototype.onSelect = function (selected, focused) {
+        console.log("onSelect Line" + selected + focused);
+        var color = selected ? this.selectedColor : this.defaultColor;
+        this.jcLine.color(color);
+    };
+    AnnBaseLine.prototype.onMouseEvent = function (mouseEventType, point) {
+        if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
+            console.log("onMouseEvent Line");
+            if (this.onSelectParent) {
+                this.onSelectParent.call(this.parent, this);
+            }
+        }
+    };
+    AnnBaseLine.prototype.onScale = function () {
+        this.jcLine._lineWidth = this.parent.getLineWidth();
+    };
+    AnnBaseLine.prototype.onFlip = function (vertical) {
+        if (vertical) {
+            this.jcLine._y0 = this.image.height() - this.jcLine._y0;
+            this.jcLine._y1 = this.image.height() - this.jcLine._y1;
+        }
+        else {
+            this.jcLine._x0 = this.image.width() - this.jcLine._x0;
+            this.jcLine._x1 = this.image.width() - this.jcLine._x1;
+        }
+    };
+    AnnBaseLine.prototype.onTranslate = function (deltaX, deltaY) {
+        this.jcLine._x0 += deltaX;
+        this.jcLine._y0 += deltaY;
+        this.jcLine._x1 += deltaX;
+        this.jcLine._y1 += deltaY;
+    };
+    //setRadius(radius: number) {
+    //}
+    AnnBaseLine.prototype.moveStartTo = function (point) {
+        this.jcLine._x0 = point.x;
+        this.jcLine._y0 = point.y;
+    };
+    AnnBaseLine.prototype.moveEndTo = function (point) {
+        this.jcLine._x1 = point.x;
+        this.jcLine._y1 = point.y;
+    };
+    AnnBaseLine.prototype.getPosition = function () {
+        return { x: this.jcLine._x0, y: this.jcLine._y0 };
+    };
+    return AnnBaseLine;
+}(_ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"]));
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/base-object/ann-base-point.ts":
+/*!**********************************************************!*\
+  !*** ./src/app/annotation/base-object/ann-base-point.ts ***!
+  \**********************************************************/
+/*! exports provided: AnnBasePoint */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnBasePoint", function() { return AnnBasePoint; });
+/* harmony import */ var _ann_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ann-object */ "./src/app/annotation/ann-object.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+var AnnBasePoint = /** @class */ (function (_super) {
+    __extends(AnnBasePoint, _super);
+    function AnnBasePoint(parent, position, imageViewer) {
+        var _this = _super.call(this, imageViewer) || this;
+        _this.parent = parent;
+        _this.jcOuterCircle = jCanvaScript.circle(position.x, position.y, _this.circleRadius * 2, _this.selectedColor, false).layer(_this.layerId);
+        _this.jcOuterCircle._lineWidth = _this.lineWidth;
+        _this.jcOuterCircle.mouseStyle = "crosshair";
+        _this.jcOuterCircle.visible(false);
+        _this.jcCenterPoint = jCanvaScript.circle(position.x, position.y, _this.circleRadius, _this.selectedColor, true).layer(_this.layerId);
+        _this.jcCenterPoint.mouseStyle = "crosshair";
+        return _this;
+    }
+    AnnBasePoint.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
+        this.jcCenterPoint._x += deltaX;
+        this.jcCenterPoint._y += deltaY;
+        this.jcOuterCircle._x = this.jcCenterPoint._x;
+        this.jcOuterCircle._y = this.jcCenterPoint._y;
+        if (this.onDragParent) {
+            this.onDragParent.call(this.parent, this, deltaX, deltaY);
+        }
+    };
+    AnnBasePoint.prototype.onDrawEnded = function (onDragParent, onSelectParent) {
+        this.onDragParent = onDragParent;
+        this.onSelectParent = onSelectParent;
+        this.setChildDraggable(this, this.jcCenterPoint, true, this.onDrag);
+        this.setChildMouseEvent(this, this.jcCenterPoint);
+    };
+    AnnBasePoint.prototype.onSelect = function (selected, focused) {
+        console.log("onSelect Point" + selected + focused);
+        var color = selected ? this.selectedColor : this.defaultColor;
+        if (this.jcCenterPoint) {
+            this.jcCenterPoint.visible(selected);
+            this.jcCenterPoint.color(color);
+        }
+        this.jcOuterCircle.visible(selected && focused);
+    };
+    AnnBasePoint.prototype.onMouseEvent = function (mouseEventType, point) {
+        if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
+            console.log("onMouseEvent Point");
+            if (this.onSelectParent) {
+                this.onSelectParent.call(this.parent, this);
+            }
+        }
+    };
+    AnnBasePoint.prototype.onScale = function () {
+        this.setRadius(this.parent.getPointRadius());
+        this.jcOuterCircle._lineWidth = this.parent.getLineWidth();
+        this.up();
+    };
+    AnnBasePoint.prototype.onFlip = function (vertical) {
+        if (vertical) {
+            this.jcCenterPoint._y = this.image.height() - this.jcCenterPoint._y;
+            this.jcOuterCircle._y = this.jcCenterPoint._y;
+        }
+        else {
+            this.jcCenterPoint._x = this.image.width() - this.jcCenterPoint._x;
+            this.jcOuterCircle._x = this.jcCenterPoint._x;
+        }
+    };
+    AnnBasePoint.prototype.onTranslate = function (deltaX, deltaY) {
+        this.jcCenterPoint._x += deltaX;
+        this.jcCenterPoint._y += deltaY;
+        this.jcOuterCircle._x += deltaX;
+        this.jcOuterCircle._y += deltaY;
+    };
+    AnnBasePoint.prototype.setRadius = function (radius) {
+        this.jcCenterPoint._radius = radius;
+        this.jcOuterCircle._radius = radius * 2;
+    };
+    AnnBasePoint.prototype.moveTo = function (point) {
+        this.jcCenterPoint._x = point.x;
+        this.jcCenterPoint._y = point.y;
+        this.jcOuterCircle._x = point.x;
+        this.jcOuterCircle._y = point.y;
+    };
+    AnnBasePoint.prototype.getPosition = function () {
+        return { x: this.jcOuterCircle._x, y: this.jcOuterCircle._y };
+    };
+    AnnBasePoint.prototype.up = function () {
+        if (this.jcOuterCircle) {
+            this.jcOuterCircle.up();
+        }
+        if (this.jcCenterPoint) {
+            this.jcCenterPoint.up();
+        }
+    };
+    return AnnBasePoint;
+}(_ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"]));
 
 
 
@@ -665,6 +1596,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_worklist_shell_worklist_shell_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/worklist-shell/worklist-shell.component */ "./src/app/components/worklist-shell/worklist-shell.component.ts");
 /* harmony import */ var _components_viewer_shell_viewer_shell_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/viewer-shell/viewer-shell.component */ "./src/app/components/viewer-shell/viewer-shell.component.ts");
 /* harmony import */ var _services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./services/shell-navigator.service */ "./src/app/services/shell-navigator.service.ts");
+/* harmony import */ var _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./models/viewer-shell-data */ "./src/app/models/viewer-shell-data.ts");
+/* harmony import */ var _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./models/viewer-group-data */ "./src/app/models/viewer-group-data.ts");
+/* harmony import */ var _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./models/viewer-image-data */ "./src/app/models/viewer-image-data.ts");
+/* harmony import */ var _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./services/dicom-image.service */ "./src/app/services/dicom-image.service.ts");
+/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./services/worklist.service */ "./src/app/services/worklist.service.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./services/log.service */ "./src/app/services/log.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -678,19 +1615,37 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
+
+
+
+
 var AppComponent = /** @class */ (function () {
-    function AppComponent(resolver, shellNavigatorService) {
+    function AppComponent(resolver, shellNavigatorService, dicomImageService, worklistService, logService) {
         var _this = this;
         this.resolver = resolver;
         this.shellNavigatorService = shellNavigatorService;
+        this.dicomImageService = dicomImageService;
+        this.worklistService = worklistService;
+        this.logService = logService;
         this.title = "AngularPacsDemo";
         this.createComponents = [];
+        this.shellDataList = [];
         this.subscriptionShellCreated = shellNavigatorService.shellCreated$.subscribe(function (viewerShellData) {
+            _this.shellDataList.push(viewerShellData);
             _this.createViewerShell(viewerShellData);
         });
         this.subscriptionShellDeleted = shellNavigatorService.shellDeleted$.subscribe(function (viewerShellData) {
             _this.deleteViewerShell(viewerShellData);
+            var index = _this.shellDataList.indexOf(viewerShellData, 0);
+            if (index > -1) {
+                _this.shellDataList.splice(index, 1);
+            }
         });
+        _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"].logService = this.logService;
+        _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_5__["ViewerGroupData"].logService = this.logService;
+        _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_6__["ViewerImageData"].logService = this.logService;
     }
     AppComponent.prototype.ngOnInit = function () {
         this.createWorklistShell();
@@ -702,6 +1657,19 @@ var AppComponent = /** @class */ (function () {
         componentRef.instance.hideMe = false;
     };
     AppComponent.prototype.createViewerShell = function (viewerShellData) {
+        var _this = this;
+        this.logService.seperator();
+        this.logService.info('User: Open study - ' + viewerShellData.getName());
+        viewerShellData.patientList.forEach(function (patient) {
+            return patient.studyList.forEach(function (study) {
+                return study.seriesList.forEach(function (series) {
+                    return series.imageList.forEach(function (image) {
+                        return _this.worklistService.isUsingLocalTestData() ? image.cornerStoneImage = null :
+                            _this.dicomImageService.getCornerStoneImage(image);
+                    });
+                });
+            });
+        });
         var componentFactory = this.resolver.resolveComponentFactory(_components_viewer_shell_viewer_shell_component__WEBPACK_IMPORTED_MODULE_2__["ViewerShellComponent"]);
         var componentRef = this.container.createComponent(componentFactory);
         componentRef.instance.hideMe = false;
@@ -740,7 +1708,9 @@ var AppComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./app.component.html */ "./src/app/app.component.html"),
             styles: [__webpack_require__(/*! ./app.component.css */ "./src/app/app.component.css")]
         }),
-        __metadata("design:paramtypes", [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ComponentFactoryResolver"], _services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_3__["ShellNavigatorService"]])
+        __metadata("design:paramtypes", [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ComponentFactoryResolver"], _services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_3__["ShellNavigatorService"],
+            _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_7__["DicomImageService"], _services_worklist_service__WEBPACK_IMPORTED_MODULE_8__["WorklistService"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_9__["LogService"]])
     ], AppComponent);
     return AppComponent;
 }());
@@ -790,12 +1760,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_material_tabs__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! @angular/material/tabs */ "./node_modules/@angular/material/esm5/tabs.es5.js");
 /* harmony import */ var _angular_material_moment_adapter__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! @angular/material-moment-adapter */ "./node_modules/@angular/material-moment-adapter/esm5/material-moment-adapter.es5.js");
 /* harmony import */ var _annotation_annotation_module__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./annotation/annotation.module */ "./src/app/annotation/annotation.module.ts");
+/* harmony import */ var _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./components/dialog/select-studydate-dialog/select-studydate-dialog.component */ "./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -850,7 +1822,8 @@ var AppModule = /** @class */ (function () {
                 _components_common_message_box_message_box_component__WEBPACK_IMPORTED_MODULE_19__["MessageBoxComponent"],
                 _components_common_dropdown_button_menu_dropdown_button_menu_component__WEBPACK_IMPORTED_MODULE_20__["DropdownButtonMenuComponent"],
                 _components_common_dropdown_button_menu_button_dropdown_button_menu_button_component__WEBPACK_IMPORTED_MODULE_21__["DropdownButtonMenuButtonComponent"],
-                _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"]
+                _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"],
+                _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectStudydateDialogComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -880,7 +1853,7 @@ var AppModule = /** @class */ (function () {
             ],
             providers: [],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"]],
-            entryComponents: [_components_common_message_box_message_box_component__WEBPACK_IMPORTED_MODULE_19__["MessageBoxComponent"], _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"]]
+            entryComponents: [_components_common_message_box_message_box_component__WEBPACK_IMPORTED_MODULE_19__["MessageBoxComponent"], _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"], _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectStudydateDialogComponent"]]
         })
     ], AppModule);
     return AppModule;
@@ -1025,7 +1998,13 @@ var DropdownButtonMenuButtonComponent = /** @class */ (function () {
             this.selected.emit(this.buttonData);
         }
         if (this.buttonData.operationData.type === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext) {
-            this.viewContext.setContext(this.buttonData.operationData.data);
+            if (this.buttonData.operationData.data instanceof _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"]) {
+                var viewContext = this.buttonData.operationData.data;
+                this.viewContext.setContext(viewContext.action, viewContext.data);
+            }
+            else {
+                this.viewContext.setContext(this.buttonData.operationData.data, null);
+            }
         }
         else {
             this.viewContext.onOperation(this.buttonData.operationData);
@@ -1036,7 +2015,13 @@ var DropdownButtonMenuButtonComponent = /** @class */ (function () {
     };
     DropdownButtonMenuButtonComponent.prototype.setContext = function (viewContext) {
         if (this.buttonData.operationData.type === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext) {
-            this.isChecked = (viewContext.action === this.buttonData.operationData.data);
+            if (this.buttonData.operationData.data instanceof _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"]) {
+                var myViewContext = this.buttonData.operationData.data;
+                this.isChecked = (viewContext.action === myViewContext.action && viewContext.data === myViewContext.data);
+            }
+            else {
+                this.isChecked = (viewContext.action === this.buttonData.operationData.data);
+            }
         }
     };
     __decorate([
@@ -1370,6 +2355,123 @@ var ManualWlDialogComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.css":
+/*!*************************************************************************************************!*\
+  !*** ./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.css ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".mat-dialog-title {\r\n    border-bottom: 1px solid #FF9900;\r\n    color: #f90;\r\n    font-size: 15px;\r\n    margin: -24px -24px 0px -24px;\r\n    min-width: 200px;\r\n    padding: 1px 10px;\r\n}\r\n\r\n.mat-dialog-content {\r\n    color: white;\r\n    font-size: 15px;\r\n    height: 100px;\r\n    min-width: 200px;\r\n    padding: 10px 10px;\r\n}\r\n\r\n.mat-dialog-actions { margin-right: -12px; }\r\n\r\n.mat-form-field { }\r\n\r\n.mat-raised-button {\r\n    background-color: #444;\r\n    border: 1px solid #777;\r\n    border-radius: 3px;\r\n    color: white;\r\n    font-size: 13px;\r\n    margin-left: 6px;\r\n    padding: 1px;\r\n    width: 100px;\r\n}\r\n\r\n.mat-raised-button:disabled:hover { color: #999; }\r\n\r\n.mat-raised-button:hover { color: #f90; }\r\n\r\n.mat-dialog-actions { flex-direction: row-reverse; }\r\n\r\n.matInput {\r\n    caret-color: #F90;\r\n    color: green;\r\n}\r\n\r\n.mat-input-element { caret-color: #F90; }\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGdDQUFnQztJQUNoQyxXQUFXO0lBQ1gsZUFBZTtJQUNmLDZCQUE2QjtJQUM3QixnQkFBZ0I7SUFDaEIsaUJBQWlCO0FBQ3JCOztBQUVBO0lBQ0ksWUFBWTtJQUNaLGVBQWU7SUFDZixhQUFhO0lBQ2IsZ0JBQWdCO0lBQ2hCLGtCQUFrQjtBQUN0Qjs7QUFFQSxzQkFBc0IsbUJBQW1CLEVBQUU7O0FBRTNDLGtCQUFrQjs7QUFFbEI7SUFDSSxzQkFBc0I7SUFDdEIsc0JBQXNCO0lBQ3RCLGtCQUFrQjtJQUNsQixZQUFZO0lBQ1osZUFBZTtJQUNmLGdCQUFnQjtJQUNoQixZQUFZO0lBQ1osWUFBWTtBQUNoQjs7QUFFQSxvQ0FBb0MsV0FBVyxFQUFFOztBQUVqRCwyQkFBMkIsV0FBVyxFQUFFOztBQUV4QyxzQkFBc0IsMkJBQTJCLEVBQUU7O0FBRW5EO0lBQ0ksaUJBQWlCO0lBQ2pCLFlBQVk7QUFDaEI7O0FBRUEscUJBQXFCLGlCQUFpQixFQUFFIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5tYXQtZGlhbG9nLXRpdGxlIHtcclxuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjRkY5OTAwO1xyXG4gICAgY29sb3I6ICNmOTA7XHJcbiAgICBmb250LXNpemU6IDE1cHg7XHJcbiAgICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcclxuICAgIG1pbi13aWR0aDogMjAwcHg7XHJcbiAgICBwYWRkaW5nOiAxcHggMTBweDtcclxufVxyXG5cclxuLm1hdC1kaWFsb2ctY29udGVudCB7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBmb250LXNpemU6IDE1cHg7XHJcbiAgICBoZWlnaHQ6IDEwMHB4O1xyXG4gICAgbWluLXdpZHRoOiAyMDBweDtcclxuICAgIHBhZGRpbmc6IDEwcHggMTBweDtcclxufVxyXG5cclxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IG1hcmdpbi1yaWdodDogLTEycHg7IH1cclxuXHJcbi5tYXQtZm9ybS1maWVsZCB7IH1cclxuXHJcbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNDQ0O1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzc3NztcclxuICAgIGJvcmRlci1yYWRpdXM6IDNweDtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIGZvbnQtc2l6ZTogMTNweDtcclxuICAgIG1hcmdpbi1sZWZ0OiA2cHg7XHJcbiAgICBwYWRkaW5nOiAxcHg7XHJcbiAgICB3aWR0aDogMTAwcHg7XHJcbn1cclxuXHJcbi5tYXQtcmFpc2VkLWJ1dHRvbjpkaXNhYmxlZDpob3ZlciB7IGNvbG9yOiAjOTk5OyB9XHJcblxyXG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIgeyBjb2xvcjogI2Y5MDsgfVxyXG5cclxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTsgfVxyXG5cclxuLm1hdElucHV0IHtcclxuICAgIGNhcmV0LWNvbG9yOiAjRjkwO1xyXG4gICAgY29sb3I6IGdyZWVuO1xyXG59XHJcblxyXG4ubWF0LWlucHV0LWVsZW1lbnQgeyBjYXJldC1jb2xvcjogI0Y5MDsgfVxyXG4iXX0= */"
+
+/***/ }),
+
+/***/ "./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.html":
+/*!**************************************************************************************************!*\
+  !*** ./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.html ***!
+  \**************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "\r\n<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=\".cdk-overlay-pane\"\r\n    cdkDragHandle>\r\n    Select Study Date Range\r\n</h1>\r\n<mat-dialog-content>\r\n    <table>\r\n        <tr>\r\n            <td></td>\r\n            <td style=\"width: 10px\"></td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                <mat-form-field>\r\n                    <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" (dateChange)=\"fromDateChanged('change', $event)\">\r\n                    <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                    <mat-datepicker #picker1></mat-datepicker>\r\n                </mat-form-field>\r\n            </td>\r\n            <td></td>\r\n            <td>\r\n                <mat-form-field>\r\n                    <input matInput [matDatepicker]=\"picker2\" [min]=\"toMinDate\" [max]=\"toMaxDate\" placeholder=\"To\" (dateChange)=\"toDateChanged('change', $event)\">\r\n                    <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                    <mat-datepicker #picker2></mat-datepicker>\r\n                </mat-form-field>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n    <button class=\"mat-raised-button\" (click)=\"onCancelClick()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n    <button class=\"mat-raised-button\" (click)=\"onOkClick()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n</mat-dialog-actions>\r\n"
+
+/***/ }),
+
+/***/ "./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.ts":
+/*!************************************************************************************************!*\
+  !*** ./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.ts ***!
+  \************************************************************************************************/
+/*! exports provided: MY_FORMATS, SelectStudydateDialogComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MY_FORMATS", function() { return MY_FORMATS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectStudydateDialogComponent", function() { return SelectStudydateDialogComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
+/* harmony import */ var _models_dailog_data_date_range__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/dailog-data/date-range */ "./src/app/models/dailog-data/date-range.ts");
+/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _angular_material_moment_adapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/material-moment-adapter */ "./node_modules/@angular/material-moment-adapter/esm5/material-moment-adapter.es5.js");
+/* harmony import */ var _angular_material_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/material/core */ "./node_modules/@angular/material/esm5/core.es5.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+
+
+
+
+// Import DatePicker format
+
+
+var MY_FORMATS = {
+    parse: {
+        dateInput: "LL",
+    },
+    display: {
+        dateInput: "LL",
+        monthYearLabel: "MMM YYYY",
+        dateA11yLabel: "LL",
+        monthYearA11yLabel: "MMMM YYYY",
+    },
+};
+var SelectStudydateDialogComponent = /** @class */ (function () {
+    function SelectStudydateDialogComponent(dialogRef, dateRange, dialogService) {
+        this.dialogRef = dialogRef;
+        this.dateRange = dateRange;
+        this.dialogService = dialogService;
+        this.fromMinDate = new Date(1900, 1, 1);
+        this.fromMaxDate = new Date();
+        this.toMinDate = new Date();
+        this.toMaxDate = new Date();
+    }
+    SelectStudydateDialogComponent.prototype.onCancelClick = function () {
+        this.dialogRef.close();
+    };
+    SelectStudydateDialogComponent.prototype.onOkClick = function () {
+        this.dialogRef.close(this.dateRange);
+    };
+    SelectStudydateDialogComponent.prototype.fromDateChanged = function (type, event) {
+        this.toMinDate = event.value;
+        this.dateRange.dateFrom = event.value;
+    };
+    SelectStudydateDialogComponent.prototype.toDateChanged = function (type, event) {
+        this.fromMaxDate = event.value;
+        this.dateRange.dateTo = event.value;
+    };
+    SelectStudydateDialogComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-select-studydate-dialog',
+            template: __webpack_require__(/*! ./select-studydate-dialog.component.html */ "./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.html"),
+            providers: [
+                // i18n
+                { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_5__["MAT_DATE_LOCALE"], useValue: "zh-CN" },
+                { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_5__["DateAdapter"], useClass: _angular_material_moment_adapter__WEBPACK_IMPORTED_MODULE_4__["MomentDateAdapter"], deps: [_angular_material_core__WEBPACK_IMPORTED_MODULE_5__["MAT_DATE_LOCALE"]] },
+                { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_5__["MAT_DATE_FORMATS"], useValue: MY_FORMATS },
+            ],
+            styles: [__webpack_require__(/*! ./select-studydate-dialog.component.css */ "./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.css")]
+        }),
+        __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
+        __metadata("design:paramtypes", [_angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"],
+            _models_dailog_data_date_range__WEBPACK_IMPORTED_MODULE_2__["DateRange"],
+            _services_dialog_service__WEBPACK_IMPORTED_MODULE_3__["DialogService"]])
+    ], SelectStudydateDialogComponent);
+    return SelectStudydateDialogComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/components/header-bar/header-bar.component.css":
 /*!****************************************************************!*\
   !*** ./src/app/components/header-bar/header-bar.component.css ***!
@@ -1501,7 +2603,7 @@ module.exports = ".DivLayoutViewer {\r\n    background-color: #555555;\r\n    /*
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"DivLayoutViewer\" [id]=\"getId()\" (click)=\"onSelected()\" [style.border]=\"getBorderStyle()\">\r\n    <div class=\"div-flex-column\" *ngFor=\"let a of Arr(groupData.imageMatrix.colCount).fill(1); let colIndex = index\">\r\n        <div class=\"div-flex-row\" *ngFor=\"let a of Arr(groupData.imageMatrix.rowCount).fill(1); let rowIndex = index\">\r\n            <app-image-viewer [imageData]=\"groupData.getImage(rowIndex,colIndex)\" class=\"div-flex-row\">\r\n            </app-image-viewer>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
+module.exports = "<div class=\"DivLayoutViewer\" [id]=\"getId()\" (click)=\"onSelected()\" [style.border]=\"getBorderStyle()\">\r\n    <div class=\"div-flex-column\" *ngFor=\"let a of Arr(groupData.imageMatrix.colCount).fill(1); let colIndex = index\">\r\n        <div class=\"div-flex-row\" *ngFor=\"let a of Arr(groupData.imageMatrix.rowCount).fill(1); let rowIndex = index\">\r\n            <app-image-viewer [imageData]=\"getImageData(rowIndex,colIndex)\" class=\"div-flex-row\">\r\n            </app-image-viewer>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -1517,9 +2619,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GroupViewerComponent", function() { return GroupViewerComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _services_image_selector_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/image-selector.service */ "./src/app/services/image-selector.service.ts");
-/* harmony import */ var _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
-/* harmony import */ var _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../models/viewer-group-data */ "./src/app/models/viewer-group-data.ts");
-/* harmony import */ var _image_viewer_image_viewer_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./image-viewer/image-viewer.component */ "./src/app/components/viewer-shell/group-viewer/image-viewer/image-viewer.component.ts");
+/* harmony import */ var _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/hanging-protocol */ "./src/app/models/hanging-protocol.ts");
+/* harmony import */ var _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
+/* harmony import */ var _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../models/viewer-group-data */ "./src/app/models/viewer-group-data.ts");
+/* harmony import */ var _image_viewer_image_viewer_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./image-viewer/image-viewer.component */ "./src/app/components/viewer-shell/group-viewer/image-viewer/image-viewer.component.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../services/log.service */ "./src/app/services/log.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1534,11 +2638,14 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
 var GroupViewerComponent = /** @class */ (function () {
-    function GroupViewerComponent(imageSelectorService, hangingProtocolService) {
+    function GroupViewerComponent(imageSelectorService, hangingProtocolService, logService) {
         var _this = this;
         this.imageSelectorService = imageSelectorService;
         this.hangingProtocolService = hangingProtocolService;
+        this.logService = logService;
         this.Arr = Array; //Array type captured in a variable
         this.selected = false;
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(function (viewerImageData) {
@@ -1550,12 +2657,16 @@ var GroupViewerComponent = /** @class */ (function () {
         this.subscriptionImageLayoutChange = imageSelectorService.imageLayoutChanged$.subscribe(function (imageLayoutStyle) {
             _this.onChangeImageLayout(imageLayoutStyle);
         });
+        this.logService.debug("Group: a new GroupViewerComponent is created!");
     }
     Object.defineProperty(GroupViewerComponent.prototype, "groupData", {
         get: function () {
             return this._groupData;
         },
         set: function (groupData) {
+            this.logPrefix = "Group" + groupData.getId() + ": ";
+            var log = this.logPrefix + "set groupData, protocol is " + _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["ImageHangingProtocol"][groupData.imageHangingProtocol];
+            this.logService.debug(log);
             this._groupData = groupData;
             this.setImageLayout(this.groupData.imageHangingProtocol);
         },
@@ -1597,6 +2708,7 @@ var GroupViewerComponent = /** @class */ (function () {
     };
     GroupViewerComponent.prototype.setImageLayout = function (imageLayoutStyle) {
         this.hangingProtocolService.applyImageHangingProtocol(this.groupData, imageLayoutStyle);
+        this.imageDataList = this.groupData.imageDataList;
         this.onResize();
     };
     GroupViewerComponent.prototype.getId = function () {
@@ -1605,18 +2717,24 @@ var GroupViewerComponent = /** @class */ (function () {
     GroupViewerComponent.prototype.onResize = function () {
         if (!this.childImages)
             return;
+        this.logService.debug("Group: onResize()");
         this.childImages.forEach(function (imageViewer, index) {
             imageViewer.onResize();
         });
     };
+    GroupViewerComponent.prototype.getImageData = function (rowIndex, colIndex) {
+        var imageIndex = rowIndex * this.groupData.imageMatrix.colCount + colIndex;
+        return this.imageDataList[imageIndex];
+        // return this.groupData.getImage(rowIndex, colIndex);
+    };
     __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_image_viewer_image_viewer_component__WEBPACK_IMPORTED_MODULE_4__["ImageViewerComponent"]),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_image_viewer_image_viewer_component__WEBPACK_IMPORTED_MODULE_5__["ImageViewerComponent"]),
         __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["QueryList"])
     ], GroupViewerComponent.prototype, "childImages", void 0);
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
-        __metadata("design:type", _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_3__["ViewerGroupData"]),
-        __metadata("design:paramtypes", [_models_viewer_group_data__WEBPACK_IMPORTED_MODULE_3__["ViewerGroupData"]])
+        __metadata("design:type", _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_4__["ViewerGroupData"]),
+        __metadata("design:paramtypes", [_models_viewer_group_data__WEBPACK_IMPORTED_MODULE_4__["ViewerGroupData"]])
     ], GroupViewerComponent.prototype, "groupData", null);
     GroupViewerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -1625,7 +2743,8 @@ var GroupViewerComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./group-viewer.component.css */ "./src/app/components/viewer-shell/group-viewer/group-viewer.component.css")]
         }),
         __metadata("design:paramtypes", [_services_image_selector_service__WEBPACK_IMPORTED_MODULE_1__["ImageSelectorService"],
-            _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_2__["HangingProtocolService"]])
+            _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__["HangingProtocolService"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_6__["LogService"]])
     ], GroupViewerComponent);
     return GroupViewerComponent;
 }());
@@ -1652,7 +2771,7 @@ module.exports = ".DivImageViewer {\r\n    align-items: right;\r\n    background
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"DivImageViewer\" [id]=\"getId()\" (click)=\"onSelected()\" [style.border]=\"getBorderStyle()\">\r\n    <!--<div *ngIf=\"worklistService.isUsingLocalTestData() && imageData!== null && imageData.image !== null\" style=\"width: 500px\">\r\n        <p>\r\n            **************************************\r\n            Name : {{imageData.image.series.study.patient.patientName}} | \r\n            AccNo : {{imageData.image.series.study.accessionNo}} | \r\n            Modality : {{imageData.image.series.modality}} | \r\n            ImageID : {{imageData.image.id}}\r\n        </p>\r\n    </div>-->\r\n    <canvas [id]=\"getCanvasId()\" #viewerCanvas class=\"viewerCanvas\"></canvas>\r\n</div>\r\n\r\n<div #helpElement class=\"helpElement\"></div>\r\n"
+module.exports = "<div class=\"DivImageViewer\" [id]=\"getId()\" (click)=\"onSelected()\" [style.border]=\"getBorderStyle()\">\r\n    <!--<div *ngIf=\"worklistService.isUsingLocalTestData() && imageData!== null && imageData.image !== null\" style=\"width: 500px\">\r\n        <p>\r\n            **************************************\r\n            Name : {{imageData.image.series.study.patient.patientName}} | \r\n            AccNo : {{imageData.image.series.study.accessionNo}} | \r\n            Modality : {{imageData.image.series.modality}} | \r\n            ImageID : {{imageData.image.id}}\r\n        </p>\r\n    </div>-->\r\n    <canvas [id]=\"getCanvasId()\" #viewerCanvas class=\"viewerCanvas\" (keyup)=\"onKeyDown($event)\"  tabindex=\"0\"></canvas>\r\n</div>\r\n\r\n<div #helpElement class=\"helpElement\"></div>\r\n"
 
 /***/ }),
 
@@ -1672,12 +2791,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../services/dicom-image.service */ "./src/app/services/dicom-image.service.ts");
 /* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
 /* harmony import */ var _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../models/viewer-image-data */ "./src/app/models/viewer-image-data.ts");
-/* harmony import */ var _annotation_ann_object__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../annotation/ann-object */ "./src/app/annotation/ann-object.ts");
-/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
-/* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
-/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
+/* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
+/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../services/log.service */ "./src/app/services/log.service.ts");
 /* harmony import */ var _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../../models/dailog-data/image-process */ "./src/app/models/dailog-data/image-process.ts");
 /* harmony import */ var _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../../components/dialog/manual-wl-dialog/manual-wl-dialog.component */ "./src/app/components/dialog/manual-wl-dialog/manual-wl-dialog.component.ts");
+/* harmony import */ var _annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../../annotation/ann-object */ "./src/app/annotation/ann-object.ts");
+/* harmony import */ var _annotation_ann_line__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../../annotation/ann-line */ "./src/app/annotation/ann-line.ts");
+/* harmony import */ var _annotation_ann_circle__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../../annotation/ann-circle */ "./src/app/annotation/ann-circle.ts");
+/* harmony import */ var _annotation_ann_rectangle__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../annotation/ann-rectangle */ "./src/app/annotation/ann-rectangle.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1699,8 +2822,12 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
+
+
 var ImageViewerComponent = /** @class */ (function () {
-    function ImageViewerComponent(imageSelectorService, dicomImageService, configurationService, viewContext, worklistService, dialogService) {
+    function ImageViewerComponent(imageSelectorService, dicomImageService, configurationService, viewContext, worklistService, dialogService, logService, ngZone) {
         var _this = this;
         this.imageSelectorService = imageSelectorService;
         this.dicomImageService = dicomImageService;
@@ -1708,10 +2835,12 @@ var ImageViewerComponent = /** @class */ (function () {
         this.viewContext = viewContext;
         this.worklistService = worklistService;
         this.dialogService = dialogService;
+        this.logService = logService;
+        this.ngZone = ngZone;
         this.selected = false;
-        this.annotationList = [];
         this.mouseEventHelper = {};
         this.eventHandlers = {};
+        this.annObjList = [];
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(function (viewerImageData) {
             _this.doSelectImage(viewerImageData);
         });
@@ -1724,28 +2853,34 @@ var ImageViewerComponent = /** @class */ (function () {
         this.subscriptionOperation = viewContext.onOperation$.subscribe(function (operation) {
             _this.onOperation(operation);
         });
+        this.logService.debug("Image: a new ImageViewerComponent is created!");
     }
     Object.defineProperty(ImageViewerComponent.prototype, "imageData", {
         get: function () {
             return this._imageData;
         },
         set: function (imageData) {
+            this.logPrefix = "Image" + imageData.getId() + ": ";
+            var log = this.logPrefix + "set imageData, image " + (imageData.image === null ? 'is null' : 'id is ' + imageData.image.id);
+            this.logService.debug(log);
             if (this._imageData !== imageData) {
                 this._imageData = imageData;
                 this.image = this._imageData.image;
-                this.loadImage();
+                this.checkLoadImage();
             }
         },
         enumerable: true,
         configurable: true
     });
     ImageViewerComponent.prototype.ngOnInit = function () {
+        this.logService.debug(this.logPrefix + "ngOnInit");
         this.baseUrl = this.configurationService.getBaseUrl();
     };
     ImageViewerComponent.prototype.ngAfterContentInit = function () {
+        this.logService.debug(this.logPrefix + "ngAfterContentInit");
     };
     ImageViewerComponent.prototype.ngAfterViewInit = function () {
-        this.isViewInited = true;
+        this.logService.debug(this.logPrefix + "ngAfterViewInit");
         this.canvas = this.canvasRef.nativeElement;
         this.helpElement = this.helpElementRef.nativeElement;
         var canvasId = this.getCanvasId();
@@ -1759,7 +2894,10 @@ var ImageViewerComponent = /** @class */ (function () {
         this.createLayers(canvasId);
         this.registerCanvasEvents();
         this.registerImgLayerEvents();
-        this.loadImage();
+        if (this.image) {
+            this.showWaitingText();
+        }
+        this.isViewInited = true;
     };
     ImageViewerComponent.prototype.ngAfterViewChecked = function () {
         if (this.needResize && this.isImageLoaded) {
@@ -1771,7 +2909,17 @@ var ImageViewerComponent = /** @class */ (function () {
             this.jcanvas.width(this.canvas.width);
             this.jcanvas.height(this.canvas.height);
             this.jcanvas.restart();
-            this.fitWindow();
+            this.logService.debug(this.logPrefix + 'ngAfterViewChecked() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
+            if (this.image) {
+                this.fitWindow();
+            }
+            else {
+                this.jcanvas.clear();
+            }
+            if (this.olLayer) {
+                this.olLayer.objects().del();
+                this.showTextOverlay();
+            }
             this.needResize = false;
         }
     };
@@ -1783,6 +2931,89 @@ var ImageViewerComponent = /** @class */ (function () {
             cornerstone.disable(this.helpElement);
         }
     };
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Implementation of interface IImageViewer
+    ImageViewerComponent.prototype.getAnnotationLayerId = function () {
+        return this.annLayerId;
+    };
+    ImageViewerComponent.prototype.getImage = function () {
+        return this.image;
+    };
+    ImageViewerComponent.prototype.getCanvas = function () {
+        return this.canvas;
+    };
+    ImageViewerComponent.prototype.getContext = function () {
+        return this.viewContext.curContext;
+    };
+    ImageViewerComponent.prototype.selectAnnotation = function (annObj) {
+        if (annObj) {
+            if (this.curSelectObj !== annObj) {
+                if (this.curSelectObj) {
+                    this.curSelectObj.onSelect(false, false);
+                }
+                this.curSelectObj = annObj;
+                this.curSelectObj.onSelect(true, false);
+            }
+        }
+        else {
+            if (this.curSelectObj) {
+                if (!this.curSelectObj.isCreated()) {
+                    this.deleteAnnotation(this.curSelectObj);
+                }
+                else {
+                    this.curSelectObj.onSelect(false, false);
+                }
+            }
+            this.curSelectObj = undefined;
+        }
+    };
+    ImageViewerComponent.prototype.selectNextAnnotation = function () {
+        var len = this.annObjList.length;
+        if (len === 0)
+            return;
+        if (!this.curSelectObj) {
+            this.selectAnnotation(this.annObjList[0]);
+            return;
+        }
+        var i = 0;
+        for (; i < len; i++) {
+            if (this.curSelectObj === this.annObjList[i])
+                break;
+        }
+        if (i === len - 1)
+            i = -1;
+        this.selectAnnotation(this.annObjList[i + 1]);
+    };
+    ImageViewerComponent.prototype.onAnnotationCreated = function (annObj) {
+        if (this.curSelectObj !== annObj) {
+            alert("error in onAnnotationCreated");
+            return;
+        }
+        if (annObj.isCreated()) {
+            this.annObjList.push(this.curSelectObj);
+        }
+        this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].SelectAnn);
+    };
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
+    ImageViewerComponent.prototype.onKeyDown = function (event) {
+        if (!this.curSelectObj)
+            return;
+        if (event.code === "Delete") {
+            this.deleteAnnotation(this.curSelectObj);
+            this.curSelectObj = undefined;
+        }
+        else if (event.code === "KeyA") {
+            this.selectNextAnnotation();
+        }
+        else if (event.code === "KeyF") {
+            if (this.curSelectObj) {
+                this.curSelectObj.onSwitchFocus();
+            }
+        }
+        else if (event.code === "ArrowUp" || event.code === "ArrowDown" || event.code === "ArrowLeft" || event.code === "ArrowRight") {
+            this.curSelectObj.onKeyDown(event);
+        }
+    };
     ImageViewerComponent.prototype.getId = function () {
         //TODO: make sure the viewid is unique, even two viewer opened the same image
         return "DivImageViewer" + this.imageData.getId();
@@ -1791,44 +3022,72 @@ var ImageViewerComponent = /** @class */ (function () {
         //TODO: make sure the canvas is unique, even two viewer opened the same image
         return "viewerCanvas_" + this.imageData.getId();
     };
-    ImageViewerComponent.prototype.loadImage = function () {
-        if (this.image !== null && this.isViewInited) {
-            //this.isViewInited = true;
-            this.isImageLoaded = false;
-            //TODO: the url in deploy environment
-            var imageUri = "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom"
-                .format(this.baseUrl, this.image.id, 0);
-            this.initHelpElement();
-            var helpElement = this.helpElement;
-            var comp = this;
-            cornerstone.loadImage(imageUri).then(function (ctImage) {
-                comp.ctImage = ctImage;
-                cornerstone.displayImage(helpElement, ctImage);
-                //$(helpElement).children(":last-child").remove();//cornerstone will add a new canvas each time
-            });
+    ImageViewerComponent.prototype.checkLoadImage = function () {
+        var _this = this;
+        if (!this.isViewInited || (this.image && this.image.cornerStoneImage === undefined)) {
+            this.logService.debug(this.logPrefix + 'view not inited or image not loaded, wait...');
+            setTimeout(function () {
+                _this.checkLoadImage();
+            }, 100);
+        }
+        else {
+            if (!this.image) {
+                if (this.jcanvas) {
+                    this.jcanvas.clear();
+                }
+                this.logService.debug(this.logPrefix + 'image is null, clear the canvas.');
+            }
+            else {
+                this.initHelpElement();
+                this.ctImage = this.image.cornerStoneImage;
+                if (this.ctImage) {
+                    this.canvas = this.canvasRef.nativeElement;
+                    var canvasId = this.getCanvasId();
+                    jCanvaScript.start(canvasId, true);
+                    this.jcanvas = jCanvaScript.canvas(canvasId);
+                    var parent_2 = this.canvas.parentElement;
+                    this.canvas.width = parent_2.clientWidth;
+                    this.canvas.height = parent_2.clientHeight;
+                    this.jcanvas.width(this.canvas.width);
+                    this.jcanvas.height(this.canvas.height);
+                    this.logService.debug(this.logPrefix + 'checkLoadImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
+                    this.isImageLoaded = false;
+                    cornerstone.displayImage(this.helpElement, this.ctImage);
+                    this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
+                }
+                else {
+                    this.logService.debug(this.logPrefix + 'local test data, no image to show.');
+                }
+            }
         }
     };
     ImageViewerComponent.prototype.initHelpElement = function () {
-        if (!this.hasInitedHelpElement) {
-            //TODO: the init canvas's height and width may too big, should scale to a smaller when first load
-            $(this.helpElement).width(this.image.imageColumns).height(this.image.imageRows);
-            cornerstone.enable(this.helpElement);
-            var comp = this;
-            $(this.helpElement).on("cornerstoneimagerendered", function (e, data) {
-                if (comp.isImageLoaded) { //rendering, or invert
-                    comp.onImageRendered(e, data);
-                }
-                else { //first load
-                    comp.isImageLoaded = true;
-                    comp.onImageLoaded(e, data); //this will set w/l, which will call Rendered again
-                }
-            });
-            this.hasInitedHelpElement = true;
-        }
+        var _this = this;
+        this.ngZone.runOutsideAngular(function () {
+            if (!_this.hasInitedHelpElement) {
+                _this.helpElement = _this.helpElementRef.nativeElement;
+                //TODO: the init canvas's height and width may too big, should scale to a smaller when first load
+                $(_this.helpElement).width(_this.image.imageColumns).height(_this.image.imageRows);
+                cornerstone.enable(_this.helpElement);
+                var comp = _this;
+                $(_this.helpElement).on("cornerstoneimagerendered", function (e, data) {
+                    if (comp.isImageLoaded) { //rendering, or invert
+                        comp.onImageRendered(e, data);
+                    }
+                    else { //first load
+                        comp.isImageLoaded = true;
+                        comp.onImageLoaded(e, data); //this will set w/l, which will call Rendered again
+                    }
+                });
+                _this.hasInitedHelpElement = true;
+            }
+        });
     };
     ImageViewerComponent.prototype.onImageRendered = function (e, data) {
+        this.logService.debug(this.logPrefix + 'onImageRendered() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
     };
     ImageViewerComponent.prototype.onImageLoaded = function (e, data) {
+        this.logService.debug(this.logPrefix + 'onImageLoaded() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
         var ctCanvas = cornerstone.getEnabledElement(this.helpElement).canvas;
         this.jcImage = jCanvaScript.image(ctCanvas).layer(this.imgLayerId);
         this.setContext(this.viewContext.curContext);
@@ -1837,19 +3096,60 @@ var ImageViewerComponent = /** @class */ (function () {
         // Save the original window center/width for later reset.
         this.originalWindowCenter = this.ctImage.windowCenter;
         this.originalWindowWidth = this.ctImage.windowWidth;
-        this.showTextOverlay();
+        this.hideWaitingText();
+        // No need to show text overlay here, since ngAfterViewChecked will call it.
+        //this.showTextOverlay();
+    };
+    ImageViewerComponent.prototype.showWaitingText = function () {
+        this.olLayer.visible(true);
+        var font = this.configurationService.getOverlayFont();
+        this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
+            .color(font.color).font(font.getCanvasFontString()).align('center').draggable();
+        //jc.arc(60, 100, 60, 90, 180, 1, 'rgb(25,99,253)', 0).draggable();
+        //var imgData = jc.imageData(100, 100); //���ý�������Ĵ�С
+        //for (var i = 0; i < 100; i++) {
+        //    for (var j = 0; j < 100; j++) {
+        //        imgData.setPixel(i, j, 'rgba(' + i + ',' + j + ',' + (i + j) + ',' + (i / 100) + ')');
+        //        //�������ص�i,jΪ���ص�����
+        //    }
+        //}
+        //imgData.putData(0, 0).draggable(); //���ý��������λ��
+    };
+    ImageViewerComponent.prototype.hideWaitingText = function () {
+        if (this.waitingLabel) {
+            this.waitingLabel.del();
+            this.waitingLabel = null;
+        }
     };
     ImageViewerComponent.prototype.showTextOverlay = function () {
+        var _this = this;
         this.olLayer.visible(true);
-        var idLbl = this.getId() + "_ol";
-        var overlaySetting = {
-            color: "#ffffff",
-            font: "Times New Roman",
-            fontSize: 17
-        };
-        var font = "{0}px {1}".format(overlaySetting.fontSize, overlaySetting.font);
-        jCanvaScript.text("Test", 5, 15).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
-        this.label = jCanvaScript("#" + idLbl);
+        var font = this.configurationService.getOverlayFont();
+        var canvasContext = this.canvas.getContext("2d");
+        canvasContext.font = font.getCanvasFontString();
+        var overlayList = this.dicomImageService.getOverlayDisplayList(this.image, this.canvas.width, this.canvas.height, canvasContext);
+        overlayList.forEach(function (overlay) {
+            var label = jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).layer(_this.olLayerId)
+                .color(font.color).font(font.getCanvasFontString()).align(overlay.align);
+            if (overlay.id === "9003") {
+                _this.wlLabel = label;
+                _this.wlLabelFormat = overlay.text;
+                _this.updateWlTextOverlay(_this.image.cornerStoneImage.windowWidth, _this.image.cornerStoneImage.windowCenter);
+            }
+            else if (overlay.id === "9004") {
+                _this.zoomRatioLabel = label;
+                _this.zoomRatioFormat = overlay.text;
+                _this.updateZoomRatioTextOverlay(_this.getScale());
+            }
+        });
+        //this.configurationService.overlayList.forEach(overlay => {
+        //    var overlayValue = this.dicomImageService.getTextOverlayValue(this.image, overlay);
+        //    var displayText = overlay.prefix + overlayValue + overlay.suffix;
+        //    jCanvaScript.text(displayText, 5, 15+line*20).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
+        //    line++;
+        //});
+        //jCanvaScript.text("Test", 5, 15).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
+        //this.label = jCanvaScript(`#${idLbl}`);
         //this.label._x = 5;
         //this.label._y = 34;
         //this.label.align('left');
@@ -1914,7 +3214,7 @@ var ImageViewerComponent = /** @class */ (function () {
             (context.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select && this.curSelectObj == undefined);
         this.draggable(draggable);
         //each time context changed, we should unselect cur selected object
-        this.selectObject(undefined);
+        this.selectAnnotation(undefined);
         //if (previousCtx == contextEnum.create && ctx != contextEnum.create && this.tooltips) {
         //    //hide all tooltips
         //    var theObj = this.tooltips;
@@ -1967,6 +3267,11 @@ var ImageViewerComponent = /** @class */ (function () {
                     this.olLayer.visible(operation.data.show);
                     break;
                 }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ShowAnnotation:
+                {
+                    this.annLayer.visible(operation.data.show);
+                    break;
+                }
             case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ManualWL:
                 {
                     this.doManualWl();
@@ -1977,44 +3282,37 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.setCursor = function () {
         var canvas = this.canvas;
         var curContext = this.viewContext.curContext;
-        var cursorUrl = this.baseUrl + "/assets/img/cursor";
-        if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
-            var u = cursorUrl + "/adjustwl.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
+        var cursorUrl = "url(" + this.baseUrl + "/assets/img/cursor/{0}.cur),move";
+        if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
+            canvas.style.cursor = cursorUrl.format("adjustwl");
         }
-        else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Pan) {
-            var u = cursorUrl + "/hand.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
+        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Pan) {
+            canvas.style.cursor = cursorUrl.format("hand");
         }
-        else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select) {
+        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select) {
             canvas.style.cursor = "default";
         }
-        else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Zoom) {
-            var u = cursorUrl + "/zoom.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
+        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Zoom) {
+            canvas.style.cursor = cursorUrl.format("zoom");
         }
-        else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Magnifier) {
-            var u = cursorUrl + "/zoom.cur"; //TODO: get a manifier icon
-            canvas.style.cursor = "url('{0}'),move".format(u);
+        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Magnifier) {
+            canvas.style.cursor = cursorUrl.format("zoom");
         }
-        else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].ROIZoom) {
-            var u = cursorUrl + "/rectzoom.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
+        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].ROIZoom) {
+            canvas.style.cursor = cursorUrl.format("rectzoom");
         }
-        else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].SelectAnn) {
-            var u = cursorUrl + "/select.cur";
-            canvas.style.cursor = "url('{0}'),move".format(u);
+        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].SelectAnn) {
+            canvas.style.cursor = cursorUrl.format("select");
         }
-        else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Create) {
-            canvas.style.cursor = "default";
-            var parm = curContext.data;
-            if (parm && parm.type) {
-                //if (parm.type.prototype.type == annType.stamp) {
-                //    var u = this.cursorUrl + '/ann_stamp.cur';
-                //    canvas.style.cursor = "url('{0}'),move".format(u);
-                //} else {
-                //    canvas.style.cursor = "crosshair";
-                //}
+        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+            if (curContext.data === _annotation_ann_line__WEBPACK_IMPORTED_MODULE_13__["AnnLine"]) {
+                canvas.style.cursor = cursorUrl.format("ann_line");
+            }
+            else if (curContext.data === _annotation_ann_rectangle__WEBPACK_IMPORTED_MODULE_15__["AnnRectangle"]) {
+                canvas.style.cursor = cursorUrl.format("rect");
+            }
+            else if (curContext.data === _annotation_ann_circle__WEBPACK_IMPORTED_MODULE_14__["AnnCircle"]) {
+                canvas.style.cursor = cursorUrl.format("ellipse");
             }
         }
     };
@@ -2024,7 +3322,7 @@ var ImageViewerComponent = /** @class */ (function () {
         this.imgLayer.rotate(angle, "center");
         this.updateImageTransform();
         //var totalAngle = this.getRotate();
-        //this.annotationList.forEach(function (obj) {
+        //this.annObjList.forEach(function (obj) {
         //    if (obj.onRotate) {
         //        obj.onRotate(angle, totalAngle);
         //    }
@@ -2032,6 +3330,10 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.flip = function (flipVertical) {
         var viewPort = cornerstone.getViewport(this.helpElement);
+        var rotateAngle = this.getRotate();
+        if (Math.abs(rotateAngle % 180) === 90) {
+            flipVertical = !flipVertical;
+        }
         if (flipVertical) {
             viewPort.vflip = !viewPort.vflip;
         }
@@ -2039,6 +3341,7 @@ var ImageViewerComponent = /** @class */ (function () {
             viewPort.hflip = !viewPort.hflip;
         }
         cornerstone.setViewport(this.helpElement, viewPort);
+        this.annObjList.forEach(function (annObj) { return annObj.onFlip(flipVertical); });
     };
     ImageViewerComponent.prototype.scale = function (value) {
         if (value > 0) {
@@ -2046,7 +3349,7 @@ var ImageViewerComponent = /** @class */ (function () {
             this.updateImageTransform();
             //var totalScale = this.getScale();
             ////adjust objects' size
-            //this.annotationList.forEach(function (obj) {
+            //this.annObjList.forEach(function (obj) {
             //    if (obj.onScale) {
             //        obj.onScale(totalScale);
             //    }
@@ -2060,7 +3363,7 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.translate = function (x, y) {
         this.imgLayer.translate(x, y);
         this.updateImageTransform();
-        //this.annotationList.forEach(function (obj) {
+        //this.annObjList.forEach(function (obj) {
         //    if (obj.onTranslate) {
         //        obj.onTranslate();
         //    }
@@ -2083,6 +3386,7 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.onResize = function () {
         var _this = this;
+        this.logService.debug("Image: onResize()");
         setTimeout(function () {
             _this.needResize = true;
         }, 1);
@@ -2091,16 +3395,13 @@ var ImageViewerComponent = /** @class */ (function () {
         if (!this.isImageLoaded)
             return;
         var curRotate = 0 - this.getRotate(); //get rotate return the minus value
+        var width = this.image.width();
+        var height = this.image.height();
         var canvasWidth = this.canvas.width;
         var canvasHeight = this.canvas.height;
-        var width = canvasWidth;
-        var height = canvasHeight;
-        if (this.image) {
-            width = this.image.width();
-            height = this.image.height();
-        }
         var widthScale = canvasWidth / width;
         var heightScale = canvasHeight / height;
+        this.logService.debug(this.logPrefix + 'fitWindow() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
         //log('bestfit, canvas width:' + canvasWidth + ",height:" + canvasHeight);
         //this.trueSize();//each time bestfit, need to reset the transform, then apply the scale value.
         this.imgLayer.transform(1, 0, 0, 1, 0, 0, true);
@@ -2142,6 +3443,11 @@ var ImageViewerComponent = /** @class */ (function () {
         viewPort.vflip = false;
         viewPort.hflip = false;
         cornerstone.setViewport(this.helpElement, viewPort);
+        this.updateWlTextOverlay(this.originalWindowWidth, this.originalWindowCenter);
+        this.updateZoomRatioTextOverlay(this.getScale());
+        this.deleteAllAnnotation();
+        this.curSelectObj = undefined;
+        this.refreshUi();
     };
     ImageViewerComponent.prototype.doFit = function (fitType) {
         if (!this.isImageLoaded)
@@ -2152,6 +3458,7 @@ var ImageViewerComponent = /** @class */ (function () {
         var canvasHeight = this.canvas.height;
         var widthScale = canvasWidth / width;
         var heightScale = canvasHeight / height;
+        this.logService.debug(this.logPrefix + 'doFit() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
         var curRotate = 0 - this.getRotate(); //get rotate return the minus value
         // Sail : currently ignore the free rotate, since free rotate will change both width and height,
         // rotate 90 only switch width and height
@@ -2182,6 +3489,7 @@ var ImageViewerComponent = /** @class */ (function () {
             this.translate((canvasWidth - width) / 2, (canvasHeight - height) / 2);
         }
         this.rotate(curRotate);
+        this.updateZoomRatioTextOverlay(this.getScale());
     };
     ImageViewerComponent.prototype.showOverlay = function (visible) {
         if (!this.isImageLoaded) {
@@ -2221,17 +3529,17 @@ var ImageViewerComponent = /** @class */ (function () {
         this.imgLayer.draggable({
             disabled: !draggable,
             start: function (arg) {
-                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Create) {
+                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
                     canvas.style.cursor = "move";
                 }
             },
             stop: function (arg) {
-                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Create) {
+                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
                     canvas.style.cursor = "auto";
                 }
             },
             drag: function (arg) {
-                self.annotationList.forEach(function (obj) {
+                self.annObjList.forEach(function (obj) {
                     if (obj.onTranslate) {
                         obj.onTranslate.call(obj);
                     }
@@ -2274,6 +3582,12 @@ var ImageViewerComponent = /** @class */ (function () {
         var afterWidth = this.imgLayer.getRect().width;
         delta = (afterWidth - preWidth) / 2;
         this.translate(-delta, -delta);
+        this.updateZoomRatioTextOverlay(this.getScale());
+        this.refreshUi();
+    };
+    ImageViewerComponent.prototype.refreshUi = function () {
+        var _this = this;
+        this.annObjList.forEach(function (annObject) { return annObject.onScale(_this.getScale()); });
     };
     ImageViewerComponent.prototype.registerImgLayerEvents = function () {
         var self = this;
@@ -2307,36 +3621,37 @@ var ImageViewerComponent = /** @class */ (function () {
         //if in select context, and not click any object, will unselect all objects.
         if (viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select) {
             if (!evt.event.cancelBubble) {
-                if (self.curSelectObj && self.curSelectObj.select) {
-                    self.curSelectObj.select(false);
-                    self.curSelectObj = undefined;
-                }
+                //if (self.curSelectObj && self.curSelectObj.select) {
+                //    self.curSelectObj.onSelect(false);
+                //    self.curSelectObj = undefined;
+                //}
+                self.selectAnnotation(null);
                 self.draggable(true);
             }
             else { //an annobject has been selected
                 self.draggable(false);
             }
         }
-        else if (viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Create) {
+        else if (viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
             var parm = viewContext.curContext.data;
             if (parm && parm.type && !parm.objCreated) {
                 var newObj = new parm.type();
-                self.createAnnObject(newObj, parm);
+                //               self.createAnnObject(newObj, parm);
                 parm.objCreated = true; //stop create the annObject again
             }
         }
-        self.emitEvent(evt, _annotation_ann_object__WEBPACK_IMPORTED_MODULE_6__["EventType"].MouseDown, "onMouseDown");
+        self.emitEvent(evt, _annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseDown, "onMouseDown");
     };
     ImageViewerComponent.prototype.onMouseMove = function (evt) {
-        this.emitEvent(evt, _annotation_ann_object__WEBPACK_IMPORTED_MODULE_6__["EventType"].MouseMove, "onMouseMove");
+        this.emitEvent(evt, _annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseMove, "onMouseMove");
     };
     ImageViewerComponent.prototype.onMouseOut = function (evt) {
         //log('viwer mouse out: ' + this.canvasId);
-        this.emitEvent(evt, _annotation_ann_object__WEBPACK_IMPORTED_MODULE_6__["EventType"].MouseOut, "onMouseOut");
+        this.emitEvent(evt, _annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseOut, "onMouseOut");
     };
     ImageViewerComponent.prototype.onMouseUp = function (evt) {
         //log('viwer mouse up: ' +this.canvasId);
-        this.emitEvent(evt, _annotation_ann_object__WEBPACK_IMPORTED_MODULE_6__["EventType"].MouseUp, "onMouseUp");
+        this.emitEvent(evt, _annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseUp, "onMouseUp");
     };
     //image layer events
     ImageViewerComponent.prototype.registerEvent = function (obj, type) {
@@ -2381,7 +3696,7 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         //covert screen point to image point
         if (arg.x) {
-            arg = _annotation_ann_object__WEBPACK_IMPORTED_MODULE_6__["AnnObject"].screenToImage(arg, this.imgLayer.transform());
+            arg = _annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["AnnObject"].screenToImage(arg, this.imgLayer.transform());
         }
         handlers.forEach(function (obj) {
             if (obj[handler]) {
@@ -2458,14 +3773,43 @@ var ImageViewerComponent = /** @class */ (function () {
             return;
         }
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
-        this.mouseEventHelper._mouseDownPosCvs = { x: evt.offsetX, y: evt.offsetY };
-        if (this.mouseEventHelper._mouseWhich == 3) { //right mouse
-            this.mouseEventHelper._lastContext = this.viewContext.curContext;
-            this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL);
+        var point = { x: evt.offsetX, y: evt.offsetY };
+        this.mouseEventHelper._mouseDownPosCvs = point;
+        if (this.mouseEventHelper._mouseWhich === 3) { //right mouse
+            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+                // Right click to cancel the creation of an annotation.
+                this.deleteAnnotation(this.curSelectObj);
+                this.curSelectObj = undefined;
+            }
+            else {
+                this.mouseEventHelper._lastContext = this.viewContext.curContext;
+                this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL);
+            }
         }
-        else if (this.mouseEventHelper._mouseWhich == 1) {
-            if (this.viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Magnifier) {
+        else if (this.mouseEventHelper._mouseWhich === 1) {
+            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Magnifier) {
                 //this._startMagnifier(evt);
+            }
+            else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+                if (this.curSelectObj) {
+                    // There is annotation selected
+                    if (!this.curSelectObj.isCreated()) {
+                        // The selected annotation is creating
+                        this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseDown, point);
+                    }
+                    else {
+                        // The selected annotation is created
+                        this.selectAnnotation(null);
+                        // Start to create a new annotation and assign it as selected.
+                        this.startCreateAnnAtPoint(point);
+                    }
+                }
+                else {
+                    // There is no annotation selected
+                    this.startCreateAnnAtPoint(point);
+                }
+            }
+            else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].SelectAnn) {
             }
         }
     };
@@ -2474,38 +3818,47 @@ var ImageViewerComponent = /** @class */ (function () {
         if (!this.isImageLoaded) {
             return;
         }
+        //console.log(evt.offsetX + "," + evt.offsetY);
         var curContext = this.viewContext.curContext;
         if (!self.mouseEventHelper._lastPosCvs) {
             self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
         }
         var deltaX = evt.offsetX - self.mouseEventHelper._lastPosCvs.x;
         var deltaY = evt.offsetY - self.mouseEventHelper._lastPosCvs.y;
-        if (self.mouseEventHelper._mouseWhich == 3) {
-            if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
-                self.doWL(deltaX, deltaY);
+        if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+            if (this.curSelectObj && !this.curSelectObj.isCreated()) {
+                var point = { x: evt.offsetX, y: evt.offsetY };
+                this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseMove, point);
             }
         }
-        else if (self.mouseEventHelper._mouseWhich == 1) {
-            if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Magnifier) {
-                //if (self._magnifying) {
-                //    self._loadMagnifierData(evt);
-                //}
-            }
-            else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
-                self.doWL(deltaX, deltaY);
-            }
-            else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Zoom) {
-                var delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
-                if (Math.abs(delta) > 0) {
-                    self.doZoom(delta);
+        else {
+            if (self.mouseEventHelper._mouseWhich === 3) {
+                if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
+                    self.doWL(deltaX, deltaY);
                 }
             }
-            else if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].ROIZoom) {
-                var curPosCvs = {
-                    x: evt.offsetX,
-                    y: evt.offsetY
-                };
-                //self.drawROIZoom(self.mouseEventHelper._mouseDownPosCvs, curPosCvs);
+            else if (self.mouseEventHelper._mouseWhich === 1) {
+                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Magnifier) {
+                    //if (self._magnifying) {
+                    //    self._loadMagnifierData(evt);
+                    //}
+                }
+                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
+                    self.doWL(deltaX, deltaY);
+                }
+                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Zoom) {
+                    var delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
+                    if (Math.abs(delta) > 0) {
+                        self.doZoom(delta);
+                    }
+                }
+                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].ROIZoom) {
+                    var curPosCvs = {
+                        x: evt.offsetX,
+                        y: evt.offsetY
+                    };
+                    //self.drawROIZoom(self.mouseEventHelper._mouseDownPosCvs, curPosCvs);
+                }
             }
         }
         self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
@@ -2518,7 +3871,7 @@ var ImageViewerComponent = /** @class */ (function () {
         var curContext = this.viewContext.curContext;
         if (self.mouseEventHelper._mouseWhich == 3) {
             if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
-                if (self.mouseEventHelper._lastContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Create) { //cancel create
+                if (self.mouseEventHelper._lastContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) { //cancel create
                     this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select);
                 }
                 else {
@@ -2526,7 +3879,7 @@ var ImageViewerComponent = /** @class */ (function () {
                 }
             }
         }
-        else if (self.mouseEventHelper._mouseWhich == 1) {
+        else if (self.mouseEventHelper._mouseWhich === 1) {
             //if (curContext.action == contextEnum.magnifier && self._magnifying) {
             //    self._endMagnifier();
             //} else if (curContext.action == contextEnum.roizoom) {
@@ -2574,79 +3927,54 @@ var ImageViewerComponent = /** @class */ (function () {
         //    }
         //}
     };
-    ImageViewerComponent.prototype.selectObject = function (obj) {
-        if (obj && obj instanceof _annotation_ann_object__WEBPACK_IMPORTED_MODULE_6__["AnnObject"]) {
-            if (this.curSelectObj !== obj) {
-                if (this.curSelectObj) {
-                    this.curSelectObj.select(false);
-                }
-                this.curSelectObj = obj;
-                this.curSelectObj.select(true);
-            }
-        }
-        else { //call selectObject(undefined) to unselect all, e.g. user clicked the canvas
-            if (this.curSelectObj) {
-                if (this.curSelectObj.isCreated) {
-                    this.curSelectObj.select(false);
-                }
-                else {
-                    this.deleteCurObject();
-                }
-            }
-            this.curSelectObj = undefined;
-        }
+    //private createAnnObject(annObj: AnnObject, param: any) {
+    //    if (!this.isImageLoaded)
+    //        return;
+    //    var self = this;
+    //    if (annObj.hasToolTip()) {
+    //        //show tooltip
+    //    }
+    //    self.showAnnotation(true); //in case user closed the annotation
+    //    if (self.curSelectObj) {
+    //        self.selectObject(undefined);
+    //    }
+    //    self.curSelectObj = annObj;
+    //    annObj.startCreate(self,
+    //        function() {
+    //            const newObj = this;
+    //            if (newObj && newObj.isCreated) {
+    //                //finish create
+    //                if (self.annObjList.indexOf(newObj) < 0) {
+    //                    self.annObjList.push(newObj);
+    //                }
+    //                self.viewContext.setContext(ViewContextEnum.Select);
+    //                self.selectObject(newObj);
+    //            }
+    //        },
+    //        param);
+    //    return annObj;
+    //}
+    ImageViewerComponent.prototype.deleteAllAnnotation = function () {
+        this.annObjList.forEach(function (annObj) { return annObj.onDeleteChildren(); });
+        this.annObjList = [];
     };
-    ImageViewerComponent.prototype.createAnnObject = function (annObj, param) {
-        if (!this.isImageLoaded)
+    ImageViewerComponent.prototype.deleteAnnotation = function (annObj) {
+        if (!annObj)
             return;
-        var self = this;
-        if (annObj.hasToolTip()) {
-            //show tooltip
-        }
-        self.showAnnotation(true); //in case user closed the annotation
-        if (self.curSelectObj) {
-            self.selectObject(undefined);
-        }
-        self.curSelectObj = annObj;
-        annObj.startCreate(self, function () {
-            var newObj = this;
-            if (newObj && newObj.isCreated) {
-                //finish create
-                if (self.annotationList.indexOf(newObj) < 0) {
-                    self.annotationList.push(newObj);
-                }
-                self.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select);
-                self.selectObject(newObj);
-            }
-        }, param);
-        return annObj;
-    };
-    ImageViewerComponent.prototype.deleteCurObject = function () {
-        var curObj = this.curSelectObj;
-        if (curObj) {
-            this.deleteObject(curObj);
-            this.curSelectObj = undefined;
-        }
-    };
-    ImageViewerComponent.prototype.deleteObject = function (obj) {
-        if (obj && obj instanceof _annotation_ann_object__WEBPACK_IMPORTED_MODULE_6__["AnnObject"]) {
-            obj.del();
+        if (annObj.isCreated()) {
+            // If this annotation is already created, need to remove it from the list
+            var len = this.annObjList.length;
             var i = 0;
-            var found = false;
-            var len = this.annotationList.length;
-            for (i = 0; i < len; i++) {
-                if (this.annotationList[i] === obj) {
-                    found = true;
+            for (; i < len; i++) {
+                if (this.annObjList[i] === annObj) {
                     break;
                 }
             }
-            if (found) {
-                this.annotationList.splice(i, 1);
-                if (this.curSelectObj === obj) {
-                    this.curSelectObj = undefined;
-                }
+            if (i !== len) {
+                this.annObjList.splice(i, 1);
             }
         }
+        annObj.onDeleteChildren();
     };
     ImageViewerComponent.prototype.doManualWl = function () {
         var _this = this;
@@ -2664,6 +3992,19 @@ var ImageViewerComponent = /** @class */ (function () {
         cornerstone.setViewport(this.helpElement, viewPort);
         this.ctImage.windowWidth = width;
         this.ctImage.windowCenter = center;
+        this.updateWlTextOverlay(width, center);
+    };
+    ImageViewerComponent.prototype.updateWlTextOverlay = function (width, center) {
+        this.wlLabel.string(this.wlLabelFormat.format(width, center));
+    };
+    ImageViewerComponent.prototype.updateZoomRatioTextOverlay = function (roomRatio) {
+        this.zoomRatioLabel.string(this.zoomRatioFormat.format(roomRatio.toFixed(2)));
+    };
+    ImageViewerComponent.prototype.startCreateAnnAtPoint = function (point) {
+        this.updateImageTransform();
+        var annType = this.viewContext.curContext.data;
+        this.curSelectObj = new annType(this);
+        this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseDown, point);
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])("viewerCanvas"),
@@ -2687,10 +4028,12 @@ var ImageViewerComponent = /** @class */ (function () {
         }),
         __metadata("design:paramtypes", [_services_image_selector_service__WEBPACK_IMPORTED_MODULE_2__["ImageSelectorService"],
             _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_3__["DicomImageService"],
-            _services_configuration_service__WEBPACK_IMPORTED_MODULE_8__["ConfigurationService"],
+            _services_configuration_service__WEBPACK_IMPORTED_MODULE_7__["ConfigurationService"],
             _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextService"],
-            _services_worklist_service__WEBPACK_IMPORTED_MODULE_7__["WorklistService"],
-            _services_dialog_service__WEBPACK_IMPORTED_MODULE_9__["DialogService"]])
+            _services_worklist_service__WEBPACK_IMPORTED_MODULE_6__["WorklistService"],
+            _services_dialog_service__WEBPACK_IMPORTED_MODULE_8__["DialogService"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_9__["LogService"],
+            _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"]])
     ], ImageViewerComponent);
     return ImageViewerComponent;
 }());
@@ -2717,7 +4060,7 @@ module.exports = "#main-nav { margin-left: 1px; }\r\n\r\n.hangingProtocol-div {\
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row hangingProtocol-div\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedGroupHangingData.name)\" role=\"button\" [title]=\"selectedGroupHangingData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let groupHangingData of hangingProtocolService.getGroupHangingDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(groupHangingData.name)\" role=\"button\" [title]=\"groupHangingData.tip\"\r\n                                        (click)=\"onSelectGroupHangingProtocol(groupHangingData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedGroupLayoutData.name)\" role=\"button\" [title]=\"selectedGroupLayoutData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let groupLayoutData of hangingProtocolService.getGroupLayoutDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(groupLayoutData.name)\" role=\"button\" [title]=\"groupLayoutData.tip\"\r\n                                        (click)=\"onSelectGroupLayout(groupLayoutData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedImageLayoutData.name)\" role=\"button\" [title]=\"selectedImageLayoutData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let imageLayoutData of hangingProtocolService.getImageLayoutDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(imageLayoutData.name)\" role=\"button\" [title]=\"imageLayoutData.tip\"\r\n                                        (click)=\"onSelectImageLayout(imageLayoutData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n    <div *ngFor=\"let patient of viewerShellData.patientList\" class=\"row patient-div\">\r\n        <div class=\"patient-header\">\r\n            <div>\r\n                <button class=\"patient-button\" (click)=\"onClickPssi(patient)\" title=\"Toggle to show/hide patient images\"></button>\r\n            </div>\r\n            <table class=\"patient-info\">\r\n                <tr>{{patient.patientName}}</tr>\r\n                <tr>{{patient.patientId}}</tr>\r\n            </table>\r\n        </div>\r\n        <div *ngFor=\"let study of patient.studyList\"\r\n             [style.visibility]=\"getPssiVisibility(patient)\" [style.height]=\"getPssiHeight(patient)\">\r\n            <div class=\"study-header\">\r\n                <div>\r\n                    <button class=\"study-button\" (click)=\"onClickPssi(study)\" title=\"Toggle to show/hide study images\"></button>\r\n                </div>\r\n                <table class=\"study-info\">\r\n                    <tr>{{study.studyDateString}}</tr>\r\n                    <tr>{{study.studyDesc}}</tr>\r\n                </table>\r\n            </div>\r\n            <div *ngFor=\"let series of study.seriesList\"\r\n                 [style.visibility]=\"getPssiVisibility(study)\" [style.height]=\"getPssiHeight(study)\">\r\n                <div class=\"series-header\">\r\n                    <div>\r\n                        <button class=\"series-button\" (click)=\"onClickPssi(series)\" title=\"Toggle to show/hide series images\"></button>\r\n                    </div>\r\n                    <table class=\"series-info\">\r\n                        <tr>{{series.modality}}</tr>\r\n                        <tr>{{series.imageCount}} image</tr>\r\n                    </table>\r\n                </div>\r\n                <div *ngFor=\"let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index\"\r\n                     [style.visibility]=\"getPssiVisibility(series)\" [style.height]=\"getPssiHeight(series)\">\r\n                    <div class=\"image-button\">\r\n                        <app-thumbnail [image]=\"series.imageList[imageIndex*2]\"></app-thumbnail>\r\n                        <app-thumbnail *ngIf=\"imageIndex*2+1 < series.imageList.length\" [image]=\"series.imageList[imageIndex*2+1]\"></app-thumbnail>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
+module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row hangingProtocol-div\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedGroupHangingData.name)\" role=\"button\" [title]=\"selectedGroupHangingData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let groupHangingData of hangingProtocolService.getGroupHangingDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(groupHangingData.name)\" role=\"button\" [title]=\"groupHangingData.tip\"\r\n                                        (click)=\"onSelectGroupHangingProtocol(groupHangingData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedGroupLayoutData.name)\" role=\"button\" [title]=\"selectedGroupLayoutData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let groupLayoutData of hangingProtocolService.getGroupLayoutDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(groupLayoutData.name)\" role=\"button\" [title]=\"groupLayoutData.tip\"\r\n                                        (click)=\"onSelectGroupLayout(groupLayoutData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedImageLayoutData.name)\" role=\"button\" [title]=\"selectedImageLayoutData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let imageLayoutData of hangingProtocolService.getImageLayoutDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(imageLayoutData.name)\" role=\"button\" [title]=\"imageLayoutData.tip\"\r\n                                        (click)=\"onSelectImageLayout(imageLayoutData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n    <div *ngFor=\"let patient of viewerShellData.patientList\" class=\"row patient-div\">\r\n        <div class=\"patient-header\">\r\n            <div>\r\n                <button class=\"patient-button\" (click)=\"onClickPssi(patient)\" title=\"Toggle to show/hide patient images\"></button>\r\n            </div>\r\n            <table class=\"patient-info\">\r\n                <tr>{{patient.patientName}}</tr>\r\n                <tr>{{patient.patientId}}</tr>\r\n            </table>\r\n        </div>\r\n        <div *ngFor=\"let study of patient.studyList\"\r\n             [style.visibility]=\"getPssiVisibility(patient)\" [style.height]=\"getPssiHeight(patient)\">\r\n            <div class=\"study-header\">\r\n                <div>\r\n                    <button class=\"study-button\" (click)=\"onClickPssi(study)\" title=\"Toggle to show/hide study images\"></button>\r\n                </div>\r\n                <table class=\"study-info\">\r\n                    <tr>{{study.studyDate}}</tr>\r\n                    <tr>{{study.studyDescription}}</tr>\r\n                </table>\r\n            </div>\r\n            <div *ngFor=\"let series of study.seriesList\"\r\n                 [style.visibility]=\"getPssiVisibility(study)\" [style.height]=\"getPssiHeight(study)\">\r\n                <div class=\"series-header\">\r\n                    <div>\r\n                        <button class=\"series-button\" (click)=\"onClickPssi(series)\" title=\"Toggle to show/hide series images\"></button>\r\n                    </div>\r\n                    <table class=\"series-info\">\r\n                        <tr>{{series.modality}}</tr>\r\n                        <tr>{{series.imageCount}} image</tr>\r\n                    </table>\r\n                </div>\r\n                <div *ngFor=\"let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index\"\r\n                     [style.visibility]=\"getPssiVisibility(series)\" [style.height]=\"getPssiHeight(series)\">\r\n                    <div class=\"image-button\">\r\n                        <app-thumbnail [image]=\"series.imageList[imageIndex*2]\"></app-thumbnail>\r\n                        <app-thumbnail *ngIf=\"imageIndex*2+1 < series.imageList.length\" [image]=\"series.imageList[imageIndex*2+1]\"></app-thumbnail>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -2736,6 +4079,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/viewer-shell-data */ "./src/app/models/viewer-shell-data.ts");
 /* harmony import */ var _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
 /* harmony import */ var _services_image_selector_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../services/image-selector.service */ "./src/app/services/image-selector.service.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../services/log.service */ "./src/app/services/log.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2750,11 +4094,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var NavigationComponent = /** @class */ (function () {
-    function NavigationComponent(hangingProtocolService, imageSelectorService, locationStrategy) {
+    function NavigationComponent(hangingProtocolService, imageSelectorService, locationStrategy, logService) {
         this.hangingProtocolService = hangingProtocolService;
         this.imageSelectorService = imageSelectorService;
         this.locationStrategy = locationStrategy;
+        this.logService = logService;
         this.Arr = Array; //Array type captured in a variable
         this.layout = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.groupLayoutList = ["1X1", "1X2", "2X1", "2X2", "3X3"];
@@ -2808,14 +4154,20 @@ var NavigationComponent = /** @class */ (function () {
         event.target.style.backgroundImage = event.target.style.backgroundImage.replace("N3", "N1");
     };
     NavigationComponent.prototype.onSelectGroupHangingProtocol = function (groupHangingData) {
+        this.logService.seperator();
+        this.logService.info("User: " + groupHangingData.tip);
         this.selectedGroupHangingData = groupHangingData;
         this.layout.emit(this.selectedGroupHangingData.groupHangingProtocol);
     };
     NavigationComponent.prototype.onSelectGroupLayout = function (groupHangingData) {
+        this.logService.seperator();
+        this.logService.info("User: " + groupHangingData.tip);
         this.selectedGroupLayoutData = groupHangingData;
         this.layout.emit(this.selectedGroupLayoutData.groupHangingProtocol);
     };
     NavigationComponent.prototype.onSelectImageLayout = function (imageLayoutData) {
+        this.logService.seperator();
+        this.logService.info("User: " + imageLayoutData.tip);
         this.selectedImageLayoutData = imageLayoutData;
         this.imageSelectorService.changeImageLayout(this.selectedImageLayoutData.imageHangingProtocol);
     };
@@ -2835,7 +4187,8 @@ var NavigationComponent = /** @class */ (function () {
         }),
         __metadata("design:paramtypes", [_services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__["HangingProtocolService"],
             _services_image_selector_service__WEBPACK_IMPORTED_MODULE_4__["ImageSelectorService"],
-            _angular_common__WEBPACK_IMPORTED_MODULE_1__["LocationStrategy"]])
+            _angular_common__WEBPACK_IMPORTED_MODULE_1__["LocationStrategy"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_5__["LogService"]])
     ], NavigationComponent);
     return NavigationComponent;
 }());
@@ -3025,7 +4378,7 @@ module.exports = ".DivToolbar {\r\n    background-color: black;\r\n    color: #F
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div [style.visibility]=\"viewerShellData.hide? 'hidden' : 'visible'\" id=\"divContainer\" class=\"sp_panel-container\">\r\n    <div class=\"sp_panel-left\">\r\n        <app-navigation [viewerShellData]=\"viewerShellData\" (layout)=\"onChangeGroupLayout($event)\"></app-navigation>\r\n    </div>\r\n\r\n    <div class=\"sp_splitter\">\r\n    </div>\r\n\r\n    <div class=\"sp_panel-right\">\r\n        <div class=\"DivToolbar\">\r\n            <app-viewer-toolbar (layout)=\"onChangeGroupLayout($event)\"></app-viewer-toolbar>\r\n        </div>\r\n\r\n        <div class=\"DivViewerBack\">\r\n            <div class=\"div-flex-column\" *ngFor=\"let b of Arr(viewerShellData.groupMatrix.colCount).fill(1); let colIndex = index\">\r\n                <div class=\"div-flex-row\" *ngFor=\"let a of Arr(viewerShellData.groupMatrix.rowCount).fill(1); let rowIndex = index\">\r\n                    <app-group-viewer [groupData]=\"viewerShellData.getGroup(rowIndex, colIndex)\" class=\"div-flex-row\">\r\n                    </app-group-viewer>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        \r\n        <div class=\"DivOperationBar\">\r\n            \r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n"
+module.exports = "<div [style.visibility]=\"viewerShellData.hide? 'hidden' : 'visible'\" id=\"divContainer\" class=\"sp_panel-container\">\r\n    <div class=\"sp_panel-left\">\r\n        <app-navigation [viewerShellData]=\"viewerShellData\" (layout)=\"onChangeGroupLayout($event)\"></app-navigation>\r\n    </div>\r\n\r\n    <div class=\"sp_splitter\">\r\n    </div>\r\n\r\n    <div class=\"sp_panel-right\">\r\n        <div class=\"DivToolbar\">\r\n            <app-viewer-toolbar (layout)=\"onChangeGroupLayout($event)\"></app-viewer-toolbar>\r\n        </div>\r\n\r\n        <div class=\"DivViewerBack\">\r\n            <div class=\"div-flex-column\" *ngFor=\"let b of Arr(viewerShellData.groupMatrix.colCount).fill(1); let colIndex = index\">\r\n                <div class=\"div-flex-row\" *ngFor=\"let a of Arr(viewerShellData.groupMatrix.rowCount).fill(1); let rowIndex = index\">\r\n                    <app-group-viewer [groupData]=\"getGroupData(rowIndex, colIndex)\" class=\"div-flex-row\">\r\n                    </app-group-viewer>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        \r\n        <div class=\"DivOperationBar\">\r\n            \r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -3043,6 +4396,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _group_viewer_group_viewer_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./group-viewer/group-viewer.component */ "./src/app/components/viewer-shell/group-viewer/group-viewer.component.ts");
 /* harmony import */ var _services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/shell-navigator.service */ "./src/app/services/shell-navigator.service.ts");
 /* harmony import */ var _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/log.service */ "./src/app/services/log.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3056,11 +4410,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var ViewerShellComponent = /** @class */ (function () {
-    function ViewerShellComponent(shellNavigatorService, hangingProtocolService) {
+    function ViewerShellComponent(shellNavigatorService, hangingProtocolService, logService) {
         var _this = this;
         this.shellNavigatorService = shellNavigatorService;
         this.hangingProtocolService = hangingProtocolService;
+        this.logService = logService;
         this.Arr = Array; //Array type captured in a variable
         this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(function (viewerShellData) {
             _this.viewerShellData.hide =
@@ -3083,6 +4439,7 @@ var ViewerShellComponent = /** @class */ (function () {
     };
     ViewerShellComponent.prototype.onChangeGroupLayout = function (groupHangingProtocolNumber) {
         this.hangingProtocolService.applyGroupHangingProtocol(this.viewerShellData, groupHangingProtocolNumber);
+        this.groupDataList = this.viewerShellData.groupDataList;
         this.onResize();
     };
     ViewerShellComponent.prototype.onResize = function () {
@@ -3090,9 +4447,15 @@ var ViewerShellComponent = /** @class */ (function () {
         //    return;
         if (!this.childGroups)
             return;
+        this.logService.debug("Viewer: onResize()");
         this.childGroups.forEach(function (groupViewer) {
             groupViewer.onResize();
         });
+    };
+    ViewerShellComponent.prototype.getGroupData = function (rowIndex, colIndex) {
+        var groupIndex = rowIndex * this.viewerShellData.groupMatrix.colCount + colIndex;
+        return this.groupDataList[groupIndex];
+        //return this.viewerShellData.getGroup(rowIndex, colIndex);
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_group_viewer_group_viewer_component__WEBPACK_IMPORTED_MODULE_1__["GroupViewerComponent"]),
@@ -3105,7 +4468,8 @@ var ViewerShellComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./viewer-shell.component.css */ "./src/app/components/viewer-shell/viewer-shell.component.css")]
         }),
         __metadata("design:paramtypes", [_services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_2__["ShellNavigatorService"],
-            _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__["HangingProtocolService"]])
+            _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__["HangingProtocolService"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_4__["LogService"]])
     ], ViewerShellComponent);
     return ViewerShellComponent;
 }());
@@ -3132,7 +4496,7 @@ module.exports = ".imageOperate-div {\r\n    height: 44px;\r\n    margin-left: -
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--<button class=\"image-button\" (click)=\"onRotate(30)\">Rotate</button>\r\n<button class=\"image-button\" (click)=\"onAddRuler()\">Ruler</button>\r\n-->\r\n\r\n<div class=\"container-fluid\">\r\n    <div class=\"row imageOperate-div\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"selectPanButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"zoomButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"magnifyButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"wlButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"selectAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"fitButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"rotateFlipButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"resetButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"keyImageButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showRulerButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showGraphicOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n</div>\r\n<!--\r\n<div class=\"collapse navbar-collapse\" id=\"navTopToggle\">\r\n    <ul id=\"navBarGroup\" class=\"nav navbar-nav\">\r\n        <li class=\"\">\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSelect\" alt=\"Select\" title=\"Select\" src=\"../../../../assets/img/Toolbar/selection/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnPan\" alt=\"Pan\" title=\"Pan\" src=\"../../../../assets/img/Toolbar/Pan/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCW\" title=\"RotateCW\" src=\"../../../../assets/img/Toolbar/Rotatecw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"VFlip\" title=\"VFlip\" src=\"../../../../assets/img/Toolbar/FlipV/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"HFlip\" title=\"HFlip\" src=\"../../../../assets/img/Toolbar/FlipH/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX2\" title=\"MagnifyX2\" src=\"../../../../assets/img/Toolbar/magnify2/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX4\" title=\"MagnifyX4\" src=\"../../../../assets/img/Toolbar/magnify4/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"ROIZoom\" title=\"ROI Zoom\" src=\"../../../../assets/img/Toolbar/rectzoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"Set ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineAll\" title=\"Set ScoutLine All\" src=\"../../../../assets/img/Toolbar/scoutline_set_all/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineSrc\" title=\"Set ScoutLine Source\" src=\"../../../../assets/img/Toolbar/scoutline_src_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineDest\" title=\"Set ScoutLine Destination\" src=\"../../../../assets/img/Toolbar/scoutline_dst_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnWL\" alt=\"W/L\" title=\"W/L\" src=\"../../../../assets/img/Toolbar/WL/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnInvert\" alt=\"Invert\" title=\"Invert\" src=\"../../../../assets/img/Toolbar/Invert/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnReset\" alt=\"TrueSize\" title=\"TrueSize\" src=\"../../../../assets/img/Toolbar/Reset/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"nav\">\r\n                <img title=\"Markers\" src=\"../../../../assets/img/Toolbar/ann_stamp/normal/bitmap.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu\">\r\n                <li id=\"liMarkerTab\">\r\n                    <ul class=\"nav nav-tabs nav-justified\">\r\n                        <li class=\"active\"><a id=\"tabMarkerPanel1\" data-toggle=\"tab\" href=\"#divMarkerPanel1\">Favorites</a></li>\r\n                        <li><a id=\"tabMarkerPanel2\" data-toggle=\"tab\" href=\"#divMarkerPanel2\">Panel 2</a></li>\r\n                        <li><a id=\"tabMarkerPanel3\" data-toggle=\"tab\" href=\"#divMarkerPanel3\">Panel 3</a></li>\r\n                    </ul>\r\n                    <div class=\"tab-content\">\r\n                        <div id=\"divMarkerPanel1\" class=\"tab-pane in active\">\r\n                            <div>\r\n                                <table class=\"table table-bordered table-marker\">\r\n                                    <tbody id=\"tblMarkerTable1\"></tbody>\r\n                                </table>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel2\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable2\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel3\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable3\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                    </div>\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnBestFit\" alt=\"BestFit\" title=\"BestFit\" src=\"../../../../assets/img/Toolbar/fitwindow/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRect\" alt=\"annRect\" title=\"Rect\" src=\"../../../../assets/img/Toolbar/ann_rectangle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRuler\" alt=\"annLine\" title=\"Ruler\" src=\"../../../../assets/img/Toolbar/Ruler/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddCurve\" alt=\"annCurve\" title=\"Curve\" src=\"../../../../assets/img/Toolbar/ann_cervicalcurve/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddAngle\" alt=\"annAngle\" title=\"Angle\" src=\"../../../../assets/img/Toolbar/ann_angle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowOverlay\" alt=\"ShowOverlay\" title=\"Show Overlay\" src=\"../../../../assets/img/Toolbar/showoverlay/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowAnnotation\" alt=\"ShowAnnotation\" title=\"Show Annotation\" src=\"../../../../assets/img/Toolbar/showannotation/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowRuler\" alt=\"ShowRuler\" title=\"Show Ruler\" src=\"../../../../assets/img/Toolbar/showruler/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnDelete\" alt=\"Delete\" title=\"Delete\" src=\"../../../../assets/img/Toolbar/Delete.png\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSave\" alt=\"Save\" title=\"Save\" src=\"../../../../assets/img/Toolbar/Save.png\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n</div>\r\n-->\r\n"
+module.exports = "<!--<button class=\"image-button\" (click)=\"onRotate(30)\">Rotate</button>\r\n<button class=\"image-button\" (click)=\"onAddRuler()\">Ruler</button>\r\n-->\r\n\r\n<div class=\"container-fluid\">\r\n    <div class=\"row imageOperate-div\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"selectPanButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"zoomButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"magnifyButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"wlButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"selectAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"fitButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"rotateFlipButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"resetButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"keyImageButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"simpleAnnotation1ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\" />\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showRulerButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showGraphicOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n</div>\r\n<!--\r\n<div class=\"collapse navbar-collapse\" id=\"navTopToggle\">\r\n    <ul id=\"navBarGroup\" class=\"nav navbar-nav\">\r\n        <li class=\"\">\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSelect\" alt=\"Select\" title=\"Select\" src=\"../../../../assets/img/Toolbar/selection/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnPan\" alt=\"Pan\" title=\"Pan\" src=\"../../../../assets/img/Toolbar/Pan/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCW\" title=\"RotateCW\" src=\"../../../../assets/img/Toolbar/Rotatecw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"VFlip\" title=\"VFlip\" src=\"../../../../assets/img/Toolbar/FlipV/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"HFlip\" title=\"HFlip\" src=\"../../../../assets/img/Toolbar/FlipH/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX2\" title=\"MagnifyX2\" src=\"../../../../assets/img/Toolbar/magnify2/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX4\" title=\"MagnifyX4\" src=\"../../../../assets/img/Toolbar/magnify4/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"ROIZoom\" title=\"ROI Zoom\" src=\"../../../../assets/img/Toolbar/rectzoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"Set ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineAll\" title=\"Set ScoutLine All\" src=\"../../../../assets/img/Toolbar/scoutline_set_all/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineSrc\" title=\"Set ScoutLine Source\" src=\"../../../../assets/img/Toolbar/scoutline_src_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineDest\" title=\"Set ScoutLine Destination\" src=\"../../../../assets/img/Toolbar/scoutline_dst_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnWL\" alt=\"W/L\" title=\"W/L\" src=\"../../../../assets/img/Toolbar/WL/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnInvert\" alt=\"Invert\" title=\"Invert\" src=\"../../../../assets/img/Toolbar/Invert/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnReset\" alt=\"TrueSize\" title=\"TrueSize\" src=\"../../../../assets/img/Toolbar/Reset/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"nav\">\r\n                <img title=\"Markers\" src=\"../../../../assets/img/Toolbar/ann_stamp/normal/bitmap.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu\">\r\n                <li id=\"liMarkerTab\">\r\n                    <ul class=\"nav nav-tabs nav-justified\">\r\n                        <li class=\"active\"><a id=\"tabMarkerPanel1\" data-toggle=\"tab\" href=\"#divMarkerPanel1\">Favorites</a></li>\r\n                        <li><a id=\"tabMarkerPanel2\" data-toggle=\"tab\" href=\"#divMarkerPanel2\">Panel 2</a></li>\r\n                        <li><a id=\"tabMarkerPanel3\" data-toggle=\"tab\" href=\"#divMarkerPanel3\">Panel 3</a></li>\r\n                    </ul>\r\n                    <div class=\"tab-content\">\r\n                        <div id=\"divMarkerPanel1\" class=\"tab-pane in active\">\r\n                            <div>\r\n                                <table class=\"table table-bordered table-marker\">\r\n                                    <tbody id=\"tblMarkerTable1\"></tbody>\r\n                                </table>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel2\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable2\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel3\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable3\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                    </div>\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnBestFit\" alt=\"BestFit\" title=\"BestFit\" src=\"../../../../assets/img/Toolbar/fitwindow/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRect\" alt=\"annRect\" title=\"Rect\" src=\"../../../../assets/img/Toolbar/ann_rectangle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRuler\" alt=\"annLine\" title=\"Ruler\" src=\"../../../../assets/img/Toolbar/Ruler/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddCurve\" alt=\"annCurve\" title=\"Curve\" src=\"../../../../assets/img/Toolbar/ann_cervicalcurve/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddAngle\" alt=\"annAngle\" title=\"Angle\" src=\"../../../../assets/img/Toolbar/ann_angle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowOverlay\" alt=\"ShowOverlay\" title=\"Show Overlay\" src=\"../../../../assets/img/Toolbar/showoverlay/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowAnnotation\" alt=\"ShowAnnotation\" title=\"Show Annotation\" src=\"../../../../assets/img/Toolbar/showannotation/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowRuler\" alt=\"ShowRuler\" title=\"Show Ruler\" src=\"../../../../assets/img/Toolbar/showruler/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnDelete\" alt=\"Delete\" title=\"Delete\" src=\"../../../../assets/img/Toolbar/Delete.png\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSave\" alt=\"Save\" title=\"Save\" src=\"../../../../assets/img/Toolbar/Save.png\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n</div>\r\n-->\r\n"
 
 /***/ }),
 
@@ -3150,6 +4514,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_image_selector_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/image-selector.service */ "./src/app/services/image-selector.service.ts");
 /* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
 /* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
+/* harmony import */ var _annotation_ann_line__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../annotation/ann-line */ "./src/app/annotation/ann-line.ts");
+/* harmony import */ var _annotation_ann_circle__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../annotation/ann-circle */ "./src/app/annotation/ann-circle.ts");
+/* harmony import */ var _annotation_ann_rectangle__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../annotation/ann-rectangle */ "./src/app/annotation/ann-rectangle.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3159,6 +4526,9 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
+
+
 
 
 
@@ -3251,6 +4621,11 @@ var ViewerToolbarComponent = /** @class */ (function () {
             tip: "Select Annotation",
             operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn }
         };
+        this.simpleAnnotation1ButtonMenu = [
+            { name: "ann_line", tip: "Line", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _annotation_ann_line__WEBPACK_IMPORTED_MODULE_4__["AnnLine"]) } },
+            { name: "ann_ellipse", tip: "Eclipse", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _annotation_ann_circle__WEBPACK_IMPORTED_MODULE_5__["AnnCircle"]) } },
+            { name: "ann_rectangle", tip: "Rectangle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _annotation_ann_rectangle__WEBPACK_IMPORTED_MODULE_6__["AnnRectangle"]) } }
+        ];
         this.buttonDivideSrc = this.configurationService.getBaseUrl() + "assets/img/DicomViewer/fenge2.png";
     }
     ViewerToolbarComponent.prototype.ngOnInit = function () {
@@ -3404,10 +4779,9 @@ module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row\">\r\n
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "QueryShortcutComponent", function() { return QueryShortcutComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _models_shortcut__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../models/shortcut */ "./src/app/models/shortcut.ts");
-/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
-/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
-/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../models/messageBox */ "./src/app/models/messageBox.ts");
+/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
+/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../models/messageBox */ "./src/app/models/messageBox.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3421,17 +4795,11 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-
 var QueryShortcutComponent = /** @class */ (function () {
     function QueryShortcutComponent(worklistService, dialogService) {
         this.worklistService = worklistService;
         this.dialogService = dialogService;
         this.allShortcuts = [];
-        var shortcut = new _models_shortcut__WEBPACK_IMPORTED_MODULE_1__["Shortcut"]();
-        shortcut.name = "All CR";
-        shortcut.id = 1;
-        shortcut.modality = "CR";
-        this.allShortcuts.push(shortcut);
     }
     QueryShortcutComponent.prototype.ngOnInit = function () {
         this.onRefreshShortcut();
@@ -3447,14 +4815,14 @@ var QueryShortcutComponent = /** @class */ (function () {
     };
     QueryShortcutComponent.prototype.onDeleteShortcut = function (shortcut) {
         var _this = this;
-        var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_4__["MessageBoxContent"]();
+        var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxContent"]();
         content.title = "Confirm Delete";
         content.messageText = "Are you sure to delete this shortcut?";
-        content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_4__["MessageBoxType"].Question;
+        content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxType"].Question;
         this.dialogService.showMessageBox(content).subscribe(function (val) { return _this.onConfirmDeleteCallback(val, shortcut); });
     };
     QueryShortcutComponent.prototype.onConfirmDeleteCallback = function (val, shortcut) {
-        if (val.dialogResult === _models_messageBox__WEBPACK_IMPORTED_MODULE_4__["DialogResult"].Yes) {
+        if (val.dialogResult === _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["DialogResult"].Yes) {
             this.worklistService.onDeleteShortcut(shortcut);
             //alert('delete shortcut ' + shortcut.name);
         }
@@ -3470,7 +4838,7 @@ var QueryShortcutComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./query-shortcut.component.html */ "./src/app/components/worklist-shell/query-shortcut/query-shortcut.component.html"),
             styles: [__webpack_require__(/*! ./query-shortcut.component.css */ "./src/app/components/worklist-shell/query-shortcut/query-shortcut.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_worklist_service__WEBPACK_IMPORTED_MODULE_2__["WorklistService"], _services_dialog_service__WEBPACK_IMPORTED_MODULE_3__["DialogService"]])
+        __metadata("design:paramtypes", [_services_worklist_service__WEBPACK_IMPORTED_MODULE_1__["WorklistService"], _services_dialog_service__WEBPACK_IMPORTED_MODULE_2__["DialogService"]])
     ], QueryShortcutComponent);
     return QueryShortcutComponent;
 }());
@@ -3541,7 +4909,7 @@ var QueryToolbarComponent = /** @class */ (function () {
         this.worklistService.setDataSource(event.target.checked ? _models_shortcut__WEBPACK_IMPORTED_MODULE_2__["DataSource"].LocalTestData : _models_shortcut__WEBPACK_IMPORTED_MODULE_2__["DataSource"].MiniPacs);
     };
     QueryToolbarComponent.prototype.onQuery = function () {
-        this.worklistService.onQueryStudies();
+        this.worklistService.onQueryStudies(1);
     };
     QueryToolbarComponent.prototype.onClearCondition = function () {
         this.worklistService.onCleanCondition();
@@ -3660,7 +5028,7 @@ var WorklistShellComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "#tblStudies a { color: white; }\r\n\r\n#tblStudies td {\r\n    border: 1px solid #333;\r\n    color: #ccc\r\n}\r\n\r\n#tblStudies th { border: 1px solid #333; }\r\n\r\n#tblStudies tr.cust-info td { background-color: #222; }\r\n\r\n#trStudiesHeader a { color: #ddd; }\r\n\r\n#trSeriesHeader a { color: white; }\r\n\r\n#trStudiesQuery input[type=text] {\r\n    background-color: black;\r\n    border: 1px solid #444;\r\n    vertical-align: middle;\r\n    width: 100%;\r\n}\r\n\r\n#trStudiesQuery select {\r\n    background-color: black;\r\n    border: 1px solid #444;\r\n    width: 100%;\r\n}\r\n\r\n#trStudiesQuery td:nth-child(n + 2) {\r\n    margin: 0px;\r\n    padding: 1px;\r\n    vertical-align: middle;\r\n}\r\n\r\n#tblStudies tr:nth-child(2n + 1) { background-color: #181818; }\r\n\r\n#tblStudies tr:nth-child(1) { background-color: black; }\r\n\r\n#tblStudies tr:nth-child(2) { background-color: black; }\r\n\r\n#tblStudies tr:hover {\r\n    background-color: #555;\r\n    color: #f90;\r\n}\r\n\r\n#tblStudies tr:nth-child(1):hover { background-color: black; }\r\n\r\n#tblStudies tr:nth-child(2):hover {\r\n    background-color: black;\r\n    color: white;\r\n}\r\n\r\n#trStudiesQuery .dropdown {\r\n    background-color: #555555;\r\n    color: red;\r\n}\r\n\r\n#trStudiesQuery .dropdown .btn {\r\n    background-color: #555555;\r\n    min-width: 70px;\r\n    padding: 1px 6px;\r\n}\r\n\r\n.loading-shade {\r\n    align-items: center;\r\n    background: rgba(0, 0, 0, 0.15);\r\n    bottom: 0px;\r\n    display: flex;\r\n    justify-content: center;\r\n    left: 0px;\r\n    margin: auto;\r\n    position: fixed;\r\n    right: 0px;\r\n    top: 0px;\r\n    z-index: 1;\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLGdCQUFnQixZQUFZLEVBQUU7O0FBRTlCO0lBQ0ksc0JBQXNCO0lBQ3RCO0FBQ0o7O0FBRUEsaUJBQWlCLHNCQUFzQixFQUFFOztBQUV6Qyw4QkFBOEIsc0JBQXNCLEVBQUU7O0FBRXRELHFCQUFxQixXQUFXLEVBQUU7O0FBRWxDLG9CQUFvQixZQUFZLEVBQUU7O0FBR2xDO0lBQ0ksdUJBQXVCO0lBQ3ZCLHNCQUFzQjtJQUN0QixzQkFBc0I7SUFDdEIsV0FBVztBQUNmOztBQUVBO0lBQ0ksdUJBQXVCO0lBQ3ZCLHNCQUFzQjtJQUN0QixXQUFXO0FBQ2Y7O0FBRUE7SUFDSSxXQUFXO0lBQ1gsWUFBWTtJQUNaLHNCQUFzQjtBQUMxQjs7QUFFQSxtQ0FBbUMseUJBQXlCLEVBQUU7O0FBRTlELDhCQUE4Qix1QkFBdUIsRUFBRTs7QUFFdkQsOEJBQThCLHVCQUF1QixFQUFFOztBQUV2RDtJQUNJLHNCQUFzQjtJQUN0QixXQUFXO0FBQ2Y7O0FBRUEsb0NBQW9DLHVCQUF1QixFQUFFOztBQUU3RDtJQUNJLHVCQUF1QjtJQUN2QixZQUFZO0FBQ2hCOztBQUVBO0lBQ0kseUJBQXlCO0lBQ3pCLFVBQVU7QUFDZDs7QUFFQTtJQUNJLHlCQUF5QjtJQUN6QixlQUFlO0lBQ2YsZ0JBQWdCO0FBQ3BCOztBQUVBO0lBQ0ksbUJBQW1CO0lBQ25CLCtCQUErQjtJQUMvQixXQUFXO0lBQ1gsYUFBYTtJQUNiLHVCQUF1QjtJQUN2QixTQUFTO0lBQ1QsWUFBWTtJQUNaLGVBQWU7SUFDZixVQUFVO0lBQ1YsUUFBUTtJQUNSLFVBQVU7QUFDZCIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvd29ya2xpc3Qtc2hlbGwvd29ya2xpc3Qvd29ya2xpc3QuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIiN0YmxTdHVkaWVzIGEgeyBjb2xvcjogd2hpdGU7IH1cclxuXHJcbiN0YmxTdHVkaWVzIHRkIHtcclxuICAgIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XHJcbiAgICBjb2xvcjogI2NjY1xyXG59XHJcblxyXG4jdGJsU3R1ZGllcyB0aCB7IGJvcmRlcjogMXB4IHNvbGlkICMzMzM7IH1cclxuXHJcbiN0YmxTdHVkaWVzIHRyLmN1c3QtaW5mbyB0ZCB7IGJhY2tncm91bmQtY29sb3I6ICMyMjI7IH1cclxuXHJcbiN0clN0dWRpZXNIZWFkZXIgYSB7IGNvbG9yOiAjZGRkOyB9XHJcblxyXG4jdHJTZXJpZXNIZWFkZXIgYSB7IGNvbG9yOiB3aGl0ZTsgfVxyXG5cclxuXHJcbiN0clN0dWRpZXNRdWVyeSBpbnB1dFt0eXBlPXRleHRdIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IGJsYWNrO1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzQ0NDtcclxuICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XHJcbiAgICB3aWR0aDogMTAwJTtcclxufVxyXG5cclxuI3RyU3R1ZGllc1F1ZXJ5IHNlbGVjdCB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjaztcclxuICAgIGJvcmRlcjogMXB4IHNvbGlkICM0NDQ7XHJcbiAgICB3aWR0aDogMTAwJTtcclxufVxyXG5cclxuI3RyU3R1ZGllc1F1ZXJ5IHRkOm50aC1jaGlsZChuICsgMikge1xyXG4gICAgbWFyZ2luOiAwcHg7XHJcbiAgICBwYWRkaW5nOiAxcHg7XHJcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xyXG59XHJcblxyXG4jdGJsU3R1ZGllcyB0cjpudGgtY2hpbGQoMm4gKyAxKSB7IGJhY2tncm91bmQtY29sb3I6ICMxODE4MTg7IH1cclxuXHJcbiN0YmxTdHVkaWVzIHRyOm50aC1jaGlsZCgxKSB7IGJhY2tncm91bmQtY29sb3I6IGJsYWNrOyB9XHJcblxyXG4jdGJsU3R1ZGllcyB0cjpudGgtY2hpbGQoMikgeyBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjazsgfVxyXG5cclxuI3RibFN0dWRpZXMgdHI6aG92ZXIge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcclxuICAgIGNvbG9yOiAjZjkwO1xyXG59XHJcblxyXG4jdGJsU3R1ZGllcyB0cjpudGgtY2hpbGQoMSk6aG92ZXIgeyBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjazsgfVxyXG5cclxuI3RibFN0dWRpZXMgdHI6bnRoLWNoaWxkKDIpOmhvdmVyIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IGJsYWNrO1xyXG4gICAgY29sb3I6IHdoaXRlO1xyXG59XHJcblxyXG4jdHJTdHVkaWVzUXVlcnkgLmRyb3Bkb3duIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6ICM1NTU1NTU7XHJcbiAgICBjb2xvcjogcmVkO1xyXG59XHJcblxyXG4jdHJTdHVkaWVzUXVlcnkgLmRyb3Bkb3duIC5idG4ge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTU1NTtcclxuICAgIG1pbi13aWR0aDogNzBweDtcclxuICAgIHBhZGRpbmc6IDFweCA2cHg7XHJcbn1cclxuXHJcbi5sb2FkaW5nLXNoYWRlIHtcclxuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XHJcbiAgICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIDAuMTUpO1xyXG4gICAgYm90dG9tOiAwcHg7XHJcbiAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XHJcbiAgICBsZWZ0OiAwcHg7XHJcbiAgICBtYXJnaW46IGF1dG87XHJcbiAgICBwb3NpdGlvbjogZml4ZWQ7XHJcbiAgICByaWdodDogMHB4O1xyXG4gICAgdG9wOiAwcHg7XHJcbiAgICB6LWluZGV4OiAxO1xyXG59XHJcbiJdfQ== */"
+module.exports = "#tblStudies a {\r\n    color: white;\r\n}\r\n\r\n\r\n/*#tblStudies {\r\n    border: 1px solid black;\r\n    table-layout: fixed;\r\n}\r\n\r\nth,\r\ntd {\r\n    border: 1px solid black;\r\n    width: 100px;\r\n    overflow: hidden;\r\n    min-width:200px;\r\n}*/\r\n\r\n\r\nul {\r\n    list-style: none;\r\n    -webkit-padding-start: 0px;\r\n            padding-inline-start: 0px;\r\n}\r\n\r\n\r\nli {\r\n    float: left;\r\n    padding: 2px;\r\n}\r\n\r\n\r\nli button {\r\n        cursor: pointer;\r\n    }\r\n\r\n\r\nthead {\r\n    background: #444444;\r\n}\r\n\r\n\r\nthead tr {\r\n    background-color: #444444;\r\n}\r\n\r\n\r\nthead td {\r\n    background-color: #444444;\r\n}\r\n\r\n\r\nthead div {\r\n    font-weight: normal;\r\n}\r\n\r\n\r\n.worklistHeader {\r\n    cursor:pointer;\r\n    min-width:50px;\r\n}\r\n\r\n\r\n#headContent td tr{\r\n    border: 0px;\r\n}\r\n\r\n\r\n#tblStudies td {\r\n    border: 1px solid #333;\r\n    color: #ccc;\r\n}\r\n\r\n\r\n#tblStudies th {\r\n    border: 1px solid #333;\r\n}\r\n\r\n\r\n#tblStudies tr.cust-info td {\r\n    background-color: #222;\r\n}\r\n\r\n\r\n#trStudiesHeader a {\r\n    color: #ddd;\r\n}\r\n\r\n\r\n#trSeriesHeader a {\r\n    color: white;\r\n}\r\n\r\n\r\n#trStudiesHeader tr td {\r\n    border:hidden;\r\n    padding-right:5px;\r\n}\r\n\r\n\r\n#trStudiesQuery input[type=text] {\r\n    background-color: black;\r\n    border: 1px solid #444;\r\n    vertical-align: middle;\r\n    width: 100%;\r\n}\r\n\r\n\r\nselect {\r\n    background-color: black;\r\n    border: 1px solid #444;\r\n    width: 100%;\r\n}\r\n\r\n\r\n#trStudiesQuery td:nth-child(n) {\r\n    margin: 0px;\r\n    padding: 1px;\r\n    vertical-align: middle;\r\n}\r\n\r\n\r\n#tblStudies tbody tr:nth-child(2n + 1) {\r\n    background-color: #181818;\r\n}\r\n\r\n\r\n/*#tblStudies tr:nth-child(1) { background-color: black; }\r\n\r\n#tblStudies tr:nth-child(2) { background-color: black; }*/\r\n\r\n\r\n#tblStudies tbody tr:hover {\r\n    background-color: #555;\r\n    color: #f90;\r\n}\r\n\r\n\r\n/*#tblStudies tr:nth-child(1):hover { background-color: black; }\r\n\r\n#tblStudies tr:nth-child(2):hover {\r\n    background-color: black;\r\n    color: white;\r\n}*/\r\n\r\n\r\n#trStudiesQuery .dropdown {\r\n    background-color: #555555;\r\n    color: red;\r\n}\r\n\r\n\r\n#trStudiesQuery .dropdown .btn {\r\n        background-color: #555555;\r\n        min-width: 70px;\r\n        padding: 1px 6px;\r\n    }\r\n\r\n\r\n.loading-shade {\r\n    align-items: center;\r\n    background: rgba(0, 0, 0, 0.15);\r\n    bottom: 0px;\r\n    display: flex;\r\n    justify-content: center;\r\n    left: 0px;\r\n    margin: auto;\r\n    position: fixed;\r\n    right: 0px;\r\n    top: 0px;\r\n    z-index: 1;\r\n}\r\n\r\n\r\n.shortcut-name-button {\r\n    background-color: transparent;\r\n    border: none;\r\n    border-width: 0px;\r\n    color: inherit;\r\n    outline: none;\r\n}\r\n\r\n\r\n.shortcut-name-button:disabled {\r\n    color: #555555;\r\n}\r\n\r\n\r\n.patientIdCol {\r\n    cursor: pointer;\r\n    text-decoration: underline;\r\n}\r\n\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksWUFBWTtBQUNoQjs7O0FBR0E7Ozs7Ozs7Ozs7O0VBV0U7OztBQUVGO0lBQ0ksZ0JBQWdCO0lBQ2hCLDBCQUF5QjtZQUF6Qix5QkFBeUI7QUFDN0I7OztBQUVBO0lBQ0ksV0FBVztJQUNYLFlBQVk7QUFDaEI7OztBQUVJO1FBQ0ksZUFBZTtJQUNuQjs7O0FBRUo7SUFDSSxtQkFBbUI7QUFDdkI7OztBQUVBO0lBQ0kseUJBQXlCO0FBQzdCOzs7QUFFQTtJQUNJLHlCQUF5QjtBQUM3Qjs7O0FBRUE7SUFDSSxtQkFBbUI7QUFDdkI7OztBQUVBO0lBQ0ksY0FBYztJQUNkLGNBQWM7QUFDbEI7OztBQUVBO0lBQ0ksV0FBVztBQUNmOzs7QUFFQTtJQUNJLHNCQUFzQjtJQUN0QixXQUFXO0FBQ2Y7OztBQUVBO0lBQ0ksc0JBQXNCO0FBQzFCOzs7QUFFQTtJQUNJLHNCQUFzQjtBQUMxQjs7O0FBRUE7SUFDSSxXQUFXO0FBQ2Y7OztBQUVBO0lBQ0ksWUFBWTtBQUNoQjs7O0FBRUE7SUFDSSxhQUFhO0lBQ2IsaUJBQWlCO0FBQ3JCOzs7QUFFQTtJQUNJLHVCQUF1QjtJQUN2QixzQkFBc0I7SUFDdEIsc0JBQXNCO0lBQ3RCLFdBQVc7QUFDZjs7O0FBRUE7SUFDSSx1QkFBdUI7SUFDdkIsc0JBQXNCO0lBQ3RCLFdBQVc7QUFDZjs7O0FBRUE7SUFDSSxXQUFXO0lBQ1gsWUFBWTtJQUNaLHNCQUFzQjtBQUMxQjs7O0FBRUE7SUFDSSx5QkFBeUI7QUFDN0I7OztBQUVBOzt5REFFeUQ7OztBQUV6RDtJQUNJLHNCQUFzQjtJQUN0QixXQUFXO0FBQ2Y7OztBQUVBOzs7OztFQUtFOzs7QUFFRjtJQUNJLHlCQUF5QjtJQUN6QixVQUFVO0FBQ2Q7OztBQUVJO1FBQ0kseUJBQXlCO1FBQ3pCLGVBQWU7UUFDZixnQkFBZ0I7SUFDcEI7OztBQUVKO0lBQ0ksbUJBQW1CO0lBQ25CLCtCQUErQjtJQUMvQixXQUFXO0lBQ1gsYUFBYTtJQUNiLHVCQUF1QjtJQUN2QixTQUFTO0lBQ1QsWUFBWTtJQUNaLGVBQWU7SUFDZixVQUFVO0lBQ1YsUUFBUTtJQUNSLFVBQVU7QUFDZDs7O0FBRUE7SUFDSSw2QkFBNkI7SUFDN0IsWUFBWTtJQUNaLGlCQUFpQjtJQUNqQixjQUFjO0lBQ2QsYUFBYTtBQUNqQjs7O0FBRUE7SUFDSSxjQUFjO0FBQ2xCOzs7QUFFQTtJQUNJLGVBQWU7SUFDZiwwQkFBMEI7QUFDOUIiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L3dvcmtsaXN0LmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIjdGJsU3R1ZGllcyBhIHtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxufVxyXG5cclxuXHJcbi8qI3RibFN0dWRpZXMge1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgYmxhY2s7XHJcbiAgICB0YWJsZS1sYXlvdXQ6IGZpeGVkO1xyXG59XHJcblxyXG50aCxcclxudGQge1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgYmxhY2s7XHJcbiAgICB3aWR0aDogMTAwcHg7XHJcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xyXG4gICAgbWluLXdpZHRoOjIwMHB4O1xyXG59Ki9cclxuXHJcbnVsIHtcclxuICAgIGxpc3Qtc3R5bGU6IG5vbmU7XHJcbiAgICBwYWRkaW5nLWlubGluZS1zdGFydDogMHB4O1xyXG59XHJcblxyXG5saSB7XHJcbiAgICBmbG9hdDogbGVmdDtcclxuICAgIHBhZGRpbmc6IDJweDtcclxufVxyXG5cclxuICAgIGxpIGJ1dHRvbiB7XHJcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xyXG4gICAgfVxyXG5cclxudGhlYWQge1xyXG4gICAgYmFja2dyb3VuZDogIzQ0NDQ0NDtcclxufVxyXG5cclxudGhlYWQgdHIge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzQ0NDQ0NDtcclxufVxyXG5cclxudGhlYWQgdGQge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzQ0NDQ0NDtcclxufVxyXG5cclxudGhlYWQgZGl2IHtcclxuICAgIGZvbnQtd2VpZ2h0OiBub3JtYWw7XHJcbn1cclxuXHJcbi53b3JrbGlzdEhlYWRlciB7XHJcbiAgICBjdXJzb3I6cG9pbnRlcjtcclxuICAgIG1pbi13aWR0aDo1MHB4O1xyXG59XHJcblxyXG4jaGVhZENvbnRlbnQgdGQgdHJ7XHJcbiAgICBib3JkZXI6IDBweDtcclxufVxyXG5cclxuI3RibFN0dWRpZXMgdGQge1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcclxuICAgIGNvbG9yOiAjY2NjO1xyXG59XHJcblxyXG4jdGJsU3R1ZGllcyB0aCB7XHJcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xyXG59XHJcblxyXG4jdGJsU3R1ZGllcyB0ci5jdXN0LWluZm8gdGQge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzIyMjtcclxufVxyXG5cclxuI3RyU3R1ZGllc0hlYWRlciBhIHtcclxuICAgIGNvbG9yOiAjZGRkO1xyXG59XHJcblxyXG4jdHJTZXJpZXNIZWFkZXIgYSB7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbn1cclxuXHJcbiN0clN0dWRpZXNIZWFkZXIgdHIgdGQge1xyXG4gICAgYm9yZGVyOmhpZGRlbjtcclxuICAgIHBhZGRpbmctcmlnaHQ6NXB4O1xyXG59XHJcblxyXG4jdHJTdHVkaWVzUXVlcnkgaW5wdXRbdHlwZT10ZXh0XSB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjaztcclxuICAgIGJvcmRlcjogMXB4IHNvbGlkICM0NDQ7XHJcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xyXG4gICAgd2lkdGg6IDEwMCU7XHJcbn1cclxuXHJcbnNlbGVjdCB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjaztcclxuICAgIGJvcmRlcjogMXB4IHNvbGlkICM0NDQ7XHJcbiAgICB3aWR0aDogMTAwJTtcclxufVxyXG5cclxuI3RyU3R1ZGllc1F1ZXJ5IHRkOm50aC1jaGlsZChuKSB7XHJcbiAgICBtYXJnaW46IDBweDtcclxuICAgIHBhZGRpbmc6IDFweDtcclxuICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XHJcbn1cclxuXHJcbiN0YmxTdHVkaWVzIHRib2R5IHRyOm50aC1jaGlsZCgybiArIDEpIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6ICMxODE4MTg7XHJcbn1cclxuXHJcbi8qI3RibFN0dWRpZXMgdHI6bnRoLWNoaWxkKDEpIHsgYmFja2dyb3VuZC1jb2xvcjogYmxhY2s7IH1cclxuXHJcbiN0YmxTdHVkaWVzIHRyOm50aC1jaGlsZCgyKSB7IGJhY2tncm91bmQtY29sb3I6IGJsYWNrOyB9Ki9cclxuXHJcbiN0YmxTdHVkaWVzIHRib2R5IHRyOmhvdmVyIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6ICM1NTU7XHJcbiAgICBjb2xvcjogI2Y5MDtcclxufVxyXG5cclxuLyojdGJsU3R1ZGllcyB0cjpudGgtY2hpbGQoMSk6aG92ZXIgeyBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjazsgfVxyXG5cclxuI3RibFN0dWRpZXMgdHI6bnRoLWNoaWxkKDIpOmhvdmVyIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IGJsYWNrO1xyXG4gICAgY29sb3I6IHdoaXRlO1xyXG59Ki9cclxuXHJcbiN0clN0dWRpZXNRdWVyeSAuZHJvcGRvd24ge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTU1NTtcclxuICAgIGNvbG9yOiByZWQ7XHJcbn1cclxuXHJcbiAgICAjdHJTdHVkaWVzUXVlcnkgLmRyb3Bkb3duIC5idG4ge1xyXG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6ICM1NTU1NTU7XHJcbiAgICAgICAgbWluLXdpZHRoOiA3MHB4O1xyXG4gICAgICAgIHBhZGRpbmc6IDFweCA2cHg7XHJcbiAgICB9XHJcblxyXG4ubG9hZGluZy1zaGFkZSB7XHJcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xyXG4gICAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjE1KTtcclxuICAgIGJvdHRvbTogMHB4O1xyXG4gICAgZGlzcGxheTogZmxleDtcclxuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xyXG4gICAgbGVmdDogMHB4O1xyXG4gICAgbWFyZ2luOiBhdXRvO1xyXG4gICAgcG9zaXRpb246IGZpeGVkO1xyXG4gICAgcmlnaHQ6IDBweDtcclxuICAgIHRvcDogMHB4O1xyXG4gICAgei1pbmRleDogMTtcclxufVxyXG5cclxuLnNob3J0Y3V0LW5hbWUtYnV0dG9uIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xyXG4gICAgYm9yZGVyOiBub25lO1xyXG4gICAgYm9yZGVyLXdpZHRoOiAwcHg7XHJcbiAgICBjb2xvcjogaW5oZXJpdDtcclxuICAgIG91dGxpbmU6IG5vbmU7XHJcbn1cclxuXHJcbi5zaG9ydGN1dC1uYW1lLWJ1dHRvbjpkaXNhYmxlZCB7XHJcbiAgICBjb2xvcjogIzU1NTU1NTtcclxufVxyXG5cclxuLnBhdGllbnRJZENvbCB7XHJcbiAgICBjdXJzb3I6IHBvaW50ZXI7XHJcbiAgICB0ZXh0LWRlY29yYXRpb246IHVuZGVybGluZTtcclxufVxyXG5cclxuIl19 */"
 
 /***/ }),
 
@@ -3671,7 +5039,7 @@ module.exports = "#tblStudies a { color: white; }\r\n\r\n#tblStudies td {\r\n   
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n    <table id=\"tblStudies\" class=\"table table-bordered table-condensed\">\r\n        <thead>\r\n        <tr id=\"trStudiesHeader\">\r\n            <th *ngFor=\"let col of worklistColumns\">\r\n                <a href=\"#\">{{col}}</a>\r\n            </th>\r\n        </tr>\r\n        <tr id=\"trStudiesQuery\">\r\n            <td>\r\n                <input type=\"checkbox\" (click)=\"onAllStudyChecked($event)\"/>\r\n            </td>\r\n            <td>\r\n                <input id=\"queryPatientId\" type=\"text\" [(ngModel)]=\"worklistService.shortcut.patientId\"/>\r\n            </td>\r\n            <td>\r\n                <input id=\"queryPatientName\" type=\"text\" [(ngModel)]=\"worklistService.shortcut.patientName\"/>\r\n            </td>\r\n            <td>\r\n                <select id=\"queryGender\" [(ngModel)]=\"worklistService.shortcut.gender\">\r\n                    <option value=\"\">All</option>\r\n                    <option value=\"F\">Female</option>\r\n                    <option value=\"M\">Male</option>\r\n                    <option value=\"O\">Other</option>\r\n                </select>\r\n            </td>\r\n            <td>\r\n            <!--<input id=\"queryBirthDate\" type=\"date\" [(ngModel)]=\"worklistService.shortcut.birthDate\"/>-->\r\n            <tr>\r\n                <td>\r\n                    <mat-form-field>\r\n                        <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" (dateChange)=\"fromDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.birthDateFrom\">\r\n                        <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                        <mat-datepicker #picker1></mat-datepicker>\r\n                    </mat-form-field>\r\n                </td>\r\n                <td>\r\n                    <mat-form-field>\r\n                        <input matInput [matDatepicker]=\"picker2\" [min]=\"toMinDate\" [max]=\"toMaxDate\" placeholder=\"To\" (dateChange)=\"toDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.birthDateTo\">\r\n                        <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                        <mat-datepicker #picker2></mat-datepicker>\r\n                    </mat-form-field>\r\n                </td>\r\n            </tr>\r\n\r\n            </td>\r\n            <td>\r\n                <input id=\"queryAccessionNo\" type=\"text\" [(ngModel)]=\"worklistService.shortcut.accessionNo\"/>\r\n            </td>\r\n            <td>\r\n                <select id=\"queryModality\" [(ngModel)]=\"worklistService.shortcut.modality\">\r\n                    <option value=\"\">All</option>\r\n                    <option>CR</option>\r\n                    <option>CT</option>\r\n                    <option>DX</option>\r\n                    <option>MG</option>\r\n                    <option>MR</option>\r\n                    <option>US</option>\r\n                </select>\r\n            </td>\r\n            <td>\r\n                <select id=\"queryStudyDate\" [(ngModel)]=\"worklistService.shortcut.studyDate\">\r\n                    <option value=\"\">All</option>\r\n                    <option>Today</option>\r\n                    <option>Since Yesterday</option>\r\n                    <option>Last 7 Days</option>\r\n                    <option>Last 30 Days</option>\r\n                    <option>Last 6 Months</option>\r\n                </select>\r\n            </td>\r\n            <td></td>\r\n            <td></td>\r\n            <td></td>\r\n            <td>\r\n                <input id=\"queryStudyID\" type=\"text\" [(ngModel)]=\"worklistService.shortcut.studyId\"/>\r\n            </td>\r\n        </tr>\r\n        </thead>\r\n        <tr *ngFor=\"let study of worklistService.studies\" (click)=\"onStudyChecked(study)\">\r\n            <td>\r\n                <input type=\"checkbox\" [(ngModel)]=\"study.checked\"/>\r\n            </td>\r\n            <td style=\"cursor: pointer\" (click)=\"doShowStudy(study)\">{{study.patient.patientId}}</td>\r\n            <td>{{study.patient.patientName}}</td>\r\n            <td>{{study.patient.gender}}</td>\r\n            <td>{{study.patient.birthDateString}}</td>\r\n            <td>{{study.accessionNo}}</td>\r\n            <td>{{study.modality}}</td>\r\n            <td>{{study.studyDateString}}</td>\r\n            <td>{{study.studyTimeString}}</td>\r\n            <td>{{study.seriesCount}}</td>\r\n            <td>{{study.imageCount}}</td>\r\n            <td>{{study.studyId}}</td>\r\n        </tr>\r\n    </table>\r\n</div>\r\n\r\n<mat-progress-spinner [style.visibility]=\"worklistService.querying? 'visible' : 'hidden'\" class=\"loading-shade\"\r\n                      [color]=\"color\"\r\n                      [mode]=\"mode\"\r\n                      [value]=\"value\">\r\n</mat-progress-spinner>\r\n"
+module.exports = "<div>\r\n    <table id=\"tblStudies\" class=\"table table-bordered table-condensed\">\r\n        <thead>\r\n            <tr id=\"trStudiesHeader\">\r\n                <th>\r\n                </th>\r\n                <th *ngFor=\"let col of worklistService.worklistColumns \" nowrap>\r\n                    <div id=\"headContent\" class=\"worklistHeader\">\r\n            <tr>\r\n                <td>\r\n                    <div (click)=\"onWorklistHeaderClicked(col.columnId)\">{{col.columnText}}</div>\r\n                </td>\r\n                <td>\r\n                    <i id=\"orderIcon\" *ngIf=\"col.columnId == orderHeader\" [className]=\"isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'\"></i>\r\n                </td>\r\n            </tr>\r\n</div>\r\n            </th>\r\n        </tr>\r\n<tr id=\"trStudiesQuery\">\r\n    <td>\r\n        <input type=\"checkbox\" (click)=\"onAllStudyChecked($event)\" />\r\n    </td>\r\n    <td *ngFor=\"let col of worklistService.worklistColumns\">\r\n        <div *ngIf=\"col.controlType == 'TextBox'\">\r\n            <input type=\"text\" [(ngModel)]=\"col.shortcutType[col.columnId]\" />\r\n        </div>\r\n        <div *ngIf=\"col.controlType == 'DropDownList'\">\r\n            <div *ngIf=\"col.columnId == 'studyDate'; else notStudyDate\">\r\n            <div>\r\n                <select *ngIf=\"!initStudyDate; else showStudyDateRange\" [(ngModel)]=\"col.shortcutType[col.columnId]\" (change)=\"onStudyDateChangeSelect($event.target.selectedIndex)\">\r\n                    <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\" >{{value.value}}</option>\r\n                </select>\r\n                <ng-template #showStudyDateRange>\r\n                    <table (click)=\"onStudyDateRangeTableClicked()\">\r\n                        <tr>\r\n                            <td>\r\n                                <mat-form-field>\r\n                                    <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" [(ngModel)]=\"worklistService.shortcut.studyDateFrom\">\r\n                                    <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                    <mat-datepicker #picker1></mat-datepicker>\r\n                                </mat-form-field>\r\n                            </td>\r\n                            <td id=\"tdStudyDateFrom\">\r\n                                <mat-form-field>\r\n                                    <input matInput [matDatepicker]=\"picker2\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"To\" [(ngModel)]=\"worklistService.shortcut.studyDateTo\">\r\n                                    <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                    <mat-datepicker #picker2></mat-datepicker>\r\n                                </mat-form-field>\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </ng-template>\r\n</div>\r\n        </div>\r\n        <ng-template #notStudyDate>\r\n            <select [(ngModel)]=\"col.shortcutType[col.columnId]\">\r\n                <option value=\"\">All</option>\r\n                <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n            </select>\r\n        </ng-template>\r\n        \r\n    </div>\r\n        <div *ngIf=\"col.controlType == 'Calendar'\">\r\n            <tr>\r\n                <td>\r\n                    <mat-form-field>\r\n                        <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" (dateChange)=\"fromDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateFrom\">\r\n                        <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                        <mat-datepicker #picker1></mat-datepicker>\r\n                    </mat-form-field>\r\n                </td>\r\n                <td>\r\n                    <mat-form-field>\r\n                        <input matInput [matDatepicker]=\"picker2\" [min]=\"toMinDate\" [max]=\"toMaxDate\" placeholder=\"To\" (dateChange)=\"toDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateTo\">\r\n                        <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                        <mat-datepicker #picker2></mat-datepicker>\r\n                    </mat-form-field>\r\n                </td>\r\n            </tr>\r\n            </div>\r\n<td>\r\n    </tr>\r\n    </thead>\r\n    <tbody>\r\n        <tr *ngFor=\"let study of worklistService.studies\" (click)=\"onStudyChecked(study)\">\r\n            <td>\r\n                <input type=\"checkbox\" [(ngModel)]=\"study.checked\" />\r\n            </td>\r\n            <td *ngFor=\"let col of worklistService.worklistColumns\" nowrap>\r\n                <div class=\"patientIdCol\" *ngIf=\"col.columnId == 'patientId'; else notPatientId\" (click)=\"doShowStudy(study)\">{{study.patient[col.columnId]}}</div>\r\n                <ng-template #notPatientId>\r\n                    <div *ngIf=\"study.patient[col.columnId]; else onlyStudy\">{{study.patient[col.columnId]}}</div>\r\n                    <ng-template #onlyStudy>\r\n                        <div *ngIf=\"col.columnId != 'bodyPartExamined'; else bodyPart\">{{study[col.columnId]}}</div>\r\n                        <ng-template #bodyPart>\r\n                            <span *ngFor=\"let bodyPart of study.bodyPartList; let i = index\">\r\n                                <span *ngIf=\"i != 0\">\r\n                                    ,\r\n                                </span>\r\n                                {{bodyPart}}\r\n                            </span>\r\n                        </ng-template>\r\n                    </ng-template>\r\n                </ng-template>\r\n            </td>\r\n        </tr>\r\n    </tbody>\r\n    <tfoot>\r\n        <tr id=\"trFoot\">\r\n            <td colspan=\"5\">\r\n                <ul>\r\n                    <li>\r\n                        <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(1)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">First</button>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onPrevPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">Prev</button>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onNextPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Next</button>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(worklistService.pageCount)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Last</button>\r\n                    </li>\r\n                    <li>\r\n                        <select id=\"ddlPageIndex\" [(ngModel)]=\"currentPage\">\r\n                            <option *ngFor=\"let page of worklistService.pages;\">{{page+1}}</option>\r\n                        </select>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(currentPage)\" [disabled]=\"worklistService.pageCount == 1\">Goto</button>\r\n                    </li>\r\n                </ul>\r\n            </td>\r\n        </tr>\r\n    </tfoot>\r\n\r\n    </table>\r\n    </div>\r\n\r\n    <mat-progress-spinner [style.visibility]=\"worklistService.querying? 'visible' : 'hidden'\" class=\"loading-shade\"\r\n                          [color]=\"color\"\r\n                          [mode]=\"mode\"\r\n                          [value]=\"value\">\r\n    </mat-progress-spinner>\r\n"
 
 /***/ }),
 
@@ -3688,8 +5056,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WorklistComponent", function() { return WorklistComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
-/* harmony import */ var _angular_material_moment_adapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material-moment-adapter */ "./node_modules/@angular/material-moment-adapter/esm5/material-moment-adapter.es5.js");
-/* harmony import */ var _angular_material_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material/core */ "./node_modules/@angular/material/esm5/core.es5.js");
+/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../components/dialog/select-studydate-dialog/select-studydate-dialog.component */ "./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.ts");
+/* harmony import */ var _angular_material_moment_adapter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/material-moment-adapter */ "./node_modules/@angular/material-moment-adapter/esm5/material-moment-adapter.es5.js");
+/* harmony import */ var _angular_material_core__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/material/core */ "./node_modules/@angular/material/esm5/core.es5.js");
+/* harmony import */ var _models_dailog_data_date_range__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../models/dailog-data/date-range */ "./src/app/models/dailog-data/date-range.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -3701,7 +5072,10 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
+
 // Import DatePicker format
+
 
 
 var MY_FORMATS = {
@@ -3716,23 +5090,24 @@ var MY_FORMATS = {
     },
 };
 var WorklistComponent = /** @class */ (function () {
-    function WorklistComponent(worklistService) {
+    function WorklistComponent(worklistService, dialogService) {
         var _this = this;
         this.worklistService = worklistService;
+        this.dialogService = dialogService;
         this.color = "#primary";
         this.mode = "indeterminate";
         this.value = 50;
         this.events = [];
-        //dateFrom = new FormControl(moment());
-        //dateTo = new FormControl(moment());
         this.fromMinDate = new Date(1900, 1, 1);
         this.fromMaxDate = new Date();
         this.toMinDate = new Date();
         this.toMaxDate = new Date();
-        this.worklistColumns = [
-            "",
-            "Patient ID",
-            "Patient Name",
+        this.currentPage = 1;
+        this.isDesc = false;
+        this.orderHeader = "";
+        this.worklistColumnsTemp = [
+            "PatientID",
+            "PatientName",
             "Gender",
             "BirthDate",
             "AccessionNo",
@@ -3758,11 +5133,9 @@ var WorklistComponent = /** @class */ (function () {
         //alert('aa');
     };
     WorklistComponent.prototype.ngOnInit = function () {
-        this.worklistService.onQueryStudies();
+        this.worklistService.onQueryStudies(1);
         this.worklistService.onQueryShortcuts();
-    };
-    WorklistComponent.prototype.onStudyChecked = function (study) {
-        study.checked = !study.checked;
+        this.worklistService.onQueryWorklistCol();
     };
     WorklistComponent.prototype.onAllStudyChecked = function (event) {
         this.worklistService.studies.forEach(function (study) { return study.checked = event.target.checked; });
@@ -3771,21 +5144,81 @@ var WorklistComponent = /** @class */ (function () {
         study.checked = true;
         this.worklistService.onShowSingleStudy(study);
     };
+    WorklistComponent.prototype.onStudyDateChangeSelect = function (optionValue) {
+        var _this = this;
+        if (optionValue == "7") {
+            var studyDate = new _models_dailog_data_date_range__WEBPACK_IMPORTED_MODULE_6__["DateRange"];
+            this.dialogService.showDialog(_components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_3__["SelectStudydateDialogComponent"], studyDate).subscribe(function (val) {
+                _this.getStudyDate(val);
+            });
+        }
+    };
+    WorklistComponent.prototype.getStudyDate = function (studyDate) {
+        this.initStudyDate = studyDate;
+        this.worklistService.shortcut.studyDateFrom = studyDate.dateFrom;
+        this.worklistService.shortcut.studyDateTo = studyDate.dateTo;
+    };
+    WorklistComponent.prototype.onPrevPageClicked = function () {
+        this.currentPage = this.currentPage - 1;
+        this.worklistService.onQueryStudies(this.currentPage);
+    };
+    WorklistComponent.prototype.onNextPageClicked = function () {
+        this.currentPage = this.currentPage + 1;
+        this.worklistService.onQueryStudies(this.currentPage);
+    };
+    WorklistComponent.prototype.onCurrentPageClicked = function (i) {
+        this.currentPage = +i;
+        this.worklistService.onQueryStudies(this.currentPage);
+    };
+    WorklistComponent.prototype.onWorklistHeaderClicked = function (clickedHeader) {
+        this.orderHeader = clickedHeader;
+        if (!this.isDesc) {
+            this.isDesc = true;
+            this.worklistService.onQueryStudies(this.currentPage, clickedHeader + "|Desc");
+        }
+        else {
+            this.isDesc = false;
+            this.worklistService.onQueryStudies(this.currentPage, clickedHeader + "|");
+        }
+    };
+    WorklistComponent.prototype.onStudyDateRangeTableClicked = function () {
+        this.initStudyDate = null;
+    };
     WorklistComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: "app-worklist",
             template: __webpack_require__(/*! ./worklist.component.html */ "./src/app/components/worklist-shell/worklist/worklist.component.html"),
             providers: [
                 // i18n
-                { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_3__["MAT_DATE_LOCALE"], useValue: "zh-CN" },
-                { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_3__["DateAdapter"], useClass: _angular_material_moment_adapter__WEBPACK_IMPORTED_MODULE_2__["MomentDateAdapter"], deps: [_angular_material_core__WEBPACK_IMPORTED_MODULE_3__["MAT_DATE_LOCALE"]] },
-                { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_3__["MAT_DATE_FORMATS"], useValue: MY_FORMATS },
+                { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_5__["MAT_DATE_LOCALE"], useValue: "zh-CN" },
+                { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_5__["DateAdapter"], useClass: _angular_material_moment_adapter__WEBPACK_IMPORTED_MODULE_4__["MomentDateAdapter"], deps: [_angular_material_core__WEBPACK_IMPORTED_MODULE_5__["MAT_DATE_LOCALE"]] },
+                { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_5__["MAT_DATE_FORMATS"], useValue: MY_FORMATS },
             ],
             styles: [__webpack_require__(/*! ./worklist.component.css */ "./src/app/components/worklist-shell/worklist/worklist.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_worklist_service__WEBPACK_IMPORTED_MODULE_1__["WorklistService"]])
+        __metadata("design:paramtypes", [_services_worklist_service__WEBPACK_IMPORTED_MODULE_1__["WorklistService"], _services_dialog_service__WEBPACK_IMPORTED_MODULE_2__["DialogService"]])
     ], WorklistComponent);
     return WorklistComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/models/dailog-data/date-range.ts":
+/*!**************************************************!*\
+  !*** ./src/app/models/dailog-data/date-range.ts ***!
+  \**************************************************/
+/*! exports provided: DateRange */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DateRange", function() { return DateRange; });
+var DateRange = /** @class */ (function () {
+    function DateRange() {
+    }
+    return DateRange;
 }());
 
 
@@ -3989,11 +5422,82 @@ var MessageBoxContent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/models/misc-data.ts":
+/*!*************************************!*\
+  !*** ./src/app/models/misc-data.ts ***!
+  \*************************************/
+/*! exports provided: FontData */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FontData", function() { return FontData; });
+var FontData = /** @class */ (function () {
+    function FontData(name, color, size) {
+        this.name = name;
+        this.color = color;
+        this.size = size;
+    }
+    FontData.prototype.getCanvasFontString = function () {
+        return "{0}px {1}".format(this.size, this.name);
+    };
+    return FontData;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/models/overlay.ts":
+/*!***********************************!*\
+  !*** ./src/app/models/overlay.ts ***!
+  \***********************************/
+/*! exports provided: Overlay, OverlayDisplayGroup, OverlayDisplayItem */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Overlay", function() { return Overlay; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OverlayDisplayGroup", function() { return OverlayDisplayGroup; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OverlayDisplayItem", function() { return OverlayDisplayItem; });
+var Overlay = /** @class */ (function () {
+    function Overlay() {
+    }
+    return Overlay;
+}());
+
+var OverlayDisplayGroup = /** @class */ (function () {
+    function OverlayDisplayGroup(overlay) {
+        this.gridX = overlay.gridX;
+        this.gridY = overlay.gridY;
+        this.modality = overlay.modality;
+        this.itemListAlignLeft = [];
+        this.itemListAlignRight = [];
+    }
+    OverlayDisplayGroup.prototype.match = function (overlay) {
+        return this.gridX === overlay.gridX && this.gridY === overlay.gridY && this.modality === overlay.modality;
+    };
+    OverlayDisplayGroup.prototype.add = function (overlay) {
+        overlay.offsetX > 0 ? this.itemListAlignLeft.push(overlay) : this.itemListAlignRight.push(overlay);
+    };
+    return OverlayDisplayGroup;
+}());
+
+var OverlayDisplayItem = /** @class */ (function () {
+    function OverlayDisplayItem() {
+    }
+    return OverlayDisplayItem;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/models/pssi.ts":
 /*!********************************!*\
   !*** ./src/app/models/pssi.ts ***!
   \********************************/
-/*! exports provided: Pssi, Patient, Study, Series, Image, MultiframeImage */
+/*! exports provided: Pssi, Patient, Study, Series, Image, MultiframeImage, WorklistColumn, RecWorklistData */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4004,6 +5508,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Series", function() { return Series; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Image", function() { return Image; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MultiframeImage", function() { return MultiframeImage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WorklistColumn", function() { return WorklistColumn; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecWorklistData", function() { return RecWorklistData; });
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -4017,6 +5523,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+//import Shortcut1 = Shortcut.Shortcut;
 var Pssi = /** @class */ (function () {
     function Pssi() {
     }
@@ -4040,8 +5547,11 @@ var Patient = /** @class */ (function (_super) {
         clonedPatient.firstName = patient.firstName;
         clonedPatient.middleName = patient.middleName;
         clonedPatient.lastName = patient.lastName;
-        clonedPatient.birthDateString = patient.birthDateString;
-        clonedPatient.gender = patient.gender;
+        clonedPatient.patientBirthDate = patient.patientBirthDate;
+        clonedPatient.patientSex = patient.patientSex;
+        clonedPatient.patientAge = patient.patientAge;
+        clonedPatient.breed = patient.breed;
+        clonedPatient.species = patient.species;
         clonedPatient.studyList = new Array();
         if (cloneChild) {
             patient.studyList.forEach(function (study) {
@@ -4071,13 +5581,18 @@ var Study = /** @class */ (function (_super) {
         clonedStudy.id = study.id;
         clonedStudy.studyId = study.studyId;
         clonedStudy.studyInstanceUid = study.studyInstanceUid;
-        clonedStudy.studyDateString = study.studyDateString;
-        clonedStudy.studyTimeString = study.studyTimeString;
+        clonedStudy.studyDate = study.studyDate;
+        clonedStudy.studyTime = study.studyTime;
         clonedStudy.accessionNo = study.accessionNo;
         clonedStudy.seriesCount = study.seriesCount;
         clonedStudy.imageCount = study.imageCount;
         clonedStudy.modality = study.modality;
-        clonedStudy.studyDesc = study.studyDesc;
+        clonedStudy.studyDescription = study.studyDescription;
+        clonedStudy.referPhysician = study.referPhysician;
+        clonedStudy.tokenId = study.tokenId;
+        clonedStudy.additionalPatientHistory = study.additionalPatientHistory;
+        clonedStudy.veterinarian = study.veterinarian;
+        clonedStudy.requestedProcPriority = study.requestedProcPriority;
         clonedStudy.seriesList = new Array();
         if (cloneChild) {
             study.seriesList.forEach(function (series) {
@@ -4111,6 +5626,13 @@ var Series = /** @class */ (function (_super) {
         clonedSeries.viewPosition = series.viewPosition;
         clonedSeries.seriesNumber = series.seriesNumber;
         clonedSeries.imageCount = series.imageCount;
+        clonedSeries.contrastBolus = series.contrastBolus;
+        clonedSeries.localBodyPart = series.localBodyPart;
+        clonedSeries.seriesDescription = series.seriesDescription;
+        clonedSeries.operatorName = series.operatorName;
+        clonedSeries.referHospital = series.referHospital;
+        clonedSeries.patientPosition = series.patientPosition;
+        clonedSeries.localViewPosition = series.localViewPosition;
         clonedSeries.imageList = new Array();
         if (cloneChild) {
             series.imageList.forEach(function (image) {
@@ -4129,6 +5651,21 @@ var Image = /** @class */ (function (_super) {
     function Image() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Image.clone = function (image, cloneChild) {
+        var clonedImage = new Image();
+        clonedImage.id = image.id;
+        clonedImage.objectFile = image.objectFile;
+        clonedImage.imageColumns = image.imageColumns;
+        clonedImage.imageRows = image.imageRows;
+        clonedImage.keyImage = image.keyImage;
+        clonedImage.imageNo = image.imageNo;
+        clonedImage.bitsAllocated = image.bitsAllocated;
+        clonedImage.acquisitionTime = image.acquisitionTime;
+        clonedImage.acquisitionDate = image.acquisitionDate;
+        clonedImage.imageTime = image.imageTime;
+        clonedImage.imageDate = image.imageDate;
+        return clonedImage;
+    };
     Image.prototype.setHide = function (hide) {
         this.hide = hide;
     };
@@ -4175,14 +5712,7 @@ var Image = /** @class */ (function (_super) {
         var c = n2;
         var d = n4;
         var scale = Math.sqrt(a * a + b * b);
-    };
-    Image.clone = function (image, cloneChild) {
-        var clonedImage = new Image();
-        clonedImage.id = image.id;
-        clonedImage.objectFile = image.objectFile;
-        clonedImage.imageColumns = image.imageColumns;
-        clonedImage.imageRows = image.imageRows;
-        return clonedImage;
+        return scale;
     };
     return Image;
 }(Pssi));
@@ -4194,6 +5724,18 @@ var MultiframeImage = /** @class */ (function (_super) {
     }
     return MultiframeImage;
 }(Image));
+
+var WorklistColumn = /** @class */ (function () {
+    function WorklistColumn() {
+    }
+    return WorklistColumn;
+}());
+
+var RecWorklistData = /** @class */ (function () {
+    function RecWorklistData() {
+    }
+    return RecWorklistData;
+}());
 
 
 
@@ -4237,8 +5779,10 @@ var Shortcut = /** @class */ (function () {
         this.gender = "";
         this.modality = "";
         this.studyDate = "";
-        this.birthDateFrom = null;
-        this.birthDateTo = null;
+        this.patientBirthDateFrom = null;
+        this.patientBirthDateTo = null;
+        this.studyDateFrom = null;
+        this.studyDateTo = null;
         this.studyId = "";
         this.accessionNo = "";
     };
@@ -4248,8 +5792,10 @@ var Shortcut = /** @class */ (function () {
         this.gender = shortcut.gender;
         this.modality = shortcut.modality;
         this.studyDate = shortcut.studyDate;
-        this.birthDateFrom = shortcut.birthDateFrom;
-        this.birthDateTo = shortcut.birthDateTo;
+        this.patientBirthDateFrom = shortcut.patientBirthDateFrom;
+        this.patientBirthDateTo = shortcut.patientBirthDateTo;
+        this.studyDateFrom = shortcut.studyDateFrom;
+        this.studyDateTo = shortcut.studyDateTo;
         this.studyId = shortcut.studyId;
         this.accessionNo = shortcut.accessionNo;
     };
@@ -4284,9 +5830,11 @@ __webpack_require__.r(__webpack_exports__);
 var ViewerGroupData = /** @class */ (function () {
     function ViewerGroupData(viewerShellData, imageHangingProtocol, position) {
         this.imageCount = 0;
+        this.imageDataList = new Array();
         this.viewerShellData = viewerShellData;
         this.imageHangingProtocol = imageHangingProtocol;
         this.position = position;
+        ViewerGroupData.logService.debug("ViewerGroupData " + this.getId() + " created!");
     }
     ViewerGroupData.prototype.getId = function () {
         return this.viewerShellData.getId() + "_" + this.position.getId();
@@ -4353,6 +5901,7 @@ var ViewerImageData = /** @class */ (function () {
     function ViewerImageData(viewerGroupData, position) {
         this.groupData = viewerGroupData;
         this.position = position;
+        ViewerImageData.logService.debug("ViewerImageData " + this.getId() + " created!");
     }
     ViewerImageData.prototype.getId = function () {
         return this.groupData.getId() + this.position.getId();
@@ -4395,6 +5944,7 @@ var ViewerShellData = /** @class */ (function () {
         this.defaultGroupHangingProtocol = defaultGroupHangingProtocol;
         this.defaultImageHangingProtocol = defaultImageHangingProtocol;
         this.hide = false;
+        ViewerShellData.logService.debug("ViewerShellData " + this.getId() + " created!");
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
@@ -4472,6 +6022,7 @@ var ViewerShellData = /** @class */ (function () {
             alert("Invalid group index : " + groupIndex);
             return null;
         }
+        ViewerShellData.logService.debug("ViewData: Get group for " + this.getId() + rowIndex + colIndex);
         return this.groupDataList[groupIndex];
     };
     ViewerShellData.prototype.addGroup = function (groupIndex) {
@@ -4566,6 +6117,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ConfigurationService", function() { return ConfigurationService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
+/* harmony import */ var _database_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./database.service */ "./src/app/services/database.service.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/log.service */ "./src/app/services/log.service.ts");
+/* harmony import */ var _models_misc_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../models/misc-data */ "./src/app/models/misc-data.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4577,19 +6131,41 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
+
+
 var ConfigurationService = /** @class */ (function () {
-    function ConfigurationService(locationStrategy) {
+    function ConfigurationService(databaseService, locationStrategy, logService) {
+        var _this = this;
+        this.databaseService = databaseService;
         this.locationStrategy = locationStrategy;
+        this.logService = logService;
+        this.overLayList = [];
         this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
+        this.logService.info("Config: Base url is " + this.baseUrl);
+        this.databaseService.getOverlays().subscribe(function (overlayList) {
+            _this.overLayList = overlayList;
+        });
+        this.databaseService.getOverFont().subscribe(function (fontData) {
+            _this.textOverlayFont = fontData;
+        });
     }
     ConfigurationService.prototype.getBaseUrl = function () {
         return this.baseUrl;
+    };
+    ConfigurationService.prototype.getOverlayConfigList = function () {
+        return this.overLayList;
+    };
+    ConfigurationService.prototype.getOverlayFont = function () {
+        this.textOverlayFont = new _models_misc_data__WEBPACK_IMPORTED_MODULE_4__["FontData"]("Times New Roman", "#FFF", 15);
+        return this.textOverlayFont;
     };
     ConfigurationService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: "root"
         }),
-        __metadata("design:paramtypes", [_angular_common__WEBPACK_IMPORTED_MODULE_1__["LocationStrategy"]])
+        __metadata("design:paramtypes", [_database_service__WEBPACK_IMPORTED_MODULE_2__["DatabaseService"], _angular_common__WEBPACK_IMPORTED_MODULE_1__["LocationStrategy"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_3__["LogService"]])
     ], ConfigurationService);
     return ConfigurationService;
 }());
@@ -4635,6 +6211,7 @@ var DatabaseService = /** @class */ (function () {
         this.http = http;
         this.shortcutUrl = "shortcut"; // URL to web api
         this.pssiUrl = "pssi";
+        this.overlayUrl = "overlay";
         this.id_patient = 1;
         this.id_study = 1;
         this.id_series = 1;
@@ -4645,8 +6222,24 @@ var DatabaseService = /** @class */ (function () {
         var url = this.shortcutUrl + "/details/" + id;
         return this.http.get(url);
     };
+    DatabaseService.prototype.getOverFont = function () {
+        var url = this.overlayUrl + "/font/";
+        return this.http.get(url);
+    };
+    DatabaseService.prototype.getOverlays = function () {
+        var _this = this;
+        var url = this.overlayUrl + "/";
+        return this.http.get(url)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (Overlay) { return _this.log("fetched Overlay"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("getOverlays", [])));
+    };
     /** GET shortcut from the server */
     DatabaseService.prototype.getShortcuts = function () {
+        var _this = this;
+        var url = this.shortcutUrl + "/search/";
+        return this.http.get(url)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcuts) { return _this.log("fetched shortcuts"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("getShortcuts", [])));
+    };
+    DatabaseService.prototype.getWorklistCol = function () {
         var _this = this;
         var url = this.shortcutUrl + "/search/";
         return this.http.get(url)
@@ -4667,11 +6260,12 @@ var DatabaseService = /** @class */ (function () {
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("delete shortcut"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("deleteShortcut", [])));
     };
     /** GET studies from the server */
-    DatabaseService.prototype.getStudies = function (shortcut) {
+    DatabaseService.prototype.getStudies = function (shortcut, pageIndex, sortItem) {
         var _this = this;
         var url = this.pssiUrl + "/search/";
-        return this.http.post(url, shortcut, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (studies) { return _this.log("fetched studies"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("getStudies", [])));
+        var data = { shortcut: shortcut, pageIndex: pageIndex, sortItem: sortItem };
+        return this.http.post(url, data, httpOptions)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (recWorklistData) { return _this.log('fetched recWorklistData'); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('getRecWorklistData')));
     };
     /** GET study from the server */
     DatabaseService.prototype.getStudy = function (id) {
@@ -4711,7 +6305,7 @@ var DatabaseService = /** @class */ (function () {
         patient.id = this.id_patient++;
         patient.patientId = patientId;
         patient.patientName = patientName;
-        patient.gender = gender;
+        patient.patientSex = gender;
         patient.studyList = new Array();
         return patient;
     };
@@ -4723,11 +6317,11 @@ var DatabaseService = /** @class */ (function () {
         study.imageCount = seriesCount * seriesCount;
         study.studyId = "" + study.id;
         study.accessionNo = study.studyId;
-        study.studyDateString = "2018-11-11";
-        study.studyTimeString = "12:11:12";
+        study.studyDate = "2018-11-11";
+        study.studyTime = "12:11:12";
         study.modality = "DX";
         study.checked = false;
-        study.studyDesc = "Study Desc";
+        study.studyDescription = "Study Desc";
         study.seriesList = new Array();
         for (var i = 0; i < seriesCount; i++) {
             study.seriesList.push(this.createSeries(study, seriesCount));
@@ -4752,6 +6346,8 @@ var DatabaseService = /** @class */ (function () {
         var image = new _models_pssi__WEBPACK_IMPORTED_MODULE_4__["Image"]();
         image.id = this.id_image++;
         image.series = series;
+        image.imageColumns = 1;
+        image.imageRows = 1;
         return image;
     };
     /**
@@ -4860,6 +6456,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DicomImageService", function() { return DicomImageService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/configuration.service */ "./src/app/services/configuration.service.ts");
+/* harmony import */ var _models_overlay__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../models/overlay */ "./src/app/models/overlay.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/log.service */ "./src/app/services/log.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4871,10 +6470,18 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
+
+
 var DicomImageService = /** @class */ (function () {
-    function DicomImageService(http) {
+    function DicomImageService(http, configurationService, logService) {
         this.http = http;
+        this.configurationService = configurationService;
+        this.logService = logService;
+        this.logPrefix = "DicomImageService: ";
         this.dicomImageUrl = "dicomImage";
+        this.overlayDisplayGroupList = [];
+        this.baseUrl = this.configurationService.getBaseUrl();
     }
     DicomImageService.prototype.getDicomFile = function (image) {
         var imageUrl = this.dicomImageUrl + "/dicom/" + image.id;
@@ -4884,11 +6491,150 @@ var DicomImageService = /** @class */ (function () {
         var imageUrl = this.dicomImageUrl + "/thumbnail/" + image.id;
         return this.http.get(imageUrl, { responseType: "blob" });
     };
+    DicomImageService.prototype.getCornerStoneImage = function (image) {
+        var imageUri = "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom"
+            .format(this.baseUrl, image.id, 0);
+        cornerstone.loadImage(imageUri).then(function (ctImage) {
+            image.cornerStoneImage = ctImage;
+        });
+    };
+    DicomImageService.prototype.getOverlayDisplayList = function (image, canvasWidth, canvasHeight, canvasContext) {
+        var _this = this;
+        if (this.overlayDisplayGroupList.length === 0) {
+            var overlayList = this.configurationService.getOverlayConfigList();
+            this.formatOverlayList(overlayList);
+        }
+        var overlayDisplayList = [];
+        var groupList = this.getOverlayDisplayGroup(image.series.modality);
+        groupList.forEach(function (group) {
+            _this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignLeft, true, image, canvasWidth, canvasHeight, canvasContext);
+            _this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignRight, false, image, canvasWidth, canvasHeight, canvasContext);
+        });
+        return overlayDisplayList;
+    };
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Text overlay funtctions
+    DicomImageService.prototype.formatOverlayList = function (overlayList) {
+        var _this = this;
+        overlayList.forEach(function (overlay) {
+            _this.addOverlayToGroup(overlay);
+        });
+        this.overlayDisplayGroupList.forEach(function (group) {
+            group.itemListAlignLeft = group.itemListAlignLeft.sort(function (n1, n2) {
+                return (n1.offsetX < n2.offsetX) ? -1 : 1;
+            });
+            group.itemListAlignRight = group.itemListAlignRight.sort(function (n1, n2) {
+                return (n1.offsetX < n2.offsetX) ? 1 : -1;
+            });
+        });
+    };
+    DicomImageService.prototype.addOverlayToGroup = function (overlay) {
+        var filtered = this.overlayDisplayGroupList.filter(function (value) { return value.match(overlay); });
+        var overlayGroup = null;
+        if (filtered.length === 0) {
+            overlayGroup = new _models_overlay__WEBPACK_IMPORTED_MODULE_3__["OverlayDisplayGroup"](overlay);
+            this.overlayDisplayGroupList.push(overlayGroup);
+        }
+        else {
+            overlayGroup = filtered[0];
+        }
+        overlayGroup.add(overlay);
+    };
+    DicomImageService.prototype.getOverlayDisplayGroup = function (modality) {
+        return this.overlayDisplayGroupList.filter(function (group) { return group.modality === modality; });
+    };
+    DicomImageService.prototype.getTextOverlayValue = function (image, overlay) {
+        var tagValue;
+        if (overlay.overlayId === "9003") {
+            tagValue = "W: {0}, L: {1}";
+        }
+        else if (overlay.overlayId === "9004") {
+            tagValue = "{0}";
+        }
+        else if (overlay.tableName && overlay.fieldName) {
+            var obj;
+            switch (overlay.tableName) {
+                case 'image':
+                    obj = image;
+                    break;
+                case 'series':
+                    obj = image.series;
+                    break;
+                case 'study':
+                    obj = image.series.study;
+                    break;
+                case 'patient':
+                    obj = image.series.study.patient;
+                    break;
+                default:
+                    this.logService.error(this.logPrefix + "Invalid table name " + overlay.tableName);
+                    return "Error!";
+            }
+            tagValue = obj[overlay.fieldName];
+        }
+        else {
+            var tagString = this.getTagString(overlay.groupNumber, overlay.elementNumber);
+            tagValue = image.cornerStoneImage.data.string(tagString);
+        }
+        return tagValue === undefined ? "" : tagValue;
+    };
+    DicomImageService.prototype.decimalToHexString = function (decimal, padding) {
+        var hex = Number(decimal).toString(16);
+        padding = typeof (padding) === "undefined" || padding === null ? 2 : padding;
+        while (hex.length < padding) {
+            hex = "0" + hex;
+        }
+        return hex;
+    };
+    DicomImageService.prototype.getTagString = function (group, element) {
+        return 'x' + this.decimalToHexString(group, 4) + this.decimalToHexString(element, 4);
+    };
+    DicomImageService.prototype.addOverlayDisplayList = function (overlayDisplayList, overlayList, alignLeft, image, canvasWidth, canvasHeight, canvasContext) {
+        var _this = this;
+        var lineWidth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        overlayList.forEach(function (overlayConfig) {
+            var displayItem = new _models_overlay__WEBPACK_IMPORTED_MODULE_3__["OverlayDisplayItem"]();
+            displayItem.align = alignLeft ? "left" : "right";
+            var posX = overlayConfig.gridX / 2 * canvasWidth;
+            if (overlayConfig.gridX === 0) {
+                posX += 5;
+            }
+            else if (overlayConfig.gridX === 2) {
+                posX -= 5;
+            }
+            else if (overlayConfig.gridX === 1) {
+                alignLeft ? posX += 5 : posX -= 5;
+            }
+            var posY = overlayConfig.gridY / 2 * canvasHeight;
+            if (overlayConfig.gridY === 0) {
+                posY += 18;
+            }
+            else if (overlayConfig.gridY === 2) {
+                posY += 15; // ? why
+            }
+            var fontHeight = 20;
+            if (overlayConfig.offsetY > 0) {
+                posY += fontHeight * (overlayConfig.offsetY - 1);
+            }
+            else {
+                posY += fontHeight * overlayConfig.offsetY;
+            }
+            displayItem.id = overlayConfig.overlayId;
+            displayItem.text = overlayConfig.prefix + _this.getTextOverlayValue(image, overlayConfig) + overlayConfig.suffix;
+            var offSetY = overlayConfig.offsetY + 6;
+            displayItem.posX = posX;
+            displayItem.posX += alignLeft ? lineWidth[offSetY] : -lineWidth[offSetY];
+            displayItem.posY = posY;
+            lineWidth[offSetY] += canvasContext.measureText(displayItem.text).width + 10;
+            overlayDisplayList.push(displayItem);
+        });
+    };
     DicomImageService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: "root"
         }),
-        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"]])
+        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"], _services_configuration_service__WEBPACK_IMPORTED_MODULE_2__["ConfigurationService"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_4__["LogService"]])
     ], DicomImageService);
     return DicomImageService;
 }());
@@ -4910,6 +6656,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _models_layout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/layout */ "./src/app/models/layout.ts");
 /* harmony import */ var _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/hanging-protocol */ "./src/app/models/hanging-protocol.ts");
+/* harmony import */ var _log_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./log.service */ "./src/app/services/log.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4922,8 +6669,10 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var HangingProtocolService = /** @class */ (function () {
-    function HangingProtocolService() {
+    function HangingProtocolService(logService) {
+        this.logService = logService;
         this.defaultGroupHangingProtocol = _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"].ByStudy;
         this.defaultImageHangingPrococal = _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["ImageHangingProtocol"].Auto;
         this.groupLayoutNumberList = [11, 11, 12, 22, 22];
@@ -4977,6 +6726,7 @@ var HangingProtocolService = /** @class */ (function () {
         return this.imageLayoutDataList[0];
     };
     HangingProtocolService.prototype.applyGroupHangingProtocol = function (viewerShellData, groupHangingProtocol) {
+        this.logService.info("HP service: applyGroupHangingProtocol to viewer " + viewerShellData.getName() + ", protocol is " + _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"][groupHangingProtocol]);
         if (groupHangingProtocol >= _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"].FreeHang) {
             var groupMatrix = _models_layout__WEBPACK_IMPORTED_MODULE_1__["LayoutMatrix"].fromNumber(groupHangingProtocol);
             if (!groupMatrix.equal(viewerShellData.groupMatrix)) {
@@ -5021,6 +6771,7 @@ var HangingProtocolService = /** @class */ (function () {
         }
     };
     HangingProtocolService.prototype.applyImageHangingProtocol = function (groupData, imageHangingProtocol) {
+        this.logService.info("HP service: applyImageHangingProtocol to Group" + groupData.getId() + ", protocol is " + _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["ImageHangingProtocol"][imageHangingProtocol]);
         if (groupData.imageCount === 0) {
             // This is the first time to apply 
             groupData.imageHangingProtocol = imageHangingProtocol;
@@ -5130,7 +6881,7 @@ var HangingProtocolService = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: "root"
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [_log_service__WEBPACK_IMPORTED_MODULE_3__["LogService"]])
     ], HangingProtocolService);
     return HangingProtocolService;
 }());
@@ -5190,6 +6941,75 @@ var ImageSelectorService = /** @class */ (function () {
         })
     ], ImageSelectorService);
     return ImageSelectorService;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/services/log.service.ts":
+/*!*****************************************!*\
+  !*** ./src/app/services/log.service.ts ***!
+  \*****************************************/
+/*! exports provided: LogService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LogService", function() { return LogService; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var LogService = /** @class */ (function () {
+    function LogService() {
+    }
+    LogService.prototype.error = function (log) {
+        this.logInternal(log, 'E');
+    };
+    LogService.prototype.warning = function (log) {
+        this.logInternal(log, 'W');
+    };
+    LogService.prototype.info = function (log) {
+        this.logInternal(log, 'I');
+    };
+    LogService.prototype.debug = function (log) {
+        this.logInternal(log, 'D');
+    };
+    LogService.prototype.seperator = function () {
+        console.log('');
+    };
+    LogService.prototype.formatNumberToString = function (num, maxLen) {
+        if (maxLen === void 0) { maxLen = 2; }
+        if (maxLen == 2) {
+            return num < 10 ? '0' + num : '' + num;
+        }
+        else {
+            return num < 10 ? '00' + num : num < 100 ? '0' + num : '' + num;
+        }
+    };
+    LogService.prototype.logInternal = function (log, level) {
+        var cur = new Date();
+        var timeStamp = cur.getFullYear() + '-' + this.formatNumberToString(cur.getMonth() + 1) + '-' + this.formatNumberToString(cur.getDate())
+            + ' ' + this.formatNumberToString(cur.getHours()) + ':' + this.formatNumberToString(cur.getHours())
+            + ':' + this.formatNumberToString(cur.getSeconds()) + '.' + this.formatNumberToString(cur.getMilliseconds(), 3);
+        var content = timeStamp + ' ' + level + ' ' + log;
+        console.log(content);
+    };
+    LogService = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
+            providedIn: 'root'
+        }),
+        __metadata("design:paramtypes", [])
+    ], LogService);
+    return LogService;
 }());
 
 
@@ -5328,7 +7148,7 @@ var ViewContextEnum;
     ViewContextEnum[ViewContextEnum["Zoom"] = 4] = "Zoom";
     ViewContextEnum[ViewContextEnum["Magnifier"] = 5] = "Magnifier";
     ViewContextEnum[ViewContextEnum["ROIZoom"] = 6] = "ROIZoom";
-    ViewContextEnum[ViewContextEnum["Create"] = 7] = "Create";
+    ViewContextEnum[ViewContextEnum["CreateAnn"] = 7] = "CreateAnn";
     ViewContextEnum[ViewContextEnum["ROIWL"] = 8] = "ROIWL";
     ViewContextEnum[ViewContextEnum["MagnifyX2"] = 9] = "MagnifyX2";
     ViewContextEnum[ViewContextEnum["MagnifyX4"] = 10] = "MagnifyX4";
@@ -5492,10 +7312,10 @@ var ViewContextService = /** @class */ (function () {
         var curContext = new ViewContext(context, data);
         this._previousContext = this._curContext;
         this._curContext = curContext;
-        if (this._curContext.action != this._previousContext.action) {
+        if (this._curContext.action !== this._previousContext.action) {
             this.viewContextChangedSource.next(this._curContext);
         }
-        else if (this._curContext.action == ViewContextEnum.Create) {
+        else if (this._curContext.action == ViewContextEnum.CreateAnn) {
             //if want to create the same object even if current object is not finished yet, we still change context to delete it. 
             this.viewContextChangedSource.next(this._curContext);
         }
@@ -5585,6 +7405,7 @@ var WorklistService = /** @class */ (function () {
         // Observable Shortcut streams
         this.shortcutSelected$ = this.shortcutSelectedSource.asObservable();
         this._shortcut = new _models_shortcut__WEBPACK_IMPORTED_MODULE_2__["Shortcut"]();
+        this._shortcut.dataSource = _models_shortcut__WEBPACK_IMPORTED_MODULE_2__["DataSource"].MiniPacs;
     }
     Object.defineProperty(WorklistService.prototype, "shortcut", {
         get: function () {
@@ -5592,7 +7413,7 @@ var WorklistService = /** @class */ (function () {
         },
         set: function (value) {
             this._shortcut.copyConditionFrom(value);
-            this.studies = this.onQueryStudies();
+            this.studies = this.onQueryStudies(1);
         },
         enumerable: true,
         configurable: true
@@ -5611,15 +7432,16 @@ var WorklistService = /** @class */ (function () {
     WorklistService.prototype.shortcutSelected = function (shortcut) {
         this.shortcutSelectedSource.next(shortcut);
     };
-    WorklistService.prototype.onQueryStudies = function () {
+    WorklistService.prototype.onQueryStudies = function (pageIndex, sortItem) {
         var _this = this;
+        if (sortItem === void 0) { sortItem = ""; }
         this.querying = true;
         if (this.isUsingLocalTestData()) {
             this.studies = this.databaseService.getStudiesTest();
             this.querying = false;
         }
         else {
-            this.databaseService.getStudies(this._shortcut).subscribe(function (studies) { return _this.formatStudies(studies); });
+            this.databaseService.getStudies(this._shortcut, pageIndex, sortItem).subscribe(function (recWorklistData) { return _this.formatStudies(recWorklistData); });
         }
         return this.studies;
     };
@@ -5635,6 +7457,18 @@ var WorklistService = /** @class */ (function () {
         }
         return this.shortcuts;
     };
+    WorklistService.prototype.onQueryWorklistCol = function () {
+        var _this = this;
+        this.querying = true;
+        if (this.isUsingLocalTestData()) {
+            //this.shortcuts = this.databaseService.getShortcuts();
+            this.querying = false;
+        }
+        else {
+            this.databaseService.getWorklistCol().subscribe(function (shortcuts) { return _this.formatShortcuts(shortcuts); });
+        }
+        return this.shortcuts;
+    };
     WorklistService.prototype.onSaveShortcut = function (name) {
         var _this = this;
         if (this.isUsingLocalTestData()) {
@@ -5643,7 +7477,7 @@ var WorklistService = /** @class */ (function () {
         }
         else {
             this._shortcut.name = name;
-            this.databaseService.saveShortcut(this._shortcut).subscribe(function (shortcuts) { return _this.afterDeleteShortcut(); });
+            this.databaseService.saveShortcut(this._shortcut).subscribe(function (shortcuts) { return _this.refreshShortcuts(); });
         }
     };
     WorklistService.prototype.onDeleteShortcut = function (shortcut) {
@@ -5654,7 +7488,7 @@ var WorklistService = /** @class */ (function () {
         }
         else {
             //this._shortcut.name = name;
-            this.databaseService.deleteShortcut(shortcut).subscribe(function (shortcuts) { return _this.afterDeleteShortcut(); });
+            this.databaseService.deleteShortcut(shortcut).subscribe(function (shortcuts) { return _this.refreshShortcuts(); });
         }
     };
     WorklistService.prototype.onShowSingleStudy = function (study) {
@@ -5700,7 +7534,7 @@ var WorklistService = /** @class */ (function () {
     };
     WorklistService.prototype.setDataSource = function (dataSource) {
         this._shortcut.dataSource = dataSource;
-        this.studies = this.onQueryStudies();
+        this.studies = this.onQueryStudies(1);
         this.shortcuts = this.onQueryShortcuts();
     };
     WorklistService.prototype.onCleanCondition = function () {
@@ -5708,38 +7542,54 @@ var WorklistService = /** @class */ (function () {
     };
     WorklistService.prototype.onQueryAllStudies = function () {
         this.shortcut.clearCondition();
-        this.onQueryStudies();
+        this.onQueryStudies(1);
         this.onQueryShortcuts();
     };
     WorklistService.prototype.onQueryTodayStudy = function () {
         this.shortcut.clearCondition();
-        this.shortcut.studyDate = "Today";
-        this.onQueryStudies();
+        this.shortcut.studyDate = '1';
+        this.onQueryStudies(1);
     };
     WorklistService.prototype.onQueryStudyByShortcut = function (shortcut) {
         this.shortcut = shortcut;
     };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    WorklistService.prototype.formatStudies = function (studies) {
-        for (var i = 0; i < studies.length; i++) {
-            studies[i].checked = false;
-            studies[i].detailsLoaded = false;
-            for (var j = 0; j < studies[i].seriesList.length; j++) {
-                studies[i].seriesList[j].study = studies[i];
+    WorklistService.prototype.formatStudies = function (recWorklistData) {
+        var studiesList = recWorklistData.studyList;
+        for (var i = 0; i < studiesList.length; i++) {
+            studiesList[i].checked = false;
+            studiesList[i].detailsLoaded = false;
+            studiesList[i].bodyPartList = new Array();
+            for (var j = 0; j < studiesList[i].seriesList.length; j++) {
+                studiesList[i].seriesList[j].study = studiesList[i];
+                if (!studiesList[i].bodyPartList.includes(studiesList[i].seriesList[j].localBodyPart)) {
+                    studiesList[i].bodyPartList.push(studiesList[i].seriesList[j].localBodyPart);
+                }
             }
         }
-        this.studies = studies;
+        this.studies = studiesList;
+        this.pageCount = recWorklistData.pageCount;
+        this.worklistColumns = recWorklistData.worklistColumns;
+        for (var _i = 0, _a = recWorklistData.worklistColumns; _i < _a.length; _i++) {
+            var worklistColumn = _a[_i];
+            worklistColumn.shortcutType = this.shortcut;
+        }
+        for (var _b = 0, studiesList_1 = studiesList; _b < studiesList_1.length; _b++) {
+            var study = studiesList_1[_b];
+            for (var _c = 0, _d = recWorklistData.worklistColumns; _c < _d.length; _c++) {
+                var worklistColumn = _d[_c];
+                worklistColumn.studyCol = study;
+            }
+        }
+        this.pages = Array.from(Array(this.pageCount), function (x, i) { return i; });
         this.querying = false;
     };
     WorklistService.prototype.formatShortcuts = function (shortcuts) {
-        //for (let i = 0; i < shortcuts.length; i++) {
-        //    let shortcurtName = shortcuts[i].name.split('|');
-        //}
         this.shortcuts = shortcuts;
     };
-    WorklistService.prototype.afterDeleteShortcut = function () {
-        this.onQueryStudies();
+    WorklistService.prototype.refreshShortcuts = function () {
+        this.onQueryStudies(1);
         this.onQueryShortcuts();
     };
     WorklistService.prototype.studyDetailsLoaded = function (index, studyNew) {
@@ -5836,7 +7686,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! D:\Work\Git\ISGitServer\ImageViewPacs\Csh.ImageSuite.WebClient\src\main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! d:\Work\Git\ISGitServer\ImageViewPacs\Csh.ImageSuite.WebClient\src\main.ts */"./src/main.ts");
 
 
 /***/ })

@@ -7,6 +7,7 @@ using Csh.ImageSuite.Common.Interface;
 using Csh.ImageSuite.Model.Dicom;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System.Data;
 
 namespace Csh.ImageSuite.WebHost.Controllers
 {
@@ -24,7 +25,11 @@ namespace Csh.ImageSuite.WebHost.Controllers
         // GET: Pssi
         public string Index()
         {
-            var studies = _dbHelper.GetStudies(null);
+            SendStudyData ssd = new SendStudyData();
+            int pageCount = 0;
+
+
+            var studies = _dbHelper.GetStudies(null, "", 1, out pageCount);
             return _commonTool.GetJsonStringFromObject(studies);
         }
 
@@ -36,10 +41,33 @@ namespace Csh.ImageSuite.WebHost.Controllers
         }
 
         // POST: Pssi/Search/
-        public string Search(QueryShortcut queryShortcut)
+        public string Search(RevStudyData studyData)
         {
-            var studies = _dbHelper.GetStudies(queryShortcut);
-            return _commonTool.GetJsonStringFromObject(studies);
+            SendStudyData ssd = new SendStudyData();
+            int pageCount = 0;
+            List<Study> studies = _dbHelper.GetStudies(studyData.Shortcut, studyData.SortItem, studyData.PageIndex, out pageCount);
+            ssd.StudyList = studies;
+            ssd.PageCount = pageCount;
+
+            List<WorklistColumn> worklistColumns = _dbHelper.GetWorklistColumnConfig("admin", "en-US");
+            ssd.WorklistColumns = worklistColumns;
+
+            return _commonTool.GetJsonStringFromObject(ssd);
+        }
+
+        public class RevStudyData
+        {
+            public QueryShortcut Shortcut { get; set; }
+            public int PageIndex { get; set; }
+            public string SortItem { get; set; }
+        }
+
+        public class SendStudyData
+        {
+            public List<Study> StudyList { get; set; }
+
+            public List<WorklistColumn> WorklistColumns { get; set; }
+            public int PageCount { get; set; }
         }
 
 

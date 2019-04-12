@@ -1,0 +1,41 @@
+
+<h1 mat-dialog-title
+    cdkDrag
+    cdkDragRootElement=".cdk-overlay-pane"
+    cdkDragHandle>
+    Select Study Date Range
+</h1>
+<mat-dialog-content>
+    <table>
+        <tr>
+            <td></td>
+            <td style="width: 10px"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <mat-form-field>
+                    <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" (dateChange)="fromDateChanged('change', $event)">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+            </td>
+            <td></td>
+            <td>
+                <mat-form-field>
+                    <input matInput [matDatepicker]="picker2" [min]="toMinDate" [max]="toMaxDate" placeholder="To" (dateChange)="toDateChanged('change', $event)">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+            </td>
+        </tr>
+    </table>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="onCancelClick()">
+        <i class="glyphicon glyphicon-remove-circle" style="padding-right: 8px"></i>Cancel
+    </button>
+    <button class="mat-raised-button" (click)="onOkClick()">
+        <i class="glyphicon glyphicon-ok-circle" style="padding-right: 8px"></i>Ok
+    </button>
+</mat-dialog-actions>

@@ -51,6 +51,7 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatMomentDateModule } from "@angular/material-moment-adapter";
 import { AnnotationModule } from "./annotation/annotation.module";
+import { SelectStudydateDialogComponent } from './components/dialog/select-studydate-dialog/select-studydate-dialog.component';
 
 
 @NgModule({
@@ -71,7 +72,8 @@ import { AnnotationModule } from "./annotation/annotation.module";
         MessageBoxComponent,
         DropdownButtonMenuComponent,
         DropdownButtonMenuButtonComponent,
-        ManualWlDialogComponent
+        ManualWlDialogComponent,
+        SelectStudydateDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -101,7 +103,7 @@ import { AnnotationModule } from "./annotation/annotation.module";
     ],
     providers: [],
     bootstrap: [AppComponent],
-    entryComponents: [MessageBoxComponent, ManualWlDialogComponent]
+    entryComponents: [MessageBoxComponent, ManualWlDialogComponent, SelectStudydateDialogComponent]
 })
 export class AppModule {
 }

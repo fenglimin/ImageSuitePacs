@@ -16,13 +16,13 @@ namespace Csh.ImageSuite.Model.Dicom
         public string SopInstanceUid { get; set; }
 
         /// <summary>
-        /// ImageNumber, and the tag is (0020, 0013) Instance Number
+        /// ImageNo, and the tag is (0020, 0013) Instance Number
         /// </summary>
-        public int ImageNumber { get; set; }
+        public string ImageNo { get; set; }
 
-        public string ImageDateString { get; set; }
+        public string ImageDate { get; set; }
 
-        public string ImageTimeString { get; set; }
+        public string ImageTime { get; set; }
 
         public int ImageRows { get; set; }
 
@@ -38,5 +38,12 @@ namespace Csh.ImageSuite.Model.Dicom
         [ScriptIgnore]
         public Series Series { get; set; }
 
+        public string KeyImage { get; set; }
+
+        public int BitsAllocated { get; set; }
+
+        public string AcquisitionTime { get; set; }
+
+        public string AcquisitionDate { get; set; }
     }
 }

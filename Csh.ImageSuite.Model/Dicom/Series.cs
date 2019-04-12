@@ -20,18 +20,15 @@ namespace Csh.ImageSuite.Model.Dicom
         public Study Study { get; set; }
 
         [Display(Name = "Series Date")]
-        public string SeriesDateString { get; set; }
+        public string SeriesDate { get; set; }
 
         [Display(Name = "Series Time")]
-        public string SeriesTimeString { get; set; }
+        public string SeriesTime { get; set; }
 
         [Display(Name = "BodyPart")]
         public string BodyPart { get; set; }
 
         public string ViewPosition { get; set; }
-
-        [Display(Name = "Series Number")]
-        public int SeriesNumber { get; set; }
 
         public string Modality { get; set; }
 
@@ -39,5 +36,21 @@ namespace Csh.ImageSuite.Model.Dicom
         public int ImageCount { get; set; }
 
         public List<Image> ImageList { get; private set; }
+
+        public string ContrastBolus { get; set; }
+
+        public string LocalBodyPart { get; set; }
+
+        public string SeriesNo { get; set; }
+
+        public string SeriesDescription { get; set; }
+
+        public string OperatorName { get; set; }
+
+        public string ReferHospital { get; set; }
+
+        public string PatientPosition { get; set; }
+
+        public string LocalViewPosition { get; set; }
     }
 }

@@ -88,6 +88,7 @@ export class Study extends Pssi {
 
     patient: Patient;
     seriesList: Array<Series>;
+    bodyPartList: Array<string>;
 
     setHide(hide: boolean) {
         this.hide = hide;

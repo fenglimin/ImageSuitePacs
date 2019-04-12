@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Csh.ImageSuite.Model.Dicom;
+using System.Data;
 
 namespace Csh.ImageSuite.Common.Interface
 {
@@ -15,12 +16,18 @@ namespace Csh.ImageSuite.Common.Interface
 
         void DeleteShortcut(string shortcutName);
 
-        IList<Study> GetStudies(QueryShortcut query);
+        List<Study> GetStudies(QueryShortcut query, string sortPara, int pageNumber, out int pageCount);
 
         Study GetStudy(int serialNo);
 
         Image GetImage(int serialNo);
 
         string GetImageRootDir(int serialNo);
+
+        List<WorklistColumn> GetWorklistColumnConfig(string UserId, string UILanguage);
+
+        List<OverlayItemConfig> LoadOverlays();
+
+        List<OverlayItemConfig> LoadOverlayConfig(string moduleName, string language);
     }
 }

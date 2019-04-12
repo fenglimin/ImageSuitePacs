@@ -6,6 +6,9 @@ import { IImageViewer } from "../interfaces/image-viewer-interface";
 
 
 export class AnnCircle extends AnnObject implements IAnnotationObject {
+    onSwitchFocus(): void { throw new Error("Not implemented"); }
+
+    onFlip(vertical: boolean): void { throw new Error("Not implemented"); }
 
     center: Point;
     radius: number;

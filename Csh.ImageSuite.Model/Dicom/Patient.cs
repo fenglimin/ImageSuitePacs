@@ -24,9 +24,15 @@ namespace Csh.ImageSuite.Model.Dicom
         public string LastName { get; set; }
 
         [Display(Name = "Date of Birth")]
-        public string BirthDateString { get; set; }
+        public string PatientBirthDate { get; set; }
 
-        [Display(Name = "Patient Gender")]
-        public string Gender { get; set; }
+        [Display(Name = "Patient Sex")]
+        public string PatientSex { get; set; }
+
+        public string PatientAge { get; set; }
+
+        public string Breed { get; set; }
+
+        public string Species { get; set; }
     }
 }

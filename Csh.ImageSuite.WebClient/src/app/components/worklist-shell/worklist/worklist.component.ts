@@ -6,10 +6,12 @@ import { WorklistService } from "../../../services/worklist.service";
 import {
     MatDatepickerInputEvent, MatButton
 } from "@angular/material";
-
+import { DialogService } from "../../../services/dialog.service";
+import { SelectStudydateDialogComponent } from "../../../components/dialog/select-studydate-dialog/select-studydate-dialog.component";
 // Import DatePicker format
 import { MomentDateAdapter } from "@angular/material-moment-adapter";
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from "@angular/material/core";
+import { DateRange } from "../../../models/dailog-data/date-range";
 
 export const MY_FORMATS = {
     parse: {
@@ -60,7 +62,11 @@ export class WorklistComponent implements OnInit {
     currentPage = 1;
 
     isDesc = false;
-    orderHeader = "";    
+    orderHeader = ""; 
+
+    initStudyDate: DateRange;
+    
+
 
     fromDateChanged(type: string, event: MatDatepickerInputEvent<Date>) {
         this.toMinDate = event.value;
@@ -70,9 +76,11 @@ export class WorklistComponent implements OnInit {
         this.fromMaxDate = event.value;
     }
 
-    constructor(public worklistService: WorklistService) {
+    constructor(public worklistService: WorklistService, public dialogService: DialogService) {
         this.shortcutSelected = this.worklistService.shortcutSelected$.subscribe(
             shortcut => this.onShortcutSelected(shortcut));
+
+        
     }
 
     onShortcutSelected(shortcut: Shortcut) {
@@ -114,6 +122,23 @@ export class WorklistComponent implements OnInit {
         this.worklistService.onShowSingleStudy(study);
     }
 
+    onStudyDateChangeSelect(optionValue) {
+        if (optionValue == "7") {
+            let studyDate = new DateRange;
+            this.dialogService.showDialog(SelectStudydateDialogComponent, studyDate).subscribe(
+                val => {
+                    this.getStudyDate(val);
+                }
+            );
+        }
+    }
+
+    getStudyDate(studyDate: DateRange) {
+        this.initStudyDate = studyDate;
+        this.worklistService.shortcut.studyDateFrom = studyDate.dateFrom;
+        this.worklistService.shortcut.studyDateTo = studyDate.dateTo;
+
+    }
 
     onPrevPageClicked() {
         this.currentPage = this.currentPage - 1;
@@ -145,5 +170,9 @@ export class WorklistComponent implements OnInit {
             this.worklistService.onQueryStudies(this.currentPage, clickedHeader + "|");
 
         }
+    }
+
+    onStudyDateRangeTableClicked() {
+        this.initStudyDate = null;
     }
 }

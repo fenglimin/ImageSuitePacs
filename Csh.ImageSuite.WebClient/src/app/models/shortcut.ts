@@ -14,8 +14,10 @@ export class Shortcut {
     gender: string;
     modality: string;
     studyDate: string;
-    birthDateFrom: Date;
-    birthDateTo: Date;
+    studyDateFrom: Date;
+    studyDateTo: Date;
+    patientBirthDateFrom: Date;
+    patientBirthDateTo: Date;
     studyId: string;
     accessionNo: string;
 
@@ -43,9 +45,10 @@ export class Shortcut {
         this.gender = "";
         this.modality = "";
         this.studyDate = "";
-        this.birthDateFrom = null;
-        this.birthDateTo = null;
-
+        this.patientBirthDateFrom = null;
+        this.patientBirthDateTo = null;
+        this.studyDateFrom = null;
+        this.studyDateTo = null;
         this.studyId = "";
         this.accessionNo = "";
     }
@@ -56,9 +59,10 @@ export class Shortcut {
         this.gender = shortcut.gender;
         this.modality = shortcut.modality;
         this.studyDate = shortcut.studyDate;
-        this.birthDateFrom = shortcut.birthDateFrom;
-        this.birthDateTo = shortcut.birthDateTo;
-
+        this.patientBirthDateFrom = shortcut.patientBirthDateFrom;
+        this.patientBirthDateTo = shortcut.patientBirthDateTo;
+        this.studyDateFrom = shortcut.studyDateFrom;
+        this.studyDateTo = shortcut.studyDateTo;
         this.studyId = shortcut.studyId;
         this.accessionNo = shortcut.accessionNo;
     }

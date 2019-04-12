@@ -14,20 +14,26 @@ namespace Csh.ImageSuite.Model.Dicom
 
         public string PatientName { get; set; }
 
-        public string Gender { get; set; }
+        public string PatientSex { get; set; }
 
         public string Modality { get; set; }
 
         public string StudyDate { get; set; }
 
-        public DateTime? BirthDateFrom { get; set; }
+        public DateTime? StudyDateFrom { get; set; }
 
-        public DateTime? BirthDateTo { get; set; }
+        public DateTime? StudyDateTo { get; set; }
+
+        public DateTime? PatientBirthDateFrom { get; set; }
+
+        public DateTime? PatientBirthDateTo { get; set; }
 
         public string StudyId { get; set; }
 
         public string AccessionNo { get; set; }
 
-        public string Tempxml { get; set; }
+        public string Printed { get; set; }
+
+
     }
 }
