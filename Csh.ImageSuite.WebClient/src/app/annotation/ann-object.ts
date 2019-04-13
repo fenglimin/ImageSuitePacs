@@ -81,6 +81,30 @@ export abstract class AnnObject {
         return this.selected;
     }
 
+    onChildSelected(selectedObj: AnnObject) {
+
+        this.focusedObj = selectedObj;
+
+        if (this.parentObj) {
+            // If have parent, let parent manage the select status
+            this.parentObj.onChildSelected(this);
+        } else {
+            this.onSelect(true, true);
+        }
+    }
+
+    onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
+
+        this.focusedObj = draggedObj;
+
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragged(this, deltaX, deltaY);
+        } else {
+            this.onDrag(deltaX, deltaY);
+        }
+    }
+
     onDeleteChildren() {
         const properties = Object.getOwnPropertyNames(this);
         properties.forEach(prop => {
@@ -298,19 +322,16 @@ export abstract class AnnObject {
         return !this.dragging && this.imageViewer.getContext().action === ViewContextEnum.SelectAnn;
     }
 
-    protected onDrag(draggedObj: any, deltaX: number, deltaY: number): void {
-
-    }
-
     protected getPosition(): Point {
         return { x: 0, y: 0 }
     }
 
-    onChildSelected(selectedObj: AnnObject) {
+    onSelect(selected: boolean, focused: boolean) {
     }
 
-    onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
+    onDrag(deltaX: number, deltaY: number) {
     }
+
 
     onDrawEnded() {
     }

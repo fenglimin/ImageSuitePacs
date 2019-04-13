@@ -377,29 +377,8 @@ var AnnArrow = /** @class */ (function (_super) {
             }
         }
     };
-    AnnArrow.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
-        this.focusedObj = draggedObj;
-        if (this.parentObj) {
-            // If have parent, let parent manage the drag status
-            this.parentObj.onChildDragged(this, deltaX, deltaY);
-        }
-        else {
-            this.onDrag(deltaX, deltaY);
-        }
-    };
     AnnArrow.prototype.onDrag = function (deltaX, deltaY) {
         this.annLine.onDrag(deltaX, deltaY);
-    };
-    AnnArrow.prototype.onChildSelected = function (selectedObj) {
-        this.selected = true;
-        this.focusedObj = selectedObj;
-        if (this.parentObj) {
-            // If have parent, let parent manage the select status
-            this.parentObj.onChildSelected(selectedObj);
-        }
-        else {
-            this.onSelect(true, true);
-        }
     };
     AnnArrow.prototype.onSelect = function (selected, focused) {
         console.log("onSelect AnnLine");
@@ -503,16 +482,6 @@ var AnnLine = /** @class */ (function (_super) {
             }
         }
     };
-    AnnLine.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
-        this.focusedObj = draggedObj;
-        if (this.parentObj) {
-            // If have parent, let parent manage the drag status
-            this.parentObj.onChildDragged(this, deltaX, deltaY);
-        }
-        else {
-            this.onDrag(deltaX, deltaY);
-        }
-    };
     AnnLine.prototype.onDrag = function (deltaX, deltaY) {
         if (this.focusedObj === this.annStartPoint) {
             this.onStartPointDragged(deltaX, deltaY);
@@ -522,17 +491,6 @@ var AnnLine = /** @class */ (function (_super) {
         }
         else {
             this.onLineDragged(deltaX, deltaY);
-        }
-    };
-    AnnLine.prototype.onChildSelected = function (selectedObj) {
-        this.selected = true;
-        this.focusedObj = selectedObj;
-        if (this.parentObj) {
-            // If have parent, let parent manage the select status
-            this.parentObj.onChildSelected(selectedObj);
-        }
-        else {
-            this.onSelect(true, true);
         }
     };
     AnnLine.prototype.onSelect = function (selected, focused) {
@@ -662,6 +620,26 @@ var AnnObject = /** @class */ (function () {
     };
     AnnObject.prototype.isSelected = function () {
         return this.selected;
+    };
+    AnnObject.prototype.onChildSelected = function (selectedObj) {
+        this.focusedObj = selectedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the select status
+            this.parentObj.onChildSelected(this);
+        }
+        else {
+            this.onSelect(true, true);
+        }
+    };
+    AnnObject.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
+        this.focusedObj = draggedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragged(this, deltaX, deltaY);
+        }
+        else {
+            this.onDrag(deltaX, deltaY);
+        }
     };
     AnnObject.prototype.onDeleteChildren = function () {
         var _this = this;
@@ -841,14 +819,12 @@ var AnnObject = /** @class */ (function () {
     AnnObject.prototype.needResponseToChildMouseEvent = function () {
         return !this.dragging && this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__["ViewContextEnum"].SelectAnn;
     };
-    AnnObject.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
-    };
     AnnObject.prototype.getPosition = function () {
         return { x: 0, y: 0 };
     };
-    AnnObject.prototype.onChildSelected = function (selectedObj) {
+    AnnObject.prototype.onSelect = function (selected, focused) {
     };
-    AnnObject.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
+    AnnObject.prototype.onDrag = function (deltaX, deltaY) {
     };
     AnnObject.prototype.onDrawEnded = function () {
     };
@@ -1114,32 +1090,8 @@ var AnnBaseLine = /** @class */ (function (_super) {
         _this.jcLine.parentObj = _this;
         return _this;
     }
-    AnnBaseLine.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
-        if (draggedObj === this) {
-        }
-        this.focusedObj = draggedObj;
-        if (this.parentObj) {
-            // If have parent, let parent manage the drag status
-            this.parentObj.onChildDragged(this, deltaX, deltaY);
-        }
-        else {
-            this.onDrag(deltaX, deltaY);
-        }
-    };
     AnnBaseLine.prototype.onDrag = function (deltaX, deltaY) {
         this.onTranslate(deltaX, deltaY);
-    };
-    AnnBaseLine.prototype.onChildSelected = function (selectedObj) {
-        if (selectedObj === this) {
-        }
-        this.focusedObj = selectedObj;
-        if (this.parentObj) {
-            // If have parent, let parent manage the select status
-            this.parentObj.onChildSelected(this);
-        }
-        else {
-            this.onSelect(true, true);
-        }
     };
     AnnBaseLine.prototype.onSelect = function (selected, focused) {
         console.log("onSelect Line " + selected + " " + focused);
@@ -1238,28 +1190,8 @@ var AnnBasePoint = /** @class */ (function (_super) {
         _this.jcCenterPoint.parentObj = _this;
         return _this;
     }
-    AnnBasePoint.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
-        this.focusedObj = draggedObj;
-        if (this.parentObj) {
-            // If have parent, let parent manage the drag status
-            this.parentObj.onChildDragged(this, deltaX, deltaY);
-        }
-        else {
-            this.onDrag(deltaX, deltaY);
-        }
-    };
     AnnBasePoint.prototype.onDrag = function (deltaX, deltaY) {
         this.onTranslate(deltaX, deltaY);
-    };
-    AnnBasePoint.prototype.onChildSelected = function (selectedObj) {
-        this.focusedObj = selectedObj;
-        if (this.parentObj) {
-            // If have parent, let parent manage the select status
-            this.parentObj.onChildSelected(this);
-        }
-        else {
-            this.onSelect(true, true);
-        }
     };
     AnnBasePoint.prototype.onSelect = function (selected, focused) {
         console.log("onSelect Point " + selected + " " + focused);

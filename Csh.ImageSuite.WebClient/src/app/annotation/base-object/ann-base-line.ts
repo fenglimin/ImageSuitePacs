@@ -16,39 +16,8 @@ export class AnnBaseLine extends AnnObject {
         this.jcLine.parentObj = this;
     }
 
-    onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
-
-        if (draggedObj === this) {
-
-        }
-        this.focusedObj = draggedObj;
-
-        if (this.parentObj) {
-            // If have parent, let parent manage the drag status
-            this.parentObj.onChildDragged(this, deltaX, deltaY);
-        } else {
-            this.onDrag(deltaX, deltaY);
-        }
-    }
-
     onDrag(deltaX: number, deltaY: number) {
        this.onTranslate(deltaX, deltaY);
-    }
-
-    onChildSelected(selectedObj: AnnObject) {
-
-        if (selectedObj === this) {
-
-        }
-
-        this.focusedObj = selectedObj;
-
-        if (this.parentObj) {
-            // If have parent, let parent manage the select status
-            this.parentObj.onChildSelected(this);
-        } else {
-            this.onSelect(true, true);
-        }
     }
 
     onSelect(selected: boolean, focused: boolean) {

@@ -23,32 +23,8 @@ export class AnnBasePoint extends AnnObject {
         this.jcCenterPoint.parentObj = this;
     }
 
-    onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
-
-        this.focusedObj = draggedObj;
-
-        if (this.parentObj) {
-            // If have parent, let parent manage the drag status
-            this.parentObj.onChildDragged(this, deltaX, deltaY);
-        } else {
-            this.onDrag(deltaX, deltaY);
-        }
-    }
-
     onDrag(deltaX: number, deltaY: number) {
         this.onTranslate(deltaX, deltaY);
-    }
-
-    onChildSelected(selectedObj: AnnObject) {
-        
-        this.focusedObj = selectedObj;
-
-        if (this.parentObj) {
-            // If have parent, let parent manage the select status
-            this.parentObj.onChildSelected(this);
-        } else {
-            this.onSelect(true, true);
-        }
     }
 
     onSelect(selected: boolean, focused: boolean) {
