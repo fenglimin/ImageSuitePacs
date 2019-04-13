@@ -11,4 +11,7 @@ export interface IAnnotationObject {
     onFlip(vertical: boolean): void;
     onKeyDown(keyEvent: any): void;
     onSwitchFocus(): void;
+
+    onDrawEnded();
+    onChildDragged(draggedObj: any, deltaX: number, deltaY: number);
 }

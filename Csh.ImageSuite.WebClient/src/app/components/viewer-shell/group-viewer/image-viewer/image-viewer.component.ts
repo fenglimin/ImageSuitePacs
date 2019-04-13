@@ -20,8 +20,8 @@ import { IAnnotationObject } from "../../../../interfaces/annotation-object-inte
 import { Point } from '../../../../models/annotation';
 import { AnnObject, MouseEventType } from "../../../../annotation/ann-object";
 import { AnnLine } from "../../../../annotation/ann-line";
-import { AnnCircle } from "../../../../annotation/ann-circle";
-import { AnnRectangle } from "../../../../annotation/ann-rectangle";
+//import { AnnCircle } from "../../../../annotation/ann-circle";
+//import { AnnRectangle } from "../../../../annotation/ann-rectangle";
 
 
 @Component({
@@ -301,8 +301,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     onKeyDown(event) {
 
-        if (!this.curSelectObj) return;
-
         if (event.code === "Delete") {
             this.deleteAnnotation(this.curSelectObj);
             this.curSelectObj = undefined;
@@ -314,7 +312,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
         }
         else if (event.code === "ArrowUp" || event.code === "ArrowDown" || event.code === "ArrowLeft" || event.code === "ArrowRight") {
-            this.curSelectObj.onKeyDown(event);
+            if (this.curSelectObj) {
+                this.curSelectObj.onKeyDown(event);
+            }
         }
     }
 
@@ -668,11 +668,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             
             if (curContext.data === AnnLine) {
                 canvas.style.cursor = cursorUrl.format("ann_line");
-            }else if (curContext.data === AnnRectangle) {
-                canvas.style.cursor = cursorUrl.format("rect");
-            } else if (curContext.data === AnnCircle) {
-                canvas.style.cursor = cursorUrl.format("ellipse");
             }
+            //else if (curContext.data === AnnRectangle) {
+            //    canvas.style.cursor = cursorUrl.format("rect");
+            //} else if (curContext.data === AnnCircle) {
+            //    canvas.style.cursor = cursorUrl.format("ellipse");
+            //}
         }
     }
 
@@ -1511,7 +1512,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private startCreateAnnAtPoint(point: Point) {
         this.updateImageTransform();
         const annType = this.viewContext.curContext.data;
-        this.curSelectObj = new annType(this);
+        this.curSelectObj = new annType(undefined, this);
         this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point);
     }
 }

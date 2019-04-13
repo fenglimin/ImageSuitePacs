@@ -598,8 +598,8 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! d:\Work\Git\ISGitServer\ImageViewPacs\Csh.ImageSuite.WebClient\src\styles.css */"./src/styles.css");
-module.exports = __webpack_require__(/*! d:\Work\Git\ISGitServer\ImageViewPacs\Csh.ImageSuite.WebClient\src\bootStrap\css\bootstrap.min.css */"./src/bootStrap/css/bootstrap.min.css");
+__webpack_require__(/*! C:\Users\10021986_local\Documents\GitHub\ImageSuitePacs\Csh.ImageSuite.WebClient\src\styles.css */"./src/styles.css");
+module.exports = __webpack_require__(/*! C:\Users\10021986_local\Documents\GitHub\ImageSuitePacs\Csh.ImageSuite.WebClient\src\bootStrap\css\bootstrap.min.css */"./src/bootStrap/css/bootstrap.min.css");
 
 
 /***/ })

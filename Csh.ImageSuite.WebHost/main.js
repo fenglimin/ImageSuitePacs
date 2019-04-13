@@ -310,17 +310,18 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 
 /***/ }),
 
-/***/ "./src/app/annotation/ann-circle.ts":
-/*!******************************************!*\
-  !*** ./src/app/annotation/ann-circle.ts ***!
-  \******************************************/
-/*! exports provided: AnnCircle */
+/***/ "./src/app/annotation/ann-arrow.ts":
+/*!*****************************************!*\
+  !*** ./src/app/annotation/ann-arrow.ts ***!
+  \*****************************************/
+/*! exports provided: AnnArrow */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnCircle", function() { return AnnCircle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnArrow", function() { return AnnArrow; });
 /* harmony import */ var _ann_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ann-object */ "./src/app/annotation/ann-object.ts");
+/* harmony import */ var _ann_line__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ann-line */ "./src/app/annotation/ann-line.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -335,156 +336,94 @@ var __extends = (undefined && undefined.__extends) || (function () {
     };
 })();
 
-var AnnCircle = /** @class */ (function (_super) {
-    __extends(AnnCircle, _super);
-    function AnnCircle(imageViewer) {
-        return _super.call(this, imageViewer) || this;
+
+var AnnArrow = /** @class */ (function (_super) {
+    __extends(AnnArrow, _super);
+    function AnnArrow(parent, imageViewer) {
+        return _super.call(this, parent, imageViewer) || this;
     }
-    AnnCircle.prototype.onSwitchFocus = function () { throw new Error("Not implemented"); };
-    AnnCircle.prototype.onFlip = function (vertical) { throw new Error("Not implemented"); };
-    AnnCircle.prototype.isCreated = function () {
-        return this.created;
-    };
-    AnnCircle.prototype.onMouseEvent = function (mouseEventType, point) {
-        point = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].screenToImage(point, this.image.transformMatrix);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Implementation of interface IAnnotationObject
+    AnnArrow.prototype.onMouseEvent = function (mouseEventType, point) {
+        var imagePoint = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
-            if (!this.center) {
-                this.center = point;
-                this.jcCenterPoint = jCanvaScript.circle(this.center.x, this.center.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
+            if (this.created) {
+                this.onSelect(true, false);
+                return;
+            }
+            if (!this.annLine) {
+                this.annLine = new _ann_line__WEBPACK_IMPORTED_MODULE_1__["AnnLine"](this, this.imageViewer);
+                this.annLine.onMouseEvent(mouseEventType, point);
             }
             else {
-                this.radius = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].countDistance(this.center, point);
+                this.annLine.onMouseEvent(mouseEventType, point);
                 this.created = true;
-                this.jcTopPoint = jCanvaScript.circle(this.center.x, this.center.y - this.radius, this.circleRadius, this.selectedColor, true).layer(this.layerId);
-                this.jcBottomPoint = jCanvaScript.circle(this.center.x, this.center.y + this.radius, this.circleRadius, this.selectedColor, true).layer(this.layerId);
-                this.jcLeftPoint = jCanvaScript.circle(this.center.x - this.radius, this.center.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
-                this.jcRightPoint = jCanvaScript.circle(this.center.x + this.radius, this.center.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
-                this.imageViewer.onAnnotationCreated(this);
-                this.jcCircle.mouseStyle = "move";
-                this.jcTopPoint.mouseStyle = "crosshair";
-                this.jcBottomPoint.mouseStyle = "crosshair";
-                this.jcLeftPoint.mouseStyle = "crosshair";
-                this.jcRightPoint.mouseStyle = "crosshair";
-                this.setChildDraggable(this, this.jcCircle, true, this.onDragCircle);
-                this.setChildDraggable(this, this.jcTopPoint, true, this.onDragPoint);
-                this.setChildDraggable(this, this.jcBottomPoint, true, this.onDragPoint);
-                this.setChildDraggable(this, this.jcLeftPoint, true, this.onDragPoint);
-                this.setChildDraggable(this, this.jcRightPoint, true, this.onDragPoint);
-                this.setChildMouseEvent(this, this.jcCircle);
-                this.setChildMouseEvent(this, this.jcTopPoint);
-                this.setChildMouseEvent(this, this.jcBottomPoint);
-                this.setChildMouseEvent(this, this.jcLeftPoint);
-                this.setChildMouseEvent(this, this.jcRightPoint);
+                if (!this.parentObj) {
+                    // Parent not set, this mean it is not a child of a parentObj annotion. 
+                    this.imageViewer.onAnnotationCreated(this);
+                }
             }
         }
         else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
-            if (this.center) {
-                if (this.jcCircle) {
-                    this.jcCircle._radius = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].countDistance(this.center, point);
+            if (this.annLine) {
+                this.annLine.onMouseEvent(mouseEventType, point);
+                if (!this.annAdd) {
+                    this.annAdd = jCanvaScript.rect(imagePoint.x, imagePoint.y, 100, 100, this.selectedColor).layer(this.layerId);
                 }
                 else {
-                    this.jcCircle = jCanvaScript.circle(this.center.x, this.center.y, this.radius, this.selectedColor).layer(this.layerId);
-                    this.jcCircle._lineWidth = this.lineWidth;
+                    this.annAdd._x = imagePoint.x;
+                    this.annAdd._y = imagePoint.y;
                 }
             }
         }
-        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOver) {
-            if (!this.selected) {
-                this.setChild(true);
-            }
+    };
+    AnnArrow.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragged(draggedObj, deltaX, deltaY);
         }
-        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOut) {
-            if (!this.selected) {
-                this.setChild(false);
-            }
+        else {
+            this.onDrag(draggedObj, deltaX, deltaY);
         }
     };
-    AnnCircle.prototype.onScale = function () {
-        this.lineWidth = this.getLineWidth();
-        this.circleRadius = this.getPointRadius();
-        this.jcCircle._lineWidth = this.getLineWidth();
-        this.jcCenterPoint._radius = this.circleRadius;
-        this.jcTopPoint._radius = this.circleRadius;
-        this.jcBottomPoint._radius = this.circleRadius;
-        this.jcLeftPoint._radius = this.circleRadius;
-        this.jcRightPoint._radius = this.circleRadius;
+    AnnArrow.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
+        //this.annLine.onDrag();
     };
-    AnnCircle.prototype.onSelect = function (selected) {
+    AnnArrow.prototype.onChildSelected = function (selectedObj) {
+        this.selected = true;
+        this.focusedObj = selectedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the select status
+            this.parentObj.onChildSelected(selectedObj);
+        }
+        else {
+            this.onSelect(true, true);
+        }
+    };
+    AnnArrow.prototype.onSelect = function (selected, focused) {
+        console.log("onSelect AnnLine");
         this.selected = selected;
-        this.setChild(selected);
+        if (!this.parentObj && this.selected) {
+            this.imageViewer.selectAnnotation(this);
+        }
+    };
+    AnnArrow.prototype.onScale = function () {
+        this.annLine.onScale();
+    };
+    AnnArrow.prototype.onFlip = function (vertical) {
+        this.annLine.onFlip(vertical);
+    };
+    AnnArrow.prototype.onSwitchFocus = function () {
+    };
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    AnnArrow.prototype.setChild = function (selected) {
+        this.annLine.onSelect(selected, this.focusedObj === this.annLine);
         if (this.selected) {
             this.imageViewer.selectAnnotation(this);
         }
     };
-    AnnCircle.prototype.setChild = function (selected) {
-        var color = selected ? this.selectedColor : this.defaultColor;
-        if (this.jcCenterPoint) {
-            this.jcCenterPoint.visible(selected);
-            this.jcCenterPoint.color(color);
-        }
-        if (this.jcTopPoint) {
-            this.jcTopPoint.visible(selected);
-            this.jcTopPoint.color(color);
-        }
-        if (this.jcBottomPoint) {
-            this.jcBottomPoint.visible(selected);
-            this.jcBottomPoint.color(color);
-        }
-        if (this.jcLeftPoint) {
-            this.jcLeftPoint.visible(selected);
-            this.jcLeftPoint.color(color);
-        }
-        if (this.jcRightPoint) {
-            this.jcRightPoint.visible(selected);
-            this.jcRightPoint.color(color);
-        }
-        if (this.jcCircle) {
-            this.jcCircle.color(color);
-        }
-    };
-    AnnCircle.prototype.onDragCircle = function (draggedObj, deltaX, deltaY) {
-        this.center.x += deltaX;
-        this.center.y += deltaY;
-        this.jcCenterPoint._x = this.center.x;
-        this.jcCenterPoint._y = this.center.y;
-        this.jcTopPoint._x += deltaX;
-        this.jcTopPoint._y += deltaY;
-        this.jcBottomPoint._x += deltaX;
-        this.jcBottomPoint._y += deltaY;
-        this.jcLeftPoint._x += deltaX;
-        this.jcLeftPoint._y += deltaY;
-        this.jcRightPoint._x += deltaX;
-        this.jcRightPoint._y += deltaY;
-    };
-    AnnCircle.prototype.onDragPoint = function (draggedObj, deltaX, deltaY) {
-        var deltaRadius = 0;
-        if (draggedObj === this.jcTopPoint) {
-            deltaRadius = -deltaY;
-        }
-        else if (draggedObj === this.jcBottomPoint) {
-            deltaRadius = deltaY;
-        }
-        else if (draggedObj === this.jcLeftPoint) {
-            deltaRadius = -deltaX;
-        }
-        else if (draggedObj === this.jcRightPoint) {
-            deltaRadius = deltaX;
-        }
-        this.radius += deltaRadius;
-        if (this.radius < 0) {
-            this.radius = -this.radius;
-        }
-        this.jcCircle._radius = this.radius;
-        this.jcTopPoint._x = this.center.x;
-        this.jcTopPoint._y = this.center.y - this.radius;
-        this.jcBottomPoint._x = this.center.x;
-        this.jcBottomPoint._y = this.center.y + this.radius;
-        this.jcLeftPoint._x = this.center.x - this.radius;
-        this.jcLeftPoint._y = this.center.y;
-        this.jcRightPoint._x = this.center.x + this.radius;
-        this.jcRightPoint._y = this.center.y;
-    };
-    return AnnCircle;
+    return AnnArrow;
 }(_ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"]));
 
 
@@ -522,8 +461,8 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var AnnLine = /** @class */ (function (_super) {
     __extends(AnnLine, _super);
-    function AnnLine(imageViewer) {
-        return _super.call(this, imageViewer) || this;
+    function AnnLine(parentObj, imageViewer) {
+        return _super.call(this, parentObj, imageViewer) || this;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation of interface IAnnotationObject
@@ -538,12 +477,15 @@ var AnnLine = /** @class */ (function (_super) {
                 this.annStartPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, point, this.imageViewer);
             }
             else {
-                this.annStartPoint.onDrawEnded(this.onStartPointDragged, this.onChildSelected);
-                this.annEndPoint.onDrawEnded(this.onEndPointDragged, this.onChildSelected);
-                this.annLine.onDrawEnded(this.onLineDragged, this.onChildSelected);
+                this.annStartPoint.onDrawEnded();
+                this.annEndPoint.onDrawEnded();
+                this.annLine.onDrawEnded();
                 this.focusedObj = this.annEndPoint;
                 this.created = true;
-                this.imageViewer.onAnnotationCreated(this);
+                if (!this.parentObj) {
+                    // Parent not set, this mean it is not a child of a parentObj annotion. 
+                    this.imageViewer.onAnnotationCreated(this);
+                }
             }
         }
         else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
@@ -562,27 +504,47 @@ var AnnLine = /** @class */ (function (_super) {
                 }
             }
         }
-        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOver) {
-            if (!this.selected) {
-                this.setChild(true);
-            }
+    };
+    AnnLine.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
+        this.focusedObj = draggedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragged(draggedObj, deltaX, deltaY);
         }
-        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOut) {
-            if (!this.selected) {
-                this.setChild(false);
-            }
+        else {
+            this.onDrag(draggedObj, deltaX, deltaY);
+        }
+    };
+    AnnLine.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
+        if (draggedObj === this.annStartPoint) {
+            this.onStartPointDragged(deltaX, deltaY);
+        }
+        else if (draggedObj === this.annEndPoint) {
+            this.onEndPointDragged(deltaX, deltaY);
+        }
+        else if (draggedObj === this.annLine) {
+            this.onLineDragged(deltaX, deltaY);
         }
     };
     AnnLine.prototype.onChildSelected = function (selectedObj) {
         this.selected = true;
         this.focusedObj = selectedObj;
-        this.setChild(true);
+        if (this.parentObj) {
+            // If have parent, let parent manage the select status
+            this.parentObj.onChildSelected(selectedObj);
+        }
+        else {
+            this.onSelect(true, true);
+        }
     };
     AnnLine.prototype.onSelect = function (selected, focused) {
         console.log("onSelect AnnLine");
-        if (this.isSelected() !== selected) {
-            this.selected = selected;
-            this.setChild(selected);
+        this.selected = selected;
+        this.annStartPoint.onSelect(selected, this.focusedObj === this.annStartPoint);
+        this.annEndPoint.onSelect(selected, this.focusedObj === this.annEndPoint);
+        this.annLine.onSelect(selected, this.focusedObj === this.annEndPoint);
+        if (!this.parentObj && this.selected) {
+            this.imageViewer.selectAnnotation(this);
         }
     };
     AnnLine.prototype.onScale = function () {
@@ -608,23 +570,17 @@ var AnnLine = /** @class */ (function (_super) {
     };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    AnnLine.prototype.setChild = function (selected) {
-        this.annStartPoint.onSelect(selected, this.focusedObj === this.annStartPoint);
-        this.annEndPoint.onSelect(selected, this.focusedObj === this.annEndPoint);
-        this.annLine.onSelect(selected, this.focusedObj === this.annEndPoint);
-        if (this.selected) {
-            this.imageViewer.selectAnnotation(this);
-        }
-    };
-    AnnLine.prototype.onStartPointDragged = function (draggedObj, deltaX, deltaY) {
+    AnnLine.prototype.onStartPointDragged = function (deltaX, deltaY) {
+        this.annStartPoint.onTranslate(deltaX, deltaY);
         var point = this.annStartPoint.getPosition();
         this.annLine.moveStartTo(point);
     };
-    AnnLine.prototype.onEndPointDragged = function (draggedObj, deltaX, deltaY) {
+    AnnLine.prototype.onEndPointDragged = function (deltaX, deltaY) {
+        this.annEndPoint.onTranslate(deltaX, deltaY);
         var point = this.annEndPoint.getPosition();
         this.annLine.moveEndTo(point);
     };
-    AnnLine.prototype.onLineDragged = function (draggedObj, deltaX, deltaY) {
+    AnnLine.prototype.onLineDragged = function (deltaX, deltaY) {
         this.annStartPoint.onTranslate(deltaX, deltaY);
         this.annLine.onTranslate(deltaX, deltaY);
         this.annEndPoint.onTranslate(deltaX, deltaY);
@@ -684,11 +640,12 @@ var Colors = /** @class */ (function () {
 
 ;
 var AnnObject = /** @class */ (function () {
-    function AnnObject(imageViewer) {
+    function AnnObject(parentObj, imageViewer) {
         this.selectedColor = "#F90";
         this.defaultColor = "#FFF";
         this.minLineWidth = 0.3;
         this.minPointRadius = 2;
+        this.parentObj = parentObj;
         this.imageViewer = imageViewer;
         this.image = imageViewer.getImage();
         this.layerId = imageViewer.getAnnotationLayerId();
@@ -710,14 +667,14 @@ var AnnObject = /** @class */ (function () {
         var properties = Object.getOwnPropertyNames(this);
         properties.forEach(function (prop) {
             var obj = _this[prop];
-            if (obj instanceof AnnObject && obj !== _this.parent) {
+            if (obj instanceof AnnObject && obj !== _this.parentObj) {
                 var annObj = obj;
                 annObj.onDeleteChildren();
                 _this[prop] = undefined;
             }
             else if (obj instanceof Array) {
                 obj.forEach(function (item) {
-                    if (item instanceof AnnObject && item !== _this.parent) {
+                    if (item instanceof AnnObject && item !== _this.parentObj) {
                         var annObj = item;
                         annObj.onDeleteChildren();
                     }
@@ -750,7 +707,7 @@ var AnnObject = /** @class */ (function () {
             posScreen.x += step;
         }
         var posImageNew = AnnObject.screenToImage(posScreen, this.image.transformMatrix);
-        this.focusedObj.onDrag(this.focusedObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
+        this.focusedObj.onChildDragged(this.focusedObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
     };
     AnnObject.screenToImage = function (point, transform) {
         var x = point.x;
@@ -814,7 +771,7 @@ var AnnObject = /** @class */ (function () {
         }
         return circleRadius;
     };
-    AnnObject.prototype.setChildDraggable = function (parent, child, draggable, onDrag) {
+    AnnObject.prototype.setChildDraggable = function (parentObj, child, draggable) {
         var _this = this;
         child.draggable({
             disabled: !draggable,
@@ -824,21 +781,24 @@ var AnnObject = /** @class */ (function () {
             stop: function (arg) {
                 child._lastPos = {};
                 if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__["ViewContextEnum"].SelectAnn) {
-                    parent.dragging = false;
-                    parent.canvas.style.cursor = parent.oldCursor;
+                    parentObj.dragging = false;
+                    parentObj.canvas.style.cursor = parentObj.oldCursor;
                 }
             },
             drag: function (arg) {
                 if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_0__["ViewContextEnum"].SelectAnn) {
-                    var point = AnnObject.screenToImage({ x: arg.x, y: arg.y }, parent.image.transformMatrix);
-                    parent.dragging = true;
+                    var point = AnnObject.screenToImage({ x: arg.x, y: arg.y }, parentObj.image.transformMatrix);
+                    parentObj.dragging = true;
                     if (typeof (child._lastPos.x) != "undefined") {
                         var deltaX = point.x - child._lastPos.x;
                         var deltaY = point.y - child._lastPos.y;
                         //child._x += deltaX;
                         //child._y += deltaY;
-                        if (onDrag) {
-                            onDrag.call(parent, child, deltaX, deltaY);
+                        //if (onDrag) {
+                        //    onDrag.call(parentObj, child, deltaX, deltaY);
+                        //}
+                        if (parentObj.onChildDragged) {
+                            parentObj.onChildDragged(child, deltaX, deltaY);
                         }
                     }
                     child._lastPos = point;
@@ -847,23 +807,23 @@ var AnnObject = /** @class */ (function () {
             }
         });
     };
-    AnnObject.prototype.setChildMouseEvent = function (parent, child) {
+    AnnObject.prototype.setChildMouseEvent = function (parentObj, child) {
         child._onmouseover = function (arg) {
-            if (parent.needResponseToChildMouseEvent()) {
-                parent.onMouseEvent(MouseEventType.MouseOver, arg);
-                parent.oldCursor = parent.canvas.style.cursor;
-                parent.canvas.style.cursor = child.mouseStyle;
+            if (parentObj.needResponseToChildMouseEvent()) {
+                parentObj.onMouseEvent(MouseEventType.MouseOver, arg);
+                parentObj.oldCursor = parentObj.canvas.style.cursor;
+                parentObj.canvas.style.cursor = child.mouseStyle;
             }
         };
         child._onmouseout = function (arg) {
-            if (parent.needResponseToChildMouseEvent()) {
-                parent.onMouseEvent(MouseEventType.MouseOut, arg);
-                parent.canvas.style.cursor = parent.oldCursor;
+            if (parentObj.needResponseToChildMouseEvent()) {
+                parentObj.onMouseEvent(MouseEventType.MouseOut, arg);
+                parentObj.canvas.style.cursor = parentObj.oldCursor;
             }
         };
         child._onmousedown = function (arg) {
-            if (parent.needResponseToChildMouseEvent()) {
-                parent.onMouseEvent(MouseEventType.MouseDown, arg);
+            if (parentObj.needResponseToChildMouseEvent()) {
+                parentObj.onMouseEvent(MouseEventType.MouseDown, arg);
             }
             arg.event.cancelBubble = true;
             arg.event.stopPropagation();
@@ -881,16 +841,22 @@ var AnnObject = /** @class */ (function () {
     AnnObject.prototype.getPosition = function () {
         return { x: 0, y: 0 };
     };
+    AnnObject.prototype.onChildSelected = function (selectedObj) {
+    };
+    AnnObject.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
+    };
+    AnnObject.prototype.onDrawEnded = function () {
+    };
     return AnnObject;
 }());
 
 /*
 export abstract class AnnObject {
 
-    protected viewer: any; //the parent compoent which hold this object
+    protected viewer: any; //the parentObj compoent which hold this object
     protected created: boolean;
     protected isInEdit: boolean; //is current object selected and in edit status
-    protected parent: AnnObject;
+    protected parentObj: AnnObject;
 
     protected defaultCircleRadius = 5;
     protected minCircleRadius = 2;
@@ -953,7 +919,7 @@ export abstract class AnnObject {
         jcObj.mousedown(function(arg) {
             //console.log('jcObj mousedown');
             if (curContext.action == ViewContextEnum.Select) {
-                const curObj = annObj.parent || annObj;
+                const curObj = annObj.parentObj || annObj;
                 if (dv.curSelectObj !== curObj) {
                     dv.selectObject(curObj);
                 }
@@ -1044,7 +1010,7 @@ export abstract class AnnObject {
         const propertys = Object.getOwnPropertyNames(this);
         propertys.forEach(function(prop) {
             const obj = thisObj[prop];
-            if ((obj instanceof AnnObject && obj != thisObj.parent) || thisObj.isChildJCObject(obj)) {
+            if ((obj instanceof AnnObject && obj != thisObj.parentObj) || thisObj.isChildJCObject(obj)) {
                 obj.del();
                 thisObj[prop] = undefined;
             }
@@ -1056,7 +1022,7 @@ export abstract class AnnObject {
         const propertys = Object.getOwnPropertyNames(this);
         propertys.forEach(function(prop) {
             const obj = thisObj[prop];
-            if (obj instanceof AnnObject && obj != thisObj.parent) {
+            if (obj instanceof AnnObject && obj != thisObj.parentObj) {
                 obj.select(select);
             } else if (thisObj.isChildJCObject(obj)) {
                 obj.color(select ? thisObj.selectedColor : thisObj.defaultColor);
@@ -1066,196 +1032,6 @@ export abstract class AnnObject {
     }
 }
 */ 
-
-
-/***/ }),
-
-/***/ "./src/app/annotation/ann-rectangle.ts":
-/*!*********************************************!*\
-  !*** ./src/app/annotation/ann-rectangle.ts ***!
-  \*********************************************/
-/*! exports provided: AnnRectangle */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnRectangle", function() { return AnnRectangle; });
-/* harmony import */ var _ann_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ann-object */ "./src/app/annotation/ann-object.ts");
-/* harmony import */ var _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./base-object/ann-base-point */ "./src/app/annotation/base-object/ann-base-point.ts");
-/* harmony import */ var _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./base-object/ann-base-line */ "./src/app/annotation/base-object/ann-base-line.ts");
-var __extends = (undefined && undefined.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-
-
-
-var AnnRectangle = /** @class */ (function (_super) {
-    __extends(AnnRectangle, _super);
-    function AnnRectangle(imageViewer) {
-        var _this = _super.call(this, imageViewer) || this;
-        /*
-             P0                   L0                    P1
-                --------------------------------------
-                |                                    |
-             L1 |                                    |  L2
-                |                                    |
-                --------------------------------------
-             P2                   L3                    P3
-    
-        */
-        _this.annLineList = new Array();
-        _this.annPointList = new Array();
-        _this.width = 0;
-        _this.height = 0;
-        return _this;
-    }
-    AnnRectangle.prototype.onMouseEvent = function (mouseEventType, point) {
-        var _this = this;
-        point = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].screenToImage(point, this.image.transformMatrix);
-        if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
-            if (this.created) {
-                this.onSelect(true, false);
-                return;
-            }
-            if (this.annPointList.length === 0) {
-                this.topLeftPoint = point;
-                var annTopLeftPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, point, this.imageViewer);
-                this.annPointList.push(annTopLeftPoint);
-            }
-            else {
-                this.annPointList.forEach(function (annObj) { return annObj.onDrawEnded(_this.onPointDragged, _this.onChildSelected); });
-                this.annLineList.forEach(function (annObj) { return annObj.onDrawEnded(_this.onLineDragged, _this.onChildSelected); });
-                this.focusedObj = this.annPointList[3];
-                this.created = true;
-                this.imageViewer.onAnnotationCreated(this);
-            }
-        }
-        else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
-            if (this.annPointList.length !== 0) {
-                var topRightPoint = { x: point.x, y: this.topLeftPoint.y };
-                var bottomLeftPoint = { x: this.topLeftPoint.x, y: point.y };
-                if (this.annLineList.length === 4) {
-                    this.annPointList[1].moveTo(topRightPoint);
-                    this.annPointList[2].moveTo(bottomLeftPoint);
-                    this.annPointList[3].moveTo(point);
-                    this.redraw(this.topLeftPoint, topRightPoint, bottomLeftPoint, point);
-                }
-                else {
-                    var annTopRightPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, topRightPoint, this.imageViewer);
-                    this.annPointList.push(annTopRightPoint);
-                    var annBottomLeftPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, bottomLeftPoint, this.imageViewer);
-                    this.annPointList.push(annBottomLeftPoint);
-                    var annBottomRightPoint = new _base_object_ann_base_point__WEBPACK_IMPORTED_MODULE_1__["AnnBasePoint"](this, point, this.imageViewer);
-                    this.annPointList.push(annBottomRightPoint);
-                    var annTopLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, this.topLeftPoint, topRightPoint, this.imageViewer);
-                    this.annLineList.push(annTopLine);
-                    var annLeftLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, this.topLeftPoint, bottomLeftPoint, this.imageViewer);
-                    this.annLineList.push(annLeftLine);
-                    var annRightLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, topRightPoint, point, this.imageViewer);
-                    this.annLineList.push(annRightLine);
-                    var annBottomLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, bottomLeftPoint, point, this.imageViewer);
-                    this.annLineList.push(annBottomLine);
-                    // Make sure the start point is on the top the line So that we can easily select it for moving
-                    if (this.annPointList[0].jcCenterPoint) {
-                        this.annPointList[0].jcCenterPoint.up();
-                    }
-                }
-            }
-        }
-    };
-    AnnRectangle.prototype.onChildSelected = function (selectedObj) {
-        this.selected = true;
-        this.focusedObj = selectedObj;
-        this.setChild(true);
-    };
-    AnnRectangle.prototype.onSelect = function (selected, focused) {
-        if (this.isSelected() !== selected) {
-            this.selected = selected;
-            this.setChild(selected);
-        }
-    };
-    AnnRectangle.prototype.onScale = function () {
-        this.annLineList.forEach(function (annObj) { return annObj.onScale(); });
-        this.annPointList.forEach(function (annObj) { return annObj.onScale(); });
-    };
-    AnnRectangle.prototype.onFlip = function (vertical) {
-        this.annLineList.forEach(function (annObj) { return annObj.onFlip(vertical); });
-        this.annPointList.forEach(function (annObj) { return annObj.onFlip(vertical); });
-    };
-    AnnRectangle.prototype.onSwitchFocus = function () {
-        var _this = this;
-        if (!this.focusedObj || this.annLineList.some(function (annObj) { return annObj === _this.focusedObj; })) {
-            this.onChildSelected(this.annPointList[0]);
-        }
-        else {
-            var index = this.annPointList.findIndex(function (annObj) { return annObj === _this.focusedObj; });
-            this.onChildSelected(index === 3 ? this.annLineList[0] : this.annPointList[index + 1]);
-        }
-    };
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Private functions
-    AnnRectangle.prototype.setChild = function (selected) {
-        var _this = this;
-        this.annLineList.forEach(function (annObj) { return annObj.onSelect(selected, _this.focusedObj === annObj); });
-        this.annPointList.forEach(function (annObj) { return annObj.onSelect(selected, _this.focusedObj === annObj); });
-        if (this.selected) {
-            this.imageViewer.selectAnnotation(this);
-        }
-    };
-    AnnRectangle.prototype.onLineDragged = function (draggedObj, deltaX, deltaY) {
-        this.annLineList.forEach(function (annObj) { return annObj.onTranslate(deltaX, deltaY); });
-        this.annPointList.forEach(function (annObj) { return annObj.onTranslate(deltaX, deltaY); });
-    };
-    AnnRectangle.prototype.onPointDragged = function (draggedObj, deltaX, deltaY) {
-        var topLeftPoint = this.annPointList[0].getPosition();
-        var topRightPoint = this.annPointList[1].getPosition();
-        var bottomLeftPoint = this.annPointList[2].getPosition();
-        var bottomRightPoint = this.annPointList[3].getPosition();
-        if (draggedObj === this.annPointList[0]) {
-            topRightPoint.y = topLeftPoint.y;
-            bottomLeftPoint.x = topLeftPoint.x;
-        }
-        else if (draggedObj === this.annPointList[1]) {
-            topLeftPoint.y = topRightPoint.y;
-            bottomRightPoint.x = topRightPoint.x;
-        }
-        else if (draggedObj === this.annPointList[2]) {
-            bottomRightPoint.y = bottomLeftPoint.y;
-            topLeftPoint.x = bottomLeftPoint.x;
-        }
-        else if (draggedObj === this.annPointList[3]) {
-            bottomLeftPoint.y = bottomRightPoint.y;
-            topRightPoint.x = bottomRightPoint.x;
-        }
-        this.redraw(topLeftPoint, topRightPoint, bottomLeftPoint, bottomRightPoint);
-    };
-    AnnRectangle.prototype.redraw = function (topLeftPoint, topRightPoint, bottomLeftPoint, bottomRightPoint) {
-        this.annPointList[0].moveTo(topLeftPoint);
-        this.annPointList[1].moveTo(topRightPoint);
-        this.annPointList[2].moveTo(bottomLeftPoint);
-        this.annPointList[3].moveTo(bottomRightPoint);
-        this.annLineList[0].moveStartTo(topLeftPoint);
-        this.annLineList[0].moveEndTo(topRightPoint);
-        this.annLineList[1].moveStartTo(topLeftPoint);
-        this.annLineList[1].moveEndTo(bottomLeftPoint);
-        this.annLineList[2].moveStartTo(topRightPoint);
-        this.annLineList[2].moveEndTo(bottomRightPoint);
-        this.annLineList[3].moveStartTo(bottomLeftPoint);
-        this.annLineList[3].moveEndTo(bottomRightPoint);
-    };
-    return AnnRectangle;
-}(_ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"]));
-
 
 
 /***/ }),
@@ -1325,40 +1101,54 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var AnnBaseLine = /** @class */ (function (_super) {
     __extends(AnnBaseLine, _super);
-    function AnnBaseLine(parent, posStart, posEnd, imageViewer) {
-        var _this = _super.call(this, imageViewer) || this;
-        _this.parent = parent;
+    function AnnBaseLine(parentObj, posStart, posEnd, imageViewer) {
+        var _this = _super.call(this, parentObj, imageViewer) || this;
         _this.jcLine = jCanvaScript.line([[posStart.x, posStart.y], [posEnd.x, posEnd.y]], _this.selectedColor).layer(_this.layerId);
         _this.jcLine._lineWidth = _this.lineWidth;
         _this.jcLine.mouseStyle = "move";
         return _this;
     }
-    AnnBaseLine.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
-        if (this.onDragParent) {
-            this.onDragParent.call(this.parent, this, deltaX, deltaY);
+    AnnBaseLine.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
+        this.focusedObj = draggedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragged(this, deltaX, deltaY);
+        }
+        else {
+            this.onDrag(draggedObj, deltaX, deltaY);
         }
     };
-    AnnBaseLine.prototype.onDrawEnded = function (onDragParent, onSelectParent) {
-        this.onDragParent = onDragParent;
-        this.onSelectParent = onSelectParent;
-        this.setChildDraggable(this, this.jcLine, true, this.onDrag);
-        this.setChildMouseEvent(this, this.jcLine);
+    AnnBaseLine.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
+        this.onTranslate(deltaX, deltaY);
+    };
+    AnnBaseLine.prototype.onChildSelected = function (selectedObj) {
+        this.focusedObj = selectedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the select status
+            this.parentObj.onChildSelected(this);
+        }
+        else {
+            this.onSelect(true, true);
+        }
     };
     AnnBaseLine.prototype.onSelect = function (selected, focused) {
-        console.log("onSelect Line" + selected + focused);
+        console.log("onSelect Line " + selected + " " + focused);
+        this.selected = selected;
         var color = selected ? this.selectedColor : this.defaultColor;
         this.jcLine.color(color);
+    };
+    AnnBaseLine.prototype.onDrawEnded = function () {
+        this.setChildDraggable(this, this.jcLine, true);
+        this.setChildMouseEvent(this, this.jcLine);
     };
     AnnBaseLine.prototype.onMouseEvent = function (mouseEventType, point) {
         if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
             console.log("onMouseEvent Line");
-            if (this.onSelectParent) {
-                this.onSelectParent.call(this.parent, this);
-            }
+            this.onChildSelected(this);
         }
     };
     AnnBaseLine.prototype.onScale = function () {
-        this.jcLine._lineWidth = this.parent.getLineWidth();
+        this.jcLine._lineWidth = this.parentObj.getLineWidth();
     };
     AnnBaseLine.prototype.onFlip = function (vertical) {
         if (vertical) {
@@ -1423,9 +1213,8 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var AnnBasePoint = /** @class */ (function (_super) {
     __extends(AnnBasePoint, _super);
-    function AnnBasePoint(parent, position, imageViewer) {
-        var _this = _super.call(this, imageViewer) || this;
-        _this.parent = parent;
+    function AnnBasePoint(parentObj, position, imageViewer) {
+        var _this = _super.call(this, parentObj, imageViewer) || this;
         _this.jcOuterCircle = jCanvaScript.circle(position.x, position.y, _this.circleRadius * 2, _this.selectedColor, false).layer(_this.layerId);
         _this.jcOuterCircle._lineWidth = _this.lineWidth;
         _this.jcOuterCircle.mouseStyle = "crosshair";
@@ -1434,41 +1223,50 @@ var AnnBasePoint = /** @class */ (function (_super) {
         _this.jcCenterPoint.mouseStyle = "crosshair";
         return _this;
     }
-    AnnBasePoint.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
-        this.jcCenterPoint._x += deltaX;
-        this.jcCenterPoint._y += deltaY;
-        this.jcOuterCircle._x = this.jcCenterPoint._x;
-        this.jcOuterCircle._y = this.jcCenterPoint._y;
-        if (this.onDragParent) {
-            this.onDragParent.call(this.parent, this, deltaX, deltaY);
+    AnnBasePoint.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
+        this.focusedObj = draggedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragged(this, deltaX, deltaY);
+        }
+        else {
+            this.onDrag(draggedObj, deltaX, deltaY);
         }
     };
-    AnnBasePoint.prototype.onDrawEnded = function (onDragParent, onSelectParent) {
-        this.onDragParent = onDragParent;
-        this.onSelectParent = onSelectParent;
-        this.setChildDraggable(this, this.jcCenterPoint, true, this.onDrag);
-        this.setChildMouseEvent(this, this.jcCenterPoint);
+    AnnBasePoint.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
+        this.onTranslate(deltaX, deltaY);
+    };
+    AnnBasePoint.prototype.onChildSelected = function (selectedObj) {
+        this.focusedObj = selectedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the select status
+            this.parentObj.onChildSelected(this);
+        }
+        else {
+            this.onSelect(true, true);
+        }
     };
     AnnBasePoint.prototype.onSelect = function (selected, focused) {
-        console.log("onSelect Point" + selected + focused);
+        console.log("onSelect Point " + selected + " " + focused);
+        this.selected = selected;
         var color = selected ? this.selectedColor : this.defaultColor;
-        if (this.jcCenterPoint) {
-            this.jcCenterPoint.visible(selected);
-            this.jcCenterPoint.color(color);
-        }
+        this.jcCenterPoint.visible(selected);
+        this.jcCenterPoint.color(color);
         this.jcOuterCircle.visible(selected && focused);
+    };
+    AnnBasePoint.prototype.onDrawEnded = function () {
+        this.setChildDraggable(this, this.jcCenterPoint, true);
+        this.setChildMouseEvent(this, this.jcCenterPoint);
     };
     AnnBasePoint.prototype.onMouseEvent = function (mouseEventType, point) {
         if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
             console.log("onMouseEvent Point");
-            if (this.onSelectParent) {
-                this.onSelectParent.call(this.parent, this);
-            }
+            this.onChildSelected(this);
         }
     };
     AnnBasePoint.prototype.onScale = function () {
-        this.setRadius(this.parent.getPointRadius());
-        this.jcOuterCircle._lineWidth = this.parent.getLineWidth();
+        this.setRadius(this.parentObj.getPointRadius());
+        this.jcOuterCircle._lineWidth = this.parentObj.getLineWidth();
         this.up();
     };
     AnnBasePoint.prototype.onFlip = function (vertical) {
@@ -2799,8 +2597,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../../components/dialog/manual-wl-dialog/manual-wl-dialog.component */ "./src/app/components/dialog/manual-wl-dialog/manual-wl-dialog.component.ts");
 /* harmony import */ var _annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../../annotation/ann-object */ "./src/app/annotation/ann-object.ts");
 /* harmony import */ var _annotation_ann_line__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../../annotation/ann-line */ "./src/app/annotation/ann-line.ts");
-/* harmony import */ var _annotation_ann_circle__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../../annotation/ann-circle */ "./src/app/annotation/ann-circle.ts");
-/* harmony import */ var _annotation_ann_rectangle__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../annotation/ann-rectangle */ "./src/app/annotation/ann-rectangle.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2824,8 +2620,8 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-
-
+//import { AnnCircle } from "../../../../annotation/ann-circle";
+//import { AnnRectangle } from "../../../../annotation/ann-rectangle";
 var ImageViewerComponent = /** @class */ (function () {
     function ImageViewerComponent(imageSelectorService, dicomImageService, configurationService, viewContext, worklistService, dialogService, logService, ngZone) {
         var _this = this;
@@ -2996,8 +2792,6 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
     ImageViewerComponent.prototype.onKeyDown = function (event) {
-        if (!this.curSelectObj)
-            return;
         if (event.code === "Delete") {
             this.deleteAnnotation(this.curSelectObj);
             this.curSelectObj = undefined;
@@ -3011,7 +2805,9 @@ var ImageViewerComponent = /** @class */ (function () {
             }
         }
         else if (event.code === "ArrowUp" || event.code === "ArrowDown" || event.code === "ArrowLeft" || event.code === "ArrowRight") {
-            this.curSelectObj.onKeyDown(event);
+            if (this.curSelectObj) {
+                this.curSelectObj.onKeyDown(event);
+            }
         }
     };
     ImageViewerComponent.prototype.getId = function () {
@@ -3308,12 +3104,11 @@ var ImageViewerComponent = /** @class */ (function () {
             if (curContext.data === _annotation_ann_line__WEBPACK_IMPORTED_MODULE_13__["AnnLine"]) {
                 canvas.style.cursor = cursorUrl.format("ann_line");
             }
-            else if (curContext.data === _annotation_ann_rectangle__WEBPACK_IMPORTED_MODULE_15__["AnnRectangle"]) {
-                canvas.style.cursor = cursorUrl.format("rect");
-            }
-            else if (curContext.data === _annotation_ann_circle__WEBPACK_IMPORTED_MODULE_14__["AnnCircle"]) {
-                canvas.style.cursor = cursorUrl.format("ellipse");
-            }
+            //else if (curContext.data === AnnRectangle) {
+            //    canvas.style.cursor = cursorUrl.format("rect");
+            //} else if (curContext.data === AnnCircle) {
+            //    canvas.style.cursor = cursorUrl.format("ellipse");
+            //}
         }
     };
     ImageViewerComponent.prototype.rotate = function (angle) {
@@ -4003,7 +3798,7 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.startCreateAnnAtPoint = function (point) {
         this.updateImageTransform();
         var annType = this.viewContext.curContext.data;
-        this.curSelectObj = new annType(this);
+        this.curSelectObj = new annType(undefined, this);
         this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseDown, point);
     };
     __decorate([
@@ -4515,8 +4310,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
 /* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
 /* harmony import */ var _annotation_ann_line__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../annotation/ann-line */ "./src/app/annotation/ann-line.ts");
-/* harmony import */ var _annotation_ann_circle__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../annotation/ann-circle */ "./src/app/annotation/ann-circle.ts");
-/* harmony import */ var _annotation_ann_rectangle__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../annotation/ann-rectangle */ "./src/app/annotation/ann-rectangle.ts");
+/* harmony import */ var _annotation_ann_arrow__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../annotation/ann-arrow */ "./src/app/annotation/ann-arrow.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -4531,7 +4325,8 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-
+//import { AnnCircle } from "../../../annotation/ann-circle";
+//import { AnnRectangle } from "../../../annotation/ann-rectangle";
 
 var ViewerToolbarComponent = /** @class */ (function () {
     function ViewerToolbarComponent(imageSelectorService, viewContext, configurationService) {
@@ -4623,8 +4418,9 @@ var ViewerToolbarComponent = /** @class */ (function () {
         };
         this.simpleAnnotation1ButtonMenu = [
             { name: "ann_line", tip: "Line", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _annotation_ann_line__WEBPACK_IMPORTED_MODULE_4__["AnnLine"]) } },
-            { name: "ann_ellipse", tip: "Eclipse", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _annotation_ann_circle__WEBPACK_IMPORTED_MODULE_5__["AnnCircle"]) } },
-            { name: "ann_rectangle", tip: "Rectangle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _annotation_ann_rectangle__WEBPACK_IMPORTED_MODULE_6__["AnnRectangle"]) } }
+            //{ name: "ann_ellipse", tip: "Eclipse", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnCircle) } },
+            //{ name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnRectangle) } },
+            { name: "ann_arrow", tip: "Arrow", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _annotation_ann_arrow__WEBPACK_IMPORTED_MODULE_5__["AnnArrow"]) } }
         ];
         this.buttonDivideSrc = this.configurationService.getBaseUrl() + "assets/img/DicomViewer/fenge2.png";
     }
@@ -7686,7 +7482,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! d:\Work\Git\ISGitServer\ImageViewPacs\Csh.ImageSuite.WebClient\src\main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! C:\Users\10021986_local\Documents\GitHub\ImageSuitePacs\Csh.ImageSuite.WebClient\src\main.ts */"./src/main.ts");
 
 
 /***/ })

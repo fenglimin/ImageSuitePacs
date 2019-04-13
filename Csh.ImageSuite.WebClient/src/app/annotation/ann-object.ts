@@ -54,14 +54,12 @@ export abstract class AnnObject {
 
     protected imageViewer: IImageViewer;
 
-    protected parent: AnnObject;
+    protected parentObj: AnnObject;
     protected focusedObj: AnnObject;
 
-    protected onDragParent: (draggedObj, deltaX, deltaY) => void;
-    protected onSelectParent: (selectedObj) => void;
+    constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
 
-    constructor(imageViewer: IImageViewer) {
-
+        this.parentObj = parentObj;
         this.imageViewer = imageViewer;
         this.image = imageViewer.getImage();
         this.layerId = imageViewer.getAnnotationLayerId();
@@ -87,14 +85,14 @@ export abstract class AnnObject {
         const properties = Object.getOwnPropertyNames(this);
         properties.forEach(prop => {
             let obj = this[prop];
-            if (obj instanceof AnnObject && obj !== this.parent) {
+            if (obj instanceof AnnObject && obj !== this.parentObj) {
                 const annObj = obj as AnnObject;
                 annObj.onDeleteChildren();
                 this[prop] = undefined;
             } else if (obj instanceof Array) {
                 obj.forEach(item => {
 
-                    if (item instanceof AnnObject && item !== this.parent) {
+                    if (item instanceof AnnObject && item !== this.parentObj) {
                         const annObj = item as AnnObject;
                         annObj.onDeleteChildren();
                     }
@@ -130,7 +128,7 @@ export abstract class AnnObject {
 
         const posImageNew = AnnObject.screenToImage(posScreen, this.image.transformMatrix);
 
-        this.focusedObj.onDrag(this.focusedObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
+        this.focusedObj.onChildDragged(this.focusedObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
     }
 
     static screenToImage(point: any, transform: any) {
@@ -214,7 +212,7 @@ export abstract class AnnObject {
         return circleRadius;
     }
 
-    protected setChildDraggable(parent: any, child: any, draggable: boolean, onDrag: (draggedObj, deltaX, deltaY) => void) {
+    protected setChildDraggable(parentObj: any, child: any, draggable: boolean) {
 
         child.draggable({
             disabled: !draggable,
@@ -225,16 +223,16 @@ export abstract class AnnObject {
             stop: arg => {
                 child._lastPos = {};
                 if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn) {
-                    parent.dragging = false;
-                    parent.canvas.style.cursor = parent.oldCursor;
+                    parentObj.dragging = false;
+                    parentObj.canvas.style.cursor = parentObj.oldCursor;
                 }
             },
             drag: arg => {
 
                 if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn) {
-                    const point = AnnObject.screenToImage({ x: arg.x, y: arg.y }, parent.image.transformMatrix);
+                    const point = AnnObject.screenToImage({ x: arg.x, y: arg.y }, parentObj.image.transformMatrix);
 
-                    parent.dragging = true;
+                    parentObj.dragging = true;
 
                     if (typeof (child._lastPos.x) != "undefined") {
                         const deltaX = point.x - child._lastPos.x;
@@ -243,8 +241,12 @@ export abstract class AnnObject {
                         //child._x += deltaX;
                         //child._y += deltaY;
 
-                        if (onDrag) {
-                            onDrag.call(parent, child, deltaX, deltaY);
+                        //if (onDrag) {
+                        //    onDrag.call(parentObj, child, deltaX, deltaY);
+                        //}
+
+                        if (parentObj.onChildDragged) {
+                            parentObj.onChildDragged(child, deltaX, deltaY);
                         }
                     }
 
@@ -255,26 +257,26 @@ export abstract class AnnObject {
         });
     }
 
-    protected setChildMouseEvent(parent: any, child: any) {
+    protected setChildMouseEvent(parentObj: any, child: any) {
 
         child._onmouseover = arg => {
-            if (parent.needResponseToChildMouseEvent()) {
-                parent.onMouseEvent(MouseEventType.MouseOver, arg);
-                parent.oldCursor = parent.canvas.style.cursor;
-                parent.canvas.style.cursor = child.mouseStyle;
+            if (parentObj.needResponseToChildMouseEvent()) {
+                parentObj.onMouseEvent(MouseEventType.MouseOver, arg);
+                parentObj.oldCursor = parentObj.canvas.style.cursor;
+                parentObj.canvas.style.cursor = child.mouseStyle;
             }
         };
 
         child._onmouseout = arg => {
-            if (parent.needResponseToChildMouseEvent()) {
-                parent.onMouseEvent(MouseEventType.MouseOut, arg);
-                parent.canvas.style.cursor = parent.oldCursor;
+            if (parentObj.needResponseToChildMouseEvent()) {
+                parentObj.onMouseEvent(MouseEventType.MouseOut, arg);
+                parentObj.canvas.style.cursor = parentObj.oldCursor;
             }
         };
 
         child._onmousedown = arg => {
-            if (parent.needResponseToChildMouseEvent()) {
-                parent.onMouseEvent(MouseEventType.MouseDown, arg);
+            if (parentObj.needResponseToChildMouseEvent()) {
+                parentObj.onMouseEvent(MouseEventType.MouseDown, arg);
             }
 
             arg.event.cancelBubble = true;
@@ -298,15 +300,24 @@ export abstract class AnnObject {
     protected getPosition(): Point {
         return { x: 0, y: 0 }
     }
+
+    onChildSelected(selectedObj: AnnObject) {
+    }
+
+    onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
+    }
+
+    onDrawEnded() {
+    }
 }
 
 /*
 export abstract class AnnObject {
 
-    protected viewer: any; //the parent compoent which hold this object
+    protected viewer: any; //the parentObj compoent which hold this object
     protected created: boolean;
     protected isInEdit: boolean; //is current object selected and in edit status
-    protected parent: AnnObject;
+    protected parentObj: AnnObject;
 
     protected defaultCircleRadius = 5;
     protected minCircleRadius = 2;
@@ -369,7 +380,7 @@ export abstract class AnnObject {
         jcObj.mousedown(function(arg) {
             //console.log('jcObj mousedown');
             if (curContext.action == ViewContextEnum.Select) {
-                const curObj = annObj.parent || annObj;
+                const curObj = annObj.parentObj || annObj;
                 if (dv.curSelectObj !== curObj) {
                     dv.selectObject(curObj);
                 }
@@ -460,7 +471,7 @@ export abstract class AnnObject {
         const propertys = Object.getOwnPropertyNames(this);
         propertys.forEach(function(prop) {
             const obj = thisObj[prop];
-            if ((obj instanceof AnnObject && obj != thisObj.parent) || thisObj.isChildJCObject(obj)) {
+            if ((obj instanceof AnnObject && obj != thisObj.parentObj) || thisObj.isChildJCObject(obj)) {
                 obj.del();
                 thisObj[prop] = undefined;
             }
@@ -472,7 +483,7 @@ export abstract class AnnObject {
         const propertys = Object.getOwnPropertyNames(this);
         propertys.forEach(function(prop) {
             const obj = thisObj[prop];
-            if (obj instanceof AnnObject && obj != thisObj.parent) {
+            if (obj instanceof AnnObject && obj != thisObj.parentObj) {
                 obj.select(select);
             } else if (thisObj.isChildJCObject(obj)) {
                 obj.color(select ? thisObj.selectedColor : thisObj.defaultColor);

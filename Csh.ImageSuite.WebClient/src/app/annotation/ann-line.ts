@@ -11,8 +11,8 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
     private annStartPoint: AnnBasePoint;
     private annEndPoint: AnnBasePoint;
 
-    constructor(imageViewer: IImageViewer) {
-        super(imageViewer);
+    constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
+        super(parentObj, imageViewer);
     }    
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,13 +32,18 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
                 this.annStartPoint = new AnnBasePoint(this, point, this.imageViewer);
             } else {
 
-                this.annStartPoint.onDrawEnded(this.onStartPointDragged, this.onChildSelected);
-                this.annEndPoint.onDrawEnded(this.onEndPointDragged, this.onChildSelected);
-                this.annLine.onDrawEnded(this.onLineDragged, this.onChildSelected);
+                this.annStartPoint.onDrawEnded();
+                this.annEndPoint.onDrawEnded();
+                this.annLine.onDrawEnded();
 
                 this.focusedObj = this.annEndPoint;
                 this.created = true;
-                this.imageViewer.onAnnotationCreated(this);
+
+                if (!this.parentObj) {
+                    // Parent not set, this mean it is not a child of a parentObj annotion. 
+                    this.imageViewer.onAnnotationCreated(this);
+                }
+                
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annStartPoint) {
@@ -55,29 +60,54 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
                     }
                 }
             }
-        } else if (mouseEventType === MouseEventType.MouseOver) {
-            if (!this.selected) {
-                this.setChild(true);
-            }
-        } else if (mouseEventType === MouseEventType.MouseOut) {
-            if (!this.selected) {
-                this.setChild(false);
-            }
-        } 
+        }
+    }
+
+    onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
+
+        this.focusedObj = draggedObj;
+
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragged(this, deltaX, deltaY);
+        } else {
+            this.onDrag(draggedObj, deltaX, deltaY);
+        }
+    }
+
+    onDrag(draggedObj: any, deltaX: number, deltaY: number) {
+        if (draggedObj === this.annStartPoint) {
+            this.onStartPointDragged(deltaX, deltaY);
+        }else if (draggedObj === this.annEndPoint) {
+            this.onEndPointDragged(deltaX, deltaY);
+        }else {
+            this.onLineDragged(deltaX, deltaY);
+        }
     }
 
     onChildSelected(selectedObj: AnnObject) {
         this.selected = true;
         this.focusedObj = selectedObj;
-        this.setChild(true);
+
+        if (this.parentObj) {
+            // If have parent, let parent manage the select status
+            this.parentObj.onChildSelected(selectedObj);
+        } else {
+            this.onSelect(true, true);
+        }
     }
 
     onSelect(selected: boolean, focused: boolean) {
 
         console.log("onSelect AnnLine");
-        if (this.isSelected() !== selected) {
-            this.selected = selected;
-            this.setChild(selected);
+        this.selected = selected;
+
+        this.annStartPoint.onSelect(selected, this.focusedObj === this.annStartPoint);
+        this.annEndPoint.onSelect(selected, this.focusedObj === this.annEndPoint);
+        this.annLine.onSelect(selected, this.focusedObj === this.annEndPoint);
+
+        if (!this.parentObj && this.selected) {
+            this.imageViewer.selectAnnotation(this);
         }
     }
 
@@ -103,31 +133,23 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
              this.onChildSelected(this.annLine);
         }
     }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 
-    private setChild(selected: boolean) {
-        this.annStartPoint.onSelect(selected, this.focusedObj === this.annStartPoint);
-        this.annEndPoint.onSelect(selected, this.focusedObj === this.annEndPoint);
-        this.annLine.onSelect(selected, this.focusedObj === this.annEndPoint);
-
-        if (this.selected) {
-            this.imageViewer.selectAnnotation(this);
-        }
-    }    
-
-    private onStartPointDragged(draggedObj: any, deltaX: number, deltaY: number) {
+    private onStartPointDragged(deltaX: number, deltaY: number) {
+        this.annStartPoint.onTranslate(deltaX, deltaY);
         const point = this.annStartPoint.getPosition();
         this.annLine.moveStartTo(point);
     }
 
-    private onEndPointDragged(draggedObj: any, deltaX: number, deltaY: number) {
+    private onEndPointDragged(deltaX: number, deltaY: number) {
+        this.annEndPoint.onTranslate(deltaX, deltaY);
         const point = this.annEndPoint.getPosition();
         this.annLine.moveEndTo(point);
     }
 
-    private onLineDragged(draggedObj: any, deltaX: number, deltaY: number) {
-
+    private onLineDragged(deltaX: number, deltaY: number) {
         this.annStartPoint.onTranslate(deltaX, deltaY);
         this.annLine.onTranslate(deltaX, deltaY);
         this.annEndPoint.onTranslate(deltaX, deltaY);

@@ -6,48 +6,68 @@ export class AnnBaseLine extends AnnObject {
 
     jcLine: any;
 
-    constructor(parent: AnnObject, posStart: Point, posEnd: Point, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnObject, posStart: Point, posEnd: Point, imageViewer: IImageViewer) {
 
-        super(imageViewer);
-        this.parent = parent;
-
+        super(parentObj, imageViewer);
 
         this.jcLine = jCanvaScript.line([[posStart.x, posStart.y], [posEnd.x, posEnd.y]], this.selectedColor).layer(this.layerId);
         this.jcLine._lineWidth = this.lineWidth;
         this.jcLine.mouseStyle = "move";
     }
 
-    onDrag(draggedObj: any, deltaX: number, deltaY: number) {
-        if (this.onDragParent) {
-            this.onDragParent.call(this.parent, this, deltaX, deltaY);
+    onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
+
+        this.focusedObj = draggedObj;
+
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragged(this, deltaX, deltaY);
+        } else {
+            this.onDrag(draggedObj, deltaX, deltaY);
         }
     }
 
-    onDrawEnded(onDragParent: (draggedObj, deltaX, deltaY) => void, onSelectParent: (selectedObj) => void) {
-        this.onDragParent = onDragParent;
-        this.onSelectParent = onSelectParent;
+    onDrag(draggedObj: any, deltaX: number, deltaY: number) {
+       this.onTranslate(deltaX, deltaY);
+    }
 
-        this.setChildDraggable(this, this.jcLine, true, this.onDrag);
-        this.setChildMouseEvent(this, this.jcLine);
+    onChildSelected(selectedObj: AnnObject) {
+
+        this.focusedObj = selectedObj;
+
+        if (this.parentObj) {
+            // If have parent, let parent manage the select status
+            this.parentObj.onChildSelected(this);
+        } else {
+            this.onSelect(true, true);
+        }
     }
 
     onSelect(selected: boolean, focused: boolean) {
-        console.log("onSelect Line" + selected + focused);
+
+        console.log("onSelect Line " + selected + " " + focused);
+
+        this.selected = selected;
         const color = selected ? this.selectedColor : this.defaultColor;
+
         this.jcLine.color(color);
+    }
+
+
+    onDrawEnded() {
+        this.setChildDraggable(this, this.jcLine, true);
+        this.setChildMouseEvent(this, this.jcLine);
     }
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point) {
         if (mouseEventType === MouseEventType.MouseDown) {
             console.log("onMouseEvent Line");
-            if (this.onSelectParent) {
-                this.onSelectParent.call(this.parent, this);
-            }
+            this.onChildSelected(this);
         }
     }
 
     onScale() {
-        this.jcLine._lineWidth = this.parent.getLineWidth();
+        this.jcLine._lineWidth = this.parentObj.getLineWidth();
     }
 
     onFlip(vertical: boolean) {
