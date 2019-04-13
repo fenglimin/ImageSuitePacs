@@ -110,6 +110,11 @@ export abstract class AnnObject {
 
         if (!this.focusedObj) return;
 
+        let focusedBottomObj = this.focusedObj;
+        while (focusedBottomObj.focusedObj) {
+            focusedBottomObj = focusedBottomObj.focusedObj;
+        }
+
         // Move 5 screen point by default, or move 1 screen point if ctrl key is pressed
         const step = keyEvent.ctrlKey ? 1 : 5;
 
@@ -128,7 +133,7 @@ export abstract class AnnObject {
 
         const posImageNew = AnnObject.screenToImage(posScreen, this.image.transformMatrix);
 
-        this.focusedObj.onChildDragged(this.focusedObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
+        focusedBottomObj.parentObj.onChildDragged(focusedBottomObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
     }
 
     static screenToImage(point: any, transform: any) {
@@ -276,7 +281,7 @@ export abstract class AnnObject {
 
         child._onmousedown = arg => {
             if (parentObj.needResponseToChildMouseEvent()) {
-                parentObj.onMouseEvent(MouseEventType.MouseDown, arg);
+                parentObj.onMouseEvent(MouseEventType.MouseDown, arg, child);
             }
 
             arg.event.cancelBubble = true;

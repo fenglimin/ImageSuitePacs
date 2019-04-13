@@ -18,7 +18,7 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation of interface IAnnotationObject
 
-    onMouseEvent(mouseEventType: MouseEventType, point: Point) {
+    onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
         const imagePoint = AnnObject.screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === MouseEventType.MouseDown) {
@@ -30,9 +30,9 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
 
             if (!this.annLine) {
                 this.annLine = new AnnLine(this, this.imageViewer);
-                this.annLine.onMouseEvent(mouseEventType, point);
+                this.annLine.onMouseEvent(mouseEventType, point, null);
             } else {
-                this.annLine.onMouseEvent(mouseEventType, point);
+                this.annLine.onMouseEvent(mouseEventType, point, null);
 
                 this.created = true;
 
@@ -43,7 +43,7 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annLine) {
-                this.annLine.onMouseEvent(mouseEventType, point);
+                this.annLine.onMouseEvent(mouseEventType, point, null);
                 if (!this.annAdd) {
                     this.annAdd = jCanvaScript.rect(imagePoint.x, imagePoint.y, 100, 100, this.selectedColor).layer(this.layerId);
                 } else {
@@ -62,12 +62,12 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
             // If have parent, let parent manage the drag status
             this.parentObj.onChildDragged(this, deltaX, deltaY);
         } else {
-            this.onDrag(draggedObj, deltaX, deltaY);
+            this.onDrag(deltaX, deltaY);
         }
     }
 
-    onDrag(draggedObj: any, deltaX: number, deltaY: number) {
-        //this.annLine.onDrag();
+    onDrag(deltaX: number, deltaY: number) {
+        this.annLine.onDrag(deltaX, deltaY);
     }
 
     onChildSelected(selectedObj: AnnObject) {
@@ -87,6 +87,12 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
         console.log("onSelect AnnLine");
         this.selected = selected;
 
+        if (focused && !this.focusedObj) {
+            this.focusedObj = this.annLine;
+        }
+
+        this.annLine.onSelect(selected, this.focusedObj === this.annLine);
+
         if (!this.parentObj && this.selected) {
             this.imageViewer.selectAnnotation(this);
         }
@@ -102,17 +108,9 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
     }
 
     onSwitchFocus() {
-
+        this.annLine.onSwitchFocus();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-
-    private setChild(selected: boolean) {
-        this.annLine.onSelect(selected, this.focusedObj === this.annLine);
-
-        if (this.selected) {
-            this.imageViewer.selectAnnotation(this);
-        }
-    }    
 }

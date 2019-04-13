@@ -250,7 +250,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 }
 
                 this.curSelectObj = annObj;
-                this.curSelectObj.onSelect(true, false);
+                this.curSelectObj.onSelect(true, true);
             }
         } else {
             if (this.curSelectObj) {
@@ -1266,7 +1266,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     // There is annotation selected
                     if (!this.curSelectObj.isCreated()) {
                         // The selected annotation is creating
-                        this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point);
+                        this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point, null);
                     } else {
                         // The selected annotation is created
                         this.selectAnnotation(null);
@@ -1302,7 +1302,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (curContext.action === ViewContextEnum.CreateAnn) {
             if (this.curSelectObj && !this.curSelectObj.isCreated()) {
                 const point = { x: evt.offsetX, y: evt.offsetY };
-                this.curSelectObj.onMouseEvent(MouseEventType.MouseMove, point);
+                this.curSelectObj.onMouseEvent(MouseEventType.MouseMove, point, null);
             }
         } else {
             if (self.mouseEventHelper._mouseWhich === 3) {
@@ -1513,6 +1513,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.updateImageTransform();
         const annType = this.viewContext.curContext.data;
         this.curSelectObj = new annType(undefined, this);
-        this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point);
+        this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point, null);
     }
 }

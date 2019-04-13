@@ -18,7 +18,7 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation of interface IAnnotationObject
 
-    onMouseEvent(mouseEventType: MouseEventType, point: Point) {
+    onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
         point = AnnObject.screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === MouseEventType.MouseDown) {
@@ -71,14 +71,14 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
             // If have parent, let parent manage the drag status
             this.parentObj.onChildDragged(this, deltaX, deltaY);
         } else {
-            this.onDrag(draggedObj, deltaX, deltaY);
+            this.onDrag(deltaX, deltaY);
         }
     }
 
-    onDrag(draggedObj: any, deltaX: number, deltaY: number) {
-        if (draggedObj === this.annStartPoint) {
+    onDrag(deltaX: number, deltaY: number) {
+        if (this.focusedObj === this.annStartPoint) {
             this.onStartPointDragged(deltaX, deltaY);
-        }else if (draggedObj === this.annEndPoint) {
+        } else if (this.focusedObj === this.annEndPoint) {
             this.onEndPointDragged(deltaX, deltaY);
         }else {
             this.onLineDragged(deltaX, deltaY);
@@ -102,9 +102,13 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         console.log("onSelect AnnLine");
         this.selected = selected;
 
+        if (focused && !this.focusedObj) {
+            this.focusedObj = this.annLine;
+        }
+
         this.annStartPoint.onSelect(selected, this.focusedObj === this.annStartPoint);
         this.annEndPoint.onSelect(selected, this.focusedObj === this.annEndPoint);
-        this.annLine.onSelect(selected, this.focusedObj === this.annEndPoint);
+        this.annLine.onSelect(selected, this.focusedObj === this.annLine);
 
         if (!this.parentObj && this.selected) {
             this.imageViewer.selectAnnotation(this);

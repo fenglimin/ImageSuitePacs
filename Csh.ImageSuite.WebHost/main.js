@@ -344,7 +344,7 @@ var AnnArrow = /** @class */ (function (_super) {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation of interface IAnnotationObject
-    AnnArrow.prototype.onMouseEvent = function (mouseEventType, point) {
+    AnnArrow.prototype.onMouseEvent = function (mouseEventType, point, mouseObj) {
         var imagePoint = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
             if (this.created) {
@@ -353,10 +353,10 @@ var AnnArrow = /** @class */ (function (_super) {
             }
             if (!this.annLine) {
                 this.annLine = new _ann_line__WEBPACK_IMPORTED_MODULE_1__["AnnLine"](this, this.imageViewer);
-                this.annLine.onMouseEvent(mouseEventType, point);
+                this.annLine.onMouseEvent(mouseEventType, point, null);
             }
             else {
-                this.annLine.onMouseEvent(mouseEventType, point);
+                this.annLine.onMouseEvent(mouseEventType, point, null);
                 this.created = true;
                 if (!this.parentObj) {
                     // Parent not set, this mean it is not a child of a parentObj annotion. 
@@ -366,7 +366,7 @@ var AnnArrow = /** @class */ (function (_super) {
         }
         else if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
             if (this.annLine) {
-                this.annLine.onMouseEvent(mouseEventType, point);
+                this.annLine.onMouseEvent(mouseEventType, point, null);
                 if (!this.annAdd) {
                     this.annAdd = jCanvaScript.rect(imagePoint.x, imagePoint.y, 100, 100, this.selectedColor).layer(this.layerId);
                 }
@@ -378,16 +378,17 @@ var AnnArrow = /** @class */ (function (_super) {
         }
     };
     AnnArrow.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
+        this.focusedObj = draggedObj;
         if (this.parentObj) {
             // If have parent, let parent manage the drag status
-            this.parentObj.onChildDragged(draggedObj, deltaX, deltaY);
+            this.parentObj.onChildDragged(this, deltaX, deltaY);
         }
         else {
-            this.onDrag(draggedObj, deltaX, deltaY);
+            this.onDrag(deltaX, deltaY);
         }
     };
-    AnnArrow.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
-        //this.annLine.onDrag();
+    AnnArrow.prototype.onDrag = function (deltaX, deltaY) {
+        this.annLine.onDrag(deltaX, deltaY);
     };
     AnnArrow.prototype.onChildSelected = function (selectedObj) {
         this.selected = true;
@@ -403,6 +404,10 @@ var AnnArrow = /** @class */ (function (_super) {
     AnnArrow.prototype.onSelect = function (selected, focused) {
         console.log("onSelect AnnLine");
         this.selected = selected;
+        if (focused && !this.focusedObj) {
+            this.focusedObj = this.annLine;
+        }
+        this.annLine.onSelect(selected, this.focusedObj === this.annLine);
         if (!this.parentObj && this.selected) {
             this.imageViewer.selectAnnotation(this);
         }
@@ -414,14 +419,7 @@ var AnnArrow = /** @class */ (function (_super) {
         this.annLine.onFlip(vertical);
     };
     AnnArrow.prototype.onSwitchFocus = function () {
-    };
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Private functions
-    AnnArrow.prototype.setChild = function (selected) {
-        this.annLine.onSelect(selected, this.focusedObj === this.annLine);
-        if (this.selected) {
-            this.imageViewer.selectAnnotation(this);
-        }
+        this.annLine.onSwitchFocus();
     };
     return AnnArrow;
 }(_ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"]));
@@ -466,7 +464,7 @@ var AnnLine = /** @class */ (function (_super) {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation of interface IAnnotationObject
-    AnnLine.prototype.onMouseEvent = function (mouseEventType, point) {
+    AnnLine.prototype.onMouseEvent = function (mouseEventType, point, mouseObj) {
         point = _ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"].screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
             if (this.created) {
@@ -509,20 +507,20 @@ var AnnLine = /** @class */ (function (_super) {
         this.focusedObj = draggedObj;
         if (this.parentObj) {
             // If have parent, let parent manage the drag status
-            this.parentObj.onChildDragged(draggedObj, deltaX, deltaY);
+            this.parentObj.onChildDragged(this, deltaX, deltaY);
         }
         else {
-            this.onDrag(draggedObj, deltaX, deltaY);
+            this.onDrag(deltaX, deltaY);
         }
     };
-    AnnLine.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
-        if (draggedObj === this.annStartPoint) {
+    AnnLine.prototype.onDrag = function (deltaX, deltaY) {
+        if (this.focusedObj === this.annStartPoint) {
             this.onStartPointDragged(deltaX, deltaY);
         }
-        else if (draggedObj === this.annEndPoint) {
+        else if (this.focusedObj === this.annEndPoint) {
             this.onEndPointDragged(deltaX, deltaY);
         }
-        else if (draggedObj === this.annLine) {
+        else {
             this.onLineDragged(deltaX, deltaY);
         }
     };
@@ -540,9 +538,12 @@ var AnnLine = /** @class */ (function (_super) {
     AnnLine.prototype.onSelect = function (selected, focused) {
         console.log("onSelect AnnLine");
         this.selected = selected;
+        if (focused && !this.focusedObj) {
+            this.focusedObj = this.annLine;
+        }
         this.annStartPoint.onSelect(selected, this.focusedObj === this.annStartPoint);
         this.annEndPoint.onSelect(selected, this.focusedObj === this.annEndPoint);
-        this.annLine.onSelect(selected, this.focusedObj === this.annEndPoint);
+        this.annLine.onSelect(selected, this.focusedObj === this.annLine);
         if (!this.parentObj && this.selected) {
             this.imageViewer.selectAnnotation(this);
         }
@@ -690,6 +691,10 @@ var AnnObject = /** @class */ (function () {
     AnnObject.prototype.onKeyDown = function (keyEvent) {
         if (!this.focusedObj)
             return;
+        var focusedBottomObj = this.focusedObj;
+        while (focusedBottomObj.focusedObj) {
+            focusedBottomObj = focusedBottomObj.focusedObj;
+        }
         // Move 5 screen point by default, or move 1 screen point if ctrl key is pressed
         var step = keyEvent.ctrlKey ? 1 : 5;
         var posImageOld = this.focusedObj.getPosition();
@@ -707,7 +712,7 @@ var AnnObject = /** @class */ (function () {
             posScreen.x += step;
         }
         var posImageNew = AnnObject.screenToImage(posScreen, this.image.transformMatrix);
-        this.focusedObj.onChildDragged(this.focusedObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
+        focusedBottomObj.parentObj.onChildDragged(focusedBottomObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
     };
     AnnObject.screenToImage = function (point, transform) {
         var x = point.x;
@@ -823,7 +828,7 @@ var AnnObject = /** @class */ (function () {
         };
         child._onmousedown = function (arg) {
             if (parentObj.needResponseToChildMouseEvent()) {
-                parentObj.onMouseEvent(MouseEventType.MouseDown, arg);
+                parentObj.onMouseEvent(MouseEventType.MouseDown, arg, child);
             }
             arg.event.cancelBubble = true;
             arg.event.stopPropagation();
@@ -1106,22 +1111,27 @@ var AnnBaseLine = /** @class */ (function (_super) {
         _this.jcLine = jCanvaScript.line([[posStart.x, posStart.y], [posEnd.x, posEnd.y]], _this.selectedColor).layer(_this.layerId);
         _this.jcLine._lineWidth = _this.lineWidth;
         _this.jcLine.mouseStyle = "move";
+        _this.jcLine.parentObj = _this;
         return _this;
     }
     AnnBaseLine.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
+        if (draggedObj === this) {
+        }
         this.focusedObj = draggedObj;
         if (this.parentObj) {
             // If have parent, let parent manage the drag status
             this.parentObj.onChildDragged(this, deltaX, deltaY);
         }
         else {
-            this.onDrag(draggedObj, deltaX, deltaY);
+            this.onDrag(deltaX, deltaY);
         }
     };
-    AnnBaseLine.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
+    AnnBaseLine.prototype.onDrag = function (deltaX, deltaY) {
         this.onTranslate(deltaX, deltaY);
     };
     AnnBaseLine.prototype.onChildSelected = function (selectedObj) {
+        if (selectedObj === this) {
+        }
         this.focusedObj = selectedObj;
         if (this.parentObj) {
             // If have parent, let parent manage the select status
@@ -1135,16 +1145,19 @@ var AnnBaseLine = /** @class */ (function (_super) {
         console.log("onSelect Line " + selected + " " + focused);
         this.selected = selected;
         var color = selected ? this.selectedColor : this.defaultColor;
+        if (focused && !this.focusedObj) {
+            this.focusedObj = this.jcLine;
+        }
         this.jcLine.color(color);
     };
     AnnBaseLine.prototype.onDrawEnded = function () {
         this.setChildDraggable(this, this.jcLine, true);
         this.setChildMouseEvent(this, this.jcLine);
     };
-    AnnBaseLine.prototype.onMouseEvent = function (mouseEventType, point) {
+    AnnBaseLine.prototype.onMouseEvent = function (mouseEventType, point, mouseObj) {
         if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
             console.log("onMouseEvent Line");
-            this.onChildSelected(this);
+            this.onChildSelected(mouseObj);
         }
     };
     AnnBaseLine.prototype.onScale = function () {
@@ -1219,8 +1232,10 @@ var AnnBasePoint = /** @class */ (function (_super) {
         _this.jcOuterCircle._lineWidth = _this.lineWidth;
         _this.jcOuterCircle.mouseStyle = "crosshair";
         _this.jcOuterCircle.visible(false);
+        _this.jcOuterCircle.parentObj = _this;
         _this.jcCenterPoint = jCanvaScript.circle(position.x, position.y, _this.circleRadius, _this.selectedColor, true).layer(_this.layerId);
         _this.jcCenterPoint.mouseStyle = "crosshair";
+        _this.jcCenterPoint.parentObj = _this;
         return _this;
     }
     AnnBasePoint.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
@@ -1230,10 +1245,10 @@ var AnnBasePoint = /** @class */ (function (_super) {
             this.parentObj.onChildDragged(this, deltaX, deltaY);
         }
         else {
-            this.onDrag(draggedObj, deltaX, deltaY);
+            this.onDrag(deltaX, deltaY);
         }
     };
-    AnnBasePoint.prototype.onDrag = function (draggedObj, deltaX, deltaY) {
+    AnnBasePoint.prototype.onDrag = function (deltaX, deltaY) {
         this.onTranslate(deltaX, deltaY);
     };
     AnnBasePoint.prototype.onChildSelected = function (selectedObj) {
@@ -1250,6 +1265,9 @@ var AnnBasePoint = /** @class */ (function (_super) {
         console.log("onSelect Point " + selected + " " + focused);
         this.selected = selected;
         var color = selected ? this.selectedColor : this.defaultColor;
+        if (focused && !this.focusedObj) {
+            this.focusedObj = this.jcCenterPoint;
+        }
         this.jcCenterPoint.visible(selected);
         this.jcCenterPoint.color(color);
         this.jcOuterCircle.visible(selected && focused);
@@ -1258,10 +1276,10 @@ var AnnBasePoint = /** @class */ (function (_super) {
         this.setChildDraggable(this, this.jcCenterPoint, true);
         this.setChildMouseEvent(this, this.jcCenterPoint);
     };
-    AnnBasePoint.prototype.onMouseEvent = function (mouseEventType, point) {
+    AnnBasePoint.prototype.onMouseEvent = function (mouseEventType, point, mouseObj) {
         if (mouseEventType === _ann_object__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
             console.log("onMouseEvent Point");
-            this.onChildSelected(this);
+            this.onChildSelected(mouseObj);
         }
     };
     AnnBasePoint.prototype.onScale = function () {
@@ -2748,7 +2766,7 @@ var ImageViewerComponent = /** @class */ (function () {
                     this.curSelectObj.onSelect(false, false);
                 }
                 this.curSelectObj = annObj;
-                this.curSelectObj.onSelect(true, false);
+                this.curSelectObj.onSelect(true, true);
             }
         }
         else {
@@ -3590,7 +3608,7 @@ var ImageViewerComponent = /** @class */ (function () {
                     // There is annotation selected
                     if (!this.curSelectObj.isCreated()) {
                         // The selected annotation is creating
-                        this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseDown, point);
+                        this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseDown, point, null);
                     }
                     else {
                         // The selected annotation is created
@@ -3623,7 +3641,7 @@ var ImageViewerComponent = /** @class */ (function () {
         if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
             if (this.curSelectObj && !this.curSelectObj.isCreated()) {
                 var point = { x: evt.offsetX, y: evt.offsetY };
-                this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseMove, point);
+                this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseMove, point, null);
             }
         }
         else {
@@ -3799,7 +3817,7 @@ var ImageViewerComponent = /** @class */ (function () {
         this.updateImageTransform();
         var annType = this.viewContext.curContext.data;
         this.curSelectObj = new annType(undefined, this);
-        this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseDown, point);
+        this.curSelectObj.onMouseEvent(_annotation_ann_object__WEBPACK_IMPORTED_MODULE_12__["MouseEventType"].MouseDown, point, null);
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])("viewerCanvas"),

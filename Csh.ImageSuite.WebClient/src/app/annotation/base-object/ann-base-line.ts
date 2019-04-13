@@ -13,25 +13,33 @@ export class AnnBaseLine extends AnnObject {
         this.jcLine = jCanvaScript.line([[posStart.x, posStart.y], [posEnd.x, posEnd.y]], this.selectedColor).layer(this.layerId);
         this.jcLine._lineWidth = this.lineWidth;
         this.jcLine.mouseStyle = "move";
+        this.jcLine.parentObj = this;
     }
 
     onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
 
+        if (draggedObj === this) {
+
+        }
         this.focusedObj = draggedObj;
 
         if (this.parentObj) {
             // If have parent, let parent manage the drag status
             this.parentObj.onChildDragged(this, deltaX, deltaY);
         } else {
-            this.onDrag(draggedObj, deltaX, deltaY);
+            this.onDrag(deltaX, deltaY);
         }
     }
 
-    onDrag(draggedObj: any, deltaX: number, deltaY: number) {
+    onDrag(deltaX: number, deltaY: number) {
        this.onTranslate(deltaX, deltaY);
     }
 
     onChildSelected(selectedObj: AnnObject) {
+
+        if (selectedObj === this) {
+
+        }
 
         this.focusedObj = selectedObj;
 
@@ -50,6 +58,10 @@ export class AnnBaseLine extends AnnObject {
         this.selected = selected;
         const color = selected ? this.selectedColor : this.defaultColor;
 
+        if (focused && !this.focusedObj) {
+            this.focusedObj = this.jcLine;
+        }
+
         this.jcLine.color(color);
     }
 
@@ -59,10 +71,10 @@ export class AnnBaseLine extends AnnObject {
         this.setChildMouseEvent(this, this.jcLine);
     }
 
-    onMouseEvent(mouseEventType: MouseEventType, point: Point) {
+    onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
         if (mouseEventType === MouseEventType.MouseDown) {
             console.log("onMouseEvent Line");
-            this.onChildSelected(this);
+            this.onChildSelected(mouseObj);
         }
     }
 

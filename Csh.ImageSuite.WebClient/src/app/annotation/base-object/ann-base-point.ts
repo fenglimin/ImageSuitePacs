@@ -16,9 +16,11 @@ export class AnnBasePoint extends AnnObject {
         this.jcOuterCircle._lineWidth = this.lineWidth;
         this.jcOuterCircle.mouseStyle = "crosshair";
         this.jcOuterCircle.visible(false);
+        this.jcOuterCircle.parentObj = this;
 
         this.jcCenterPoint = jCanvaScript.circle(position.x, position.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
         this.jcCenterPoint.mouseStyle = "crosshair";
+        this.jcCenterPoint.parentObj = this;
     }
 
     onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
@@ -29,11 +31,11 @@ export class AnnBasePoint extends AnnObject {
             // If have parent, let parent manage the drag status
             this.parentObj.onChildDragged(this, deltaX, deltaY);
         } else {
-            this.onDrag(draggedObj, deltaX, deltaY);
+            this.onDrag(deltaX, deltaY);
         }
     }
 
-    onDrag(draggedObj: any, deltaX: number, deltaY: number) {
+    onDrag(deltaX: number, deltaY: number) {
         this.onTranslate(deltaX, deltaY);
     }
 
@@ -56,6 +58,10 @@ export class AnnBasePoint extends AnnObject {
         this.selected = selected;
         const color = selected ? this.selectedColor : this.defaultColor;
 
+        if (focused && !this.focusedObj) {
+            this.focusedObj = this.jcCenterPoint;
+        }
+
         this.jcCenterPoint.visible(selected);
         this.jcCenterPoint.color(color);
 
@@ -68,11 +74,11 @@ export class AnnBasePoint extends AnnObject {
     }
 
 
-    onMouseEvent(mouseEventType: MouseEventType, point: Point) {
+    onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
         if (mouseEventType === MouseEventType.MouseDown) {
             console.log("onMouseEvent Point");
-            this.onChildSelected(this);
+            this.onChildSelected(mouseObj);
         }
     }
 
