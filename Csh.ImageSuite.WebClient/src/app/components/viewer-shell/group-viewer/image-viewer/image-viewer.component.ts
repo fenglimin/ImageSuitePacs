@@ -954,9 +954,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             },
             drag: function(arg) {
                 self.annObjList.forEach(function(obj) {
-                    if (obj.onTranslate) {
-                        obj.onTranslate.call(obj);
-                    }
+                    //if (obj.onTranslate) {
+                    //    obj.onTranslate.call(obj);
+                    //}
                 });
             }
         });
