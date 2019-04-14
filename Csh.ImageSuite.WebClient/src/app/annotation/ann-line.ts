@@ -121,6 +121,12 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         }
     }
 
+    onDeleteChildren() {
+        this.deleteObject(this.annStartPoint);
+        this.deleteObject(this.annEndPoint);
+        this.deleteObject(this.annLine);
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 

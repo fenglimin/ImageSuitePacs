@@ -85,6 +85,11 @@ export class AnnBasePoint extends AnnObject {
         this.jcOuterCircle._y += deltaY;
     }
 
+    onDeleteChildren() {
+        this.deleteObject(this.jcCenterPoint);
+        this.deleteObject(this.jcOuterCircle);
+    }
+
     setRadius(radius: number) {
         this.jcCenterPoint._radius = radius;
         this.jcOuterCircle._radius = radius * 2;

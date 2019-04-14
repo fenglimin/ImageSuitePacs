@@ -87,6 +87,10 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
         this.annLine.onSwitchFocus();
     }
 
+    onDeleteChildren() {
+        this.deleteObject(this.annLine);
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 }

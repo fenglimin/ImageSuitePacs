@@ -105,30 +105,41 @@ export abstract class AnnObject {
         }
     }
 
-    onDeleteChildren() {
-        const properties = Object.getOwnPropertyNames(this);
-        properties.forEach(prop => {
-            let obj = this[prop];
-            if (obj instanceof AnnObject && obj !== this.parentObj) {
-                const annObj = obj as AnnObject;
-                annObj.onDeleteChildren();
-                this[prop] = undefined;
-            } else if (obj instanceof Array) {
-                obj.forEach(item => {
-
-                    if (item instanceof AnnObject && item !== this.parentObj) {
-                        const annObj = item as AnnObject;
-                        annObj.onDeleteChildren();
-                    }
-
-                    obj = [];
-                });
-            }else if ( AnnObject.isJcanvasObject(obj) ) {
-                obj.del();
-                this[prop] = undefined;
-            }
-        });
+    deleteObject(obj: any) {
+        if (AnnObject.isJcanvasObject(obj)) {
+            obj.del();
+            obj = undefined;
+        } else if (obj instanceof AnnObject) {
+            let annObj = obj as AnnObject;
+            annObj.onDeleteChildren();
+            annObj = undefined;
+        }
     }
+
+    //onDeleteChildren() {
+    //    const properties = Object.getOwnPropertyNames(this);
+    //    properties.forEach(prop => {
+    //        let obj = this[prop];
+    //        if (obj instanceof AnnObject && obj !== this.parentObj) {
+    //            const annObj = obj as AnnObject;
+    //            annObj.onDeleteChildren();
+    //            this[prop] = undefined;
+    //        } else if (obj instanceof Array) {
+    //            obj.forEach(item => {
+
+    //                if (item instanceof AnnObject && item !== this.parentObj) {
+    //                    const annObj = item as AnnObject;
+    //                    annObj.onDeleteChildren();
+    //                }
+
+    //                obj = [];
+    //            });
+    //        }else if ( AnnObject.isJcanvasObject(obj) ) {
+    //            obj.del();
+    //            this[prop] = undefined;
+    //        }
+    //    });
+    //}
 
     onKeyDown(keyEvent: any): void {
 
@@ -337,7 +348,10 @@ export abstract class AnnObject {
     }
 
     onTranslate(deltaX: number, deltaY: number) {
-     }
+    }
+
+    onDeleteChildren() {
+    }
 }
 
 /*

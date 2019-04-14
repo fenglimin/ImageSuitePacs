@@ -71,6 +71,10 @@ export class AnnBaseLine extends AnnObject {
         this.jcLine._y1 += deltaY;
     }
 
+    onDeleteChildren() {
+        this.deleteObject(this.jcLine);
+    }
+
     //setRadius(radius: number) {
     //}
 

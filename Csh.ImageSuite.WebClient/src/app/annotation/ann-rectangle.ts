@@ -150,6 +150,14 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
         }
     }
 
+    onDeleteChildren() {
+        this.annLineList.forEach(annObj => this.deleteObject(annObj));
+        this.annLineList = [];
+
+        this.annPointList.forEach(annObj => this.deleteObject(annObj));
+        this.annPointList = [];
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
     private onPointDragged(draggedObj: any, deltaX: number, deltaY: number) {
