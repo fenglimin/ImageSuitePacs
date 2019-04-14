@@ -55,9 +55,7 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
                     this.annLine = new AnnBaseLine(this, this.annStartPoint.getPosition(), point, this.imageViewer);
 
                     // Make sure the start point is on the top the line So that we can easily select it for moving
-                    if (this.annStartPoint.jcCenterPoint) {
-                        this.annStartPoint.jcCenterPoint.up();
-                    }
+                    this.annStartPoint.up();
                 }
             }
         }

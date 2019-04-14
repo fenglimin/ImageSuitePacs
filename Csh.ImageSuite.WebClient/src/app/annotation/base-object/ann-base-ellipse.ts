@@ -14,6 +14,7 @@ export class AnnBaseEllipse extends AnnObject {
         this.jcEllipse = jCanvaScript.ellipse(center.x, center.y, Math.abs(width), Math.abs(height), this.selectedColor).layer(this.layerId);
         this.jcEllipse._lineWidth = this.lineWidth;
         this.jcEllipse.mouseStyle = "move";
+        this.jcEllipse.parentObj = this;
     }
 
     onDrag(deltaX: number, deltaY: number) {

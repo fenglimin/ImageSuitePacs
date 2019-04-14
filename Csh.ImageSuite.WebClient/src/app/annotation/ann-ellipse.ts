@@ -87,7 +87,7 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
                     const annBottomPoint = new AnnBasePoint(this, bottomPoint, this.imageViewer);
                     this.annPointList.push(annBottomPoint);
 
-
+                    this.annCenterPoint.up();
                 }
             }
         }
