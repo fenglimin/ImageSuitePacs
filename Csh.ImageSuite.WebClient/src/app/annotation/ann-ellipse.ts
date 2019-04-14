@@ -50,7 +50,6 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
                     // Parent not set, this mean it is not a child of a parentObj annotion. 
                     this.imageViewer.onAnnotationCreated(this);
                 }
-
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annCenterPoint) {
@@ -167,7 +166,7 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
     redraw(topPoint: Point, bottomPoint: Point, leftPoint: Point, rightPoint: Point) {
         this.annEllipse.setWidth(rightPoint.x - topPoint.x);
         this.annEllipse.setHeigth(topPoint.y - rightPoint.y);
-
+        
         this.annPointList[0].moveTo(topPoint);
         this.annPointList[1].moveTo(leftPoint);
         this.annPointList[2].moveTo(rightPoint);

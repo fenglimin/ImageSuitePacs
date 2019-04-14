@@ -86,10 +86,12 @@ export class AnnBaseEllipse extends AnnObject {
 
     setWidth(width: number) {
         this.jcEllipse._width = Math.abs(width);
+        this.checkCircle();
     }
 
     setHeigth(height: number) {
         this.jcEllipse._height = Math.abs(height);
+        this.checkCircle();
     }
 
     getWidth(): number {
@@ -98,5 +100,10 @@ export class AnnBaseEllipse extends AnnObject {
 
     getHeight(): number {
         return this.jcEllipse._height;
+    }
+
+    checkCircle() {
+        const isCircle = Math.round(this.getWidth()) === Math.round(this.getHeight());
+        this.jcEllipse.color( isCircle? "#F00" : this.selectedColor);
     }
 }
