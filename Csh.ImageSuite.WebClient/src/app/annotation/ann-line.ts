@@ -70,7 +70,7 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         } else if (this.focusedObj === this.annEndPoint) {
             this.onEndPointDragged(deltaX, deltaY);
         }else {
-            this.onLineDragged(deltaX, deltaY);
+            this.onTranslate(deltaX, deltaY);
         }
     }
 
@@ -105,6 +105,12 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         this.annEndPoint.onFlip(vertical);
     }
 
+    onTranslate(deltaX: number, deltaY: number) {
+        this.annStartPoint.onTranslate(deltaX, deltaY);
+        this.annLine.onTranslate(deltaX, deltaY);
+        this.annEndPoint.onTranslate(deltaX, deltaY);
+    }
+
     onSwitchFocus() {
          if (!this.focusedObj || this.focusedObj === this.annLine) {
              this.onChildSelected(this.annStartPoint);
@@ -130,9 +136,5 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         this.annLine.moveEndTo(point);
     }
 
-    private onLineDragged(deltaX: number, deltaY: number) {
-        this.annStartPoint.onTranslate(deltaX, deltaY);
-        this.annLine.onTranslate(deltaX, deltaY);
-        this.annEndPoint.onTranslate(deltaX, deltaY);
-    }
+    
 }

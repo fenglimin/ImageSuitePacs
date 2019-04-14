@@ -335,6 +335,9 @@ export abstract class AnnObject {
 
     onDrawEnded() {
     }
+
+    onTranslate(deltaX: number, deltaY: number) {
+     }
 }
 
 /*
