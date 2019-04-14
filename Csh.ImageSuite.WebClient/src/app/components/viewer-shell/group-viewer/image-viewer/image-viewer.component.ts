@@ -808,6 +808,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
 
         this.rotate(curRotate);
+        this.refreshUi();
     }
 
     doReset() {
@@ -903,6 +904,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.rotate(curRotate);
         this.updateZoomRatioTextOverlay(this.getScale());
+        this.refreshUi();
     }
 
     showOverlay(visible) {
