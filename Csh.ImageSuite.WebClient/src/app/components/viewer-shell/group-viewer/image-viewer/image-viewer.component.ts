@@ -266,7 +266,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
     }
 
-    selectNextAnnotation() {
+    selectNextAnnotation(backward: boolean) {
         const len = this.annObjList.length;
         if (len === 0) return;
 
@@ -280,8 +280,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             if (this.curSelectObj === this.annObjList[i]) break;
         }
 
-        if (i === len - 1) i = -1;
-        this.selectAnnotation(this.annObjList[i+1]);
+        let nextIndex = i;
+        if (backward) {
+            nextIndex = (i === 0) ? len - 1 : i - 1;
+        } else {
+            nextIndex = (i === len - 1) ? 0 : i + 1;
+        }
+        
+        this.selectAnnotation(this.annObjList[nextIndex]);
     }
 
     onAnnotationCreated(annObj: IAnnotationObject) {
@@ -305,7 +311,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.deleteAnnotation(this.curSelectObj);
             this.curSelectObj = undefined;
         }else if (event.code === "KeyA") {
-            this.selectNextAnnotation();
+            this.selectNextAnnotation(event.shiftKey);
         } else if (event.code === "KeyF") {
             if (this.curSelectObj) {
                 this.curSelectObj.onSwitchFocus();
