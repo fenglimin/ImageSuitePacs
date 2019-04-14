@@ -874,7 +874,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         const curRotate = 0 - this.getRotate(); //get rotate return the minus value
         // Sail : currently ignore the free rotate, since free rotate will change both width and height,
         // rotate 90 only switch width and height
-        if (curRotate / 180 !== 0) {
+        if (Math.abs(curRotate % 180 ) === 90) {
             widthScale = canvasWidth / height;
             heightScale = canvasHeight / width;
         }
