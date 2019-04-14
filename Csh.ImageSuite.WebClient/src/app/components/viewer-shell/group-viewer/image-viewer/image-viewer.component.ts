@@ -97,6 +97,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private curSelectObj: IAnnotationObject;
     private annObjList = [];
 
+    private ctrlKeyPressed = false;
+
     @Input()
     set imageData(imageData: ViewerImageData) {
         this.logPrefix = "Image" + imageData.getId() + ": ";
@@ -225,6 +227,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Implementation of interface IImageViewer
+    isCtrlKeyPressed(): boolean {
+        return this.ctrlKeyPressed;
+    }
 
     getAnnotationLayerId(): string {
         return this.annLayerId;
@@ -305,7 +310,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
 
 
-    onKeyDown(event) {
+    onKeyUp(event) {
 
         if (event.code === "Delete") {
             this.deleteAnnotation(this.curSelectObj);
@@ -321,7 +326,16 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             if (this.curSelectObj) {
                 this.curSelectObj.onKeyDown(event);
             }
-        }
+        } else if (event.code === "ControlLeft" || event.code === "ControlRight") {
+            this.ctrlKeyPressed = false;
+        } 
+    }
+
+    onKeyDown(event) {
+
+        if (event.code === "ControlLeft" || event.code === "ControlRight") {
+            this.ctrlKeyPressed = true;
+        } 
     }
 
     getId(): string {
@@ -1524,4 +1538,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.curSelectObj = new annType(undefined, this);
         this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point, null);
     }
+
+
 }

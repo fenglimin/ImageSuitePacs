@@ -11,4 +11,5 @@ export interface IImageViewer {
 
     selectAnnotation(annObj: IAnnotationObject): void;
     onAnnotationCreated(annObj: IAnnotationObject): void;
+    isCtrlKeyPressed(): boolean;
 }
