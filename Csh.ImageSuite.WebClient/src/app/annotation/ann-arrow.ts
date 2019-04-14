@@ -10,6 +10,7 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
 
     private annLine: AnnLine;
     private annAdd: any;
+    private startPoint: Point;
 
     constructor(parent: AnnObject, imageViewer: IImageViewer) {
         super(parent, imageViewer);
@@ -30,6 +31,7 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
 
             if (!this.annLine) {
                 this.annLine = new AnnLine(this, this.imageViewer);
+                this.startPoint = imagePoint;
                 this.annLine.onMouseEvent(mouseEventType, point, null);
             } else {
                 this.annLine.onMouseEvent(mouseEventType, point, null);
@@ -44,12 +46,16 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annLine) {
                 this.annLine.onMouseEvent(mouseEventType, point, null);
-                if (!this.annAdd) {
-                    this.annAdd = jCanvaScript.rect(imagePoint.x, imagePoint.y, 100, 100, this.selectedColor).layer(this.layerId);
-                } else {
-                    this.annAdd._x = imagePoint.x;
-                    this.annAdd._y = imagePoint.y;
-                }
+
+                const width = Math.abs(imagePoint.x - this.startPoint.x);
+                const height = Math.abs(imagePoint.y - this.startPoint.y);
+                //if (!this.annAdd) {
+                //    this.annAdd = jCanvaScript.ellipse(imagePoint.x, imagePoint.y, width, height, this.selectedColor).layer(this.layerId);
+                //    this.annAdd._lineWidth = this.lineWidth;
+                //} else {
+                //    this.annAdd._width = width;
+                //    this.annAdd._height = height;
+                //}
             }
         }
     }

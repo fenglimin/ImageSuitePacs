@@ -20,7 +20,7 @@ import { IAnnotationObject } from "../../../../interfaces/annotation-object-inte
 import { Point } from '../../../../models/annotation';
 import { AnnObject, MouseEventType } from "../../../../annotation/ann-object";
 import { AnnLine } from "../../../../annotation/ann-line";
-//import { AnnCircle } from "../../../../annotation/ann-circle";
+import { AnnEllipse } from "../../../../annotation/ann-ellipse";
 import { AnnRectangle } from "../../../../annotation/ann-rectangle";
 
 
@@ -672,9 +672,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             else if (curContext.data === AnnRectangle) {
                 canvas.style.cursor = cursorUrl.format("rect");
             }
-            //else if (curContext.data === AnnCircle) {
-            //    canvas.style.cursor = cursorUrl.format("ellipse");
-            //}
+            else if (curContext.data === AnnEllipse) {
+                canvas.style.cursor = cursorUrl.format("ellipse");
+            }
         }
     }
 

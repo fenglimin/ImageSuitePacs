@@ -1723,6 +1723,9 @@
                     this.points(points.points);
             return this;
         }
+
+        this._proto = 'lines';
+        this.pointNames = ['_x', '_y'];
     }
     proto.lines.prototype = new proto.shape;
 
@@ -1817,6 +1820,25 @@
         this._proto = 'rect';
     }
     proto.rect.prototype = new proto.shape;
+    proto.ellipse = function () {
+        this.getRect = function (type) {
+            return getRect(this, { x: this._x, y: this._y, width: this._width, height: this._height }, type);
+        }
+        this.draw = function (ctx) {
+            ctx.ellipse(this._x, this._y, this._width, this._height, 0, 0, pi2, true);
+        }
+        this.base = function (x, y, width, height, color, fill) {
+            if (typeof x != 'object')
+                x = { x: x, y: y, width: width, height: height, color: color, fill: fill };
+            x = checkDefaults(x, { width: 0, height: 0 });
+            proto.rect.prototype.base.call(this, x);
+            this._width = x.width;
+            this._height = x.height;
+            return this;
+        }
+        this._proto = 'ellipse';
+    }
+    proto.ellipse.prototype = new proto.shape;
     proto.arc = function () {
         this.getRect = function (type) {
             var points = { x: this._x, y: this._y },
@@ -2799,6 +2821,11 @@
         return rGrad.base(x1, y1, r1, x2, y2, r2, colors);
     }
 
+    jCanvaScript.lines = function (points, color, fill) {
+        var lines = new proto.lines;
+        return lines.base(points, color, fill);
+    }
+
     jCanvaScript.line = function (points, color, fill) {
         var line = new proto.line;
         return line.base(points, color, fill);
@@ -2828,6 +2855,10 @@
     jCanvaScript.rect = function (x, y, width, height, color, fill) {
         var rect = new proto.rect;
         return rect.base(x, y, width, height, color, fill);
+    }
+    jCanvaScript.ellipse = function (x, y, width, height, color, fill) {
+        var ellipse = new proto.ellipse;
+        return ellipse.base(x, y, width, height, color, fill);
     }
     jCanvaScript.arc = function (x, y, radius, startAngle, endAngle, anticlockwise, color, fill) {
         var arc = new proto.arc;
