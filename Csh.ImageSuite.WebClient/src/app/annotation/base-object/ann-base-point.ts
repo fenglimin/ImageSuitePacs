@@ -1,9 +1,9 @@
 ﻿import { Point } from '../../models/annotation';
 import { MouseEventType, AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
+import { AnnBaseObject } from "./ann-base-object";
 
-
-export class AnnBasePoint extends AnnObject {
+export class AnnBasePoint extends AnnBaseObject {
 
     jcCenterPoint: any;
     jcOuterCircle: any;
@@ -47,15 +47,6 @@ export class AnnBasePoint extends AnnObject {
     onDrawEnded() {
         this.setChildDraggable(this, this.jcCenterPoint, true);
         this.setChildMouseEvent(this, this.jcCenterPoint);
-    }
-
-
-    onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
-
-        if (mouseEventType === MouseEventType.MouseDown) {
-            console.log("onMouseEvent Point");
-            this.onChildSelected(mouseObj);
-        }
     }
 
     onScale() {

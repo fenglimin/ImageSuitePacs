@@ -10,6 +10,10 @@
  * 2. support requirejs module.
  * 3. for text, split text to mulitiple line if specified maxWidth (2018-06-08)
  * 4. add jcFrame, remove each canvas requestAniFrame (2019-01-31)
+ *
+ *
+ * --- Sail Feng Adjusted
+ * 1. Support Ellipse
  */
 (function (window, undefined) {
     var canvases = [],

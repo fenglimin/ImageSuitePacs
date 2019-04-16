@@ -22,6 +22,7 @@ import { AnnObject, MouseEventType } from "../../../../annotation/ann-object";
 import { AnnLine } from "../../../../annotation/ann-line";
 import { AnnEllipse } from "../../../../annotation/ann-ellipse";
 import { AnnRectangle } from "../../../../annotation/ann-rectangle";
+import { AnnArrow } from "../../../../annotation/ann-arrow";
 
 
 @Component({
@@ -686,7 +687,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             canvas.style.cursor = cursorUrl.format("select");
         } else if (curContext.action === ViewContextEnum.CreateAnn) {
             
-            if (curContext.data === AnnLine) {
+            if (curContext.data === AnnLine || curContext.data === AnnArrow) {
                 canvas.style.cursor = cursorUrl.format("ann_line");
             }
             else if (curContext.data === AnnRectangle) {

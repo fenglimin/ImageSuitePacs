@@ -125,6 +125,14 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         this.deleteObject(this.annLine);
     }
 
+    getStartPosition(): Point {
+        return this.annLine.getStartPosition();
+    }
+
+    getEndPosition(): Point {
+        return this.annLine.getEndPosition();
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 

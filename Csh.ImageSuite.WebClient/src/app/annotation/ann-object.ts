@@ -46,6 +46,7 @@ export abstract class AnnObject {
 
     protected minLineWidth = 0.3;
     protected minPointRadius = 2;
+    protected minArrowLineLength = 10;
 
     protected lineWidth: number;
     protected circleRadius: number;
@@ -56,6 +57,8 @@ export abstract class AnnObject {
 
     protected parentObj: AnnObject;
     protected focusedObj: AnnObject;
+
+    static minDelta = 0.0000000001;
 
     constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
 
@@ -171,7 +174,7 @@ export abstract class AnnObject {
         focusedBottomObj.parentObj.onChildDragged(focusedBottomObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
     }
 
-    static screenToImage(point: any, transform: any) {
+    static screenToImage(point: Point, transform: any) {
         const x = point.x;
         const y = point.y;
         const imgPt = [0, 0, 1];
@@ -199,7 +202,7 @@ export abstract class AnnObject {
         };
     }
 
-    static imageToScreen(point: any, transform: any) {
+    static imageToScreen(point: Point, transform: any) {
         const x = point.x;
         const y = point.y;
         const imgPt = [x, y, 1];
@@ -226,7 +229,7 @@ export abstract class AnnObject {
         return false;
     }
 
-    static countDistance(point1: any, point2: any): number {
+    static countDistance(point1: Point, point2: Point): number {
         let value = Math.pow((point1.x - point2.x), 2) + Math.pow((point1.y - point2.y), 2);
         value = Math.sqrt(value);
 
@@ -234,6 +237,27 @@ export abstract class AnnObject {
     }
 
     
+    static getSineTheta(pt1: Point, pt2: Point) {
+        const distance = AnnObject.countDistance(pt1, pt2);
+        if (Math.abs(distance) < AnnObject.minDelta) {
+            return 0.0;
+        } else {
+            const sineTheta = -(Math.abs(pt1.y - pt2.y)) / distance;
+            return (pt1.y > pt2.y)? sineTheta : -sineTheta;
+        }
+    }
+
+    static getCosineTheta(pt1: Point, pt2: Point) {
+        const distance = AnnObject.countDistance(pt1, pt2);
+        if (Math.abs(distance) < AnnObject.minDelta) {
+            return 0.0;
+        } else {
+            const cosineTheta = (Math.abs(pt1.x - pt2.x)) / distance;
+            return (pt1.x < pt2.x)? cosineTheta : -cosineTheta;
+        }
+    }
+
+
     getLineWidth(): number {
         let lineWidth = 1 / this.image.getScaleValue();
         if (lineWidth < this.minLineWidth) {
@@ -250,6 +274,15 @@ export abstract class AnnObject {
         }
 
         return circleRadius;
+    }
+
+    getArrowLineLength(): number {
+        let lineLength = 10 / this.image.getScaleValue();
+        if (lineLength < this.minArrowLineLength) {
+            lineLength = this.minArrowLineLength;
+        }
+
+        return lineLength;
     }
 
     protected setChildDraggable(parentObj: any, child: any, draggable: boolean) {

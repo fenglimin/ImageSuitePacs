@@ -77,14 +77,14 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
                     const annTopPoint = new AnnBasePoint(this, topPoint, this.imageViewer);
                     this.annPointList.push(annTopPoint);
 
-                    const annLeftPoint = new AnnBasePoint(this, leftPoint, this.imageViewer);
-                    this.annPointList.push(annLeftPoint);
-
                     const annRightPoint = new AnnBasePoint(this, rightPoint, this.imageViewer);
                     this.annPointList.push(annRightPoint);
 
                     const annBottomPoint = new AnnBasePoint(this, bottomPoint, this.imageViewer);
                     this.annPointList.push(annBottomPoint);
+
+                    const annLeftPoint = new AnnBasePoint(this, leftPoint, this.imageViewer);
+                    this.annPointList.push(annLeftPoint);
 
                     this.annCenterPoint.up();
                 }
@@ -139,7 +139,7 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
 
     onSwitchFocus() {
 
-        var nextFocusedObj: AnnObject;
+        let nextFocusedObj: AnnObject;
 
         if (!this.focusedObj) {
             nextFocusedObj = this.annEllipse;
@@ -165,31 +165,31 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
 
     redraw(topPoint: Point, bottomPoint: Point, leftPoint: Point, rightPoint: Point) {
         this.annEllipse.setWidth(rightPoint.x - topPoint.x);
-        this.annEllipse.setHeigth(topPoint.y - rightPoint.y);
+        this.annEllipse.setHeight(topPoint.y - rightPoint.y);
         
         this.annPointList[0].moveTo(topPoint);
-        this.annPointList[1].moveTo(leftPoint);
-        this.annPointList[2].moveTo(rightPoint);
-        this.annPointList[3].moveTo(bottomPoint);
+        this.annPointList[1].moveTo(rightPoint);
+        this.annPointList[2].moveTo(bottomPoint);
+        this.annPointList[3].moveTo(leftPoint);
     }
 
     private onPointDragged(draggedObj: any, deltaX: number, deltaY: number) {
 
         const topPoint = this.annPointList[0].getPosition();
-        const leftPoint = this.annPointList[1].getPosition();
-        const rightPoint = this.annPointList[2].getPosition();
-        const bottomPoint = this.annPointList[3].getPosition();
+        const leftPoint = this.annPointList[3].getPosition();
+        const rightPoint = this.annPointList[1].getPosition();
+        const bottomPoint = this.annPointList[2].getPosition();
 
         if (draggedObj === this.annPointList[0]) {
             topPoint.y += deltaY;
             bottomPoint.y -= deltaY;
-        } else if (draggedObj === this.annPointList[1]) {
+        } else if (draggedObj === this.annPointList[3]) {
             leftPoint.x += deltaX;
             rightPoint.x -= deltaX;
-        } else if (draggedObj === this.annPointList[2]) {
+        } else if (draggedObj === this.annPointList[1]) {
             leftPoint.x -= deltaX;
             rightPoint.x += deltaX;
-        } else if (draggedObj === this.annPointList[3]) {
+        } else if (draggedObj === this.annPointList[2]) {
             topPoint.y -= deltaY;
             bottomPoint.y += deltaY;
         }
