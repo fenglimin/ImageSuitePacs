@@ -67,6 +67,11 @@ export class AnnBaseObject extends AnnObject {
         this.jcObj._y += deltaY;
     }
 
+    onMove(point: Point) {
+        this.jcObj._x = point.x;
+        this.jcObj._y = point.y;
+    }
+
     onDeleteChildren() {
         this.deleteObject(this.jcObj);
     }

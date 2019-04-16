@@ -4,6 +4,8 @@ import { IAnnotationObject } from "../interfaces/annotation-object-interface";
 import { IImageViewer } from "../interfaces/image-viewer-interface";
 import { AnnBasePoint } from "./base-object/ann-base-point";
 import { AnnBaseRectangle } from "./base-object/ann-base-rectangle";
+import { AnnBaseText } from "./base-object/ann-base-text";
+import { AnnArrow } from "./ann-arrow";
 
 export class AnnRectangle extends AnnObject implements IAnnotationObject {
     
@@ -19,9 +21,9 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
     */
 
     private annPointList = new Array<AnnBasePoint>();
-    private annRectangle;
-
-    private topLeftPoint: Point;
+    private annRectangle: AnnBaseRectangle;
+    private annArrow: AnnArrow;
+    private annText: AnnBaseText;
 
     constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
         super(parentObj, imageViewer);
@@ -30,7 +32,7 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point) {
 
-        point = AnnObject.screenToImage(point, this.image.transformMatrix);
+        const imagePoint = AnnObject.screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === MouseEventType.MouseDown) {
 
             if (this.created) {
@@ -39,8 +41,7 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
             }
 
             if (this.annPointList.length === 0) {
-                this.topLeftPoint = point;
-                const annTopLeftPoint = new AnnBasePoint(this, point, this.imageViewer);
+                const annTopLeftPoint = new AnnBasePoint(this, imagePoint, this.imageViewer);
                 this.annPointList.push(annTopLeftPoint);
             } else {
 
@@ -54,23 +55,31 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annPointList.length !== 0) {
 
-                const topRightPoint = { x: point.x, y: this.topLeftPoint.y };
-                const bottomLeftPoint = { x: this.topLeftPoint.x, y: point.y };
+                const topLeftPoint = this.annPointList[0].getPosition();
+                const topRightPoint = { x: imagePoint.x, y: topLeftPoint.y };
+                const bottomLeftPoint = { x: topLeftPoint.x, y: imagePoint.y };
 
                 if (this.annRectangle) {
-                    this.redraw(this.topLeftPoint, topRightPoint, bottomLeftPoint, point);
+                    this.redraw(topLeftPoint, topRightPoint, bottomLeftPoint, imagePoint);
                 } else {
 
-                    this.annRectangle = new AnnBaseRectangle(this, this.topLeftPoint, point.x - this.topLeftPoint.x, point.y - this.topLeftPoint.y, this.imageViewer);
+                    this.annRectangle = new AnnBaseRectangle(this, topLeftPoint, imagePoint.x - topLeftPoint.x, imagePoint.y - topLeftPoint.y, this.imageViewer);
 
                     const annTopRightPoint = new AnnBasePoint(this, topRightPoint, this.imageViewer);
                     this.annPointList.push(annTopRightPoint);
 
-                    const annBottomRightPoint = new AnnBasePoint(this, point, this.imageViewer);
+                    const annBottomRightPoint = new AnnBasePoint(this, imagePoint, this.imageViewer);
                     this.annPointList.push(annBottomRightPoint);
 
                     const annBottomLeftPoint = new AnnBasePoint(this, bottomLeftPoint, this.imageViewer);
                     this.annPointList.push(annBottomLeftPoint);
+
+                    this.annArrow = new AnnArrow(this, this.imageViewer);
+                    const arrowStart = { x: point.x + 50, y: point.y };
+                    this.annArrow.onMouseEvent(MouseEventType.Click, arrowStart, null);
+                    this.annArrow.onMouseEvent(MouseEventType.Click, point, null);
+
+                    this.annText = new AnnBaseText(this, "Area", arrowStart, this.imageViewer);
                 }
             }
         }
@@ -110,6 +119,7 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
     }
 
     onScale() {
+        this.annText.onScale();
         this.annRectangle.onScale();
         this.annPointList.forEach(annObj => annObj.onScale());
     }
@@ -174,6 +184,10 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
         this.annPointList[1].moveTo(topRightPoint);
         this.annPointList[2].moveTo(bottomRightPoint);
         this.annPointList[3].moveTo(bottomLeftPoint);
+
+        const arrowStart = { x: bottomRightPoint.x + 50, y: bottomRightPoint.y };
+        this.annText.onMove(arrowStart);
+        //this.annArrow.redrawArrow()
 
         this.annRectangle.redraw(topLeftPoint, bottomRightPoint.x - topLeftPoint.x, bottomRightPoint.y - topLeftPoint.y);
     }

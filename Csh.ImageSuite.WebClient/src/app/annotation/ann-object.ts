@@ -47,6 +47,7 @@ export abstract class AnnObject {
     protected minLineWidth = 0.3;
     protected minPointRadius = 2;
     protected minArrowLineLength = 10;
+    protected minFontSize = 14;
 
     protected lineWidth: number;
     protected circleRadius: number;
@@ -283,6 +284,15 @@ export abstract class AnnObject {
         }
 
         return lineLength;
+    }
+
+    getFontSize(): number {
+        let fontSize = 14 / this.image.getScaleValue();
+        if (fontSize < this.minFontSize) {
+            fontSize = this.minFontSize;
+        }
+
+        return fontSize;
     }
 
     protected setChildDraggable(parentObj: any, child: any, draggable: boolean) {
