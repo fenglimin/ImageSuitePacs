@@ -86,7 +86,7 @@ export class AnnBasePoint extends AnnBaseObject {
         this.jcOuterCircle._radius = radius * 2;
     }
 
-    moveTo(point: Point) {
+    onMove(point: Point) {
         this.jcCenterPoint._x = point.x;
         this.jcCenterPoint._y = point.y;
 

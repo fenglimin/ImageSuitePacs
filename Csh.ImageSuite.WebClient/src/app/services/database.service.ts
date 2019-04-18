@@ -9,9 +9,8 @@ import { Overlay } from '../models/overlay';
 import { FontData } from '../models/misc-data';
 
 const httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': "application/json" })
+    headers: new HttpHeaders({ 'Content-Type': "application/json"})
 };
-
 
 @Injectable({
     providedIn: "root"
@@ -84,6 +83,26 @@ export class DatabaseService {
             );
     }
 
+    setRead(id: string): Observable<Shortcut[]> {
+        const url = `${this.pssiUrl}/setread/`;
+        let jsonId = { id: id };
+        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+            .pipe(
+                tap(shortcut => this.log("save shortcut")),
+                catchError(this.handleError("saveShortcut", []))
+            );
+    }
+
+    setUnread(id: string): Observable<Shortcut[]> {
+        const url = `${this.pssiUrl}/setunread/`;
+        let jsonId = { id: id };
+        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+            .pipe(
+                tap(shortcut => this.log("save shortcut")),
+                catchError(this.handleError("saveShortcut", []))
+            );
+    }
+
     /** Delete shortcut to the server */
     deleteShortcut(shortcut: Shortcut): Observable<Shortcut[]> {
         const url = `${this.shortcutUrl}/delete`;
@@ -113,7 +132,9 @@ export class DatabaseService {
         tap(_ => this.log(`fetched Study id=${id}`)),
         catchError(this.handleError<Study>(`getStudy id=${id}`))
       );
-  }
+    }
+
+
 
     getStudiesTest(): Study[] {
         const aa = this.localTestData.sort(this.compareStudy);

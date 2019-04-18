@@ -112,6 +112,10 @@ export class WorklistComponent implements OnInit {
         this.worklistService.onQueryWorklistCol();
     }
 
+    onStudyChecked(study: Study) {
+        study.checked = !study.checked;
+    }
+
     onAllStudyChecked(event) {
 
         this.worklistService.studies.forEach(study => study.checked = event.target.checked);
@@ -137,7 +141,6 @@ export class WorklistComponent implements OnInit {
         this.initStudyDate = studyDate;
         this.worklistService.shortcut.studyDateFrom = studyDate.dateFrom;
         this.worklistService.shortcut.studyDateTo = studyDate.dateTo;
-
     }
 
     onPrevPageClicked() {
@@ -161,18 +164,26 @@ export class WorklistComponent implements OnInit {
         if (!this.isDesc) {
             this.isDesc = true;
             this.worklistService.onQueryStudies(this.currentPage, clickedHeader + "|Desc");
-
-
         }
         else {
             this.isDesc = false;
-
             this.worklistService.onQueryStudies(this.currentPage, clickedHeader + "|");
-
         }
     }
 
     onStudyDateRangeTableClicked() {
         this.initStudyDate = null;
+    }
+
+    onSetRead(study: Study) {
+        this.worklistService.onSetRead(study);
+    }
+
+    onSetUnread(study: Study) {
+        this.worklistService.onSetUnread(study);
+    }
+
+    onCheckStudyChanged() {
+        this.worklistService.onCheckStudyChanged();
     }
 }

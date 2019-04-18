@@ -5,6 +5,9 @@ import { ViewContext } from "../services/view-context.service"
 export interface IImageViewer {
 
     getAnnotationLayerId(): string;
+    getAnnLabelLayerId(): string;
+    getImageLayer(): any;
+    getAnnLabelLayer(): any;
     getImage(): Image;
     getCanvas(): any;
     getContext(): ViewContext;

@@ -81,7 +81,7 @@ export class Study extends Pssi {
     printed: string;
     reserved: string;
     readed: string;
-    scanStatus: number;
+    scanStatus: string;
 
     accessGroups: string;
     send: number;

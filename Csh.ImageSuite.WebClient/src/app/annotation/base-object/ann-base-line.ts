@@ -33,13 +33,12 @@ export class AnnBaseLine extends AnnBaseObject {
         this.jcObj._y1 += deltaY;
     }
 
-    moveStartTo(point: Point) {
+    onMoveStartPoint(point: Point) {
         this.jcObj._x0 = point.x;
         this.jcObj._y0 = point.y;
     }
 
-
-    moveEndTo(point: Point) {
+    onMoveEndPoint(point: Point) {
         this.jcObj._x1 = point.x;
         this.jcObj._y1 = point.y;
     }

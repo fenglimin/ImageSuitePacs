@@ -162,3 +162,43 @@ select {
     text-decoration: underline;
 }
 
+
+
+.setRead, .setUnread {
+    border: none;
+    height: 40px;
+    outline: none;
+    width: 40px;
+}
+
+.setRead { 
+    background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat left top ;
+    background-size: cover;
+}
+
+
+.setRead:hover { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat right top; background-size: cover;}
+
+.setRead:active { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat left bottom; background-size: cover;}
+
+.setRead:disabled { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat right bottom; background-size: cover;}
+
+.setReadCover {
+    height: 20px;
+    width: 20px;
+    overflow: hidden;
+}
+
+.setUnread { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat left top; background-size: cover;}
+
+.setUnread:hover { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat right top; background-size: cover;}
+
+.setUnread:active { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat left bottom; background-size: cover;}
+
+.setUnread:disabled { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat right bottom; background-size: cover;}
+
+.setUnreadCover {
+    height: 20px;
+    width: 20px;
+    overflow: hidden;
+}

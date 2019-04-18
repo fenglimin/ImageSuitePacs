@@ -7,10 +7,10 @@
             <button class="loadKeyImage" role="button" title="Load Key Image" (click)="onLoadKeyImage()"></button>
         </td>
         <td>
-            <button class="setRead" role="button" title="Set Read" (click)="onSetRead()"></button>
+            <button class="setRead" role="button" title="Set Read" (click)="onSetRead()" [disabled]="worklistService.bShowSetReadBtn"></button>
         </td>
         <td>
-            <button class="setUnread" role="button" title="Set Unread" (click)="onSetUnread()"></button>
+            <button class="setUnread" role="button" title="Set Unread" (click)="onSetUnread()" [disabled]="worklistService.bShowSetUnreadBtn"></button>
         </td>
         <td>
             <button class="changeImageSeriesOrder" role="button" title="Change Image Series Order" (click)="onChangeImageSeriesOrder()"></button>

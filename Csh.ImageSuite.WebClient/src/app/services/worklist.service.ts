@@ -19,6 +19,8 @@ export class WorklistService {
     pageCount: number;
     pages: number[];
     querying = false;
+    bShowSetReadBtn = true;
+    bShowSetUnreadBtn = true;
 
 
     private _shortcut: Shortcut;
@@ -157,6 +159,69 @@ export class WorklistService {
                 }
             });
         }
+    }
+
+    onSetRead(study: Study = null) {
+        if (study == null) {
+            this.studies.forEach(study => {
+                if (study.checked) {
+                    this.databaseService.setRead(study.studyInstanceUid)
+                        .subscribe(shortcuts => this.refreshShortcuts());
+                }
+            });
+        } else {
+            this.databaseService.setRead(study.studyInstanceUid)
+                .subscribe(shortcuts => this.refreshShortcuts());
+        }
+    }
+
+    onSetUnread(study: Study = null) {
+        if (study == null) {
+            this.studies.forEach(study => {
+                if (study.checked) {
+                    this.databaseService.setUnread(study.studyInstanceUid)
+                        .subscribe(shortcuts => this.refreshShortcuts());
+                }
+            });
+        } else {
+            this.databaseService.setUnread(study.studyInstanceUid)
+                .subscribe(shortcuts => this.refreshShortcuts());
+        }
+    }
+
+    onCheckStudyChanged(study: Study = null) {
+        let scanStatusCompletedCount = 0;
+        let scanStatusEndedCount = 0;
+
+
+        this.studies.forEach(study => {
+            if (study.checked) {
+                if (study.scanStatus == "Completed") {
+                    scanStatusCompletedCount++;
+                }
+                else if ((study.scanStatus == "Ended")) {
+                    scanStatusEndedCount++;
+                }
+            }
+        });
+
+        if (scanStatusCompletedCount == 0) {
+            this.bShowSetReadBtn = false;
+        } else {
+            this.bShowSetReadBtn = true;
+        }
+            
+        if (scanStatusEndedCount == 0) {
+            this.bShowSetUnreadBtn = false;
+        } else {
+            this.bShowSetUnreadBtn = true;
+        }
+
+        if (scanStatusCompletedCount == 0 && scanStatusEndedCount == 0) {
+            this.bShowSetReadBtn = false;
+            this.bShowSetUnreadBtn = false;
+        }
+
     }
 
     isUsingLocalTestData(): boolean {

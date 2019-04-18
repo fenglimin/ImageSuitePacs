@@ -48,8 +48,8 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annStartPoint) {
                 if (this.annLine) {
-                    this.annLine.moveEndTo(point);
-                    this.annEndPoint.moveTo(point);
+                    this.annLine.onMoveEndPoint(point);
+                    this.annEndPoint.onMove(point);
                 } else {
                     this.annEndPoint = new AnnBasePoint(this, point, this.imageViewer);
                     this.annLine = new AnnBaseLine(this, this.annStartPoint.getPosition(), point, this.imageViewer);
@@ -61,12 +61,19 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         }
     }
 
+    onCreate(startPoint: Point, endPoint: Point) {
+        this.onDeleteChildren();
+
+        this.annLine = new AnnBaseLine(this, startPoint, endPoint, this.imageViewer);
+        this.annStartPoint = new AnnBasePoint(this, startPoint, this.imageViewer);
+        this.annEndPoint = new AnnBasePoint(this, endPoint, this.imageViewer);
+    }
 
     onDrag(deltaX: number, deltaY: number) {
         if (this.focusedObj === this.annStartPoint) {
-            this.onStartPointDragged(deltaX, deltaY);
+            this.onDragStartPoint(deltaX, deltaY);
         } else if (this.focusedObj === this.annEndPoint) {
-            this.onEndPointDragged(deltaX, deltaY);
+            this.onDragEndPoint(deltaX, deltaY);
         }else {
             this.onTranslate(deltaX, deltaY);
         }
@@ -125,6 +132,16 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         this.deleteObject(this.annLine);
     }
 
+    onMoveStartPoint(point: Point) {
+        this.annLine.onMoveStartPoint(point);
+        this.annStartPoint.onMove(point);
+    }
+
+    onMoveEndPoint(point: Point) {
+        this.annLine.onMoveEndPoint(point);
+        this.annEndPoint.onMove(point);
+    }
+
     getStartPosition(): Point {
         return this.annLine.getStartPosition();
     }
@@ -136,16 +153,16 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 
-    private onStartPointDragged(deltaX: number, deltaY: number) {
+    private onDragStartPoint(deltaX: number, deltaY: number) {
         this.annStartPoint.onTranslate(deltaX, deltaY);
         const point = this.annStartPoint.getPosition();
-        this.annLine.moveStartTo(point);
+        this.annLine.onMoveStartPoint(point);
     }
 
-    private onEndPointDragged(deltaX: number, deltaY: number) {
+    private onDragEndPoint(deltaX: number, deltaY: number) {
         this.annEndPoint.onTranslate(deltaX, deltaY);
         const point = this.annEndPoint.getPosition();
-        this.annLine.moveEndTo(point);
+        this.annLine.onMoveEndPoint(point);
     }
 
     

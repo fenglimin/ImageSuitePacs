@@ -167,10 +167,10 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
         this.annEllipse.setWidth(rightPoint.x - topPoint.x);
         this.annEllipse.setHeight(topPoint.y - rightPoint.y);
         
-        this.annPointList[0].moveTo(topPoint);
-        this.annPointList[1].moveTo(rightPoint);
-        this.annPointList[2].moveTo(bottomPoint);
-        this.annPointList[3].moveTo(leftPoint);
+        this.annPointList[0].onMove(topPoint);
+        this.annPointList[1].onMove(rightPoint);
+        this.annPointList[2].onMove(bottomPoint);
+        this.annPointList[3].onMove(leftPoint);
     }
 
     private onPointDragged(draggedObj: any, deltaX: number, deltaY: number) {

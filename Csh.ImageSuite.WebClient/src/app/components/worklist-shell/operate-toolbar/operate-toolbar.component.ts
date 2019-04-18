@@ -26,11 +26,11 @@ export class OperateToolbarComponent implements OnInit {
     }
 
     onSetRead() {
-
+        this.worklistService.onSetRead();
     }
 
     onSetUnread() {
-
+        this.worklistService.onSetUnread();
     }
 
     onChangeImageSeriesOrder() {

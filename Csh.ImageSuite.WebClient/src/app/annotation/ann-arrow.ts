@@ -38,21 +38,29 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
                 this.created = true;
 
                 if (!this.parentObj) {
-                    // Parent not set, this mean it is not a child of a parentObj annotion. 
+                    // Parent not set, this mean it is not a child of a parentObj annotation. 
                     this.imageViewer.onAnnotationCreated(this);
                 }
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annLine) {
                 this.annLine.onMouseEvent(mouseEventType, point, null);
-                this.redrawArrow(imagePoint, this.annLine.getStartPosition());
+                this.redrawArrow(this.annLine.getStartPosition(), imagePoint);
             }
         }
     }
 
+    onCreate(arrowStartPoint: Point, arrowEndPoint: Point) {
+        this.onDeleteChildren();
+
+        this.annLine = new AnnLine(this, this.imageViewer);
+        this.annLine.onCreate(arrowStartPoint, arrowEndPoint);
+        this.redrawArrow(arrowStartPoint, arrowEndPoint);
+    }
+
     onDrag(deltaX: number, deltaY: number) {
         this.annLine.onDrag(deltaX, deltaY);
-        this.redrawArrow(this.annLine.getEndPosition(), this.annLine.getStartPosition());
+        this.redrawArrow(this.annLine.getStartPosition(), this.annLine.getEndPosition());
     }
 
     onSelect(selected: boolean, focused: boolean) {
@@ -73,12 +81,18 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
         }
     }
 
+    onTranslate(deltaX: number, deltaY: number) {
+        this.annLine.onTranslate(deltaX, deltaY);
+        this.annArrowLineA.onTranslate(deltaX, deltaY);
+        this.annArrowLineB.onTranslate(deltaX, deltaY);
+    }
+
     onScale() {
         this.annLine.onScale();
 
         this.annArrowLineA.onScale();
         this.annArrowLineB.onScale();
-        this.redrawArrow(this.annLine.getEndPosition(), this.annLine.getStartPosition());
+        this.redrawArrow(this.annLine.getStartPosition(), this.annLine.getEndPosition());
     }
 
     onFlip(vertical: boolean) {
@@ -98,9 +112,29 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
         this.deleteObject(this.annArrowLineB);
     }
 
+    onMoveStartPoint(point: Point) {
+        this.annLine.onMoveStartPoint(point);
+        const endPoint = this.annLine.getEndPosition();
+        this.redrawArrow(point, endPoint);
+    }
+
+    onMoveEndPoint(point: Point) {
+        this.annLine.onMoveEndPoint(point);
+        const startPoint = this.annLine.getStartPosition();
+        this.redrawArrow(startPoint, point);
+    }
+
+    getStartPosition(): Point {
+        return this.annLine.getStartPosition();
+    }
+
+    getEndPosition(): Point {
+        return this.annLine.getEndPosition();
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    private redrawArrow(endPoint: Point, startPoint: Point) {
+    private redrawArrow(startPoint: Point, endPoint: Point) {
         const arrowLength = this.getArrowLineLength();
         const sineTheta = AnnObject.getSineTheta(endPoint, startPoint);
         const cosineTheta = AnnObject.getCosineTheta(endPoint, startPoint);
@@ -116,11 +150,11 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
         }
 
         if (this.annArrowLineA && this.annArrowLineB) {
-            this.annArrowLineA.moveStartTo(endPoint);
-            this.annArrowLineA.moveEndTo(lineAEndPoint);
+            this.annArrowLineA.onMoveStartPoint(endPoint);
+            this.annArrowLineA.onMoveEndPoint(lineAEndPoint);
 
-            this.annArrowLineB.moveStartTo(endPoint);
-            this.annArrowLineB.moveEndTo(lineBEndPoint);
+            this.annArrowLineB.onMoveStartPoint(endPoint);
+            this.annArrowLineB.onMoveEndPoint(lineBEndPoint);
 
         } else {
             this.annArrowLineA = new AnnBaseLine(this, endPoint, lineAEndPoint, this.imageViewer);

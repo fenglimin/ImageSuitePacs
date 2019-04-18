@@ -4,6 +4,8 @@
             <tr id="trStudiesHeader">
                 <th>
                 </th>
+                <th>
+                </th>
                 <th *ngFor="let col of worklistService.worklistColumns " nowrap>
                     <div id="headContent" class="worklistHeader">
             <tr>
@@ -20,6 +22,9 @@
 <tr id="trStudiesQuery">
     <td>
         <input type="checkbox" (click)="onAllStudyChecked($event)" />
+    </td>
+    <td>
+
     </td>
     <td *ngFor="let col of worklistService.worklistColumns">
         <div *ngIf="col.controlType == 'TextBox'">
@@ -59,7 +64,6 @@
                 <option *ngFor="let value of col.valueList | keyvalue" [ngValue]="value.key">{{value.value}}</option>
             </select>
         </ng-template>
-        
     </div>
         <div *ngIf="col.controlType == 'Calendar'">
             <tr>
@@ -83,11 +87,21 @@
     </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let study of worklistService.studies" (click)="onStudyChecked(study)">
+        <tr *ngFor="let study of worklistService.studies" >
             <td>
-                <input type="checkbox" [(ngModel)]="study.checked" />
+                <input type="checkbox" [(ngModel)]="study.checked" (change)="onCheckStudyChanged()"/>
             </td>
-            <td *ngFor="let col of worklistService.worklistColumns" nowrap>
+            <td>
+                <div *ngIf="study.scanStatus == 'Ended'; else scanStatusCompleted" class="setReadCover">
+                    <button class="setRead" role="button" title="Set Read" (click)="onSetRead(study)"></button>
+                </div>
+                <ng-template #scanStatusCompleted>
+                    <div class="setUnreadCover">
+                        <button class="setUnread" role="button" title="Set Unread" (click)="onSetUnread(study)"></button>
+                    </div>
+                </ng-template>
+            </td>
+            <td *ngFor="let col of worklistService.worklistColumns" (click)="onStudyChecked(study)" nowrap>
                 <div class="patientIdCol" *ngIf="col.columnId == 'patientId'; else notPatientId" (click)="doShowStudy(study)">{{study.patient[col.columnId]}}</div>
                 <ng-template #notPatientId>
                     <div *ngIf="study.patient[col.columnId]; else onlyStudy">{{study.patient[col.columnId]}}</div>
@@ -137,7 +151,6 @@
             </td>
         </tr>
     </tfoot>
-
     </table>
     </div>
 

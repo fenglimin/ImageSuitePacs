@@ -1,4 +1,4 @@
-import { Point } from '../models/annotation';
+import { Point, Rectangle, PositionInRectangle } from '../models/annotation';
 import { Image } from "../models/pssi";
 import { IImageViewer } from "../interfaces/image-viewer-interface";
 import { IAnnotationObject } from "../interfaces/annotation-object-interface";
@@ -42,6 +42,7 @@ export abstract class AnnObject {
 
     protected image: Image;
     protected layerId: string; 
+    protected labelLayerId: string;
     protected canvas: string;
 
     protected minLineWidth = 0.3;
@@ -67,6 +68,8 @@ export abstract class AnnObject {
         this.imageViewer = imageViewer;
         this.image = imageViewer.getImage();
         this.layerId = imageViewer.getAnnotationLayerId();
+        this.labelLayerId = imageViewer.getAnnLabelLayerId();
+
         this.canvas = imageViewer.getCanvas();
 
         this.created = false;
@@ -158,7 +161,7 @@ export abstract class AnnObject {
         const step = keyEvent.ctrlKey ? 1 : 5;
 
         const posImageOld = this.focusedObj.getPosition();
-        let posScreen = AnnObject.imageToScreen(posImageOld, this.image.transformMatrix);
+        let posScreen = AnnObject.imageToScreen(posImageOld, focusedBottomObj.parentObj.getTransformMatrix());
 
         if (keyEvent.code === "ArrowUp") {
             posScreen.y -= step;
@@ -170,12 +173,12 @@ export abstract class AnnObject {
             posScreen.x += step;
         }
 
-        const posImageNew = AnnObject.screenToImage(posScreen, this.image.transformMatrix);
+        const posImageNew = AnnObject.screenToImage(posScreen, focusedBottomObj.parentObj.getTransformMatrix());
 
         focusedBottomObj.parentObj.onChildDragged(focusedBottomObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
     }
 
-    static screenToImage(point: Point, transform: any) {
+    static screenToImage(point: Point, transform: any): Point {
         const x = point.x;
         const y = point.y;
         const imgPt = [0, 0, 1];
@@ -203,7 +206,7 @@ export abstract class AnnObject {
         };
     }
 
-    static imageToScreen(point: Point, transform: any) {
+    static imageToScreen(point: Point, transform: any): Point {
         const x = point.x;
         const y = point.y;
         const imgPt = [x, y, 1];
@@ -216,6 +219,11 @@ export abstract class AnnObject {
             x: screenPt[0],
             y: screenPt[1]
         };
+    }
+
+    static imageToImage(sourcePoint: Point, sourceTransform: any, destTransform: any): Point {
+        const screenPoint = AnnObject.imageToScreen(sourcePoint, sourceTransform);
+        return AnnObject.screenToImage(screenPoint, destTransform);
     }
 
     static isJcanvasObject(obj:any):boolean {
@@ -258,6 +266,56 @@ export abstract class AnnObject {
         }
     }
 
+    static multiplyPointM(x, y, m) {
+        return {
+            x: (x * m[0][0] + y * m[0][1] + m[0][2]),
+            y: (x * m[1][0] + y * m[1][1] + m[1][2])
+        }
+    }
+
+    static equalPoint(p1: Point, p2: Point): boolean {
+        return Math.abs(p1.x - p2.x) < 0.0001 && Math.abs(p1.y - p2.y) < 0.0001;
+    }
+
+    static pointListFromRect(rect: Rectangle): Point[] {
+        const retPointList = [];
+
+        retPointList.push({ x: rect.x, y: rect.y });
+        retPointList.push({ x: rect.x + rect.width, y: rect.y });
+        retPointList.push({ x: rect.x + rect.width, y: rect.y + rect.height });
+        retPointList.push({ x: rect.x, y: rect.y + rect.height });
+
+        return retPointList;
+    }
+
+    static pointListFrom(point: Point, posInRect: PositionInRectangle, width: number, height: number): Point[] {
+        const retPointList = [];
+
+        if (posInRect === PositionInRectangle.TopLeft) {
+            retPointList.push({ x: point.x, y: point.y });
+            retPointList.push({ x: point.x + width, y: point.y });
+            retPointList.push({ x: point.x + width, y: point.y + height });
+            retPointList.push({ x: point.x, y: point.y + height });
+        }else if (posInRect === PositionInRectangle.TopRight) {
+            retPointList.push({ x: point.x - width, y: point.y });
+            retPointList.push({ x: point.x, y: point.y });
+            retPointList.push({ x: point.x, y: point.y + height });
+            retPointList.push({ x: point.x - width, y: point.y + height });
+        } else if (posInRect === PositionInRectangle.BottomRight) {
+            retPointList.push({ x: point.x - width, y: point.y - height});
+            retPointList.push({ x: point.x, y: point.y - height});
+            retPointList.push({ x: point.x, y: point.y });
+            retPointList.push({ x: point.x - width, y: point.y });
+        } else if (posInRect === PositionInRectangle.BottomLeft) {
+            retPointList.push({ x: point.x, y: point.y - height});
+            retPointList.push({ x: point.x + width, y: point.y - height});
+            retPointList.push({ x: point.x + width, y: point.y });
+            retPointList.push({ x: point.x, y: point.y });
+        }
+        
+
+        return retPointList;
+    }
 
     getLineWidth(): number {
         let lineWidth = 1 / this.image.getScaleValue();
@@ -295,6 +353,11 @@ export abstract class AnnObject {
         return fontSize;
     }
 
+    protected getTransformMatrix(): any {
+        return this.image.transformMatrix;
+    }
+
+
     protected setChildDraggable(parentObj: any, child: any, draggable: boolean) {
 
         child.draggable({
@@ -313,7 +376,7 @@ export abstract class AnnObject {
             drag: arg => {
 
                 if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn) {
-                    const point = AnnObject.screenToImage({ x: arg.x, y: arg.y }, parentObj.image.transformMatrix);
+                    const point = AnnObject.screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
 
                     parentObj.dragging = true;
 
@@ -394,6 +457,15 @@ export abstract class AnnObject {
     }
 
     onDeleteChildren() {
+    }
+
+    getSurroundPointList(): Point[] {
+
+        return [];
+    }
+
+    onRotate(angle: number) {
+
     }
 }
 

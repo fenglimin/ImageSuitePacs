@@ -236,6 +236,18 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.annLayerId;
     }
 
+    getAnnLabelLayerId(): string {
+        return this.annLabelLayerId;
+    }
+
+    getImageLayer(): any {
+        return this.imgLayer;
+    }
+
+    getAnnLabelLayer(): any {
+        return this.annLabelLayer;
+    }
+
     getImage(): Image {
         return this.image;
     }
@@ -555,6 +567,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annLayer.optns.rotateMatrix = this.imgLayer.optns.rotateMatrix;
         this.annLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
         this.annLayer.scale(1);
+
+        this.annLabelLayer.transform(1, 0, 0, 1, 0, 0, true);
+
+        this.annLabelLayer.optns.scaleMatrix = this.imgLayer.optns.scaleMatrix;
+        this.annLabelLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
+        this.annLabelLayer.scale(1);
     }
 
     onSelected() {
@@ -706,12 +724,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.imgLayer.rotate(angle, "center");
         this.updateImageTransform();
 
-        //var totalAngle = this.getRotate();
-        //this.annObjList.forEach(function (obj) {
-        //    if (obj.onRotate) {
-        //        obj.onRotate(angle, totalAngle);
-        //    }
-        //}); 
+        this.annObjList.forEach(obj => obj.onRotate(angle));
     }
 
     flip(flipVertical: boolean) {
