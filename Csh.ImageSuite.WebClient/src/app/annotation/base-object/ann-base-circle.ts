@@ -3,13 +3,16 @@ import { MouseEventType, AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
 
-export class AnnBaseEllipse extends AnnBaseObject {
+export class AnnBaseCircle extends AnnBaseObject {
 
-    constructor(parentObj: AnnObject, center: Point, width: number, height: number, imageViewer: IImageViewer) {
+    private fill: boolean
+
+    constructor(parentObj: AnnObject, center: Point, radius: number, imageViewer: IImageViewer, fill: boolean = false) {
 
         super(parentObj, imageViewer);
 
-        this.jcObj = jCanvaScript.ellipse(center.x, center.y, Math.abs(width), Math.abs(height), this.selectedColor).layer(this.layerId);
+        this.fill = fill;
+        jCanvaScript.circle(center.x, center.y, radius, this.selectedColor, fill).layer(this.layerId);
         super.setJcObj();
     }
 
@@ -19,20 +22,7 @@ export class AnnBaseEllipse extends AnnBaseObject {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
-    setWidth(width: number) {
-        this.jcObj._width = Math.abs(width);
-        this.checkCircle();
-    }
 
-    setHeight(height: number) {
-        this.jcObj._height = Math.abs(height);
-        this.checkCircle();
-    }
-
-    checkCircle() {
-        const isCircle = Math.round(this.getWidth()) === Math.round(this.getHeight());
-        this.jcObj.color( isCircle? "#F00" : this.selectedColor);
-    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions

@@ -1,4 +1,4 @@
-﻿import { Point } from '../models/annotation';
+﻿import { Point, Rectangle } from '../models/annotation';
 import { MouseEventType, AnnObject } from './ann-object';
 import { IAnnotationObject } from "../interfaces/annotation-object-interface";
 import { IImageViewer } from "../interfaces/image-viewer-interface";
@@ -78,9 +78,10 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
                     const annBottomLeftPoint = new AnnBasePoint(this, pointList[3], this.imageViewer);
                     this.annPointList.push(annBottomLeftPoint);
 
-                    const arrowStart = { x: imagePoint.x + 300, y: imagePoint.y };
+                    const delta = 30 / this.image.getScaleValue();
+                    const arrowStart = { x: imagePoint.x + delta, y: imagePoint.y - delta};
                     this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-                    this.annTextIndicator.onCreate(arrowStart, imagePoint, "Area");
+                    this.annTextIndicator.onCreate(arrowStart, imagePoint, this.annRectangle.getAreaString());
                 }
             }
         }
@@ -111,7 +112,7 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
         this.annRectangle.onSelect(selected, this.focusedObj === this.annRectangle);
         this.annPointList.forEach(annObj => annObj.onSelect(selected, this.focusedObj === annObj));
 
-        this.annTextIndicator.onSelect(selected, false);
+        this.annTextIndicator.onSelect(selected, this.focusedObj === this.annTextIndicator);
 
         if (!this.parentObj && this.selected) {
             this.imageViewer.selectAnnotation(this);
@@ -147,6 +148,8 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
         if (!this.focusedObj) {
             nextFocusedObj = this.annRectangle;
         } else if (this.focusedObj === this.annRectangle) {
+            nextFocusedObj = this.annTextIndicator;
+        } else if (this.focusedObj === this.annTextIndicator) {
             nextFocusedObj = this.annPointList[0];
         } else {
             const index = this.annPointList.findIndex(annObj => annObj === this.focusedObj);
@@ -209,8 +212,8 @@ export class AnnRectangle extends AnnObject implements IAnnotationObject {
             this.annPointList[i].onMove(pointList[i]);
         }
 
-        this.annRectangle.redraw(pointList[0], pointList[2].x - pointList[0].x, pointList[2].y - pointList[0].y);
-
+        this.annRectangle.redraw(new Rectangle(pointList[0].x, pointList[0].y, pointList[2].x - pointList[0].x, pointList[2].y - pointList[0].y));
         this.annTextIndicator.redrawArrow();
+        this.annTextIndicator.setText(this.annRectangle.getAreaString());
     }
 }

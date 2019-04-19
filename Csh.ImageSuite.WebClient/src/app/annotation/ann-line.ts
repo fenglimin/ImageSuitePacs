@@ -150,6 +150,12 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         return this.annLine.getEndPosition();
     }
 
+    down() {
+        this.annLine.down();
+        this.annStartPoint.down();
+        this.annEndPoint.down();
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 

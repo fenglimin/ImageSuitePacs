@@ -132,6 +132,12 @@ export class AnnArrow extends AnnObject implements IAnnotationObject {
         return this.annLine.getEndPosition();
     }
 
+    down() {
+        this.annLine.down();
+        this.annArrowLineA.down();
+        this.annArrowLineB.down();
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
     private redrawArrow(startPoint: Point, endPoint: Point) {

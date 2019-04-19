@@ -1,6 +1,5 @@
-﻿//import Shortcut = require("./shortcut");
-import { Shortcut } from "../models/shortcut";
-//import Shortcut1 = Shortcut.Shortcut;
+﻿import { Shortcut } from "../models/shortcut";
+import { Size } from "../models/annotation";
 
 export abstract class Pssi {
     id: number;
@@ -292,7 +291,28 @@ export class Image extends Pssi {
         return scale;
     }
 
+    getPixelSpacing(): Size {
 
+        
+        let tagValue = this.cornerStoneImage.data.string("x00280030");
+        if (!tagValue) {
+            tagValue = this.cornerStoneImage.data.string("x00181164");
+        }
+        if (!tagValue) {
+            return null;
+        }
+
+        const valueList = tagValue.split("\\");
+        if (valueList.length !== 2) {
+            return null;
+        }
+
+        const pixelSpacing = new Size(0, 0);
+        pixelSpacing.cx = Number(valueList[0]);
+        pixelSpacing.cy = Number(valueList[1]);
+
+        return pixelSpacing;
+    }
 }
 
 export class MultiframeImage extends Image {

@@ -80,11 +80,6 @@ export class AnnBaseObject extends AnnObject {
         return { x: this.jcObj._x, y: this.jcObj._y }
     }
 
-    setStartPosition(point: Point) {
-        this.jcObj._x = point.x;
-        this.jcObj._y = point.y;
-    }
-
     setWidth(width: number) {
         this.jcObj._width = width;
     }
@@ -101,9 +96,23 @@ export class AnnBaseObject extends AnnObject {
         return this.jcObj._height;
     }
 
+    setColor(color: string) {
+        this.jcObj.color(color);
+    }
+
+    setVisible(visible: boolean) {
+        this.jcObj.visible(visible);
+    }
+
     up() {
         if (this.jcObj) {
             this.jcObj.up();
+        }
+    }
+
+    down() {
+        if (this.jcObj) {
+            this.jcObj.down();
         }
     }
 }

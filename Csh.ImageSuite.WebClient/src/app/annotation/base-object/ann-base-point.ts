@@ -106,6 +106,16 @@ export class AnnBasePoint extends AnnBaseObject {
         if (this.jcCenterPoint) {
             this.jcCenterPoint.up();
         }
-
     }
+
+    down() {
+        if (this.jcOuterCircle) {
+            this.jcOuterCircle.down();
+        }
+
+        if (this.jcCenterPoint) {
+            this.jcCenterPoint.down();
+        }
+    }
+
 }

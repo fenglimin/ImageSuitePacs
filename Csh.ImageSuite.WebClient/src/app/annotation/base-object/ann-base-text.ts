@@ -6,66 +6,62 @@ import { AnnBaseObject } from "./ann-base-object";
 
 export class AnnBaseText extends AnnBaseObject {
 
-    jcObj: any;
-
     constructor(parentObj: AnnObject, text: string, startPoint: Point, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
 
+        
+        // The coordinate of input point is for annotation layer, since text will always be drawn in label layer, need to convert the coordinate
+        startPoint = AnnObject.annLayerToAnnLabelLayer(startPoint, imageViewer);
+
         const font = new FontData("Times New Roman", "#FFF", this.parentObj.getFontSize());
-        startPoint = this.annLayerToAnnLabelLayer(startPoint);
         this.jcObj = jCanvaScript.text(text, startPoint.x, startPoint.y).color(this.selectedColor).font(font.getCanvasFontString()).layer(this.labelLayerId).align("left");
         super.setJcObj();
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
     onScale() {
+
+        // When scale value changed, the font size need to be changed as well to make sure it look unchanged in the screen
         const font = new FontData("Times New Roman", "#FFF", this.parentObj.getFontSize());
         this.jcObj.font(font.getCanvasFontString());
     }
 
-    //onFlip(vertical: boolean) {
-
-
-    //    if (!vertical) {
-    //        if (this.jcObj._align === "left") {
-    //            this.jcObj.align("right");
-    //        } else if (this.jcObj._align === "right") {
-    //            this.jcObj.align("left");
-    //        }
-    //    }
-    //}
-
     onMove(point: Point) {
-        point = this.annLayerToAnnLabelLayer(point);
+
+        // The coordinate of input point is for annotation layer, since text will always be drawn in label layer, need to convert the coordinate
+        point = AnnObject.annLayerToAnnLabelLayer(point, this.imageViewer);
         super.onMove(point);
     }
 
+    getRect(): Rectangle {
+
+        // Not sure why JCanvas returns the wrong rect, adjust it
+        const rect = this.jcObj.getRect("poor");
+
+        const newHeight = this.parentObj.getFontSize();
+        rect.y -= newHeight - rect.height - 2;
+        rect.height = newHeight + 4;
+        rect.x -= 2;
+        rect.width += 4;
+        return rect;
+    } 
 
     getTransformMatrix(): any {
+
+        // Text is always in label layer
         return this.imageViewer.getAnnLabelLayer().transform();
     }
 
-    getRect(): Rectangle {
-        return this.jcObj.getRect("poor");
-    } 
 
-    getSurroundPointList(): Point[] {
-
-        const rectText = this.jcObj.getRect("poor");
-
-        const retPointList = AnnObject.pointListFromRect(rectText);
-        for (let i = 0; i < retPointList.length; i ++) {
-            retPointList[i] = this.annLabelLayerToAnnLayer(retPointList[i]);
-        }
-
-        return retPointList;
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    setText(text: string) {
+        this.jcObj.string(text);
     }
 
-    private annLabelLayerToAnnLayer(point: Point): Point {
-        return AnnObject.imageToImage(point, this.getTransformMatrix(), this.imageViewer.getImageLayer().transform());
-    }
 
-    private annLayerToAnnLabelLayer(point: Point): Point {
-        return AnnObject.imageToImage(point, this.imageViewer.getImageLayer().transform(), this.getTransformMatrix());
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
 }

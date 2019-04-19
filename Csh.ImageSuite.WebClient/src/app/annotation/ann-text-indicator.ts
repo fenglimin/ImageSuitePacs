@@ -2,7 +2,7 @@
 import { MouseEventType, AnnObject } from './ann-object';
 import { IAnnotationObject } from "../interfaces/annotation-object-interface";
 import { IImageViewer } from "../interfaces/image-viewer-interface";
-import { AnnBaseText } from "./base-object/ann-base-text";
+import { AnnText } from "./ann-text";
 import { AnnArrow } from "./ann-arrow";
 
 
@@ -10,7 +10,7 @@ export class AnnTextIndicator extends AnnObject implements IAnnotationObject{
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj): void { throw new Error("Not implemented"); }
 
     private annArrow: AnnArrow;
-    private annText: AnnBaseText;
+    private annText: AnnText;
 
     constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
         super(parentObj, imageViewer);
@@ -23,9 +23,10 @@ export class AnnTextIndicator extends AnnObject implements IAnnotationObject{
 
         this.annArrow = new AnnArrow(this, this.imageViewer);
         this.annArrow.onCreate(arrowStartPoint, arrowEndPoint);
+        this.annArrow.down();
 
-        this.annText = new AnnBaseText(this, " " + text + " ", arrowStartPoint, this.imageViewer);
-        this.annText.onDrawEnded();
+        this.annText = new AnnText(this, this.imageViewer);
+        this.annText.onCreate(arrowStartPoint, text);
     }
 
     onDrag(deltaX: number, deltaY: number) {
@@ -42,7 +43,7 @@ export class AnnTextIndicator extends AnnObject implements IAnnotationObject{
         }
 
         this.annArrow.onSelect(selected, false);
-        this.annText.onSelect(selected, false);
+        this.annText.onSelect(selected, focused);
 
         if (!this.parentObj && this.selected) {
             this.imageViewer.selectAnnotation(this);
@@ -122,6 +123,10 @@ export class AnnTextIndicator extends AnnObject implements IAnnotationObject{
         //}
 
         this.annText.onMove(arrowStartPoint);
+    }
+
+    setText(text: string) {
+        this.annText.setText(text);
     }
 
     private getShortestDistancePoint(destPointList: Point[], textPointList: Point[]): Point[] {

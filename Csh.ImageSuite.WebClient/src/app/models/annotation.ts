@@ -8,6 +8,16 @@
     }
 }
 
+export class Size {
+    cx: number;
+    cy: number;
+
+    constructor(cx: number, cy: number) {
+        this.cx = cx;
+        this.cy = cy;
+    }
+}
+
 export class Rectangle {
     x: number;
     y: number;

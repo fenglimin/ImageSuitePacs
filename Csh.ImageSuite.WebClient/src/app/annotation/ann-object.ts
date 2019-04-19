@@ -51,7 +51,7 @@ export abstract class AnnObject {
     protected minFontSize = 14;
 
     protected lineWidth: number;
-    protected circleRadius: number;
+    protected pointRadius: number;
 
     protected oldCursor: any;
 
@@ -77,7 +77,7 @@ export abstract class AnnObject {
         this.dragging = false;
 
         this.lineWidth = this.getLineWidth();
-        this.circleRadius = this.getPointRadius();
+        this.pointRadius = this.getPointRadius();
     }
 
     isCreated() {
@@ -226,6 +226,24 @@ export abstract class AnnObject {
         return AnnObject.screenToImage(screenPoint, destTransform);
     }
 
+    static imageListToImageList(pointList: Point[], sourceTransform: any, destTransform: any): Point[] {
+        const retList = [];
+
+        for (let i = 0; i < pointList.length; i++) {
+            retList.push(AnnObject.imageToImage(pointList[i], sourceTransform, destTransform));
+        }
+
+        return retList;
+    }
+
+    static annLabelLayerToAnnLayer(point: Point, imageViewer: IImageViewer): Point {
+        return AnnObject.imageToImage(point, imageViewer.getAnnLabelLayer().transform(), imageViewer.getImageLayer().transform());
+    }
+
+    static annLayerToAnnLabelLayer(point: Point, imageViewer: IImageViewer): Point {
+        return AnnObject.imageToImage(point, imageViewer.getImageLayer().transform(), imageViewer.getAnnLabelLayer().transform());
+    }
+
     static isJcanvasObject(obj:any):boolean {
         if (!obj) {
             return false;
@@ -327,12 +345,12 @@ export abstract class AnnObject {
     }
 
     getPointRadius(): number {
-        let circleRadius = 3 / this.image.getScaleValue();
-        if (circleRadius < this.minPointRadius) {
-            circleRadius = this.minPointRadius;
+        let pointRadius = 3 / this.image.getScaleValue();
+        if (pointRadius < this.minPointRadius) {
+            pointRadius = this.minPointRadius;
         }
 
-        return circleRadius;
+        return pointRadius;
     }
 
     getArrowLineLength(): number {
@@ -344,7 +362,7 @@ export abstract class AnnObject {
         return lineLength;
     }
 
-    getFontSize(): number {
+     getFontSize(): number {
         let fontSize = 14 / this.image.getScaleValue();
         if (fontSize < this.minFontSize) {
             fontSize = this.minFontSize;
@@ -411,6 +429,8 @@ export abstract class AnnObject {
                 parentObj.oldCursor = parentObj.canvas.style.cursor;
                 parentObj.canvas.style.cursor = child.mouseStyle;
             }
+
+            return false;
         };
 
         child._onmouseout = arg => {
@@ -418,6 +438,8 @@ export abstract class AnnObject {
                 parentObj.onMouseEvent(MouseEventType.MouseOut, arg);
                 parentObj.canvas.style.cursor = parentObj.oldCursor;
             }
+
+            return false;
         };
 
         child._onmousedown = arg => {
@@ -467,6 +489,10 @@ export abstract class AnnObject {
     onRotate(angle: number) {
 
     }
+
+    down() {
+
+    }
 }
 
 /*
@@ -477,8 +503,8 @@ export abstract class AnnObject {
     protected isInEdit: boolean; //is current object selected and in edit status
     protected parentObj: AnnObject;
 
-    protected defaultCircleRadius = 5;
-    protected minCircleRadius = 2;
+    protected defaultpointRadius = 5;
+    protected minpointRadius = 2;
     protected minLineWidth = 0.3;
 
     protected selectedLevel = 100;
