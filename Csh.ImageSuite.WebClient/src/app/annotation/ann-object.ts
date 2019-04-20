@@ -493,6 +493,16 @@ export abstract class AnnObject {
     down() {
 
     }
+
+    onScale() {
+
+    }
+
+    onFlip(vertical: boolean) {
+    }
+
+    onMove(point: Point) {
+    }
 }
 
 /*

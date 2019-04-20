@@ -2,14 +2,14 @@
 import { MouseEventType, AnnObject } from './ann-object';
 import { IAnnotationObject } from "../interfaces/annotation-object-interface";
 import { IImageViewer } from "../interfaces/image-viewer-interface";
-import { AnnBasePoint } from "./base-object/ann-base-point";
 import { AnnBaseLine } from "./base-object/ann-base-line";
+import { AnnPoint } from "./extend-object/ann-point";
 
 export class AnnLine extends AnnObject implements IAnnotationObject{
     
     private annLine: AnnBaseLine;
-    private annStartPoint: AnnBasePoint;
-    private annEndPoint: AnnBasePoint;
+    private annStartPoint: AnnPoint;
+    private annEndPoint: AnnPoint;
 
     constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
         super(parentObj, imageViewer);
@@ -20,7 +20,7 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
-        point = AnnObject.screenToImage(point, this.image.transformMatrix);
+        const imagePoint = AnnObject.screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === MouseEventType.MouseDown) {
 
             if (this.created) {
@@ -29,7 +29,8 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
             }
 
             if (!this.annStartPoint) {
-                this.annStartPoint = new AnnBasePoint(this, point, this.imageViewer);
+                this.annStartPoint = new AnnPoint(this, this.imageViewer);
+                this.annStartPoint.onCreate(imagePoint);
             } else {
 
                 this.annStartPoint.onDrawEnded();
@@ -48,11 +49,12 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annStartPoint) {
                 if (this.annLine) {
-                    this.annLine.onMoveEndPoint(point);
-                    this.annEndPoint.onMove(point);
+                    this.annLine.onMoveEndPoint(imagePoint);
+                    this.annEndPoint.onMove(imagePoint);
                 } else {
-                    this.annEndPoint = new AnnBasePoint(this, point, this.imageViewer);
-                    this.annLine = new AnnBaseLine(this, this.annStartPoint.getPosition(), point, this.imageViewer);
+                    this.annEndPoint = new AnnPoint(this, this.imageViewer);
+                    this.annEndPoint.onCreate(imagePoint);
+                    this.annLine = new AnnBaseLine(this, this.annStartPoint.getPosition(), imagePoint, this.imageViewer);
 
                     // Make sure the start point is on the top the line So that we can easily select it for moving
                     this.annStartPoint.up();
@@ -65,8 +67,10 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
         this.onDeleteChildren();
 
         this.annLine = new AnnBaseLine(this, startPoint, endPoint, this.imageViewer);
-        this.annStartPoint = new AnnBasePoint(this, startPoint, this.imageViewer);
-        this.annEndPoint = new AnnBasePoint(this, endPoint, this.imageViewer);
+        this.annStartPoint = new AnnPoint(this, this.imageViewer);
+        this.annStartPoint.onCreate(startPoint);
+        this.annEndPoint = new AnnPoint(this, this.imageViewer);
+        this.annEndPoint.onCreate(endPoint);
     }
 
     onDrag(deltaX: number, deltaY: number) {

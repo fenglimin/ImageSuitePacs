@@ -3,7 +3,7 @@ import { MouseEventType, AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 
 
-export class AnnBaseObject extends AnnObject {
+export abstract class AnnBaseObject extends AnnObject {
 
     jcObj: any;
 
@@ -78,6 +78,10 @@ export class AnnBaseObject extends AnnObject {
 
     getPosition(): Point {
         return { x: this.jcObj._x, y: this.jcObj._y }
+    }
+
+    setRadius(radius: number) {
+        this.jcObj._radius = radius;
     }
 
     setWidth(width: number) {

@@ -20,7 +20,7 @@ import { IAnnotationObject } from "../../../../interfaces/annotation-object-inte
 import { Point } from '../../../../models/annotation';
 import { AnnObject, MouseEventType } from "../../../../annotation/ann-object";
 import { AnnLine } from "../../../../annotation/ann-line";
-import { AnnEllipse } from "../../../../annotation/ann-ellipse";
+import { AnnEllipse } from "../../../../annotation/extend-object/ann-ellipse";
 import { AnnRectangle } from "../../../../annotation/ann-rectangle";
 import { AnnArrow } from "../../../../annotation/ann-arrow";
 

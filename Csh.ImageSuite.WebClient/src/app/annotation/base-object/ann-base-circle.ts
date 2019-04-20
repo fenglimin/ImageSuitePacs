@@ -12,8 +12,10 @@ export class AnnBaseCircle extends AnnBaseObject {
         super(parentObj, imageViewer);
 
         this.fill = fill;
-        jCanvaScript.circle(center.x, center.y, radius, this.selectedColor, fill).layer(this.layerId);
+        this.jcObj = jCanvaScript.circle(center.x, center.y, radius, this.selectedColor, fill).layer(this.layerId);
         super.setJcObj();
+        this.jcObj.mouseStyle = "crosshair";
+        
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -12,13 +12,13 @@ export class AnnBasePoint extends AnnBaseObject {
 
         super(parentObj, imageViewer);
 
-        this.jcOuterCircle = jCanvaScript.circle(position.x, position.y, this.circleRadius * 2, this.selectedColor, false).layer(this.layerId);
+        this.jcOuterCircle = jCanvaScript.circle(position.x, position.y, this.pointRadius * 2, this.selectedColor, false).layer(this.layerId);
         this.jcOuterCircle._lineWidth = this.lineWidth;
         this.jcOuterCircle.mouseStyle = "crosshair";
         this.jcOuterCircle.visible(false);
         this.jcOuterCircle.parentObj = this;
 
-        this.jcCenterPoint = jCanvaScript.circle(position.x, position.y, this.circleRadius, this.selectedColor, true).layer(this.layerId);
+        this.jcCenterPoint = jCanvaScript.circle(position.x, position.y, this.pointRadius, this.selectedColor, true).layer(this.layerId);
         this.jcCenterPoint.mouseStyle = "crosshair";
         this.jcCenterPoint.parentObj = this;
     }

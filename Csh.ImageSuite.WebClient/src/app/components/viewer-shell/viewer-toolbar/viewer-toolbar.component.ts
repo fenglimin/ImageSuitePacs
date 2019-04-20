@@ -6,7 +6,7 @@ import { SelectedButtonData } from "../../../models/dropdown-button-menu-data";
 import { ConfigurationService } from "../../../services/configuration.service";
 
 import { AnnLine } from "../../../annotation/ann-line";
-import { AnnEllipse } from "../../../annotation/ann-ellipse";
+import { AnnEllipse } from "../../../annotation/extend-object/ann-ellipse";
 import { AnnRectangle } from "../../../annotation/ann-rectangle";
 import { AnnArrow } from "../../../annotation/ann-arrow";
 

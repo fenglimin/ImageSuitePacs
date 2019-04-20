@@ -1,15 +1,15 @@
-﻿import { Point } from '../models/annotation';
-import { MouseEventType, AnnObject } from './ann-object';
-import { IAnnotationObject } from "../interfaces/annotation-object-interface";
-import { IImageViewer } from "../interfaces/image-viewer-interface";
-import { AnnBasePoint } from "./base-object/ann-base-point";
-import { AnnBaseEllipse } from "./base-object/ann-base-ellipse";
+﻿import { Point } from '../../models/annotation';
+import { MouseEventType, AnnObject } from '../ann-object';
+import { IAnnotationObject } from "../../interfaces/annotation-object-interface";
+import { IImageViewer } from "../../interfaces/image-viewer-interface";
+import { AnnPoint } from "./ann-point";
+import { AnnBaseEllipse } from "../base-object/ann-base-ellipse";
 
 export class AnnEllipse extends AnnObject implements IAnnotationObject {
 
     private annEllipse: AnnBaseEllipse;
-    private annCenterPoint: AnnBasePoint;
-    private annPointList = new Array<AnnBasePoint>();
+    private annCenterPoint: AnnPoint;
+    private annPointList = new Array<AnnPoint>();
 
     private widthSet = false;
 
@@ -22,7 +22,7 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
-        point = AnnObject.screenToImage(point, this.image.transformMatrix);
+        const imagePoint = AnnObject.screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === MouseEventType.MouseDown) {
 
             if (this.created) {
@@ -31,7 +31,8 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
             }
 
             if (!this.annCenterPoint) {
-                this.annCenterPoint = new AnnBasePoint(this, point, this.imageViewer);
+                this.annCenterPoint = new AnnPoint(this, this.imageViewer);
+                this.annCenterPoint.onCreate(imagePoint);
             } else {
 
                 if (!this.widthSet) {
@@ -55,10 +56,10 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
             if (this.annCenterPoint) {
 
                 const centerPoint = this.annCenterPoint.getPosition();
-                const topPoint = { x: centerPoint.x, y: centerPoint.y * 2 - point.y };
-                const bottomPoint = { x: centerPoint.x, y: point.y };
-                const leftPoint = { x: centerPoint.x * 2 - point.x, y: centerPoint.y };
-                const rightPoint = { x: point.x, y: centerPoint.y };
+                const topPoint = { x: centerPoint.x, y: centerPoint.y * 2 - imagePoint.y };
+                const bottomPoint = { x: centerPoint.x, y: imagePoint.y };
+                const leftPoint = { x: centerPoint.x * 2 - imagePoint.x, y: centerPoint.y };
+                const rightPoint = { x: imagePoint.x, y: centerPoint.y };
 
                 if (this.annEllipse) {
 
@@ -74,16 +75,20 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
                     
                     this.annEllipse = new AnnBaseEllipse(this, centerPoint, point.x - centerPoint.x, point.y - centerPoint.y, this.imageViewer);
 
-                    const annTopPoint = new AnnBasePoint(this, topPoint, this.imageViewer);
+                    const annTopPoint = new AnnPoint(this, this.imageViewer);
+                    annTopPoint.onCreate(topPoint);
                     this.annPointList.push(annTopPoint);
 
-                    const annRightPoint = new AnnBasePoint(this, rightPoint, this.imageViewer);
+                    const annRightPoint = new AnnPoint(this, this.imageViewer);
+                    annRightPoint.onCreate(rightPoint);
                     this.annPointList.push(annRightPoint);
 
-                    const annBottomPoint = new AnnBasePoint(this, bottomPoint, this.imageViewer);
+                    const annBottomPoint = new AnnPoint(this, this.imageViewer);
+                    annBottomPoint.onCreate(bottomPoint);
                     this.annPointList.push(annBottomPoint);
 
-                    const annLeftPoint = new AnnBasePoint(this, leftPoint, this.imageViewer);
+                    const annLeftPoint = new AnnPoint(this, this.imageViewer);
+                    annLeftPoint.onCreate(leftPoint);
                     this.annPointList.push(annLeftPoint);
 
                     this.annCenterPoint.up();
