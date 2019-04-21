@@ -41,7 +41,9 @@ export class AnnEllipse extends AnnExtendObject {
                 }
 
                 this.focusedObj = this.annEllipse;
-                this.onDrawEnded();
+                if (!this.parentObj) {
+                    this.onDrawEnded();
+                }
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annCenterPoint) {

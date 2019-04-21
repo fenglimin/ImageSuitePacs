@@ -33,7 +33,10 @@ export class AnnLine extends AnnExtendObject {
                 this.annStartPoint.onCreate(imagePoint);
             } else {
                 this.focusedObj = this.annLine;
-                this.onDrawEnded();
+
+                if (!this.parentObj) {
+                    this.onDrawEnded();
+                }
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annStartPoint) {
@@ -62,7 +65,6 @@ export class AnnLine extends AnnExtendObject {
         this.annEndPoint.onCreate(endPoint);
 
         this.focusedObj = this.annLine;
-        this.onDrawEnded();
     }
 
     onDrag(deltaX: number, deltaY: number) {

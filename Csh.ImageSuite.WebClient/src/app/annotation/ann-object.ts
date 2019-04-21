@@ -167,7 +167,7 @@ export abstract class AnnObject {
         const step = keyEvent.ctrlKey ? 1 : 5;
 
         const posImageOld = this.focusedObj.getPosition();
-        let posScreen = AnnObject.imageToScreen(posImageOld, focusedBottomObj.getTransformMatrix());
+        let posScreen = AnnObject.imageToScreen(posImageOld, focusedBottomObj.parentObj.getTransformMatrix());
 
         if (keyEvent.code === "ArrowUp") {
             posScreen.y -= step;
@@ -179,7 +179,7 @@ export abstract class AnnObject {
             posScreen.x += step;
         }
 
-        const posImageNew = AnnObject.screenToImage(posScreen, focusedBottomObj.getTransformMatrix());
+        const posImageNew = AnnObject.screenToImage(posScreen, focusedBottomObj.parentObj.getTransformMatrix());
 
         focusedBottomObj.parentObj.onChildDragged(focusedBottomObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
     }

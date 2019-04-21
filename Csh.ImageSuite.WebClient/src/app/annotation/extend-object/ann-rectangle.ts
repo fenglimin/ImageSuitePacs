@@ -46,7 +46,9 @@ export class AnnRectangle extends AnnExtendObject {
                 this.annPointList.push(annTopLeftPoint);
             } else {
                 this.focusedObj = this.annRectangle;
-                this.onDrawEnded();
+                if (!this.parentObj) {
+                    this.onDrawEnded();
+                }
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annPointList.length !== 0) {

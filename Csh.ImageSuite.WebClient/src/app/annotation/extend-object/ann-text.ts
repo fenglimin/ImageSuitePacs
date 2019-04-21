@@ -18,17 +18,19 @@ export class AnnText extends AnnExtendObject {
         this.annText = new AnnBaseText(this, " " + text + " ", position, this.imageViewer);
         const rect = this.annText.getRect();
         this.annRectangle = new AnnBaseRectangle(this, { x: rect.x, y: rect.y }, rect.width, rect.height, this.imageViewer, true);
-        
-        this.focusedObj = this.annText;
-        this.onDrawEnded();
         this.annText.onLevelUp();
+
+        this.focusedObj = this.annText;
+
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
     }
 
     onSelect(selected: boolean, focused: boolean) {
 
         this.selected = selected;
-        const color = selected ? this.selectedColor : this.defaultColor;
-        this.annText.setColor(color);
+        this.annText.onSelect(selected, focused);
         this.annRectangle.setVisible(selected && focused);
     }
 

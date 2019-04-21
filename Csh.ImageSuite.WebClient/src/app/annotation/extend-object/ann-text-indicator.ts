@@ -29,7 +29,9 @@ export class AnnTextIndicator extends AnnExtendObject {
         this.annText.onCreate(arrowStartPoint, text);
 
         this.focusedObj = this.annText;
-        this.onDrawEnded();
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
     }
 
     onDrag(deltaX: number, deltaY: number) {

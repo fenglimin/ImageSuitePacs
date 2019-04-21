@@ -35,11 +35,8 @@ export class AnnArrow extends AnnExtendObject {
             } else {
                 this.annLine.onMouseEvent(mouseEventType, point, null);
 
-                this.created = true;
-
                 if (!this.parentObj) {
-                    // Parent not set, this mean it is not a child of a parentObj annotation. 
-                    this.imageViewer.onAnnotationCreated(this);
+                    this.onDrawEnded();
                 }
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {

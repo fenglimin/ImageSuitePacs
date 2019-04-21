@@ -35,7 +35,12 @@ export abstract class AnnExtendObject extends AnnObject {
     }
 
     onDrawEnded() {
-        this.annObjList.forEach(annObj => annObj.onDrawEnded());
+
+        if (this.mouseResponsible) {
+            this.annObjList.forEach(annObj => annObj.onDrawEnded());
+        } else {
+            alert("extend" + this);
+        }
         this.created = true;
 
         if (!this.parentObj) {
