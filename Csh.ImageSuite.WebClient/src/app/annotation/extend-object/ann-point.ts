@@ -33,13 +33,16 @@ export class AnnPoint extends AnnExtendObject implements IAnnotationObject{
         this.annCenterCircle = new AnnBaseCircle(this, position, this.pointRadius, this.imageViewer, true);
         this.annOuterCircle = new AnnBaseCircle(this, position, this.pointRadius * 2, this.imageViewer, false);
         this.annOuterCircle.setVisible(false);
-
-        this.onChildCreated(this.annCenterCircle);
-        this.onChildCreated(this.annOuterCircle);
     }
 
     onSwitchFocus() {
 
+    }
+
+    onScale() {
+        const pointRaduis = this.getPointRadius();
+        this.setRadius(pointRaduis);
+        this.annOuterCircle.onScale();
     }
 
     onSelect(selected: boolean, focused: boolean) {

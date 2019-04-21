@@ -1,15 +1,18 @@
 ﻿import { Point } from '../../models/annotation';
 import { MouseEventType, AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
-
+import { AnnExtendObject } from "../extend-object/ann-extend-object";
 
 export abstract class AnnBaseObject extends AnnObject {
 
     jcObj: any;
 
-    constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
+        if (parentObj) {
+            parentObj.onChildCreated(this);
+        }
     }
 
     setJcObj() {

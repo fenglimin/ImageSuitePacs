@@ -3,10 +3,11 @@ import { FontData} from "../../models/misc-data"
 import { MouseEventType, AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
+import { AnnExtendObject } from "../extend-object/ann-extend-object";
 
 export class AnnBaseText extends AnnBaseObject {
 
-    constructor(parentObj: AnnObject, text: string, startPoint: Point, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnExtendObject, text: string, startPoint: Point, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
 

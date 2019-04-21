@@ -2,12 +2,13 @@
 import { MouseEventType, AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
+import { AnnExtendObject } from "../extend-object/ann-extend-object";
 
 export class AnnBaseCircle extends AnnBaseObject {
 
     private fill: boolean
 
-    constructor(parentObj: AnnObject, center: Point, radius: number, imageViewer: IImageViewer, fill: boolean = false) {
+    constructor(parentObj: AnnExtendObject, center: Point, radius: number, imageViewer: IImageViewer, fill: boolean = false) {
 
         super(parentObj, imageViewer);
 

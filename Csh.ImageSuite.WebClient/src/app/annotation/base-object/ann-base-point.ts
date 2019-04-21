@@ -2,13 +2,14 @@
 import { MouseEventType, AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
+import { AnnExtendObject } from "../extend-object/ann-extend-object";
 
 export class AnnBasePoint extends AnnBaseObject {
 
     jcCenterPoint: any;
     jcOuterCircle: any;
 
-    constructor(parentObj: AnnObject, position: Point, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnExtendObject, position: Point, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
 
