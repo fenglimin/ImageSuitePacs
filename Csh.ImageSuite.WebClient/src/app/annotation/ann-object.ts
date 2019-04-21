@@ -36,6 +36,7 @@ export abstract class AnnObject {
     protected created: boolean;
     protected selected: boolean;
     protected dragging: boolean;
+    protected mouseResponsible: boolean;
 
     protected selectedColor = "#F90";
     protected defaultColor = "#FFF";
@@ -75,6 +76,7 @@ export abstract class AnnObject {
         this.created = false;
         this.selected = false;
         this.dragging = false;
+        this.mouseResponsible = true;
 
         this.lineWidth = this.getLineWidth();
         this.pointRadius = this.getPointRadius();
@@ -86,6 +88,10 @@ export abstract class AnnObject {
 
     isSelected(): boolean {
         return this.selected;
+    }
+
+    setMouseResponsible(mouseResponsible: boolean) {
+        this.mouseResponsible = mouseResponsible;
     }
 
     onChildSelected(selectedObj: AnnObject) {
@@ -161,7 +167,7 @@ export abstract class AnnObject {
         const step = keyEvent.ctrlKey ? 1 : 5;
 
         const posImageOld = this.focusedObj.getPosition();
-        let posScreen = AnnObject.imageToScreen(posImageOld, focusedBottomObj.parentObj.getTransformMatrix());
+        let posScreen = AnnObject.imageToScreen(posImageOld, focusedBottomObj.getTransformMatrix());
 
         if (keyEvent.code === "ArrowUp") {
             posScreen.y -= step;
@@ -173,7 +179,7 @@ export abstract class AnnObject {
             posScreen.x += step;
         }
 
-        const posImageNew = AnnObject.screenToImage(posScreen, focusedBottomObj.parentObj.getTransformMatrix());
+        const posImageNew = AnnObject.screenToImage(posScreen, focusedBottomObj.getTransformMatrix());
 
         focusedBottomObj.parentObj.onChildDragged(focusedBottomObj, posImageNew.x - posImageOld.x, posImageNew.y - posImageOld.y);
     }

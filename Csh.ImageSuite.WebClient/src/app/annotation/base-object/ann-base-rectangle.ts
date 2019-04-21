@@ -19,6 +19,7 @@ export class AnnBaseRectangle extends AnnBaseObject {
         this.jcObj = jCanvaScript.rect(topLeft.x, topLeft.y, width, height, this.selectedColor).layer(forText? this.labelLayerId : this.layerId);
         super.setJcObj();
 
+        this.setMouseResponsible(!forText);
         this.pixelSpacing = this.image.getPixelSpacing();
     }
 

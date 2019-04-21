@@ -7,7 +7,7 @@ import { ConfigurationService } from "../../../services/configuration.service";
 
 import { AnnLine } from "../../../annotation/extend-object/ann-line";
 import { AnnEllipse } from "../../../annotation/extend-object/ann-ellipse";
-//import { AnnRectangle } from "../../../annotation/ann-rectangle";
+import { AnnRectangle } from "../../../annotation/extend-object/ann-rectangle";
 import { AnnArrow } from "../../../annotation/extend-object/ann-arrow";
 
 @Component({
@@ -112,7 +112,7 @@ export class ViewerToolbarComponent implements OnInit {
     simpleAnnotation1ButtonMenu: SelectedButtonData[] = [
         { name: "ann_line", tip: "Line", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnLine) } },
         { name: "ann_ellipse", tip: "Eclipse", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnEllipse) } },
-  //      { name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnRectangle) } },
+        { name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnRectangle) } },
         { name: "ann_arrow", tip: "Arrow", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnArrow) } }
     ];
 

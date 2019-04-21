@@ -40,8 +40,10 @@ export abstract class AnnBaseObject extends AnnObject {
     }
 
     onDrawEnded() {
-        this.setChildDraggable(this, this.jcObj, true);
-        this.setChildMouseEvent(this, this.jcObj);
+        if (this.mouseResponsible) {
+            this.setChildDraggable(this, this.jcObj, true);
+            this.setChildMouseEvent(this, this.jcObj);
+        }
     }
 
 

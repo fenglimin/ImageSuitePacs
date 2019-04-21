@@ -118,7 +118,9 @@ export class AnnArrow extends AnnExtendObject {
 
         } else {
             this.annArrowLineA = new AnnBaseLine(this, endPoint, lineAEndPoint, this.imageViewer);
+            this.annArrowLineA.setMouseResponsible(false);
             this.annArrowLineB = new AnnBaseLine(this, endPoint, lineBEndPoint, this.imageViewer);
+            this.annArrowLineB.setMouseResponsible(false);
         }
     }
 }
