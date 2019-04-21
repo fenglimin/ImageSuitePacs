@@ -1,11 +1,10 @@
 ﻿import { Point } from '../../models/annotation';
 import { MouseEventType, AnnObject } from '../ann-object';
-import { IAnnotationObject } from "../../interfaces/annotation-object-interface";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseCircle } from "../base-object/ann-base-circle";
 import { AnnExtendObject } from "./ann-extend-object";
 
-export class AnnPoint extends AnnExtendObject implements IAnnotationObject{
+export class AnnPoint extends AnnExtendObject {
 
     private annCenterCircle: AnnBaseCircle;
     private annOuterCircle: AnnBaseCircle;

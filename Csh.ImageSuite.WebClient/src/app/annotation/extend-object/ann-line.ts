@@ -1,12 +1,11 @@
 ﻿import { Point } from '../../models/annotation';
 import { MouseEventType, AnnObject } from '../ann-object';
-import { IAnnotationObject } from "../../interfaces/annotation-object-interface";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseLine } from "../base-object/ann-base-line";
 import { AnnExtendObject } from "./ann-extend-object";
 import { AnnPoint } from "./ann-point";
 
-export class AnnLine extends AnnExtendObject implements IAnnotationObject{
+export class AnnLine extends AnnExtendObject {
     
     private annLine: AnnBaseLine;
     private annStartPoint: AnnPoint;

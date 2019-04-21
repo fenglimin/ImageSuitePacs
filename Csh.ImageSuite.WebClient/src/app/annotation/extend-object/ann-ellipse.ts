@@ -1,12 +1,11 @@
 ﻿import { Point } from '../../models/annotation';
 import { MouseEventType, AnnObject } from '../ann-object';
-import { IAnnotationObject } from "../../interfaces/annotation-object-interface";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnPoint } from "./ann-point";
 import { AnnBaseEllipse } from "../base-object/ann-base-ellipse";
 import { AnnExtendObject } from "./ann-extend-object";
 
-export class AnnEllipse extends AnnExtendObject implements IAnnotationObject {
+export class AnnEllipse extends AnnExtendObject {
 
     private annEllipse: AnnBaseEllipse;
     private annCenterPoint: AnnPoint;
