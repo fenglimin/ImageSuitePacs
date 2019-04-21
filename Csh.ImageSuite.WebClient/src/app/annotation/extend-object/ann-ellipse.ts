@@ -41,15 +41,8 @@ export class AnnEllipse extends AnnExtendObject implements IAnnotationObject {
                     return;
                 }
 
-                this.onDrawEnded();
-
                 this.focusedObj = this.annEllipse;
-                this.created = true;
-
-                if (!this.parentObj) {
-                    // Parent not set, this mean it is not a child of a parentObj annotion. 
-                    this.imageViewer.onAnnotationCreated(this);
-                }
+                this.onDrawEnded();
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annCenterPoint) {

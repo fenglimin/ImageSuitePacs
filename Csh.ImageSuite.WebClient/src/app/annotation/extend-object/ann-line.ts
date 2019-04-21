@@ -33,17 +33,8 @@ export class AnnLine extends AnnExtendObject implements IAnnotationObject{
                 this.annStartPoint = new AnnPoint(this, this.imageViewer);
                 this.annStartPoint.onCreate(imagePoint);
             } else {
-
-                this.onDrawEnded();
-
                 this.focusedObj = this.annLine;
-                this.created = true;
-
-                if (!this.parentObj) {
-                    // Parent not set, this mean it is not a child of a parentObj annotion. 
-                    this.imageViewer.onAnnotationCreated(this);
-                }
-                
+                this.onDrawEnded();
             }
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annStartPoint) {
@@ -72,6 +63,7 @@ export class AnnLine extends AnnExtendObject implements IAnnotationObject{
         this.annEndPoint.onCreate(endPoint);
 
         this.focusedObj = this.annLine;
+        this.onDrawEnded();
     }
 
     onDrag(deltaX: number, deltaY: number) {

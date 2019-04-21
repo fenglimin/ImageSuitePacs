@@ -36,6 +36,12 @@ export abstract class AnnExtendObject extends AnnObject {
 
     onDrawEnded() {
         this.annObjList.forEach(annObj => annObj.onDrawEnded());
+        this.created = true;
+
+        if (!this.parentObj) {
+            // Parent not set, this mean it is not a child of a parentObj annotion. 
+            this.imageViewer.onAnnotationCreated(this);
+        }
     }
 
     onDrag(deltaX: number, deltaY: number) {
