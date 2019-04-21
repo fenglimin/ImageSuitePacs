@@ -41,11 +41,9 @@ export class AnnEllipse extends AnnExtendObject implements IAnnotationObject {
                     return;
                 }
 
-                this.annEllipse.onDrawEnded();
-                this.annCenterPoint.onDrawEnded();
-                this.annPointList.forEach(annObj => annObj.onDrawEnded());
+                this.onDrawEnded();
 
-                this.focusedObj = this.annCenterPoint;
+                this.focusedObj = this.annEllipse;
                 this.created = true;
 
                 if (!this.parentObj) {
@@ -105,40 +103,6 @@ export class AnnEllipse extends AnnExtendObject implements IAnnotationObject {
         } else if (this.annPointList.some(annObj => annObj === this.focusedObj)) {
             this.onPointDragged(this.focusedObj, deltaX, deltaY);
         }
-    }
-
-    onSelect(selected: boolean, focused: boolean) {
-
-        console.log("onSelect AnnLine");
-        this.selected = selected;
-
-        if (focused && !this.focusedObj) {
-            this.focusedObj = this.annEllipse;
-        }
-
-        this.annEllipse.onSelect(selected, this.focusedObj === this.annEllipse);
-        this.annCenterPoint.onSelect(selected, this.focusedObj === this.annCenterPoint);
-        this.annPointList.forEach(annObj => annObj.onSelect(selected, this.focusedObj === annObj));
-
-        if (!this.parentObj && this.selected) {
-            this.imageViewer.selectAnnotation(this);
-        }
-    }
-
-   onSwitchFocus() {
-
-        let nextFocusedObj: AnnObject;
-
-        if (!this.focusedObj) {
-            nextFocusedObj = this.annEllipse;
-        } else if (this.focusedObj === this.annEllipse) {
-            nextFocusedObj = this.annCenterPoint;
-        }else {
-            const index = this.annPointList.findIndex(annObj => annObj === this.focusedObj);
-            nextFocusedObj = index === 3 ? this.annEllipse : this.annPointList[index + 1];
-        }
-
-        this.onChildSelected(nextFocusedObj);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

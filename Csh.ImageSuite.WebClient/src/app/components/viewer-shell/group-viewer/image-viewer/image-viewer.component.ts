@@ -24,6 +24,8 @@ import { AnnLine } from "../../../../annotation/extend-object/ann-line";
 //import { AnnRectangle } from "../../../../annotation/ann-rectangle";
 //import { AnnArrow } from "../../../../annotation/ann-arrow";
 
+import { AnnExtendObject } from "../../../../annotation/extend-object/ann-extend-object";
+
 
 @Component({
     selector: "app-image-viewer",
@@ -95,7 +97,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private logPrefix: string;
 
 
-    private curSelectObj: IAnnotationObject;
+    private curSelectObj: AnnExtendObject;
     private annObjList = [];
 
     private ctrlKeyPressed = false;
@@ -260,7 +262,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.viewContext.curContext;
     }
 
-    selectAnnotation(annObj: IAnnotationObject) {
+    selectAnnotation(annObj: AnnExtendObject) {
         if (annObj) {
             if (this.curSelectObj !== annObj) {
                 if (this.curSelectObj) {
@@ -308,7 +310,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.selectAnnotation(this.annObjList[nextIndex]);
     }
 
-    onAnnotationCreated(annObj: IAnnotationObject) {
+    onAnnotationCreated(annObj: AnnExtendObject) {
         if (this.curSelectObj !== annObj) {
             alert("error in onAnnotationCreated");
             return;
@@ -1492,7 +1494,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annObjList = [];
     }
 
-    private deleteAnnotation(annObj: IAnnotationObject) {
+    private deleteAnnotation(annObj: AnnExtendObject) {
 
         if (!annObj) return;
 

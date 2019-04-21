@@ -34,11 +34,9 @@ export class AnnLine extends AnnExtendObject implements IAnnotationObject{
                 this.annStartPoint.onCreate(imagePoint);
             } else {
 
-                this.annStartPoint.onDrawEnded();
-                this.annEndPoint.onDrawEnded();
-                this.annLine.onDrawEnded();
+                this.onDrawEnded();
 
-                this.focusedObj = this.annEndPoint;
+                this.focusedObj = this.annLine;
                 this.created = true;
 
                 if (!this.parentObj) {
@@ -72,6 +70,8 @@ export class AnnLine extends AnnExtendObject implements IAnnotationObject{
         this.annStartPoint.onCreate(startPoint);
         this.annEndPoint = new AnnPoint(this, this.imageViewer);
         this.annEndPoint.onCreate(endPoint);
+
+        this.focusedObj = this.annLine;
     }
 
     onDrag(deltaX: number, deltaY: number) {
@@ -82,59 +82,6 @@ export class AnnLine extends AnnExtendObject implements IAnnotationObject{
         }else {
             this.onTranslate(deltaX, deltaY);
         }
-    }
-
-    onSelect(selected: boolean, focused: boolean) {
-
-        console.log("onSelect AnnLine");
-        this.selected = selected;
-
-        if (focused && !this.focusedObj) {
-            this.focusedObj = this.annLine;
-        }
-
-        this.annStartPoint.onSelect(selected, this.focusedObj === this.annStartPoint);
-        this.annEndPoint.onSelect(selected, this.focusedObj === this.annEndPoint);
-        this.annLine.onSelect(selected, this.focusedObj === this.annLine);
-
-        if (!this.parentObj && this.selected) {
-            this.imageViewer.selectAnnotation(this);
-        }
-    }
-
-    onScale() {
-        this.annLine.onScale();
-        this.annStartPoint.onScale();
-        this.annEndPoint.onScale();
-    }
-
-    onFlip(vertical: boolean) {
-
-        this.annLine.onFlip(vertical);
-        this.annStartPoint.onFlip(vertical);
-        this.annEndPoint.onFlip(vertical);
-    }
-
-    onTranslate(deltaX: number, deltaY: number) {
-        this.annStartPoint.onTranslate(deltaX, deltaY);
-        this.annLine.onTranslate(deltaX, deltaY);
-        this.annEndPoint.onTranslate(deltaX, deltaY);
-    }
-
-    onSwitchFocus() {
-         if (!this.focusedObj || this.focusedObj === this.annLine) {
-             this.onChildSelected(this.annStartPoint);
-         }else if (this.focusedObj === this.annStartPoint) {
-             this.onChildSelected(this.annEndPoint);
-         } else {
-             this.onChildSelected(this.annLine);
-        }
-    }
-
-    onDeleteChildren() {
-        this.deleteObject(this.annStartPoint);
-        this.deleteObject(this.annEndPoint);
-        this.deleteObject(this.annLine);
     }
 
     onMoveStartPoint(point: Point) {
@@ -169,6 +116,4 @@ export class AnnLine extends AnnExtendObject implements IAnnotationObject{
         const point = this.annEndPoint.getPosition();
         this.annLine.onMoveEndPoint(point);
     }
-
-    
 }

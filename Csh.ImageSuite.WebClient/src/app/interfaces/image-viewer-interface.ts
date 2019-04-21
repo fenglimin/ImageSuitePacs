@@ -1,6 +1,7 @@
 ﻿import { IAnnotationObject } from "./annotation-object-interface";
 import { Image } from "../models/pssi";
 import { ViewContext } from "../services/view-context.service"
+import { AnnExtendObject } from "../annotation/extend-object/ann-extend-object";
 
 export interface IImageViewer {
 
@@ -12,7 +13,7 @@ export interface IImageViewer {
     getCanvas(): any;
     getContext(): ViewContext;
 
-    selectAnnotation(annObj: IAnnotationObject): void;
-    onAnnotationCreated(annObj: IAnnotationObject): void;
+    selectAnnotation(annObj: AnnExtendObject): void;
+    onAnnotationCreated(annObj: AnnExtendObject): void;
     isCtrlKeyPressed(): boolean;
 }

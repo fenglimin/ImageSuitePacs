@@ -33,10 +33,8 @@ export class AnnPoint extends AnnExtendObject implements IAnnotationObject{
         this.annCenterCircle = new AnnBaseCircle(this, position, this.pointRadius, this.imageViewer, true);
         this.annOuterCircle = new AnnBaseCircle(this, position, this.pointRadius * 2, this.imageViewer, false);
         this.annOuterCircle.setVisible(false);
-    }
 
-    onSwitchFocus() {
-
+        this.focusedObj = this.annCenterCircle;
     }
 
     onScale() {
@@ -46,8 +44,6 @@ export class AnnPoint extends AnnExtendObject implements IAnnotationObject{
     }
 
     onSelect(selected: boolean, focused: boolean) {
-
-        console.log("onSelect Point " + selected + " " + focused);
 
         this.selected = selected;
         const color = selected ? this.selectedColor : this.defaultColor;

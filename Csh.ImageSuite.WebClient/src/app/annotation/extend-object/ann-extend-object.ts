@@ -15,6 +15,21 @@ export abstract class AnnExtendObject extends AnnObject {
         }
     }
 
+    onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
+        alert("Error in AnnExtendObject.onMouseEvent, this function must be overrided.")
+    }
+
+    onSwitchFocus() {
+        if (!this.focusedObj) {
+            alert("No focus object set!");
+            return;
+        }
+
+        const index = this.annObjList.findIndex(annObj => annObj === this.focusedObj);
+        const nextIndex = index === this.annObjList.length - 1 ? 0 : index + 1;
+        this.onChildSelected(this.annObjList[nextIndex]);
+    }
+
     onChildCreated(annChildObj: AnnObject) {
         this.addChildObj(annChildObj);
     }
@@ -25,6 +40,17 @@ export abstract class AnnExtendObject extends AnnObject {
 
     onDrag(deltaX: number, deltaY: number) {
         this.onTranslate(deltaX, deltaY);
+    }
+
+    onSelect(selected: boolean, focused: boolean) {
+
+        this.selected = selected;
+
+        this.annObjList.forEach(annObj => annObj.onSelect(selected, focused && annObj === this.focusedObj));
+
+        if (!this.parentObj && this.selected) {
+            this.imageViewer.selectAnnotation(this);
+        }
     }
 
     onScale() {
