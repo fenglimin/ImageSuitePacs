@@ -490,10 +490,14 @@ export abstract class AnnObject {
 
     }
 
-    down() {
+    onLevelUp() {
 
     }
 
+    onLevelDown() {
+
+    }
+    
     onScale() {
 
     }

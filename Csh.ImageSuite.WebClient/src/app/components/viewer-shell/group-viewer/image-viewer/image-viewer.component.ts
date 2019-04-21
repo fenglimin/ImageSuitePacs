@@ -19,10 +19,10 @@ import { IAnnotationObject } from "../../../../interfaces/annotation-object-inte
 
 import { Point } from '../../../../models/annotation';
 import { AnnObject, MouseEventType } from "../../../../annotation/ann-object";
-import { AnnLine } from "../../../../annotation/ann-line";
 import { AnnEllipse } from "../../../../annotation/extend-object/ann-ellipse";
-import { AnnRectangle } from "../../../../annotation/ann-rectangle";
-import { AnnArrow } from "../../../../annotation/ann-arrow";
+import { AnnLine } from "../../../../annotation/extend-object/ann-line";
+//import { AnnRectangle } from "../../../../annotation/ann-rectangle";
+//import { AnnArrow } from "../../../../annotation/ann-arrow";
 
 
 @Component({
@@ -705,13 +705,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             canvas.style.cursor = cursorUrl.format("select");
         } else if (curContext.action === ViewContextEnum.CreateAnn) {
             
-            if (curContext.data === AnnLine || curContext.data === AnnArrow) {
-                canvas.style.cursor = cursorUrl.format("ann_line");
-            }
-            else if (curContext.data === AnnRectangle) {
-                canvas.style.cursor = cursorUrl.format("rect");
-            }
-            else if (curContext.data === AnnEllipse) {
+            //if (curContext.data === AnnLine || curContext.data === AnnArrow) {
+            //    canvas.style.cursor = cursorUrl.format("ann_line");
+            //}
+            //else if (curContext.data === AnnRectangle) {
+            //    canvas.style.cursor = cursorUrl.format("rect");
+            //}
+            //else
+            if (curContext.data === AnnEllipse) {
                 canvas.style.cursor = cursorUrl.format("ellipse");
             }
         }

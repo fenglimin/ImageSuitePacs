@@ -108,13 +108,13 @@ export abstract class AnnBaseObject extends AnnObject {
         this.jcObj.visible(visible);
     }
 
-    up() {
+    onLevelUp() {
         if (this.jcObj) {
             this.jcObj.up();
         }
     }
 
-    down() {
+    onLevelDown() {
         if (this.jcObj) {
             this.jcObj.down();
         }

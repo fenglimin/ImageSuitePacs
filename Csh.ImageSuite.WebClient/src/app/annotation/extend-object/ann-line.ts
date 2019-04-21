@@ -1,17 +1,18 @@
-﻿import { Point } from '../models/annotation';
-import { MouseEventType, AnnObject } from './ann-object';
-import { IAnnotationObject } from "../interfaces/annotation-object-interface";
-import { IImageViewer } from "../interfaces/image-viewer-interface";
-import { AnnBaseLine } from "./base-object/ann-base-line";
-import { AnnPoint } from "./extend-object/ann-point";
+﻿import { Point } from '../../models/annotation';
+import { MouseEventType, AnnObject } from '../ann-object';
+import { IAnnotationObject } from "../../interfaces/annotation-object-interface";
+import { IImageViewer } from "../../interfaces/image-viewer-interface";
+import { AnnBaseLine } from "../base-object/ann-base-line";
+import { AnnExtendObject } from "./ann-extend-object";
+import { AnnPoint } from "./ann-point";
 
-export class AnnLine extends AnnObject implements IAnnotationObject{
+export class AnnLine extends AnnExtendObject implements IAnnotationObject{
     
     private annLine: AnnBaseLine;
     private annStartPoint: AnnPoint;
     private annEndPoint: AnnPoint;
 
-    constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
         super(parentObj, imageViewer);
     }    
 
@@ -57,7 +58,7 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
                     this.annLine = new AnnBaseLine(this, this.annStartPoint.getPosition(), imagePoint, this.imageViewer);
 
                     // Make sure the start point is on the top the line So that we can easily select it for moving
-                    this.annStartPoint.up();
+                    this.annStartPoint.onLevelUp();
                 }
             }
         }
@@ -152,12 +153,6 @@ export class AnnLine extends AnnObject implements IAnnotationObject{
 
     getEndPosition(): Point {
         return this.annLine.getEndPosition();
-    }
-
-    down() {
-        this.annLine.down();
-        this.annStartPoint.down();
-        this.annEndPoint.down();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -7,9 +7,16 @@ export abstract class AnnExtendObject extends AnnObject {
 
     private annObjList: Array<AnnObject> = [];
 
-    constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
+        if (parentObj) {
+            parentObj.onChildCreated(this);
+        }
+    }
+
+    onChildCreated(annChildObj: AnnObject) {
+        this.addChildObj(annChildObj);
     }
 
     onDrawEnded() {
@@ -39,4 +46,17 @@ export abstract class AnnExtendObject extends AnnObject {
     onDeleteChildren() {
         this.annObjList.forEach(annObj => annObj.onDeleteChildren());
     }
+
+    onLevelUp() {
+        this.annObjList.forEach(annObj => annObj.onLevelUp());
+    }
+
+    onLevelDown() {
+        this.annObjList.forEach(annObj => annObj.onLevelDown());
+    }
+
+    private addChildObj(annObj: AnnObject) {
+        this.annObjList.push(annObj);
+    }
+
 }

@@ -4,8 +4,9 @@ import { IAnnotationObject } from "../../interfaces/annotation-object-interface"
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnPoint } from "./ann-point";
 import { AnnBaseEllipse } from "../base-object/ann-base-ellipse";
+import { AnnExtendObject } from "./ann-extend-object";
 
-export class AnnEllipse extends AnnObject implements IAnnotationObject {
+export class AnnEllipse extends AnnExtendObject implements IAnnotationObject {
 
     private annEllipse: AnnBaseEllipse;
     private annCenterPoint: AnnPoint;
@@ -13,7 +14,7 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
 
     private widthSet = false;
 
-    constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
         super(parentObj, imageViewer);
     }
 
@@ -73,7 +74,7 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
                 } else {
 
                     
-                    this.annEllipse = new AnnBaseEllipse(this, centerPoint, point.x - centerPoint.x, point.y - centerPoint.y, this.imageViewer);
+                    this.annEllipse = new AnnBaseEllipse(this, centerPoint, imagePoint.x - centerPoint.x, imagePoint.y - centerPoint.y, this.imageViewer);
 
                     const annTopPoint = new AnnPoint(this, this.imageViewer);
                     annTopPoint.onCreate(topPoint);
@@ -91,7 +92,7 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
                     annLeftPoint.onCreate(leftPoint);
                     this.annPointList.push(annLeftPoint);
 
-                    this.annCenterPoint.up();
+                    this.annCenterPoint.onLevelUp();
                 }
             }
         }
@@ -124,25 +125,7 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
         }
     }
 
-    onScale() {
-        this.annEllipse.onScale();
-        this.annCenterPoint.onScale();
-        this.annPointList.forEach(annObj => annObj.onScale());
-    }
-
-    onFlip(vertical: boolean) {
-        this.annEllipse.onFlip(vertical);
-        this.annCenterPoint.onFlip(vertical);
-        this.annPointList.forEach(annObj => annObj.onFlip(vertical));
-    }
-
-    onTranslate(deltaX: number, deltaY: number) {
-        this.annEllipse.onTranslate(deltaX, deltaY);
-        this.annCenterPoint.onTranslate(deltaX, deltaY);
-        this.annPointList.forEach(annObj => annObj.onTranslate(deltaX, deltaY));
-    }
-
-    onSwitchFocus() {
+   onSwitchFocus() {
 
         let nextFocusedObj: AnnObject;
 
@@ -156,13 +139,6 @@ export class AnnEllipse extends AnnObject implements IAnnotationObject {
         }
 
         this.onChildSelected(nextFocusedObj);
-    }
-
-    onDeleteChildren() {
-        this.deleteObject(this.annEllipse);
-        this.deleteObject(this.annCenterPoint);
-        this.annPointList.forEach(annObj => this.deleteObject(annObj));
-        this.annPointList = [];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
