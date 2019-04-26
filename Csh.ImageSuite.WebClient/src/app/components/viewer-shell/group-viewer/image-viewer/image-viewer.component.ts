@@ -13,6 +13,7 @@ import { DialogService } from "../../../../services/dialog.service";
 import { LogService } from "../../../../services/log.service";
 import { WindowLevelData } from "../../../../models/dailog-data/image-process";
 import { ManualWlDialogComponent } from "../../../../components/dialog/manual-wl-dialog/manual-wl-dialog.component";
+import { FontData } from "../../../../models/misc-data"
 
 import { IImageViewer } from "../../../../interfaces/image-viewer-interface";
 import { IAnnotationObject } from "../../../../interfaces/annotation-object-interface";
@@ -23,9 +24,10 @@ import { AnnEllipse } from "../../../../annotation/extend-object/ann-ellipse";
 import { AnnLine } from "../../../../annotation/extend-object/ann-line";
 import { AnnRectangle } from "../../../../annotation/extend-object/ann-rectangle";
 import { AnnArrow } from "../../../../annotation/extend-object/ann-arrow";
+import { AnnCurve } from "../../../../annotation/extend-object/ann-curve";
 
 import { AnnExtendObject } from "../../../../annotation/extend-object/ann-extend-object";
-
+import { AnnGuide } from "../../../../annotation/layer-object/ann-guide";
 
 @Component({
     selector: "app-image-viewer",
@@ -102,6 +104,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private ctrlKeyPressed = false;
 
+    private annGuide: AnnGuide;
+
     @Input()
     set imageData(imageData: ViewerImageData) {
         this.logPrefix = "Image" + imageData.getId() + ": ";
@@ -141,7 +145,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(
             context => {
-                this.setContext(context);
+                if (this.selected) this.setContext(context);
             });
 
         this.subscriptionOperation = viewContext.onOperation$.subscribe(
@@ -155,7 +159,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     ngOnInit() {
         this.logService.debug(this.logPrefix + "ngOnInit");
         this.baseUrl = this.configurationService.getBaseUrl();
-
     }
 
     ngAfterContentInit() {
@@ -187,6 +190,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.showWaitingText();
         }
 
+        this.annGuide = new AnnGuide(this);
         this.isViewInited = true;
     }
 
@@ -242,12 +246,20 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.annLabelLayerId;
     }
 
+    getAnnGuideLayerId(): string {
+        return this.tooltipLayerId;
+    }
+
     getImageLayer(): any {
         return this.imgLayer;
     }
 
     getAnnLabelLayer(): any {
         return this.annLabelLayer;
+    }
+
+    getAnnGuideLayer(): any {
+        return this.tooltipLayer;
     }
 
     getImage(): Image {
@@ -260,6 +272,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     getContext(): ViewContext {
         return this.viewContext.curContext;
+    }
+
+    getBaseUrl(): string {
+        return this.baseUrl;
+    }
+
+    getTextFont(): FontData {
+        return this.configurationService.getOverlayFont();
     }
 
     selectAnnotation(annObj: AnnExtendObject) {
@@ -283,6 +303,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
 
             this.curSelectObj = undefined;
+        }
+
+        if (this.curSelectObj && this.curSelectObj.isGuideNeeded()) {
+            const stepIndex = this.curSelectObj.getFocusedObj().getStepIndex();
+            if (stepIndex !== -1) {
+                this.annGuide.show("Cervical Curve", stepIndex);
+                this.annGuide.setGuideTargetObj(this.curSelectObj);
+            }
         }
     }
 
@@ -322,14 +350,36 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.viewContext.setContext(ViewContextEnum.SelectAnn);
     }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
 
+    stepGuide() {
+        this.annGuide.step();
+    }
+
+    getCurrentStepIndex(): number {
+        return this.annGuide.getStepIndex();
+    }
+
+    cancelCreate(needRecreate: boolean) {
+        this.deleteAnnotation(this.curSelectObj);
+        this.curSelectObj = undefined;
+        this.annGuide.stepTo(0);
+
+        if (!needRecreate) {
+            this.viewContext.setContext(ViewContextEnum.SelectAnn);
+        }
+    }
+
+    selectChildByStepIndex(stepIndex: number) {
+        if (this.curSelectObj) {
+            this.curSelectObj.selectChildByStepIndex(stepIndex);
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
 
     onKeyUp(event) {
 
         if (event.code === "Delete") {
-            this.deleteAnnotation(this.curSelectObj);
-            this.curSelectObj = undefined;
+            this.deleteSelectedAnnotation();
         }else if (event.code === "KeyA") {
             this.selectNextAnnotation(event.shiftKey);
         } else if (event.code === "KeyF") {
@@ -536,26 +586,33 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         const self = this;
         this.imgLayerId = canvasId + "_imgLayer";
         this.imgLayer = jCanvaScript.layer(this.imgLayerId).level(0); //layer to hold the image
+        this.imgLayer.id = this.imgLayerId;
 
         self.annLayerId = canvasId + "_annLayer";
         self.annLayer = jc.layer(self.annLayerId).level(1); //layer to draw annotations
-        self.annLayer.onBeforeDraw = function() { self.onBeforeDrawAnnLayer.call(self); };
+        self.annLayer.onBeforeDraw = function () { self.onBeforeDrawAnnLayer.call(self); };
+        self.annLayer.id = self.annLayerId;
 
         self.annLabelLayerId = canvasId + "_annLabelLayer";
         self.annLabelLayer = jc.layer(self.annLabelLayerId).level(2); //layer to draw annotations label.
+        self.annLabelLayer.id = self.annLabelLayerId;
 
         self.mgLayerId = canvasId + "_mgLayer";
         self.mgLayer = jc.layer(self.mgLayerId).level(4); //layer to show magnified image
         self.mgLayer.visible(false);
+        self.mgLayer.id = self.mgLayerId;
 
         self.olLayerId = canvasId + "_overlayLayer";
         self.olLayer = jCanvaScript.layer(self.olLayerId).level(10); //layer to show overlay
+        self.olLayer.id = self.olLayerId;
 
         self.rulerLayerId = canvasId + "_rulerLayer"; // layer to show ruler
         self.rulerLayer = jc.layer(self.rulerLayerId).level(9);
+        self.rulerLayer.id = self.rulerLayerId;
 
         self.tooltipLayerId = canvasId + "_tooltipLayer"; // layer to show tooltip dialog
-        self.tooltipLayer = jc.layer(self.tooltipLayerId).draggable(true).level(3);
+        self.tooltipLayer = jc.layer(self.tooltipLayerId).draggable(true).level(20);
+        self.tooltipLayer.id = self.tooltipLayerId;
     }
 
     private onBeforeDrawAnnLayer() {
@@ -614,6 +671,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         //each time context changed, we should unselect cur selected object
         this.selectAnnotation(undefined);
+        this.annGuide.hide();
 
         //if (previousCtx == contextEnum.create && ctx != contextEnum.create && this.tooltips) {
         //    //hide all tooltips
@@ -709,12 +767,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             
             if (curContext.data === AnnLine || curContext.data === AnnArrow) {
                 canvas.style.cursor = cursorUrl.format("ann_line");
-            }
-            else if (curContext.data === AnnRectangle) {
+            } else if (curContext.data === AnnRectangle) {
                 canvas.style.cursor = cursorUrl.format("rect");
-            }
-            else if (curContext.data === AnnEllipse) {
+            } else if (curContext.data === AnnEllipse) {
                 canvas.style.cursor = cursorUrl.format("ellipse");
+            } else if (curContext.data === AnnCurve) {
+                canvas.style.cursor = cursorUrl.format("ann_cervicalcurve");
+                this.annGuide.show("Cervical Curve");
             }
         }
     }
@@ -1059,6 +1118,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         //register imglayer events, note the arg.x/y is screen (canvas) coordinates
         self.imgLayer.mousedown(function(arg) {
             self.onMouseDown(arg);
+            return false;
         });
         self.imgLayer.mousemove(function(arg) {
             self.onMouseMove(arg);
@@ -1280,16 +1340,21 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
         }
 
-        this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
         const point = { x: evt.offsetX, y: evt.offsetY };
+
+        if (this.annGuide.hitTest(point)) {
+            return;
+        }
+
+        this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
+        
         this.mouseEventHelper._mouseDownPosCvs = point;
 
         if (this.mouseEventHelper._mouseWhich === 3) { //right mouse
 
             if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
                 // Right click to cancel the creation of an annotation.
-                this.deleteAnnotation(this.curSelectObj);
-                this.curSelectObj = undefined;
+                this.cancelCreate(true);
             } else {
                 this.mouseEventHelper._lastContext = this.viewContext.curContext;
                 this.viewContext.setContext(ViewContextEnum.WL);
@@ -1490,7 +1555,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private deleteAllAnnotation() {
         this.annObjList.forEach(annObj => annObj.onDeleteChildren());
-        this.annObjList = [];
+        this.annObjList.length = 0;
     }
 
     private deleteAnnotation(annObj: AnnExtendObject) {
@@ -1552,8 +1617,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.updateImageTransform();
         const annType = this.viewContext.curContext.data;
         this.curSelectObj = new annType(undefined, this);
+        if (this.curSelectObj.isGuideNeeded()) {
+            this.annGuide.setGuideTargetObj(this.curSelectObj);
+        }
         this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point, null);
     }
 
-
+    private deleteSelectedAnnotation() {
+        this.deleteAnnotation(this.curSelectObj);
+        this.curSelectObj = undefined;
+        this.annGuide.hide();
+    }
 }

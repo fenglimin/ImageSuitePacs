@@ -6,6 +6,8 @@ import { IImageViewer } from "../../interfaces/image-viewer-interface";
 export abstract class AnnExtendObject extends AnnObject {
 
     private annObjList: Array<AnnObject> = [];
+    protected guideNeeded = false;
+    private annName: string;
 
     constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
 
@@ -13,6 +15,21 @@ export abstract class AnnExtendObject extends AnnObject {
         if (parentObj) {
             parentObj.onChildCreated(this);
         }
+    }
+
+    isGuideNeeded(): boolean {
+        return this.guideNeeded;
+    }
+
+    selectChildByStepIndex(stepIndex: number) {
+        if (!this.isGuideNeeded()) return;
+
+        const annChildList = this.annObjList.filter(annObj => annObj.getStepIndex() === stepIndex);
+        if (annChildList.length > 0) {
+            this.focusedObj = annChildList[0];
+            this.onSelect(true, true);
+        }
+
     }
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
@@ -38,9 +55,8 @@ export abstract class AnnExtendObject extends AnnObject {
 
         if (this.mouseResponsible) {
             this.annObjList.forEach(annObj => annObj.onDrawEnded());
-        } else {
-            alert("extend" + this);
-        }
+        } 
+
         this.created = true;
 
         if (!this.parentObj) {
@@ -90,6 +106,11 @@ export abstract class AnnExtendObject extends AnnObject {
 
     onLevelDown() {
         this.annObjList.forEach(annObj => annObj.onLevelDown());
+    }
+
+    setStepIndex(stepIndex: number) {
+        super.setStepIndex(stepIndex);
+        this.annObjList.forEach(annObj => annObj.setStepIndex(stepIndex));
     }
 
     private addChildObj(annObj: AnnObject) {

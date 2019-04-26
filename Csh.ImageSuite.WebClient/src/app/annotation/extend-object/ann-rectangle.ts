@@ -75,10 +75,8 @@ export class AnnRectangle extends AnnExtendObject {
                     this.annRectangle = new AnnBaseRectangle(this, topLeftPoint, imagePoint.x - topLeftPoint.x, imagePoint.y - topLeftPoint.y, this.imageViewer);
                     this.annRectangle.onLevelDown();
 
-                    const delta = 30 / this.image.getScaleValue();
-                    const arrowStart = { x: imagePoint.x + delta, y: imagePoint.y - delta};
                     this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-                    this.annTextIndicator.onCreate(arrowStart, imagePoint, this.annRectangle.getAreaString());
+                    this.annTextIndicator.onCreate(topLeftPoint, this.annRectangle.getAreaString());
                 }
             }
         }

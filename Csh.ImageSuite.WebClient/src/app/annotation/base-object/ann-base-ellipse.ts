@@ -35,6 +35,22 @@ export class AnnBaseEllipse extends AnnBaseObject {
         this.jcObj.color( isCircle? "#F00" : this.selectedColor);
     }
 
+    getAreaString(): string {
+
+        const width = this.getWidth();
+        const height = this.getHeight();
+        const area = Math.abs(width * height) * Math.PI;
+
+        let areaString = "Size = ";
+        if (this.pixelSpacing) {
+            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm2";
+        } else {
+            areaString += area.toFixed(2) + "pt2";
+        }
+
+        return areaString;
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 }

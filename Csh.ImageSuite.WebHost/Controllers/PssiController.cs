@@ -8,6 +8,8 @@ using Csh.ImageSuite.Model.Dicom;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Data;
+using System.Web.Http;
+using Csh.ImageSuite.Model.Enum;
 
 namespace Csh.ImageSuite.WebHost.Controllers
 {
@@ -55,6 +57,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
             return _commonTool.GetJsonStringFromObject(ssd);
         }
 
+
         public class RevStudyData
         {
             public QueryShortcut Shortcut { get; set; }
@@ -71,14 +74,66 @@ namespace Csh.ImageSuite.WebHost.Controllers
         }
 
 
+        [System.Web.Mvc.HttpPost]
+        public string SetRead(string id)
+        {
+            ScanStatus NewStatus = ScanStatus.Completed;
+            _dbHelper.UpdateStudyScanStatus(id, NewStatus);
+
+            return _commonTool.GetJsonStringFromObject("test");
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public string SetUnread(string id)
+        {
+            ScanStatus NewStatus = ScanStatus.Ended;
+            _dbHelper.UpdateStudyScanStatus(id, NewStatus);
+
+            return _commonTool.GetJsonStringFromObject("test");
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public string SetDeletePrevent(string id)
+        {
+            ReservedStatus reservedStatus = ReservedStatus.Reserved;
+            _dbHelper.SetReserved(id, reservedStatus);
+
+            return _commonTool.GetJsonStringFromObject("test");
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public string SetDeleteAllow(string id)
+        {
+            ReservedStatus reservedStatus = ReservedStatus.UnReserved;
+            _dbHelper.SetReserved(id, reservedStatus);
+
+            return _commonTool.GetJsonStringFromObject("test");
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public string DeleteStudy(DeleteStudyJson deleteStudyJson)
+        {
+            _dbHelper.DeletedStudy(deleteStudyJson.Id, deleteStudyJson.DeletionReason);
+
+            return _commonTool.GetJsonStringFromObject("test");
+        }
+
+        public class DeleteStudyJson
+        {
+            public string Id { get; set; }
+            public string DeletionReason { get; set; }
+        }
+
         // GET: Pssi/Create
         public ActionResult Create()
         {
             return View();
         }
 
+
+
         // POST: Pssi/Create
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         public ActionResult Create(FormCollection collection)
         {
             try
@@ -100,7 +155,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
         }
 
         // POST: Pssi/Edit/5
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
             try
@@ -122,7 +177,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
         }
 
         // POST: Pssi/Delete/5
-        [HttpPost]
+        [System.Web.Mvc.HttpPost]
         public ActionResult Delete(int id, FormCollection collection)
         {
             try

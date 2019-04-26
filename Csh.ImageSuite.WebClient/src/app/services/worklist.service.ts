@@ -21,7 +21,9 @@ export class WorklistService {
     querying = false;
     bShowSetReadBtn = true;
     bShowSetUnreadBtn = true;
-
+    bShowDeletePreventBtn = true;
+    bShowDeleteAllowBtn = true;
+    
 
     private _shortcut: Shortcut;
     set shortcut(value: Shortcut) {
@@ -192,7 +194,8 @@ export class WorklistService {
     onCheckStudyChanged(study: Study = null) {
         let scanStatusCompletedCount = 0;
         let scanStatusEndedCount = 0;
-
+        let deletePreventCount = 0;
+        let deleteAllowCount = 0;
 
         this.studies.forEach(study => {
             if (study.checked) {
@@ -202,9 +205,17 @@ export class WorklistService {
                 else if ((study.scanStatus == "Ended")) {
                     scanStatusEndedCount++;
                 }
+
+                if (study.reserved == "N") {
+                    deletePreventCount++;
+                }
+                else if ((study.reserved == "Y")) {
+                    deleteAllowCount++;
+                }
             }
         });
 
+        // Scan Status
         if (scanStatusCompletedCount == 0) {
             this.bShowSetReadBtn = false;
         } else {
@@ -222,6 +233,50 @@ export class WorklistService {
             this.bShowSetUnreadBtn = false;
         }
 
+        // reserved
+        if (deletePreventCount == 0) {
+            this.bShowDeleteAllowBtn = false;
+        } else {
+            this.bShowDeleteAllowBtn = true;
+        }
+
+        if (deleteAllowCount == 0) {
+            this.bShowDeletePreventBtn = false;
+        } else {
+            this.bShowDeletePreventBtn = true;
+        }
+
+        if (deletePreventCount == 0 && deleteAllowCount == 0) {
+            this.bShowDeletePreventBtn = false;
+            this.bShowDeleteAllowBtn = false;
+        }
+    }
+
+    onDeletePrevent() {
+        this.studies.forEach(study => {
+            if (study.checked) {
+                this.databaseService.setDeletePrevent(study.studyInstanceUid)
+                    .subscribe(shortcuts => this.refreshShortcuts());
+            }
+        });
+    }
+
+    onDeleteAllow() {
+        this.studies.forEach(study => {
+            if (study.checked) {
+                this.databaseService.setDeleteAllow(study.studyInstanceUid)
+                    .subscribe(shortcuts => this.refreshShortcuts());
+            }
+        });
+    }
+
+    onDeleteStudy(deletionReason) {
+        this.studies.forEach(study => {
+            if (study.checked) {
+                this.databaseService.deleteStudy(study.studyInstanceUid, deletionReason)
+                    .subscribe(shortcuts => this.refreshShortcuts());
+            }
+        });
     }
 
     isUsingLocalTestData(): boolean {

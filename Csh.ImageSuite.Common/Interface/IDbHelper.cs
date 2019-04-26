@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Csh.ImageSuite.Model.Dicom;
 using System.Data;
+using Csh.ImageSuite.Model.Enum;
 
 namespace Csh.ImageSuite.Common.Interface
 {
@@ -29,5 +30,12 @@ namespace Csh.ImageSuite.Common.Interface
         List<OverlayItemConfig> LoadOverlays();
 
         List<OverlayItemConfig> LoadOverlayConfig(string moduleName, string language);
+
+        int UpdateStudyScanStatus(string StudyInstanceUID, ScanStatus NewStatus);
+
+        void SetReserved(string studyInstanceUID, ReservedStatus reserved);
+
+        void DeletedStudy(string studyGUID, string deleteReason);
+
     }
 }

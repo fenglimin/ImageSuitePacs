@@ -88,8 +88,8 @@ export class DatabaseService {
         let jsonId = { id: id };
         return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
             .pipe(
-                tap(shortcut => this.log("save shortcut")),
-                catchError(this.handleError("saveShortcut", []))
+                tap(shortcut => this.log("setRead")),
+            catchError(this.handleError("setRead", []))
             );
     }
 
@@ -98,8 +98,38 @@ export class DatabaseService {
         let jsonId = { id: id };
         return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
             .pipe(
-                tap(shortcut => this.log("save shortcut")),
-                catchError(this.handleError("saveShortcut", []))
+            tap(shortcut => this.log("setUnread")),
+            catchError(this.handleError("setUnread", []))
+            );
+    }
+
+    setDeletePrevent(id: string): Observable<Shortcut[]> {
+        const url = `${this.pssiUrl}/setdeleteprevent/`;
+        let jsonId = { id: id };
+        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+            .pipe(
+                tap(shortcut => this.log("set delete prevent")),
+            catchError(this.handleError("setDeletePrevent", []))
+            );
+    }
+
+    setDeleteAllow(id: string): Observable<Shortcut[]> {
+        const url = `${this.pssiUrl}/setdeleteallow/`;
+        let jsonId = { id: id };
+        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+            .pipe(
+                tap(shortcut => this.log("set delete prevent")),
+            catchError(this.handleError("setDeleteAllow", []))
+            );
+    }
+
+    deleteStudy(id: string, deletionReason): Observable<Shortcut[]> {
+        const url = `${this.pssiUrl}/deletestudy/`;
+        let jsonId = { id: id, deletionReason: deletionReason };
+        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+            .pipe(
+                tap(shortcut => this.log("delete study")),
+                catchError(this.handleError("deleteStudy", []))
             );
     }
 

@@ -17,11 +17,14 @@ export class AnnTextIndicator extends AnnExtendObject {
 
 
     // The point is the coordinate of image layer, for text, need to convert to text layer coordinate
-    onCreate(arrowStartPoint: Point, arrowEndPoint: Point, text: string) {
+    onCreate(targetPoint: Point, text: string) {
         this.onDeleteChildren();
 
+        const delta = 30 / this.image.getScaleValue();
+        const arrowStartPoint = { x: targetPoint.x + delta, y: targetPoint.y - delta };
+
         this.annArrow = new AnnArrow(this, this.imageViewer);
-        this.annArrow.onCreate(arrowStartPoint, arrowEndPoint);
+        this.annArrow.onCreate(arrowStartPoint, targetPoint);
         this.annArrow.onLevelDown();
         this.annArrow.setMouseResponsible(false);
 
@@ -106,6 +109,7 @@ export class AnnTextIndicator extends AnnExtendObject {
 
     setText(text: string) {
         this.annText.setText(text);
+        this.redrawArrow();
     }
 
     private getShortestDistancePoint(destPointList: Point[], textPointList: Point[]): Point[] {

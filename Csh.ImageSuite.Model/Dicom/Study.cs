@@ -60,7 +60,7 @@ namespace Csh.ImageSuite.Model.Dicom
         [Display(Name = "InstanceAvailability")]
         public string InstanceAvailability { get; set; }
 
-        public int ScanStatus { get; set; }
+        public string ScanStatus { get; set; }
 
         //public string AccessGroups { get; set; }
 

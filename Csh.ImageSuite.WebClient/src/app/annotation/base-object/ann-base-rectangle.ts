@@ -1,4 +1,4 @@
-﻿import { Point, Size, Rectangle } from "../../models/annotation";
+﻿import { Point, Rectangle } from "../../models/annotation";
 import { AnnObject } from "../ann-object";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
@@ -6,7 +6,7 @@ import { AnnExtendObject } from "../extend-object/ann-extend-object";
 
 export class AnnBaseRectangle extends AnnBaseObject {
 
-    pixelSpacing: Size;
+    
     forText: boolean;
 
     constructor(parentObj: AnnExtendObject, topLeft: Point, width: number, height: number, imageViewer: IImageViewer, forText: boolean = false) {
@@ -20,7 +20,6 @@ export class AnnBaseRectangle extends AnnBaseObject {
         super.setJcObj();
 
         this.setMouseResponsible(!forText);
-        this.pixelSpacing = this.image.getPixelSpacing();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

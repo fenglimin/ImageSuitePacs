@@ -51,7 +51,8 @@ namespace Csh.ImageSuite.Common
                 Reserved = _commonTool.GetSafeStringDbValue(row, "Reserved"),
                 Readed = _commonTool.GetSafeStringDbValue(row, "Readed"),
                 InstanceAvailability = _commonTool.GetSafeStringDbValue(row, "InstanceAvailability"),
-                ScanStatus = _commonTool.GetSafeIntDbValue(row, "ScanStatus"),
+                //ScanStatus = _commonTool.GetSafeIntDbValue(row, "ScanStatus"),
+                ScanStatus = _commonTool.GetSafeStringDbValue(row, "ScanStatus"),
                 //AccessGroups = _commonTool.GetSafeStringDbValue(row, "AccessGroups"),
                 Send = _commonTool.GetSafeIntDbValue(row, "Send")
             };

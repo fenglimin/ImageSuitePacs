@@ -25,13 +25,13 @@
             <button class="tagEdit" role="button" title="Patient Edit" (click)="onTagEdit()"></button>
         </td>
         <td>
-            <button class="deletePrevent" role="button" title="Prevent Delete Study" (click)="onDeletePrevent()"></button>
+            <button class="deletePrevent" role="button" title="Prevent Delete Study" (click)="onDeletePrevent()" [disabled]="worklistService.bShowDeletePreventBtn"></button>
         </td>
         <td>
-            <button class="deleteAllow" role="button" title="Allow Delete Study" (click)="onDeleteAllow()"></button>
+            <button class="deleteAllow" role="button" title="Allow Delete Study" (click)="onDeleteAllow()" [disabled]="worklistService.bShowDeleteAllowBtn"></button>
         </td>
         <td>
-            <button class="delete" role="button" title="Delete Study" (click)="onDelete()"></button>
+            <button class="delete" role="button" title="Delete Study" (click)="onDeleteStudy()"></button>
         </td>
         <td>
             <button class="import" role="button" title="Import" (click)="onImport()"></button>

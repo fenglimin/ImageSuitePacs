@@ -1,4 +1,4 @@
-import { Point, Rectangle, PositionInRectangle } from '../models/annotation';
+import { Point, Size, Rectangle, PositionInRectangle } from '../models/annotation';
 import { Image } from "../models/pssi";
 import { IImageViewer } from "../interfaces/image-viewer-interface";
 import { IAnnotationObject } from "../interfaces/annotation-object-interface";
@@ -63,6 +63,9 @@ export abstract class AnnObject {
 
     static minDelta = 0.0000000001;
 
+    protected pixelSpacing: Size;
+    protected stepIndex = -1;
+
     constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
 
         this.parentObj = parentObj;
@@ -80,6 +83,8 @@ export abstract class AnnObject {
 
         this.lineWidth = this.getLineWidth();
         this.pointRadius = this.getPointRadius();
+
+        this.pixelSpacing = this.image.getPixelSpacing();
     }
 
     isCreated() {
@@ -88,6 +93,18 @@ export abstract class AnnObject {
 
     isSelected(): boolean {
         return this.selected;
+    }
+
+    setStepIndex(stepIndex: number) {
+        this.stepIndex = stepIndex;
+    }
+
+    getFocusedObj(): AnnObject {
+        return this.focusedObj;
+    }
+
+    getStepIndex(): number {
+        return this.stepIndex;
     }
 
     setMouseResponsible(mouseResponsible: boolean) {
@@ -339,6 +356,45 @@ export abstract class AnnObject {
         
 
         return retPointList;
+    }
+
+    static centerPoint(point1: Point, point2: Point): Point {
+        return { x: (point1.x + point2.x) / 2.0, y: (point1.y + point2.y) / 2.0 };
+    }
+
+
+    static calcLineAngle(point1: Point, point2: Point): number {
+
+        const dwSin = AnnObject.getSineTheta(point1, point2);
+        const dwCos = AnnObject.getCosineTheta(point1, point2);
+
+        let dwTheta : number;
+        if (dwSin >= 0 && dwCos >= 0) {
+            dwTheta = Math.asin(Math.abs(dwSin));
+        } else if (dwSin >= 0 && dwCos < 0) {
+            dwTheta = Math.asin(Math.abs(dwSin));
+            dwTheta = Math.PI - dwTheta;
+        } else if (dwSin < 0 && dwCos <= 0) {
+            dwTheta = Math.asin(Math.abs(dwSin));
+            dwTheta = Math.PI + dwTheta;
+        } else {
+            dwTheta = Math.asin(Math.abs(dwSin));
+            dwTheta = Math.PI * 2 - dwTheta;
+        }
+        if (180.0 / Math.PI * dwTheta > 360) {
+            return 180.0 / Math.PI * dwTheta - 360;
+        }
+
+        return 180.0 / Math.PI * dwTheta;
+    }
+
+    static pointInRect(point: Point, rect: Rectangle): boolean {
+        const startX = Math.min(rect.x, rect.x + rect.width);
+        const endX = Math.max(rect.x, rect.x + rect.width);
+        const startY = Math.min(rect.y, rect.y + rect.height);
+        const endY = Math.max(rect.y, rect.y + rect.height);
+
+        return startX <= point.x && point.x <= endX && startY <= point.y && point.y <= endY;
     }
 
     getLineWidth(): number {

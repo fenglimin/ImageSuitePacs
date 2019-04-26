@@ -4,12 +4,14 @@ import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnPoint } from "./ann-point";
 import { AnnBaseEllipse } from "../base-object/ann-base-ellipse";
 import { AnnExtendObject } from "./ann-extend-object";
+import { AnnTextIndicator } from "./ann-text-indicator"
 
 export class AnnEllipse extends AnnExtendObject {
 
     private annEllipse: AnnBaseEllipse;
     private annCenterPoint: AnnPoint;
     private annPointList = new Array<AnnPoint>();
+    private annTextIndicator: AnnTextIndicator;
 
     private widthSet = false;
 
@@ -85,6 +87,9 @@ export class AnnEllipse extends AnnExtendObject {
                     this.annPointList.push(annLeftPoint);
 
                     this.annCenterPoint.onLevelUp();
+
+                    this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
+                    this.annTextIndicator.onCreate(topPoint, this.annEllipse.getAreaString());
                 }
             }
         }
@@ -96,13 +101,30 @@ export class AnnEllipse extends AnnExtendObject {
             this.onTranslate(deltaX, deltaY);
         } else if (this.annPointList.some(annObj => annObj === this.focusedObj)) {
             this.onPointDragged(this.focusedObj, deltaX, deltaY);
+        } else if (this.annTextIndicator === this.focusedObj) {
+            this.onTextDragged(deltaX, deltaY);
         }
+    }
+
+    onRotate(angle: number) {
+        this.annTextIndicator.onRotate(angle);
+    }
+
+    getSurroundPointList(): Point[] {
+
+        const pointList = [];
+
+        for (let i = 0; i < 4; i++) {
+            pointList.push(this.annPointList[i].getPosition());
+        }
+
+        return pointList;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 
-    redraw(topPoint: Point, bottomPoint: Point, leftPoint: Point, rightPoint: Point) {
+    private redraw(topPoint: Point, bottomPoint: Point, leftPoint: Point, rightPoint: Point) {
         this.annEllipse.setWidth(rightPoint.x - topPoint.x);
         this.annEllipse.setHeight(topPoint.y - rightPoint.y);
         
@@ -110,6 +132,13 @@ export class AnnEllipse extends AnnExtendObject {
         this.annPointList[1].onMove(rightPoint);
         this.annPointList[2].onMove(bottomPoint);
         this.annPointList[3].onMove(leftPoint);
+
+        this.annTextIndicator.redrawArrow();
+        this.annTextIndicator.setText(this.annEllipse.getAreaString());
+    }
+
+    private onTextDragged(deltaX: number, deltaY: number) {
+        this.annTextIndicator.onDrag(deltaX, deltaY);
     }
 
     private onPointDragged(draggedObj: any, deltaX: number, deltaY: number) {

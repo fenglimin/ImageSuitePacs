@@ -18,4 +18,22 @@
         QueryLast12Months,
         DATERANGE
     }
+
+    /// <summary>
+    /// ScanStatus in Study Table
+    /// </summary>
+    public enum ScanStatus
+    {
+        Canceled = 5,
+        Scheduled = 10,
+        Started = 20,
+        Ended = 30,
+        Completed = 40
+    }
+
+    public enum ReservedStatus
+    {
+        UnReserved = 0,
+        Reserved = 1
+    }
 }

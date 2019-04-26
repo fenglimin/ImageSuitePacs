@@ -21,7 +21,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
         // GET: Overlay
         public string Index()
         {
-            var overlays = _dbHelper.LoadOverlayConfig("global", "en-US");
+            var overlays = _dbHelper.LoadOverlayConfig("global", "zh-CN");
             return _commonTool.GetJsonStringFromObject(overlays);
         }
     }

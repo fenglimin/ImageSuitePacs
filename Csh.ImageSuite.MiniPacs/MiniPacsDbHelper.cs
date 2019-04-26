@@ -490,7 +490,7 @@ namespace Csh.ImageSuite.MiniPacs
                                        "S.InstanceAvailability, S.AdditionalPatientHistory, S.ScanStatus, S.Send, " +
                                        "ROW_NUMBER() OVER ("+ orderByCondition + ") as row " +
                                        "FROM Patient P, Study S " +
-                                       "WHERE S.PatientGUID = P.PatientGUID ");
+                                       "WHERE S.PatientGUID = P.PatientGUID AND S.Hide <> 1 ");
 
             sqlStr += BuildSqlCondition(queryShortcut, pageIndex, pageSize);
 
@@ -511,7 +511,6 @@ namespace Csh.ImageSuite.MiniPacs
                         string today = System.DateTime.Now.ToString("yyyyMMdd");
                         study.Patient.PatientAge = GetPatientAge(study.Patient.PatientBirthDate, today);
                         study.Patient.PatientBirthDate = DateTime.ParseExact(study.Patient.PatientBirthDate, "yyyyMMdd", null).ToString(dateFormat);
-                        
                     }
 
                     if (!String.IsNullOrEmpty(study.StudyDate))
@@ -521,7 +520,20 @@ namespace Csh.ImageSuite.MiniPacs
 
                     if (!String.IsNullOrEmpty(study.StudyTime))
                     {
-                        study.StudyTime = FormatTimeString(study.StudyTime.Trim(), "HHmmss", timeFormat);
+                        study.StudyTime = FormatTimeString(study.StudyTime.Trim(), "HHmmss", "HH:mm:ss");
+                    }
+
+                    if (!String.IsNullOrEmpty(study.Patient.PatientName))
+                    {
+                        study.Patient.PatientName = HandlePatientName(study.Patient.PatientName);
+                    }
+
+                    if (!String.IsNullOrEmpty(study.ScanStatus))
+                    {
+                        int iScanStatus = Int32.Parse(study.ScanStatus);
+                        ScanStatus scanStatus = (ScanStatus)iScanStatus;
+
+                        study.ScanStatus = scanStatus.ToString();
                     }
 
                     studies.Add(study);
@@ -1024,6 +1036,136 @@ namespace Csh.ImageSuite.MiniPacs
             SqlHelper.ExecuteQuery(strSql, lstParas.ToArray(), _connectionString);
 
             return RetValue.Value.ToString();
+        }
+
+        /// <summary>
+        /// Handle the patient name, remove/replace the character "^"
+        /// </summary>
+        /// <param name="strPatName"></param>
+        /// <returns></returns>
+        public string HandlePatientName(string strPatName)
+        {
+            try
+            {
+                string strLocalPatientName = GetLocalPatientName(strPatName);
+
+                if (strLocalPatientName.Length > 0)
+                    return strLocalPatientName;
+
+
+                if (strPatName.IndexOf("^") > -1)
+                {
+                    if (System.Text.Encoding.UTF8.GetBytes(strPatName).Length != strPatName.Length)
+                    {
+                        //including chinese words, just remove the character "^" 
+                        strPatName = strPatName.Replace("^", "");
+                    }
+                    else
+                    {
+                        //not contain chinese words, replace the character "^" with space
+                        strPatName = strPatName.Replace("^", " ");
+                    }
+                }
+
+            }
+            catch { }
+            return strPatName.Trim();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strPatName"></param>
+        /// <returns></returns>
+        public string GetLocalPatientName(string strPatName)
+        {
+            try
+            {
+                SqlWrapper sql = new SqlWrapper();
+                sql.SqlString = "select top 1 LocalPatientName from View_Patient where PatientName=@PatientName";
+                sql.Parameter = new SqlParameter[] { new SqlParameter("@PatientName", strPatName) };
+                DataSet ds = SqlHelper.ExecuteQuery(sql, _connectionString);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return ds.Tables[0].Rows[0][0].ToString();
+                }
+            }
+            catch { }
+            return "";
+        }
+
+        public int UpdateStudyScanStatus(string StudyInstanceUID, ScanStatus NewStatus)
+        {
+            List<SqlWrapper> lstSql = GetUpdateScanStatusSql(StudyInstanceUID, NewStatus);
+            return SqlHelper.ExecuteNonQuery(lstSql, _connectionString);
+        }
+
+        private List<SqlWrapper> GetUpdateScanStatusSql(string StudyInstanceUID, ScanStatus NewStatus)
+        {
+            List<SqlWrapper> lstSql = new List<SqlWrapper>();
+
+            // Update STUDY Table
+            SqlWrapper sql = new SqlWrapper();
+            string strSQL = @"UPDATE STUDY SET [SCANSTATUS]=@SCANSTATUS, CompleteToken=@TokenID, AcqDateTime = getdate() WHERE [StudyInstanceUID]=@StudyInstanceUID";
+            SqlParameter[] paras = new SqlParameter[] {
+                new SqlParameter("@StudyInstanceUID", StudyInstanceUID),
+                new SqlParameter("@TokenID", Guid.NewGuid().ToString()),
+                new SqlParameter("@SCANSTATUS", ((int)NewStatus).ToString())
+            };
+            sql.SqlString = strSQL;
+            sql.Parameter = paras;
+            lstSql.Add(sql);
+
+
+            // Update MWLOrder Table
+            sql = new SqlWrapper();
+            strSQL = @"UPDATE MWLOrder SET [SCANSTATUS]=@SCANSTATUS WHERE [StudyInstanceUID]=@StudyInstanceUID";
+            paras = new SqlParameter[] {
+                new SqlParameter("@StudyInstanceUID", StudyInstanceUID),
+                new SqlParameter("@SCANSTATUS", ((int)NewStatus).ToString())
+            };
+            sql.SqlString = strSQL;
+            sql.Parameter = paras;
+            lstSql.Add(sql);
+
+            return lstSql;
+        }
+
+        /// <summary>
+        /// Reserve or unreserved a study
+        /// </summary>
+        public void SetReserved(string studyInstanceUID, ReservedStatus reserved)
+        {
+            string chReserved = reserved == ReservedStatus.Reserved ? "Y" : "N";
+            string strSQL = String.Format("UPDATE Study SET [Reserved]='{0}' WHERE StudyInstanceUID='{1}'",
+                chReserved, studyInstanceUID);
+
+            try
+            {
+                SqlHelper.ExecuteNonQuery(strSQL, _connectionString);
+            }
+            catch
+            {
+
+            }
+        }
+
+        public void DeletedStudy(string studyGUID, string deleteReason)
+        {
+            var sqlWrapper = new SqlWrapper();
+
+            string strSQL = "WGGC_QC_DeleteStudy";
+            var parameters = new SqlParameter[]{
+                new SqlParameter("@strStudyInstanceUID", studyGUID),
+                new SqlParameter("@strOpUser", "admin"),
+                new SqlParameter("@strDelReason", deleteReason),
+                new SqlParameter("@bAdmin", true) };
+
+            sqlWrapper.SqlString = strSQL;
+            sqlWrapper.Parameter = parameters;
+            sqlWrapper.CommandType = CommandType.StoredProcedure;
+
+            SqlHelper.ExecuteNonQuery(sqlWrapper, _connectionString);
         }
     }
 }

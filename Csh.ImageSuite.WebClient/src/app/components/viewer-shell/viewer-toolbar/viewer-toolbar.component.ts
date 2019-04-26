@@ -9,6 +9,7 @@ import { AnnLine } from "../../../annotation/extend-object/ann-line";
 import { AnnEllipse } from "../../../annotation/extend-object/ann-ellipse";
 import { AnnRectangle } from "../../../annotation/extend-object/ann-rectangle";
 import { AnnArrow } from "../../../annotation/extend-object/ann-arrow";
+import { AnnCurve } from "../../../annotation/extend-object/ann-curve";
 
 @Component({
     selector: "app-viewer-toolbar",
@@ -82,38 +83,50 @@ export class ViewerToolbarComponent implements OnInit {
         tip: "Key Image",
         operationData: { type: OperationEnum.ToggleKeyImage, data: null }
     };
-    resetButtonMenu: SelectedButtonData =
-        { name: "Reset", tip: "Reset", operationData: { type: OperationEnum.Reset, data: null } };
+
+    resetButtonMenu: SelectedButtonData = {
+         name: "Reset", tip: "Reset", operationData: { type: OperationEnum.Reset, data: null }
+    };
+
     showAnnotationButtonMenu: SelectedButtonData = {
         name: "showannotation",
         tip: "Show Annotation",
         operationData: { type: OperationEnum.ShowAnnotation, data: null }
     };
+
     showOverlayButtonMenu: SelectedButtonData = {
         name: "showoverlay",
         tip: "Show Overlay",
         operationData: { type: OperationEnum.ShowOverlay, data: null }
     };
+
     showRulerButtonMenu: SelectedButtonData = {
         name: "showruler",
         tip: "Show Ruler",
         operationData: { type: OperationEnum.ShowRuler, data: null }
     };
+
     showGraphicOverlayButtonMenu: SelectedButtonData = {
         name: "showgraphicoverlay",
         tip: "Show Graphic Overlay",
         operationData: { type: OperationEnum.ShowGraphicOverlay, data: null }
     };
+
     selectAnnotationButtonMenu: SelectedButtonData = {
         name: "ann_selection",
         tip: "Select Annotation",
         operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.SelectAnn }
     };
+
     simpleAnnotation1ButtonMenu: SelectedButtonData[] = [
         { name: "ann_line", tip: "Line", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnLine) } },
         { name: "ann_ellipse", tip: "Eclipse", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnEllipse) } },
         { name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnRectangle) } },
         { name: "ann_arrow", tip: "Arrow", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnArrow) } }
+    ];
+
+    extendAnnotation1ButtonMenu: SelectedButtonData[] = [
+        { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnCurve) } }
     ];
 
     private baseUrl: string;
