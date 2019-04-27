@@ -20,7 +20,7 @@ export class AnnCurve extends AnnExtendObject {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Implementation of interface IAnnotationObject
+    // Override functions of base class
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
@@ -35,6 +35,7 @@ export class AnnCurve extends AnnExtendObject {
             const stepIndex = this.imageViewer.getCurrentStepIndex();
             switch (stepIndex) {
 
+                // Step 0: Draw the start point
                 case 0: {
                     this.annStartPoint = new AnnPoint(this, this.imageViewer);
                     this.annStartPoint.onCreate(imagePoint);
@@ -42,6 +43,7 @@ export class AnnCurve extends AnnExtendObject {
                     break;
                 }
 
+                // Step 1: Draw the end point and curve
                 case 1: {
                     const startPoint = this.annStartPoint.getPosition();
                     if (AnnObject.equalPoint(imagePoint, startPoint)) return;
@@ -55,27 +57,38 @@ export class AnnCurve extends AnnExtendObject {
                     break;
                 }
 
+                // Step 2: Determine the direction of the curve
                 case 2: {
                     const startPoint = this.annStartPoint.getPosition();
                     const endPoint = this.annEndPoint.getPosition();
                     const middlePoint = this.annMiddlePoint.getPosition();
-
                     const lineCenter = AnnObject.centerPoint(startPoint, endPoint);
+
+                    // The another middle point
                     const newMiddlePoint = { x: lineCenter.x * 2 - middlePoint.x, y: lineCenter.y * 2 - middlePoint.y };
 
+                    // The nearest is the wanted
                     if (AnnObject.countDistance(imagePoint, newMiddlePoint) < AnnObject.countDistance(imagePoint, middlePoint)) {
                         this.redraw(startPoint, endPoint, newMiddlePoint);
                     }
 
+                    this.annMiddlePoint.setStepIndex(stepIndex);
+                    this.focusedObj = this.annMiddlePoint;
+
                     if (!this.parentObj) {
                         this.onDrawEnded();
                     }
-
-                    this.annMiddlePoint.setStepIndex(stepIndex);
+                    
                     break;
+                }
+
+                default: {
+                    alert("Invalid step index " + stepIndex);
+                    return;
                 }
             }
 
+            // Step the guide
             this.imageViewer.stepGuide();
         }
     }
@@ -107,20 +120,21 @@ export class AnnCurve extends AnnExtendObject {
         this.redraw(startPoint, endPoint, middlePoint);
     }
 
+    // The text indicator is drawn in the seperate layer, need to rotate it.
     onRotate(angle: number) {
         this.annTextIndicator.onRotate(angle);
     }
 
     getSurroundPointList(): Point[] {
-
         // The arrow of the text indicator will always point to the middle point
         return [this.annMiddlePoint.getPosition()];
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    calcMiddlePoint(startPoint: Point, endPoint: Point, radius: number) {
 
+    // Calculate the middle point of the curve (The curve is determined by start/end point and its radius, default direction is left or up)
+    private calcMiddlePoint(startPoint: Point, endPoint: Point, radius: number) {
         const pointDir = { x: 1, y: 1 };
         const centerPoint = AnnObject.centerPoint(startPoint, endPoint);
 
@@ -153,69 +167,68 @@ export class AnnCurve extends AnnExtendObject {
             dCosBC = AnnObject.getCosineTheta(endPoint, pointDir);
 
         //determine the center point
-        const ptMiddle = new Point(0, 0);
+        const middlePoint = new Point(0, 0);
         var dSinBC_BA = dSinBC * dCosBA - dCosBC * dSinBA;
         if (dSinBC_BA < 0.0) {
-            ptMiddle.x = ptO1.x - radius * dSinAB;
-            ptMiddle.y = ptO1.y + radius * dCosAB;
+            middlePoint.x = ptO1.x - radius * dSinAB;
+            middlePoint.y = ptO1.y + radius * dCosAB;
         } else {
-            ptMiddle.x = ptO2.x + radius * dSinAB;
-            ptMiddle.y = ptO2.y - radius * dCosAB;
+            middlePoint.x = ptO2.x + radius * dSinAB;
+            middlePoint.y = ptO2.y - radius * dCosAB;
         }
 
-        return ptMiddle;
+        return middlePoint;
     }
 
-    calcCenterBy3Points(ptStart: Point, ptEnd: Point, ptMiddle: Point): any {
-        let bIsInvalid = false;
-        let bNeedRevert = false;
+    // Calculate the center point of the curve ( The curve is determined by three points )
+    private calcCenterBy3Points(startPoint: Point, endPoint: Point, middlePoint: Point): any {
+        let isInvalid = false;
+        let needRevert = false;
 
         // D and E is center point of Line AB and Line BC
-        //
-
-        const ptD = AnnObject.centerPoint(ptStart, ptEnd);
-        const ptE = AnnObject.centerPoint(ptEnd, ptMiddle);
+        const ptD = AnnObject.centerPoint(startPoint, endPoint);
+        const ptE = AnnObject.centerPoint(endPoint, middlePoint);
 
         // k of Line OD and Line OE
         // O is center point of arc
         //
-        const dkOD = -(ptEnd.x - ptStart.x) / (ptEnd.y - ptStart.y);
-        const dkOE = -(ptMiddle.x - ptEnd.x) / (ptMiddle.y - ptEnd.y);
+        const dkOD = -(endPoint.x - startPoint.x) / (endPoint.y - startPoint.y);
+        const dkOE = -(middlePoint.x - endPoint.x) / (middlePoint.y - endPoint.y);
 
-        const ptCenter = new Point(0, 0);
-        if (Math.abs(ptMiddle.y - ptEnd.y) < AnnObject.minDelta) {
-            ptCenter.x = ptE.x;
-            ptCenter.y = (ptE.x - ptD.x) * dkOD + ptD.y;
-        } else if (Math.abs(ptEnd.y - ptStart.y) < AnnObject.minDelta) {
-            ptCenter.x = ptD.x;
-            ptCenter.y = (ptD.x - ptE.x) * dkOE + ptE.y;
-        } else if (Math.abs(ptMiddle.x - ptEnd.x) < AnnObject.minDelta) {
-            ptCenter.y = ptE.y;
-            ptCenter.x = (ptE.y - ptD.y) / dkOD + ptD.x;
-        } else if (Math.abs(ptEnd.x - ptStart.x) < AnnObject.minDelta) {
-            ptCenter.y = ptD.y;
-            ptCenter.x = (ptD.y - ptE.y) / dkOE + ptE.x;
+        const centerPoint = new Point(0, 0);
+        if (Math.abs(middlePoint.y - endPoint.y) < AnnObject.minDelta) {
+            centerPoint.x = ptE.x;
+            centerPoint.y = (ptE.x - ptD.x) * dkOD + ptD.y;
+        } else if (Math.abs(endPoint.y - startPoint.y) < AnnObject.minDelta) {
+            centerPoint.x = ptD.x;
+            centerPoint.y = (ptD.x - ptE.x) * dkOE + ptE.y;
+        } else if (Math.abs(middlePoint.x - endPoint.x) < AnnObject.minDelta) {
+            centerPoint.y = ptE.y;
+            centerPoint.x = (ptE.y - ptD.y) / dkOD + ptD.x;
+        } else if (Math.abs(endPoint.x - startPoint.x) < AnnObject.minDelta) {
+            centerPoint.y = ptD.y;
+            centerPoint.x = (ptD.y - ptE.y) / dkOE + ptE.x;
         } else {
-            ptCenter.x = (ptE.y - ptD.y - (ptE.x * dkOE) + (ptD.x * dkOD)) / (dkOD - dkOE);
-            ptCenter.y = ptD.y + dkOD * (ptCenter.x - ptD.x);
+            centerPoint.x = (ptE.y - ptD.y - (ptE.x * dkOE) + (ptD.x * dkOD)) / (dkOD - dkOE);
+            centerPoint.y = ptD.y + dkOD * (centerPoint.x - ptD.x);
         }
 
         // Analysis Start Point and End point
         // Arc() always draw arc in a Clockwise
         //
-        var dSinBA = AnnObject.getSineTheta(ptEnd, ptStart),
-            dCosBA = AnnObject.getCosineTheta(ptEnd, ptStart),
-            dSinBC = AnnObject.getSineTheta(ptEnd, ptMiddle),
-            dCosBC = AnnObject.getCosineTheta(ptEnd, ptMiddle);
+        var dSinBA = AnnObject.getSineTheta(endPoint, startPoint),
+            dCosBA = AnnObject.getCosineTheta(endPoint, startPoint),
+            dSinBC = AnnObject.getSineTheta(endPoint, middlePoint),
+            dCosBC = AnnObject.getCosineTheta(endPoint, middlePoint);
 
         var dSinBC_BA = dSinBC * dCosBA - dCosBC * dSinBA;
 
         // Check Arc angle
         //
-        var dSinOA = AnnObject.getSineTheta(ptCenter, ptStart),
-            dCosOA = AnnObject.getCosineTheta(ptCenter, ptStart),
-            dSinOB = AnnObject.getSineTheta(ptCenter, ptEnd),
-            dCosOB = AnnObject.getCosineTheta(ptCenter, ptEnd);
+        var dSinOA = AnnObject.getSineTheta(centerPoint, startPoint),
+            dCosOA = AnnObject.getCosineTheta(centerPoint, startPoint),
+            dSinOB = AnnObject.getSineTheta(centerPoint, endPoint),
+            dCosOB = AnnObject.getCosineTheta(centerPoint, endPoint);
 
         var dSinArc = dSinOA * dCosOB - dCosOA * dSinOB;
 
@@ -224,56 +237,56 @@ export class AnnCurve extends AnnExtendObject {
         }
 
         if (dSinArc < 0.0) {
-            bIsInvalid = true;
+            isInvalid = true;
         }
 
         //need to revert start and end.
         if (dSinBC_BA > 0.0) {
-            bNeedRevert = true;
+            needRevert = true;
         }
 
-        return { ptCenter: ptCenter, bIsInvalid: bIsInvalid, bNeedRevert: bNeedRevert };
+        return { centerPoint: centerPoint, isInvalid: isInvalid, needRevert: needRevert };
     }
 
+    // Calculate all necessary information of a curve
     calcArcBy3Points(startPoint: Point, endPoint: Point, middlePoint: Point, needCheckArc: boolean): any {
-
         const arcData = this.calcCenterBy3Points(startPoint, endPoint, middlePoint);
 
-        if (needCheckArc && arcData.bIsInvalid)
+        if (needCheckArc && arcData.isInvalid)
             return false; //user may drag the point out of range
 
-        const radius = AnnObject.countDistance(arcData.ptCenter, startPoint);
+        const radius = AnnObject.countDistance(arcData.centerPoint, startPoint);
 
         const dSinAB = AnnObject.getSineTheta(startPoint, endPoint);
         const dCosAB = AnnObject.getCosineTheta(startPoint, endPoint);
 
-        if (arcData.bNeedRevert) {
-            middlePoint.x = arcData.ptCenter.x + radius * dSinAB;
-            middlePoint.y = arcData.ptCenter.y - radius * dCosAB;
+        if (arcData.needRevert) {
+            middlePoint.x = arcData.centerPoint.x + radius * dSinAB;
+            middlePoint.y = arcData.centerPoint.y - radius * dCosAB;
         } else {
-            middlePoint.x = arcData.ptCenter.x - radius * dSinAB;
-            middlePoint.y = arcData.ptCenter.y + radius * dCosAB;
+            middlePoint.x = arcData.centerPoint.x - radius * dSinAB;
+            middlePoint.y = arcData.centerPoint.y + radius * dCosAB;
         }
 
-        const arcStart = AnnObject.calcLineAngle(arcData.ptCenter, startPoint);
-        let arcEnd = AnnObject.calcLineAngle(arcData.ptCenter, endPoint);
+        const arcStart = AnnObject.calcLineAngle(arcData.centerPoint, startPoint);
+        let arcEnd = AnnObject.calcLineAngle(arcData.centerPoint, endPoint);
         if (arcEnd < arcStart) {
             arcEnd = arcEnd + 360.0;
         }
 
         return {
-            centerPoint: arcData.ptCenter,
+            centerPoint: arcData.centerPoint,
             startPoint: startPoint,
             endPoint: endPoint,
             middlePoint: middlePoint,
             radius: radius,
             startAngle: arcStart,
             endAngle: arcEnd,
-            anticlockwise: !arcData.bNeedRevert
+            anticlockwise: !arcData.needRevert
         };
     }
 
-
+    // Calcuate the curve angle of two lines that share the same point
     private calcCurveAngle(startPoint: Point, endPoint: Point, centerPoint: Point): any {
         const arcStart = AnnPoint.calcLineAngle(centerPoint, startPoint);
         let arcEnd = AnnPoint.calcLineAngle(centerPoint, endPoint);
@@ -285,7 +298,6 @@ export class AnnCurve extends AnnExtendObject {
     }
 
     private onDragStartPoint(deltaX: number, deltaY: number) {
-
         const startPoint = this.annStartPoint.getPosition();
         const endPoint = this.annEndPoint.getPosition();
         const middlePoint = this.annMiddlePoint.getPosition();
@@ -318,6 +330,7 @@ export class AnnCurve extends AnnExtendObject {
         this.redraw(startPoint, endPoint, middlePoint);
     }
 
+    // Redraw the curve
     private redraw(startPoint: Point, endPoint: Point, middlePoint: Point) {
 
         const arcData = this.calcArcBy3Points(startPoint, endPoint, middlePoint, true);

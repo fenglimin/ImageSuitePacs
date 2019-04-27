@@ -32,23 +32,57 @@ export class Rectangle {
     }
 }
 
-export class AnnGuideStep {
+export class AnnGuideStepData {
+    //imageSrc: string;
+    imageName: string;
+    tipTextCreating: string;
+    tipTextCreated: string;
+
+    constructor(imageName: string, tipTextCreating: string, tipTextCreated: string = undefined) {
+        this.imageName = imageName;
+        //this.imageSrc = baseUrl + "assets/img/TutorImage/" + imageName;
+        this.tipTextCreating = tipTextCreating;
+        this.tipTextCreated = tipTextCreated ? tipTextCreated : tipTextCreating;
+    }
+}
+
+export class AnnGuideData {
+    annName: string;
+    cursor: string;
+
+    guideStepList: Array<AnnGuideStepData> = [];
+
+    constructor(annName: string, cursor: string) {
+        this.annName = annName;
+        this.cursor = cursor;
+    }
+
+    addStepData(annGuideStepData: AnnGuideStepData) {
+        this.guideStepList.push(annGuideStepData);
+    }
+}
+
+export class AnnGuideStepButton {
+    annGuideStepData: AnnGuideStepData
     imageSrc: string;
-    tipText: string;
     imageData = new Image();
     jcBackground: any;
     jcBackgroundBorder: any;
     jcText: any;
     stepIndex: number;
 
-    constructor(stepIndex: number, baseUrl: string, imageName: string, tipText: string) {
+    constructor(stepIndex: number, baseUrl: string, annGuideStepData: AnnGuideStepData) {
+        this.annGuideStepData = annGuideStepData;
         this.stepIndex = stepIndex;
-        this.imageSrc = baseUrl + "assets/img/TutorImage/" + imageName;
-        this.tipText = tipText;
+        this.imageSrc = baseUrl + "assets/img/TutorImage/" + annGuideStepData.imageName;
     }
 
     loadImage() {
         this.imageData.src = this.imageSrc;
+    }
+
+    getTipText(annCreated: boolean): string {
+        return annCreated ? this.annGuideStepData.tipTextCreated : this.annGuideStepData.tipTextCreating;
     }
 
     del() {
@@ -114,6 +148,10 @@ export class AnnGuideActionButton {
 
     getUpImage(): any {
         return this.imageDataList[3];
+    }
+
+    getDisabledImage(): any {
+        return this.imageDataList[0];
     }
 
     isDisabled(): boolean {

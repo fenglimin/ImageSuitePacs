@@ -4,6 +4,7 @@ import { DatabaseService } from "./database.service";
 import { Overlay, OverlayDisplayGroup } from '../models/overlay';
 import { LogService } from "../services/log.service";
 import { FontData } from '../models/misc-data';
+import { AnnGuide } from "../annotation/layer-object/ann-guide";
 
 @Injectable({
     providedIn: "root"
@@ -27,6 +28,8 @@ export class ConfigurationService {
         this.databaseService.getOverFont().subscribe(fontData => {
             this.textOverlayFont = fontData;
         });
+
+        AnnGuide.createAnnGuideDataList();
     }
 
     getBaseUrl(): string {
