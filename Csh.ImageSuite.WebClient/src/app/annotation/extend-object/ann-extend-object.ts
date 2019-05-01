@@ -112,6 +112,10 @@ export abstract class AnnExtendObject extends AnnObject {
         this.annObjList.forEach(annObj => annObj.onLevelDown(level));
     }
 
+    getSurroundPointList(): Point[] {
+        return [];
+    }
+
     setStepIndex(stepIndex: number) {
         super.setStepIndex(stepIndex);
         this.annObjList.forEach(annObj => annObj.setStepIndex(stepIndex));

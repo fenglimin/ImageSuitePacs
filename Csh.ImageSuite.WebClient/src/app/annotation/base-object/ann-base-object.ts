@@ -125,6 +125,13 @@ export abstract class AnnBaseObject extends AnnObject {
         }
     }
 
+    getSurroundPointList(): Point[] {
+        return [];
+    }
+
+    onChildCreated(annChildObj: AnnObject) {
+        alert("Internal error : AnnBaseObject.onChildCreated should never be called.");
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
 }

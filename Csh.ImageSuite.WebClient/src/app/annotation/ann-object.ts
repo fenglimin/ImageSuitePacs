@@ -294,52 +294,24 @@ export abstract class AnnObject {
     }
 
     getPosition(): Point {
+        alert("Internal error : AnnObject.getPosition should never be called.");
         return { x: 0, y: 0 }
-    }
-
-
-
-    onSelect(selected: boolean, focused: boolean) {
-    }
-
-    onDrag(deltaX: number, deltaY: number) {
-    }
-
-
-    onDrawEnded() {
-    }
-
-    onTranslate(deltaX: number, deltaY: number) {
-    }
-
-    onDeleteChildren() {
-    }
-
-    getSurroundPointList(): Point[] {
-        return [];
     }
 
     onRotate(angle: number) {
     }
 
-    onLevelUp(level: any = 1) {
-    }
-
-    onLevelDown(level: any = 1) {
-    }
-    
-    onScale() {
-    }
-
-    onFlip(vertical: boolean) {
-    }
-
-    onMove(point: Point) {
-    }
-
-    onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
-    }
-
-    onChildCreated(annChildObj: AnnObject) {
-    }
+    abstract onSelect(selected: boolean, focused: boolean);
+    abstract onDrag(deltaX: number, deltaY: number);
+    abstract onDrawEnded();
+    abstract onTranslate(deltaX: number, deltaY: number);
+    abstract onDeleteChildren();
+    abstract getSurroundPointList(): Point[];
+    abstract onLevelUp(level: any);
+    abstract onLevelDown(level: any);
+    abstract onScale();
+    abstract onFlip(vertical: boolean);
+    abstract onMove(point: Point);
+    abstract onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any);
+    abstract onChildCreated(annChildObj: AnnObject);
 }
