@@ -1,13 +1,12 @@
 ﻿import { Point, MouseEventType } from '../../models/annotation';
 import { AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
-import { AnnExtendObject } from "../extend-object/ann-extend-object";
 
 export abstract class AnnBaseObject extends AnnObject {
 
     jcObj: any;
 
-    constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnObject, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
         if (parentObj) {
@@ -22,6 +21,9 @@ export abstract class AnnBaseObject extends AnnObject {
             this.jcObj.parentObj = this;
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
 
     onDrag(deltaX: number, deltaY: number) {
         this.onTranslate(deltaX, deltaY);
@@ -48,7 +50,6 @@ export abstract class AnnBaseObject extends AnnObject {
 
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
-
         if (mouseEventType === MouseEventType.MouseDown) {
             this.onChildSelected(mouseObj);
         }
@@ -123,4 +124,7 @@ export abstract class AnnBaseObject extends AnnObject {
             this.jcObj.down(level);
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
 }

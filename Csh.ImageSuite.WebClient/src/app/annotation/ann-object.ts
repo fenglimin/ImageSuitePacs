@@ -297,6 +297,8 @@ export abstract class AnnObject {
         return { x: 0, y: 0 }
     }
 
+
+
     onSelect(selected: boolean, focused: boolean) {
     }
 
@@ -336,5 +338,8 @@ export abstract class AnnObject {
     }
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
+    }
+
+    onChildCreated(annChildObj: AnnObject) {
     }
 }

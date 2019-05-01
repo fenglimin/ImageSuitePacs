@@ -2,18 +2,16 @@
 import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
-import { AnnExtendObject } from "../extend-object/ann-extend-object";
+import { AnnObject } from '../ann-object';
 
 export class AnnBaseCurve extends AnnBaseObject {
 
-    constructor(parentObj: AnnExtendObject, center: Point, radius: number, startAngle: number, endAngle: number, anticlockwise: boolean, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnObject, center: Point, radius: number, startAngle: number, endAngle: number, anticlockwise: boolean, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
 
         this.jcObj = jCanvaScript.arc(center.x, center.y, radius, startAngle, endAngle, anticlockwise, this.selectedColor).layer(this.layerId);
         super.setJcObj();
-        this.jcObj.mouseStyle = "move";
-
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

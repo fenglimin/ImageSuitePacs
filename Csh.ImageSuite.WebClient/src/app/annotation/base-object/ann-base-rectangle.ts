@@ -3,14 +3,13 @@ import { AnnObject } from "../ann-object";
 import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
-import { AnnExtendObject } from "../extend-object/ann-extend-object";
 
 export class AnnBaseRectangle extends AnnBaseObject {
 
     
     forText: boolean;
 
-    constructor(parentObj: AnnExtendObject, topLeft: Point, width: number, height: number, imageViewer: IImageViewer, forText: boolean = false) {
+    constructor(parentObj: AnnObject, topLeft: Point, width: number, height: number, imageViewer: IImageViewer, forText: boolean = false) {
 
         // AnnBaseRectangle can be used either for AnnRectangle which is in annotation layer, or for AnnText which is in label layer
         super(parentObj, imageViewer);

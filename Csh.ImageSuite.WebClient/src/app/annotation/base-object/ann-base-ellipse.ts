@@ -1,12 +1,11 @@
 ﻿import { Point, MouseEventType } from '../../models/annotation';
-//import { AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
-import { AnnExtendObject } from "../extend-object/ann-extend-object";
+import { AnnObject } from '../ann-object';
 
 export class AnnBaseEllipse extends AnnBaseObject {
 
-    constructor(parentObj: AnnExtendObject, center: Point, width: number, height: number, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnObject, center: Point, width: number, height: number, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
 

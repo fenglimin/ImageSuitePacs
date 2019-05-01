@@ -3,11 +3,11 @@ import { FontData} from "../../models/misc-data"
 import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
-import { AnnExtendObject } from "../extend-object/ann-extend-object";
+import { AnnObject } from '../ann-object';
 
 export class AnnBaseText extends AnnBaseObject {
 
-    constructor(parentObj: AnnExtendObject, text: string, startPoint: Point, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnObject, text: string, startPoint: Point, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
 
