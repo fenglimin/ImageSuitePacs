@@ -38,51 +38,22 @@ export class AnnCurve extends AnnExtendObject {
 
                 // Step 0: Draw the start point
                 case 0: {
-                    this.annStartPoint = new AnnPoint(this, this.imageViewer);
-                    this.annStartPoint.onCreate(imagePoint);
-                    this.annStartPoint.setStepIndex(stepIndex);
+                    this.onStep1(imagePoint);
                     break;
                 }
 
-                // Step 1: Draw the end point and curve
+                // Draw line AB and point B
                 case 1: {
-                    const startPoint = this.annStartPoint.getPosition();
-                    if (AnnObject.equalPoint(imagePoint, startPoint)) return;
-
-                    const radius = AnnObject.countDistance(startPoint, imagePoint);
-                    const middlePoint = this.calcMiddlePoint(startPoint, imagePoint, radius);
-
-                    this.redraw(startPoint, imagePoint, middlePoint);
-
-                    this.annEndPoint.setStepIndex(stepIndex);
+                    this.onStep2(imagePoint);
                     break;
                 }
 
-                // Step 2: Determine the direction of the curve
+                // Draw the start point of line Cd
                 case 2: {
-                    const startPoint = this.annStartPoint.getPosition();
-                    const endPoint = this.annEndPoint.getPosition();
-                    const middlePoint = this.annMiddlePoint.getPosition();
-                    const lineCenter = AnnObject.centerPoint(startPoint, endPoint);
-
-                    // nother middle point
-                    const newMiddlePoint = { x: lineCenter.x * 2 - middlePoint.x, y: lineCenter.y * 2 - middlePoint.y };
-
-                    // The nearest is the wanted
-                    if (AnnObject.countDistance(imagePoint, newMiddlePoint) < AnnObject.countDistance(imagePoint, middlePoint)) {
-                        this.redraw(startPoint, endPoint, newMiddlePoint);
-                    }
-
-                    this.annMiddlePoint.setStepIndex(stepIndex);
-                    this.focusedObj = this.annMiddlePoint;
-
-                    if (!this.parentObj) {
-                        this.onDrawEnded();
-                    }
-                    
+                    this.onStep3(imagePoint);
                     break;
                 }
-
+                    
                 default: {
                     alert("Invalid step index " + stepIndex);
                     return;
@@ -133,6 +104,46 @@ export class AnnCurve extends AnnExtendObject {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
+
+    private onStep1(imagePoint: Point) {
+        this.annStartPoint = new AnnPoint(this, this.imageViewer);
+        this.annStartPoint.onCreate(imagePoint);
+        this.annStartPoint.setStepIndex(0);
+    }
+
+    private onStep2(imagePoint: Point) {
+        const startPoint = this.annStartPoint.getPosition();
+        if (AnnObject.equalPoint(imagePoint, startPoint)) return;
+
+        const radius = AnnObject.countDistance(startPoint, imagePoint);
+        const middlePoint = this.calcMiddlePoint(startPoint, imagePoint, radius);
+
+        this.redraw(startPoint, imagePoint, middlePoint);
+
+        this.annEndPoint.setStepIndex(1);
+    }
+
+    private onStep3(imagePoint: Point) {
+        const startPoint = this.annStartPoint.getPosition();
+        const endPoint = this.annEndPoint.getPosition();
+        const middlePoint = this.annMiddlePoint.getPosition();
+        const lineCenter = AnnObject.centerPoint(startPoint, endPoint);
+
+        // nother middle point
+        const newMiddlePoint = { x: lineCenter.x * 2 - middlePoint.x, y: lineCenter.y * 2 - middlePoint.y };
+
+        // The nearest is the wanted
+        if (AnnObject.countDistance(imagePoint, newMiddlePoint) < AnnObject.countDistance(imagePoint, middlePoint)) {
+            this.redraw(startPoint, endPoint, newMiddlePoint);
+        }
+
+        this.annMiddlePoint.setStepIndex(2);
+        this.focusedObj = this.annMiddlePoint;
+
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
+    }
 
     // Calculate the middle point of the curve (The curve is determined by start/end point and its radius, default direction is left or up)
     private calcMiddlePoint(startPoint: Point, endPoint: Point, radius: number) {

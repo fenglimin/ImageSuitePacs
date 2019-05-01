@@ -44,10 +44,9 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Implementation of interface IAnnotationObject
+    // Override functions of base class
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
-
         const imagePoint = AnnObject.screenToImage(point, this.image.transformMatrix);
         const stepIndex = this.imageViewer.getCurrentStepIndex();
 
@@ -58,124 +57,40 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
                 return;
             }
 
-            
             switch (stepIndex) {
-
                 // Draw the start point of line Ab
                 case 0: {
-                    this.annLineAb = new AnnLine(this, this.imageViewer);
-                    this.annLineAb.onMouseEvent(mouseEventType, point, null);
-
-                    const annPointA = new AnnPoint(this, this.imageViewer);
-                    annPointA.onCreate(imagePoint);
-                    annPointA.setStepIndex(stepIndex);
-                    this.annPointList.push(annPointA);
-
-                    const annBaseLineAa = new AnnBaseLine(this, imagePoint, imagePoint, this.imageViewer);
-                    this.annLineList.push(annBaseLineAa);
+                    this.onStep1(point, imagePoint);
                     break;
                 }
 
                 // Draw line AB and point B
                 case 1: {
-                    const pointA = this.annLineAb.getStartPosition();
-                    this.annLineAb.onDeleteChildren();
-
-                    this.annBaseLineAb = new AnnBaseLine(this, pointA, imagePoint, this.imageViewer);
-
-                    const annPointB = new AnnPoint(this, this.imageViewer);
-                    annPointB.onCreate(imagePoint);
-                    annPointB.setStepIndex(stepIndex);
-                    this.annPointList.push(annPointB);
-
-                    const annBaseLineBb = new AnnBaseLine(this, imagePoint, imagePoint, this.imageViewer);
-                    this.annLineList.push(annBaseLineBb);
+                    this.onStep2(imagePoint);
                     break;
                 }
 
                 // Draw the start point of line Cd
                 case 2: {
-                    this.annLineCd = new AnnLine(this, this.imageViewer);
-                    this.annLineCd.onMouseEvent(mouseEventType, point, null);
-
-                    const annPointC = new AnnPoint(this, this.imageViewer);
-                    annPointC.onCreate(imagePoint);
-                    annPointC.setStepIndex(stepIndex);
-                    this.annPointList.push(annPointC);
-
+                    this.onStep3(point, imagePoint);
                     break;
                 }
 
                 // Draw base line Cc and Dd, draw point D, delete temp line Cd
                 case 3: {
-                    const pointC = this.annLineCd.getStartPosition();
-                    const pointD = this.annLineCd.getEndPosition();
-                    this.annLineCd.onDeleteChildren();
-
-                    const footPointC = this.handleFootPoint(pointC);
-                    const annBaseLineCc = new AnnBaseLine(this, pointC, footPointC, this.imageViewer);
-                    this.annLineList.push(annBaseLineCc);
-
-                    const footPointD = this.handleFootPoint(pointD);
-                    const annBaseLineDd = new AnnBaseLine(this, pointD, footPointD, this.imageViewer);
-                    this.annLineList.push(annBaseLineDd);
-
-                    const annPointD = new AnnPoint(this, this.imageViewer);
-                    annPointD.onCreate(pointD);
-                    annPointD.setStepIndex(stepIndex);
-                    this.annPointList.push(annPointD);
-                    
+                    this.onStep4(imagePoint);
                     break;
                 }
 
                 // Draw the start point of line EF
                 case 4: {
-                    this.annLineEf = new AnnLine(this, this.imageViewer);
-                    this.annLineEf.onMouseEvent(mouseEventType, point, null);
-
-                    const annPointE = new AnnPoint(this, this.imageViewer);
-                    annPointE.onCreate(imagePoint);
-                    annPointE.setStepIndex(stepIndex);
-
-                    this.annPointList.push(annPointE);
-
+                    this.onStep5(point, imagePoint);
                     break;
                 }
 
                 // Draw base line Ee and Ff, draw point F, delete temp line Ef
                 case 5: {
-                    const pointE = this.annLineEf.getStartPosition();
-                    const pointF = this.annLineEf.getEndPosition();
-                    this.annLineEf.onDeleteChildren();
-
-                    const pointA = this.annLineAb.getStartPosition();
-                    const pointB = this.annLineAb.getEndPosition();
-                    this.annLineAb.onDeleteChildren();
-
-                    const footPointE = this.handleFootPoint(pointE);
-                    const annBaseLineEe = new AnnBaseLine(this, pointE, footPointE, this.imageViewer);
-                    this.annLineList.push(annBaseLineEe);
-
-                    const footPointF = this.handleFootPoint(pointF);
-                    const annBaseLineFf = new AnnBaseLine(this, pointF, footPointF, this.imageViewer);
-                    this.annLineList.push(annBaseLineFf);
-
-                    const annPointF = new AnnPoint(this, this.imageViewer);
-                    annPointF.onCreate(pointF);
-                    annPointF.setStepIndex(stepIndex);
-                    this.annPointList.push(annPointF);
-
-                    
-
-                    this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-                    this.annTextIndicator.onCreate(pointA, this.getText());
-
-                    this.focusedObj = this.annPointList[0];
-
-                    if (!this.parentObj) {
-                        this.onDrawEnded();
-                    }
-
+                    this.onStep6(imagePoint);
                     break;
                 }
 
@@ -191,7 +106,6 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
         } else if (mouseEventType === MouseEventType.MouseMove) {
 
             switch (stepIndex) {
-
                 // Move the end point of line AB
                 case 1: {
                     this.annLineAb.onMouseEvent(mouseEventType, point, null);
@@ -236,6 +150,106 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
+
+    private onStep1(screenPoint: Point, imagePoint: Point) {
+        this.annLineAb = new AnnLine(this, this.imageViewer);
+        this.annLineAb.onMouseEvent(MouseEventType.MouseDown, screenPoint, null);
+
+        const annPointA = new AnnPoint(this, this.imageViewer);
+        annPointA.onCreate(imagePoint);
+        annPointA.setStepIndex(0);
+        this.annPointList.push(annPointA);
+
+        const annBaseLineAa = new AnnBaseLine(this, imagePoint, imagePoint, this.imageViewer);
+        this.annLineList.push(annBaseLineAa);
+    }
+
+    private onStep2(imagePoint: Point) {
+        const pointA = this.annLineAb.getStartPosition();
+        this.annLineAb.onDeleteChildren();
+
+        this.annBaseLineAb = new AnnBaseLine(this, pointA, imagePoint, this.imageViewer);
+
+        const annPointB = new AnnPoint(this, this.imageViewer);
+        annPointB.onCreate(imagePoint);
+        annPointB.setStepIndex(1);
+        this.annPointList.push(annPointB);
+
+        const annBaseLineBb = new AnnBaseLine(this, imagePoint, imagePoint, this.imageViewer);
+        this.annLineList.push(annBaseLineBb);
+    }
+
+    private onStep3(screenPoint: Point, imagePoint: Point) {
+        this.annLineCd = new AnnLine(this, this.imageViewer);
+        this.annLineCd.onMouseEvent(MouseEventType.MouseDown, screenPoint, null);
+
+        const annPointC = new AnnPoint(this, this.imageViewer);
+        annPointC.onCreate(imagePoint);
+        annPointC.setStepIndex(2);
+        this.annPointList.push(annPointC);
+    }
+
+    private onStep4(imagePoint: Point) {
+        const pointC = this.annLineCd.getStartPosition();
+        const pointD = this.annLineCd.getEndPosition();
+        this.annLineCd.onDeleteChildren();
+
+        const footPointC = this.handleFootPoint(pointC);
+        const annBaseLineCc = new AnnBaseLine(this, pointC, footPointC, this.imageViewer);
+        this.annLineList.push(annBaseLineCc);
+
+        const footPointD = this.handleFootPoint(pointD);
+        const annBaseLineDd = new AnnBaseLine(this, pointD, footPointD, this.imageViewer);
+        this.annLineList.push(annBaseLineDd);
+
+        const annPointD = new AnnPoint(this, this.imageViewer);
+        annPointD.onCreate(pointD);
+        annPointD.setStepIndex(3);
+        this.annPointList.push(annPointD);
+    }
+
+    private onStep5(screenPoint: Point, imagePoint: Point) {
+        this.annLineEf = new AnnLine(this, this.imageViewer);
+        this.annLineEf.onMouseEvent(MouseEventType.MouseDown, screenPoint, null);
+
+        const annPointE = new AnnPoint(this, this.imageViewer);
+        annPointE.onCreate(imagePoint);
+        annPointE.setStepIndex(4);
+
+        this.annPointList.push(annPointE);
+    }
+
+    private onStep6(imagePoint: Point) {
+        const pointE = this.annLineEf.getStartPosition();
+        const pointF = this.annLineEf.getEndPosition();
+        this.annLineEf.onDeleteChildren();
+
+        const pointA = this.annLineAb.getStartPosition();
+        const pointB = this.annLineAb.getEndPosition();
+        this.annLineAb.onDeleteChildren();
+
+        const footPointE = this.handleFootPoint(pointE);
+        const annBaseLineEe = new AnnBaseLine(this, pointE, footPointE, this.imageViewer);
+        this.annLineList.push(annBaseLineEe);
+
+        const footPointF = this.handleFootPoint(pointF);
+        const annBaseLineFf = new AnnBaseLine(this, pointF, footPointF, this.imageViewer);
+        this.annLineList.push(annBaseLineFf);
+
+        const annPointF = new AnnPoint(this, this.imageViewer);
+        annPointF.onCreate(pointF);
+        annPointF.setStepIndex(5);
+        this.annPointList.push(annPointF);
+
+        this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
+        this.annTextIndicator.onCreate(pointA, this.getText());
+
+        this.focusedObj = this.annPointList[0];
+
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
+    }
 
     private getText(): string {
         const heartWidth = this.annLineList[2].getLengthInPixel() + this.annLineList[3].getLengthInPixel();
