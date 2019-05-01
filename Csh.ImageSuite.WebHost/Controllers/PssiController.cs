@@ -39,10 +39,39 @@ namespace Csh.ImageSuite.WebHost.Controllers
         public string Details(int id)
         {
             var study = _dbHelper.GetStudy(id);
+
+            List<Study>  lstStudy = _dbHelper.GetHasHistoryStudyUidArray(study.StudyInstanceUid);
+
             return _commonTool.GetJsonStringFromObject(study);
         }
 
+        [System.Web.Mvc.HttpPost]
+        public string GetStudiesForDcmViewer(StudyIdShowHistoryStudy studyIdShowHistoryStudy)
+        {
+            List<Study> lstStudy = new List<Study>();
+
+            var study = _dbHelper.GetStudy(studyIdShowHistoryStudy.Id);
+
+            if (studyIdShowHistoryStudy.ShowHistoryStudies)
+            {
+                lstStudy = _dbHelper.GetHasHistoryStudyUidArray(study.StudyInstanceUid);
+            }
+            else
+            {
+                lstStudy.Add(study);
+            }
+
+            return _commonTool.GetJsonStringFromObject(lstStudy);
+        }
+
+        public class StudyIdShowHistoryStudy
+        {
+            public int Id { get; set; }
+            public bool ShowHistoryStudies { get; set; }
+        }
+
         // POST: Pssi/Search/
+        [System.Web.Mvc.HttpPost]
         public string Search(RevStudyData studyData)
         {
             SendStudyData ssd = new SendStudyData();

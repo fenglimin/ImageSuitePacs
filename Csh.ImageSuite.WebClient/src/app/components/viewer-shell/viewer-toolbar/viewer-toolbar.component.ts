@@ -10,6 +10,7 @@ import { AnnEllipse } from "../../../annotation/extend-object/ann-ellipse";
 import { AnnRectangle } from "../../../annotation/extend-object/ann-rectangle";
 import { AnnArrow } from "../../../annotation/extend-object/ann-arrow";
 import { AnnCurve } from "../../../annotation/extend-object/ann-curve";
+import { AnnCardiothoracicRatio } from "../../../annotation/extend-object/ann-cardiothoracic-ratio";
 
 @Component({
     selector: "app-viewer-toolbar",
@@ -127,6 +128,10 @@ export class ViewerToolbarComponent implements OnInit {
 
     extendAnnotation1ButtonMenu: SelectedButtonData[] = [
         { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnCurve) } }
+    ];
+
+    extendAnnotation2ButtonMenu: SelectedButtonData[] = [
+        { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnCardiothoracicRatio) } }
     ];
 
     private baseUrl: string;

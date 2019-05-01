@@ -30,7 +30,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         const log = this.logPrefix + "set groupData, protocol is " + ImageHangingProtocol[groupData.imageHangingProtocol];
         this.logService.debug(log);
 
-        this._groupData = groupData;
+        this._groupData = groupData;    
         
         this.setImageLayout(this.groupData.imageHangingProtocol);
     }
@@ -73,6 +73,14 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     ngAfterContentInit() {
     }
 
+    ngAfterViewChecked() {
+        if (this.childImages) {
+            this.setHeight(this.childImages.first.canvas.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.clientHeight);
+
+            this.childImages.forEach(child => child.adjustHeight());
+        }
+    }
+
     onSelected() {
     }
 
@@ -111,6 +119,10 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     }
 
     setImageLayout(imageLayoutStyle: number): void {
+        if (this.childImages)
+        {
+            this.childImages.forEach(child => child.setHeight(0));
+        }
         
         this.hangingProtocolService.applyImageHangingProtocol(this.groupData, imageLayoutStyle);
         this.imageDataList = this.groupData.imageDataList;
@@ -128,6 +140,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         this.logService.debug("Group: onResize()");
 
         this.childImages.forEach((imageViewer, index) => {
+            
             imageViewer.onResize();
         });
     }
@@ -136,5 +149,17 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         const imageIndex = rowIndex * this.groupData.imageMatrix.colCount + colIndex;
         return this.imageDataList[imageIndex];
        // return this.groupData.getImage(rowIndex, colIndex);
+    }
+
+    setHeight(height: number) {
+        const o = document.getElementById(this.getId());
+        if (o !== undefined && o !== null) {
+            if (this.childImages) {
+                this.childImages.forEach(child => child.setHeight(0));
+            }
+
+            o.style.height = height.toString() + "px";
+
+        }
     }
 }

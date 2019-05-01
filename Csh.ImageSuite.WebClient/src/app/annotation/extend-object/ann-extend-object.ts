@@ -7,7 +7,7 @@ export abstract class AnnExtendObject extends AnnObject {
 
     private annObjList: Array<AnnObject> = [];
     protected guideNeeded = false;
-    private annName: string;
+    protected annTypeName: string;
 
     constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
 
@@ -15,6 +15,10 @@ export abstract class AnnExtendObject extends AnnObject {
         if (parentObj) {
             parentObj.onChildCreated(this);
         }
+    }
+
+    getTypeName() {
+        return this.annTypeName;
     }
 
     isGuideNeeded(): boolean {
@@ -100,12 +104,12 @@ export abstract class AnnExtendObject extends AnnObject {
         this.annObjList.forEach(annObj => annObj.onDeleteChildren());
     }
 
-    onLevelUp() {
-        this.annObjList.forEach(annObj => annObj.onLevelUp());
+    onLevelUp(level: any = 1) {
+        this.annObjList.forEach(annObj => annObj.onLevelUp(level));
     }
 
-    onLevelDown() {
-        this.annObjList.forEach(annObj => annObj.onLevelDown());
+    onLevelDown(level: any = 1) {
+        this.annObjList.forEach(annObj => annObj.onLevelDown(level));
     }
 
     setStepIndex(stepIndex: number) {

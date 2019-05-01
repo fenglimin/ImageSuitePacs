@@ -37,5 +37,7 @@ namespace Csh.ImageSuite.Common.Interface
 
         void DeletedStudy(string studyGUID, string deleteReason);
 
+        List<Study> GetHasHistoryStudyUidArray(string studyUids);
+
     }
 }

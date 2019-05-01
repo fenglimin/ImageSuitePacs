@@ -25,6 +25,7 @@ import { AnnLine } from "../../../../annotation/extend-object/ann-line";
 import { AnnRectangle } from "../../../../annotation/extend-object/ann-rectangle";
 import { AnnArrow } from "../../../../annotation/extend-object/ann-arrow";
 import { AnnCurve } from "../../../../annotation/extend-object/ann-curve";
+import { AnnCardiothoracicRatio } from "../../../../annotation/extend-object/ann-cardiothoracic-ratio";
 
 import { AnnExtendObject } from "../../../../annotation/extend-object/ann-extend-object";
 import { AnnGuide } from "../../../../annotation/layer-object/ann-guide";
@@ -40,7 +41,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private image: Image;
     private ctImage: any; //cornerstone image
     private isImageLoaded: boolean;
-    private needResize: boolean;
+    private needResize = true;
     selected = false;
 
     private baseUrl: string;
@@ -54,7 +55,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     @ViewChild("viewerCanvas")
     private canvasRef: ElementRef;
-    private canvas;
+    public canvas;
 
     @ViewChild("helpElement")
     private helpElementRef: ElementRef;
@@ -106,6 +107,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private annGuide: AnnGuide;
 
+    private jcTextOverlayList = [];
+
     @Input()
     set imageData(imageData: ViewerImageData) {
         this.logPrefix = "Image" + imageData.getId() + ": ";
@@ -145,7 +148,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(
             context => {
-                if (this.selected) this.setContext(context);
+                if (!(this._imageData.groupData.viewerShellData.hide) && this.selected) {
+                    this.setContext(context);
+                }
             });
 
         this.subscriptionOperation = viewContext.onOperation$.subscribe(
@@ -194,9 +199,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.isViewInited = true;
     }
 
+
+    adjustHeight() {
+        const parent = this.canvas.parentElement.parentElement;
+        this.setHeight(parent.clientHeight);
+    }
+
     ngAfterViewChecked() {
         if (this.needResize && this.isImageLoaded) {
-            const parent = this.canvas.parentElement;
+            const parent = this.canvas.parentElement.parentElement;
+
+            
             const curWidth = parent.clientWidth;
             const curHeight = parent.clientHeight;
 
@@ -209,14 +222,16 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.logService.debug(this.logPrefix + 'ngAfterViewChecked() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
             if (this.image) {
                 this.fitWindow();
+                if (this.olLayer) {
+                    this.showTextOverlay();
+                }
+
             } else {
                 this.jcanvas.clear();
             }
 
-            if (this.olLayer) {
-                this.olLayer.objects().del();
-                this.showTextOverlay();
-            }
+            
+
             this.needResize = false;
         }
     }
@@ -308,8 +323,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (this.curSelectObj && this.curSelectObj.isGuideNeeded()) {
             const stepIndex = this.curSelectObj.getFocusedObj().getStepIndex();
             if (stepIndex !== -1) {
-                this.annGuide.show("Cervical Curve", stepIndex);
                 this.annGuide.setGuideTargetObj(this.curSelectObj);
+                this.annGuide.show(this.curSelectObj.getTypeName(), stepIndex);
             }
         }
     }
@@ -373,6 +388,19 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (this.curSelectObj) {
             this.curSelectObj.selectChildByStepIndex(stepIndex);
         }
+    }
+
+    getCursor(): any {
+        this.logService.debug(`Get cursor return ${this.canvas.style.cursor}`);
+        return this.canvas.style.cursor;
+    }
+
+    setCursor(cursor: any): void {
+        if (!cursor) {
+            cursor = this.getCursorFromContext();
+        }
+        this.logService.debug(`Set cursor to ${cursor}`);
+        this.canvas.style.cursor = cursor;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
 
@@ -438,7 +466,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     jCanvaScript.start(canvasId, true);
                     this.jcanvas = jCanvaScript.canvas(canvasId);
 
-                    const parent = this.canvas.parentElement;
+                    const parent = this.canvas.parentElement.parentElement;
                     this.canvas.width = parent.clientWidth;
                     this.canvas.height = parent.clientHeight;
 
@@ -513,7 +541,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         const font = this.configurationService.getOverlayFont();
         this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
-            .color(font.color).font(font.getCanvasFontString()).align('center').draggable();
+            .color(font.color).font(font.getCanvasFontString()).align('center');
 
         //jc.arc(60, 100, 60, 90, 180, 1, 'rgb(25,99,253)', 0).draggable();
 
@@ -546,8 +574,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         const overlayList = this.dicomImageService.getOverlayDisplayList(this.image, this.canvas.width, this.canvas.height, canvasContext);
 
+        this.jcTextOverlayList.forEach(jcText => jcText.del());
+        this.jcTextOverlayList.length = 0;
+
         overlayList.forEach(overlay => {
-            let label = jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).layer(this.olLayerId)
+            const label = jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).layer(this.olLayerId)
                 .color(font.color).font(font.getCanvasFontString()).align(overlay.align);
 
             if (overlay.id === "9003") {
@@ -559,6 +590,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 this.zoomRatioFormat = overlay.text;
                 this.updateZoomRatioTextOverlay(this.getScale());
             }
+
+            this.jcTextOverlayList.push(label);
         });
 
         //this.configurationService.overlayList.forEach(overlay => {
@@ -650,6 +683,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.selected = (this.image === image);
     }
 
+    setHeight(height: number) {
+        const o = document.getElementById(this.getId());
+        if (o !== undefined && o !== null) {
+            o.style.height = height.toString() + "px";
+        }
+    }
+
     //private doSelectById(id: string, selected: boolean): void {
     //    const o = document.getElementById(id);
     //    if (o !== undefined && o !== null) {
@@ -665,8 +705,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     //}
 
     private setContext(context: ViewContext) {
-        const draggable = (context.action == ViewContextEnum.Pan) ||
-            (context.action == ViewContextEnum.Select && this.curSelectObj == undefined);
+        //const draggable = (context.action == ViewContextEnum.Pan) ||
+        //    (context.action == ViewContextEnum.Select && this.curSelectObj == undefined);
+
+        const draggable = context.action === ViewContextEnum.Pan;
         this.draggable(draggable);
 
         //each time context changed, we should unselect cur selected object
@@ -686,7 +728,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         //    });
         //}
 
-        this.setCursor();
+        this.setCursorFromContext();
     }
 
     private onOperation(operation: OperationData) {
@@ -744,38 +786,82 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
     }
 
-    private setCursor() {
-        const canvas = this.canvas;
+    private getCursorFromContext() {
         const curContext = this.viewContext.curContext;
         const cursorUrl = `url(${this.baseUrl}/assets/img/cursor/{0}.cur),move`;
 
+        let cursor = "default";
+
         if (curContext.action === ViewContextEnum.WL) {
-            canvas.style.cursor = cursorUrl.format("adjustwl");
+            cursor = cursorUrl.format("adjustwl");
         } else if (curContext.action === ViewContextEnum.Pan) {
-            canvas.style.cursor = cursorUrl.format("hand");
+            cursor = cursorUrl.format("hand");
         } else if (curContext.action === ViewContextEnum.Select) {
-            canvas.style.cursor = "default";
+            cursor = "default";
         } else if (curContext.action === ViewContextEnum.Zoom) {
-            canvas.style.cursor = cursorUrl.format("zoom");
+            cursor = cursorUrl.format("zoom");
         } else if (curContext.action === ViewContextEnum.Magnifier) {
-            canvas.style.cursor = cursorUrl.format("zoom");
+            cursor = cursorUrl.format("zoom");
         } else if (curContext.action === ViewContextEnum.ROIZoom) {
-            canvas.style.cursor = cursorUrl.format("rectzoom");
+            cursor = cursorUrl.format("rectzoom");
         } else if (curContext.action === ViewContextEnum.SelectAnn) {
-            canvas.style.cursor = cursorUrl.format("select");
+            cursor = cursorUrl.format("select");
+        } else if (curContext.action === ViewContextEnum.CreateAnn) {
+
+            if (curContext.data === AnnLine || curContext.data === AnnArrow) {
+                cursor = cursorUrl.format("ann_line");
+            } else if (curContext.data === AnnRectangle) {
+                cursor = cursorUrl.format("rect");
+            } else if (curContext.data === AnnEllipse) {
+                cursor = cursorUrl.format("ellipse");
+            } else if (curContext.data === AnnCurve) {
+                cursor = cursorUrl.format("ann_cervicalcurve");
+                } else if (curContext.data === AnnCardiothoracicRatio) {
+                cursor = cursorUrl.format("ann_cervicalcurve");
+            }
+        }
+
+        return cursor;
+    }
+
+    private setCursorFromContext() {
+        const curContext = this.viewContext.curContext;
+        const cursorUrl = `url(${this.baseUrl}/assets/img/cursor/{0}.cur),move`;
+
+        let cursor = "default";
+
+        if (curContext.action === ViewContextEnum.WL) {
+            cursor = cursorUrl.format("adjustwl");
+        } else if (curContext.action === ViewContextEnum.Pan) {
+            cursor = cursorUrl.format("hand");
+        } else if (curContext.action === ViewContextEnum.Select) {
+            cursor = "default";
+        } else if (curContext.action === ViewContextEnum.Zoom) {
+            cursor = cursorUrl.format("zoom");
+        } else if (curContext.action === ViewContextEnum.Magnifier) {
+            cursor = cursorUrl.format("zoom");
+        } else if (curContext.action === ViewContextEnum.ROIZoom) {
+            cursor = cursorUrl.format("rectzoom");
+        } else if (curContext.action === ViewContextEnum.SelectAnn) {
+            cursor = cursorUrl.format("select");
         } else if (curContext.action === ViewContextEnum.CreateAnn) {
             
             if (curContext.data === AnnLine || curContext.data === AnnArrow) {
-                canvas.style.cursor = cursorUrl.format("ann_line");
+                cursor = cursorUrl.format("ann_line");
             } else if (curContext.data === AnnRectangle) {
-                canvas.style.cursor = cursorUrl.format("rect");
+                cursor = cursorUrl.format("rect");
             } else if (curContext.data === AnnEllipse) {
-                canvas.style.cursor = cursorUrl.format("ellipse");
+                cursor = cursorUrl.format("ellipse");
             } else if (curContext.data === AnnCurve) {
-                canvas.style.cursor = cursorUrl.format("ann_cervicalcurve");
+                cursor = cursorUrl.format("ann_cervicalcurve");
                 this.annGuide.show("Cervical Curve");
+            } else if (curContext.data === AnnCardiothoracicRatio) {
+                cursor = cursorUrl.format("ann_cervicalcurve");
+                this.annGuide.show("Cardiothoracic Ratio");
             }
         }
+
+        this.setCursor(cursor);
     }
 
     rotate(angle) {

@@ -25,7 +25,7 @@ export class AnnTextIndicator extends AnnExtendObject {
 
         this.annArrow = new AnnArrow(this, this.imageViewer);
         this.annArrow.onCreate(arrowStartPoint, targetPoint);
-        this.annArrow.onLevelDown();
+        this.annArrow.onLevelDown("bottom");
         this.annArrow.setMouseResponsible(false);
 
         this.annText = new AnnText(this, this.imageViewer);

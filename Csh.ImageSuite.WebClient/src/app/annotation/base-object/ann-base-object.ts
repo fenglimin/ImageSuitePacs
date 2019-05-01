@@ -50,7 +50,6 @@ export abstract class AnnBaseObject extends AnnObject {
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
         if (mouseEventType === MouseEventType.MouseDown) {
-            console.log("onMouseEvent Point");
             this.onChildSelected(mouseObj);
         }
     }
@@ -113,15 +112,15 @@ export abstract class AnnBaseObject extends AnnObject {
         this.jcObj.visible(visible);
     }
 
-    onLevelUp() {
+    onLevelUp(level: any = 1) {
         if (this.jcObj) {
-            this.jcObj.up();
+            this.jcObj.up(level);
         }
     }
 
-    onLevelDown() {
+    onLevelDown(level: any = 1) {
         if (this.jcObj) {
-            this.jcObj.down();
+            this.jcObj.down(level);
         }
     }
 }

@@ -29,6 +29,7 @@ export class DatabaseService {
     private id_image = 1;
 
     private localTestData: Study[];
+    private revStudies: Study[];
 
     constructor(private http: HttpClient) {
         this.localTestData = this.createStudiesTest();
@@ -155,13 +156,15 @@ export class DatabaseService {
     }
 
   /** GET study from the server */
-  getStudy (id: number): Observable<Study> {
-    const url = `${this.pssiUrl}/details/${id}`;
-    return this.http.get<Study>(url)
-      .pipe(
-        tap(_ => this.log(`fetched Study id=${id}`)),
-        catchError(this.handleError<Study>(`getStudy id=${id}`))
-      );
+    getStudiesForDcmViewer(id: number, showHistoryStudies): Observable<Study[]> {
+        const url = `${this.pssiUrl}/GetStudiesForDcmViewer/`;
+        let data = { id: id, showHistoryStudies: showHistoryStudies};
+
+        return this.http.post<Study[]>(url, data, httpOptions)
+            .pipe(
+                tap(recWorklistData => this.log('fetched recWorklistData')),
+            catchError(this.handleError<Study[]>('getRecWorklistData'))
+            );
     }
 
 

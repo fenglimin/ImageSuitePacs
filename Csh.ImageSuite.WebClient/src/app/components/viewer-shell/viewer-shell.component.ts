@@ -55,7 +55,10 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
     }
 
     onChangeGroupLayout(groupHangingProtocolNumber: number): void {
-        
+        if (this.childGroups) {
+            this.childGroups.forEach(child => child.setHeight(0));
+        }
+
         this.hangingProtocolService.applyGroupHangingProtocol(this.viewerShellData, groupHangingProtocolNumber);
         this.groupDataList = this.viewerShellData.groupDataList;
         this.onResize();

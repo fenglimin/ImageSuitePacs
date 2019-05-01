@@ -26,4 +26,7 @@ export interface IImageViewer {
     stepGuide(): void;
     getCurrentStepIndex() : number;
     cancelCreate(needRecreate: boolean): void;
+
+    getCursor(): any;
+    setCursor(cursor: any): void;
 }

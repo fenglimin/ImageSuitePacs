@@ -242,5 +242,3 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 *.lastcodeanalysissucceeded
-Csh.ImageSuite.WebHost/main.js
-Csh.ImageSuite.WebHost/main.js.map

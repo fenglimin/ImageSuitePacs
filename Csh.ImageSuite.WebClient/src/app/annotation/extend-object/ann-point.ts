@@ -32,13 +32,15 @@ export class AnnPoint extends AnnExtendObject {
         this.annCenterCircle = new AnnBaseCircle(this, position, this.pointRadius, this.imageViewer, true);
         this.annOuterCircle = new AnnBaseCircle(this, position, this.pointRadius * 2, this.imageViewer, false);
         this.annOuterCircle.setVisible(false);
+        this.annOuterCircle.setMouseResponsible(false);
+        this.annOuterCircle.onLevelDown("bottom");
 
         this.focusedObj = this.annCenterCircle;
     }
 
     onScale() {
-        const pointRaduis = this.getPointRadius();
-        this.setRadius(pointRaduis);
+        const pointRadius = this.getPointRadius();
+        this.setRadius(pointRadius);
         this.annOuterCircle.onScale();
     }
 

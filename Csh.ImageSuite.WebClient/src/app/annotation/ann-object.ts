@@ -44,12 +44,11 @@ export abstract class AnnObject {
     protected image: Image;
     protected layerId: string; 
     protected labelLayerId: string;
-    protected canvas: string;
 
     protected minLineWidth = 0.3;
     protected minPointRadius = 2;
     protected minArrowLineLength = 10;
-    protected minFontSize = 14;
+    protected minFontSize = 15;
 
     protected lineWidth: number;
     protected pointRadius: number;
@@ -73,8 +72,6 @@ export abstract class AnnObject {
         this.image = imageViewer.getImage();
         this.layerId = imageViewer.getAnnotationLayerId();
         this.labelLayerId = imageViewer.getAnnLabelLayerId();
-
-        this.canvas = imageViewer.getCanvas();
 
         this.created = false;
         this.selected = false;
@@ -397,6 +394,30 @@ export abstract class AnnObject {
         return startX <= point.x && point.x <= endX && startY <= point.y && point.y <= endY;
     }
 
+    static pointInLine(point: Point, lineStartPoint: Point, lineEndPoint: Point): any {
+        const lenToStart = AnnObject.countDistance(point, lineStartPoint);
+        const lenToEnd = AnnObject.countDistance(point, lineEndPoint);
+        const length = AnnObject.countDistance(lineStartPoint, lineEndPoint);
+        const lenDelta = lenToStart + lenToEnd - length;
+
+        return { isInLine: lenDelta < 0.01, nearStart: lenToStart < lenToEnd };
+    }
+
+    static calcFootPoint(point1: Point, point2: Point, pointDrag: Point): Point {
+        const dSinB = AnnObject.getSineTheta(point1, point2);
+        const dCosB = AnnObject.getCosineTheta(point1, point2);
+
+        const dSinC = AnnObject.getSineTheta(point1, pointDrag);
+        const dCosC = AnnObject.getCosineTheta(point1, pointDrag);
+
+        const dCosBsubC = dCosB * dCosC + dSinB * dSinC; // Cos(B-C)
+
+        const dLineAC = AnnObject.countDistance(point1, pointDrag);
+        const dLineAM = dLineAC * dCosBsubC;
+
+        return { x: point1.x + dLineAM * dCosB, y: point1.y + dLineAM * dSinB };
+    }
+
     getLineWidth(): number {
         let lineWidth = 1 / this.image.getScaleValue();
         if (lineWidth < this.minLineWidth) {
@@ -424,33 +445,37 @@ export abstract class AnnObject {
         return lineLength;
     }
 
-     getFontSize(): number {
-        let fontSize = 14 / this.image.getScaleValue();
-        if (fontSize < this.minFontSize) {
-            fontSize = this.minFontSize;
-        }
-
-        return fontSize;
+    getFontSize(): number {
+        const scale = this.image.getScaleValue();
+        return scale > 1 ? this.minFontSize : this.minFontSize / scale;
     }
 
     protected getTransformMatrix(): any {
         return this.image.transformMatrix;
     }
 
+    protected getCursor(): any {
+        return this.imageViewer.getCursor();
+    }
+
+    protected setCursor(cursor: any): void {
+        this.imageViewer.setCursor(cursor);
+    }
 
     protected setChildDraggable(parentObj: any, child: any, draggable: boolean) {
 
         child.draggable({
             disabled: !draggable,
             start: arg => {
+                console.log(parentObj.constructor.name + " on drag start");
                 child._lastPos = {};
 
             },
             stop: arg => {
+                console.log(parentObj.constructor.name + " on drag stop");
                 child._lastPos = {};
                 if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn) {
                     parentObj.dragging = false;
-                    parentObj.canvas.style.cursor = parentObj.oldCursor;
                 }
             },
             drag: arg => {
@@ -458,6 +483,7 @@ export abstract class AnnObject {
                 if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn) {
                     const point = AnnObject.screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
 
+                    console.log(parentObj.constructor.name + " on dragging");
                     parentObj.dragging = true;
 
                     if (typeof (child._lastPos.x) != "undefined") {
@@ -483,13 +509,14 @@ export abstract class AnnObject {
         });
     }
 
-    protected setChildMouseEvent(parentObj: any, child: any) {
+    protected setChildMouseEvent(parentObj: AnnObject, child: any) {
 
         child._onmouseover = arg => {
             if (parentObj.needResponseToChildMouseEvent()) {
-                parentObj.onMouseEvent(MouseEventType.MouseOver, arg);
-                parentObj.oldCursor = parentObj.canvas.style.cursor;
-                parentObj.canvas.style.cursor = child.mouseStyle;
+                console.log(parentObj.constructor.name + " on mouse over");
+                parentObj.onMouseEvent(MouseEventType.MouseOver, arg, child);
+                parentObj.oldCursor = parentObj.getCursor();
+                parentObj.setCursor(child.mouseStyle);
             }
 
             return false;
@@ -497,8 +524,9 @@ export abstract class AnnObject {
 
         child._onmouseout = arg => {
             if (parentObj.needResponseToChildMouseEvent()) {
-                parentObj.onMouseEvent(MouseEventType.MouseOut, arg);
-                parentObj.canvas.style.cursor = parentObj.oldCursor;
+                console.log(parentObj.constructor.name + " on mouse out");
+                parentObj.onMouseEvent(MouseEventType.MouseOut, arg, child);
+                parentObj.setCursor(undefined);
             }
 
             return false;
@@ -506,13 +534,14 @@ export abstract class AnnObject {
 
         child._onmousedown = arg => {
             if (parentObj.needResponseToChildMouseEvent()) {
+                console.log(parentObj.constructor.name + " on mouse down");
                 parentObj.onMouseEvent(MouseEventType.MouseDown, arg, child);
             }
 
-            arg.event.cancelBubble = true;
-            arg.event.stopPropagation();
-            arg.event.stopImmediatePropagation();
-            arg.event.preventDefault();
+            //arg.event.cancelBubble = true;
+            //arg.event.stopPropagation();
+            //arg.event.stopImmediatePropagation();
+            //arg.event.preventDefault();
 
             // return false to make sure no other jc object's mouse event will be called
             return false;
@@ -552,11 +581,11 @@ export abstract class AnnObject {
 
     }
 
-    onLevelUp() {
+    onLevelUp(level: any = 1) {
 
     }
 
-    onLevelDown() {
+    onLevelDown(level: any = 1) {
 
     }
     
@@ -568,6 +597,10 @@ export abstract class AnnObject {
     }
 
     onMove(point: Point) {
+    }
+
+    onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
+
     }
 }
 

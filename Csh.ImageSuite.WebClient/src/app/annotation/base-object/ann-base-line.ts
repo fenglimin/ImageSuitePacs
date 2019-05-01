@@ -56,6 +56,9 @@ export class AnnBaseLine extends AnnBaseObject {
         return { x: this.jcObj._x1, y: this.jcObj._y1 }
     }
 
+    getLengthInPixel(): number {
+        return AnnObject.countDistance(this.getStartPosition(), this.getEndPosition());
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 }

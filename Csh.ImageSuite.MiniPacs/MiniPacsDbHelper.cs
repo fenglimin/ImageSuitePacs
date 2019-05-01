@@ -1167,5 +1167,35 @@ namespace Csh.ImageSuite.MiniPacs
 
             SqlHelper.ExecuteNonQuery(sqlWrapper, _connectionString);
         }
+
+        public List<Study> GetHasHistoryStudyUidArray(string studyUids)
+        {
+            List<Study> result = new List<Study>();
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT 	A.* FROM Study A INNER JOIN Study B ON A.PatientGUID = B.PatientGUID ");
+            sb.Append(" WHERE A.Hide <> 1 AND B.StudyInstanceUID IN('" + studyUids + "')");
+            string strSQL = sb.ToString();
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+
+            DataTable tb = new DataTable();
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+
+                foreach (DataRow dr in tb.Rows)
+                {
+                    string serialNo = dr["SerialNo"].ToString().Trim();
+
+                    Study study = GetStudy(Int32.Parse(serialNo));
+
+                    if (!result.Contains(study))
+                    {
+                        result.Add(study);
+                    }
+                }
+            }
+            return result;
+        }
     }
 }

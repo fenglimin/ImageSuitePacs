@@ -23,7 +23,8 @@ export class WorklistService {
     bShowSetUnreadBtn = true;
     bShowDeletePreventBtn = true;
     bShowDeleteAllowBtn = true;
-    
+    loadedStudyCount = 0;
+    loadedStudy: Study[];
 
     private _shortcut: Shortcut;
     set shortcut(value: Shortcut) {
@@ -62,6 +63,7 @@ export class WorklistService {
 
         this._shortcut = new Shortcut();
         this._shortcut.dataSource = DataSource.MiniPacs;
+        this.loadedStudy = new Array<Study>();
     }
 
     onQueryStudies(pageIndex: number, sortItem: String = ""): Study[] {
@@ -131,8 +133,8 @@ export class WorklistService {
             viewerShellData.addStudy(study);
             this.shellNavigatorService.shellNavigate(viewerShellData);
         } else {
-            this.databaseService.getStudy(study.id).subscribe(value => {
-                viewerShellData.addStudy(value);
+            this.databaseService.getStudiesForDcmViewer(study.id, false).subscribe(value => {
+                viewerShellData.addStudy(value[0]);
                 // If the PSSI information changed, need to update worklist ??
                 // study = value;
                 // study = Study.clone(value, false);
@@ -154,10 +156,17 @@ export class WorklistService {
 
             this.shellNavigatorService.shellNavigate(viewerShellData);
         } else {
+            let checkedCount = 0;
             this.studies.forEach(study => {
                 if (study.checked) {
-                    this.databaseService.getStudy(study.id)
-                        .subscribe(value => this.studyDetailsLoaded(this.studies.indexOf(study), value));
+                    checkedCount++;
+                }
+            });
+            
+            this.studies.forEach(study => {
+                if (study.checked) {
+                    this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies)
+                        .subscribe(value => this.studyDetailsLoaded(checkedCount, value));
                 }
             });
         }
@@ -355,26 +364,25 @@ export class WorklistService {
         this.onQueryShortcuts();
     }
 
-    private studyDetailsLoaded(index: number, studyNew: Study) {
+    private studyDetailsLoaded(allCheckedStudyCount: number, getStudies: Study[]) {
+        getStudies.forEach(value => {
+            this.loadedStudy.push(value);
+        });
 
-        studyNew.detailsLoaded = true;
-        studyNew.checked = true;
-        this.studies[index] = studyNew;
-
-        if (this.studies.every(study => !study.checked || (study.checked && study.detailsLoaded))) {
+        this.loadedStudyCount++;
+        if (allCheckedStudyCount == this.loadedStudyCount) {
             const viewerShellData = new ViewerShellData(this.hangingProtocolService.getDefaultGroupHangingProtocol(),
                 this.hangingProtocolService.getDefaultImageHangingPrococal());
-            this.studies.forEach(value => {
-                if (value.checked && value.detailsLoaded) {
-                    viewerShellData.addStudy(value);
-                }
+            this.loadedStudy.forEach(value => {
+                value.detailsLoaded = true;
+                value.checked = true;
+                viewerShellData.addStudy(value);
             });
+
             this.shellNavigatorService.shellNavigate(viewerShellData);
 
-            this.studies.forEach(value => {
-                value.detailsLoaded = false;
-                value.checked = false;
-            });
+            this.loadedStudy = new Array<Study>();
+            this.loadedStudyCount = 0;
         }
     }
 }

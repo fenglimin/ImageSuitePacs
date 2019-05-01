@@ -17,6 +17,7 @@ export class AnnCurve extends AnnExtendObject {
     constructor(parent: AnnExtendObject, imageViewer: IImageViewer) {
         super(parent, imageViewer);
         this.guideNeeded = true;
+        this.annTypeName = "Cervical Curve";
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +65,7 @@ export class AnnCurve extends AnnExtendObject {
                     const middlePoint = this.annMiddlePoint.getPosition();
                     const lineCenter = AnnObject.centerPoint(startPoint, endPoint);
 
-                    // The another middle point
+                    // nother middle point
                     const newMiddlePoint = { x: lineCenter.x * 2 - middlePoint.x, y: lineCenter.y * 2 - middlePoint.y };
 
                     // The nearest is the wanted
@@ -120,13 +121,13 @@ export class AnnCurve extends AnnExtendObject {
         this.redraw(startPoint, endPoint, middlePoint);
     }
 
-    // The text indicator is drawn in the seperate layer, need to rotate it.
+    // The text indicator is drawn in the separated layer, need to rotate it.
     onRotate(angle: number) {
         this.annTextIndicator.onRotate(angle);
     }
 
+    // The arrow of the text indicator will always point to the middle point
     getSurroundPointList(): Point[] {
-        // The arrow of the text indicator will always point to the middle point
         return [this.annMiddlePoint.getPosition()];
     }
 

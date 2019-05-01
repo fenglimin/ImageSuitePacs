@@ -12,14 +12,14 @@ export class AnnGuide {
     private backgroundColor = "rgba(96,96,96,0.6)";
     private borderColor = "#888";
 
-    private defaultWidth = 685;
+    private defaultWidth = 605;
     private defaultHeight = 160;
 
-    private textAreaWidth = 500;
+    private textAreaWidth = 420;
     private imageWidth = 125;
     private imageHeight = 150;
     private interval = 5;
-    private stepButtonWidth = 25;
+    private stepButtonWidth = 20;
     private stepButtonHeight = 20;
     private actionButtonHeight = 40;
 
@@ -72,7 +72,7 @@ export class AnnGuide {
 
         guideLayer.mouseover((arg) => {
             if (!this.isHidden()) {
-                this.imageViewer.getCanvas().style.cursor = "default";
+                this.imageViewer.setCursor("default");
             }
             
             return false;
@@ -80,7 +80,7 @@ export class AnnGuide {
 
         guideLayer.mouseout((arg) => {
             if (!this.isHidden()) {
-                this.imageViewer.getCanvas().style.cursor = this.oldCursor;
+                this.imageViewer.setCursor(this.oldCursor);
             }
             
             return false;
@@ -95,6 +95,17 @@ export class AnnGuide {
             "Step 3. Move center point to change radius of curve"));
 
         this.annGuideDataList.push(annGuideCervicalCurve);
+
+        const annCardiothoracicRatio = new AnnGuideData("Cardiothoracic Ratio", "ann_cervicalcurve");
+        annCardiothoracicRatio.addStepData(new AnnGuideStepData("CGXAnnHCRatio_01.png", "Step 1. Click to place a point on the highest point of the spine"));
+        annCardiothoracicRatio.addStepData(new AnnGuideStepData("CGXAnnHCRatio_02.png", "Step 2. Click to place a point on the lowest point of the spine"));
+        annCardiothoracicRatio.addStepData(new AnnGuideStepData("CGXAnnHCRatio_03.png", "Step 3. Click to place a point on the right side of the heart at its widest point"));
+        annCardiothoracicRatio.addStepData(new AnnGuideStepData("CGXAnnHCRatio_04.png", "Step 4. Click to place a point on the left side of the heart at its widest point"));
+        annCardiothoracicRatio.addStepData(new AnnGuideStepData("CGXAnnHCRatio_05.png", "Step 5. Click to place a point on the right side of the chest at its widest point"));
+        annCardiothoracicRatio.addStepData(new AnnGuideStepData("CGXAnnHCRatio_06.png", "Step 6. Click to place a point on the left side of the chest at its widest point"));
+
+        this.annGuideDataList.push(annCardiothoracicRatio);
+
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
@@ -102,7 +113,7 @@ export class AnnGuide {
     // Show the guide
     show(targetAnnName: string, stepIndex: number = 0) {
         // Save the old cursor
-        this.oldCursor = this.imageViewer.getCanvas().style.cursor;
+        this.oldCursor = this.imageViewer.getCursor();
 
         // show the guide layer
         this.imageViewer.getAnnGuideLayer().visible(true);
@@ -135,7 +146,6 @@ export class AnnGuide {
         } else {
             // Same annotation
             this.stepTo(stepIndex);
-            this.setGuideTargetObj(undefined);
         }
     }
 
@@ -151,7 +161,7 @@ export class AnnGuide {
         return !(this.imageViewer.getAnnGuideLayer()._visible);
     }
 
-    // Set the tareget annoation object
+    // Set the target annotation object
     setGuideTargetObj(guideTarget: AnnExtendObject) {
         this.annGuideTarget = guideTarget;
         if (this.annGuideTarget && this.annGuideTarget.isCreated()) {
@@ -160,7 +170,7 @@ export class AnnGuide {
             this.annGuideResetButton.onDisabled();
         } else {
             // No target annotation or the target annotation is creating, need to enable the 
-            // Close and Reset bubton in case they were disabled before.
+            // Close and Reset button in case they were disabled before.
             this.annGuideCloseButton.onUp();
             this.annGuideResetButton.onUp();
         }
@@ -348,12 +358,12 @@ export class AnnGuide {
     private setStepButtonEvent(annGuideStepButton: AnnGuideStepButton) {
         annGuideStepButton.jcBackgroundBorder._onmouseover = arg => {
             annGuideStepButton.jcBackgroundBorder.color("#F90");
-            this.imageViewer.getCanvas().style.cursor = "pointer";
+            this.imageViewer.setCursor("pointer");
 
             this.jcStepText.string(this.getTipText(annGuideStepButton));
             this.jcTutorImage._img = annGuideStepButton.imageData;
 
-            if (this.annGuideTarget.isCreated()) {
+            if (this.isTargetAnnCreated()) {
                 this.imageViewer.selectChildByStepIndex(annGuideStepButton.stepIndex);
             }
         };
@@ -363,7 +373,7 @@ export class AnnGuide {
                 annGuideStepButton.jcBackgroundBorder.color("#FFF");
             }
 
-            this.imageViewer.getCanvas().style.cursor = "default";
+            this.imageViewer.setCursor("default");
             this.jcStepText.string(this.getTipText(this.annStepButtonList[this.stepIndex]));
             this.jcTutorImage._img = this.annStepButtonList[this.stepIndex].imageData;
         };
@@ -375,25 +385,25 @@ export class AnnGuide {
             if (this.ignoreMouseEvent(annGuideButton)) return;
             
             annGuideButton.onHover();
-            this.imageViewer.getCanvas().style.cursor = 'pointer';
+            this.imageViewer.setCursor("pointer");
         };
 
         annGuideButton.jcImage._onmouseout = arg => {
             if (this.ignoreMouseEvent(annGuideButton)) return;
 
             annGuideButton.onUp();
-            this.imageViewer.getCanvas().style.cursor = "default";
+            this.imageViewer.setCursor("default");
         };
 
         annGuideButton.jcImage._onmousedown = arg => {
-            if (this.ignoreMouseEvent(annGuideButton)) return;
+            if (this.ignoreMouseEvent(annGuideButton)) return false;
 
             annGuideButton.onSelect();
             return false;
         };
 
         annGuideButton.jcImage._onmouseup = arg => {
-            if (this.ignoreMouseEvent(annGuideButton)) return;
+            if (this.ignoreMouseEvent(annGuideButton)) return false;
 
             annGuideButton.onUp();
             if (annGuideButton.onButtonClick) {
@@ -443,7 +453,7 @@ export class AnnGuide {
         this.delJcObj();
         this.showStepList = false;
         this.draw();
-        this.imageViewer.getCanvas().style.cursor = this.oldCursor;
+        this.imageViewer.setCursor(this.oldCursor);
     }
 
     // Show the step list
@@ -451,9 +461,10 @@ export class AnnGuide {
         this.delJcObj();
         this.showStepList = true;
         this.draw();
-        this.imageViewer.getCanvas().style.cursor = "default";
+        this.imageViewer.setCursor("default");
     }
 
+    // Create the step button list for the annotation
     private createStepButtonList(annName: string) {
         const result = AnnGuide.annGuideDataList.filter(guideData => guideData.annName === annName);
         if (result.length === 0) {
@@ -468,15 +479,18 @@ export class AnnGuide {
         }
     }
 
+    // If the target annotation is created or NOT
     private isTargetAnnCreated(): boolean {
         return this.annGuideTarget ? this.annGuideTarget.isCreated() : false;
     }
 
+    // Get the tip text. The tip text for creating and viewing might be different
     private getTipText(annGuideStepButton: AnnGuideStepButton): string {
         const annCreated = this.isTargetAnnCreated();
         return annGuideStepButton.getTipText(annCreated);
     }
 
+    // Get the action button image based on current target annotation. If created, the Close/Reset button should be disabled
     private getActionButtonImage(annGuideActionButton: AnnGuideActionButton): any {
         const annCreated = this.isTargetAnnCreated();
         return annCreated ? annGuideActionButton.getDisabledImage() : annGuideActionButton.getUpImage();

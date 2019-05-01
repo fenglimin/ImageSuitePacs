@@ -88,6 +88,13 @@ thead div {
     width: 100%;
 }
 
+#trStudiesQuery input[type=checkbox] {
+    background-color: black;
+    border: 1px solid #444;
+    vertical-align: middle;
+    width: 100%;
+}
+
 select {
     background-color: black;
     border: 1px solid #444;
