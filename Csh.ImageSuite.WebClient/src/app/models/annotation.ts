@@ -1,4 +1,21 @@
-﻿export class Point {
+﻿export enum PositionInRectangle {
+    Top,
+    TopLeft,
+    TopRight,
+    Left,
+    Right,
+    Bottom,
+    BottomLeft,
+    BottomRight
+}
+
+export enum AnnType {
+    Line = 1,
+    Circle = 2,
+    Rectangle = 3
+}
+
+export class Point {
     x: number;
     y: number;
 
@@ -32,49 +49,51 @@ export class Rectangle {
     }
 }
 
-export class AnnGuideStepData {
-    //imageSrc: string;
+// The configuration data for each step of the annotation
+export class AnnGuideStepConfig {
+    // The name of the guide picture
     imageName: string;
+
+    // The tip text for creating annotation
     tipTextCreating: string;
+
+    // The tip text for viewing annotation
     tipTextCreated: string;
 
     constructor(imageName: string, tipTextCreating: string, tipTextCreated: string = undefined) {
         this.imageName = imageName;
-        //this.imageSrc = baseUrl + "assets/img/TutorImage/" + imageName;
         this.tipTextCreating = tipTextCreating;
         this.tipTextCreated = tipTextCreated ? tipTextCreated : tipTextCreating;
     }
 }
 
-export class AnnGuideData {
-    annName: string;
-    cursor: string;
+// The running data for each step
+export class AnnGuideStepData {
+    // The config data
+    annGuideStepConfig: AnnGuideStepConfig
 
-    guideStepList: Array<AnnGuideStepData> = [];
-
-    constructor(annName: string, cursor: string) {
-        this.annName = annName;
-        this.cursor = cursor;
-    }
-
-    addStepData(annGuideStepData: AnnGuideStepData) {
-        this.guideStepList.push(annGuideStepData);
-    }
-}
-
-export class AnnGuideStepButton {
-    annGuideStepData: AnnGuideStepData
+    // The image source string of the tutor image
     imageSrc: string;
+
+    // The image data of the tutor image
     imageData = new Image();
+
+    // The jc object for the step button background 
     jcBackground: any;
+
+    // The jc object for the step button background border
     jcBackgroundBorder: any;
+
+    // The jc object for the tip text
     jcText: any;
+
+    // The index for the step
     stepIndex: number;
 
-    constructor(stepIndex: number, baseUrl: string, annGuideStepData: AnnGuideStepData) {
-        this.annGuideStepData = annGuideStepData;
+    constructor(stepIndex: number, baseUrl: string, annGuideStepConfig: AnnGuideStepConfig) {
+        this.annGuideStepConfig = annGuideStepConfig;
         this.stepIndex = stepIndex;
-        this.imageSrc = baseUrl + "assets/img/TutorImage/" + annGuideStepData.imageName;
+        this.imageSrc = baseUrl + "assets/img/TutorImage/" + annGuideStepConfig.imageName;
     }
 
     loadImage() {
@@ -82,7 +101,7 @@ export class AnnGuideStepButton {
     }
 
     getTipText(annCreated: boolean): string {
-        return annCreated ? this.annGuideStepData.tipTextCreated : this.annGuideStepData.tipTextCreating;
+        return annCreated ? this.annGuideStepConfig.tipTextCreated : this.annGuideStepConfig.tipTextCreating;
     }
 
     del() {
@@ -92,17 +111,29 @@ export class AnnGuideStepButton {
     }
 }
 
+// The action button of the guide
 export class AnnGuideActionButton {
+    // If the button is disabled
     disabled = false;
-    imageSrcList = [];
-    imageDataList = [];
-    jcImage: any;
-    onButtonClick: any;
 
+    // There are four states for a button
     imageTypeList = ["disabled", "hover", "select", "up"];
 
-    constructor(baseUrl: string, buttonName: string) {
+    // The image source string for the four states
+    imageSrcList = [];
+
+    // The image data for the four states
+    imageDataList = [];
+
+    // The jc object for the image
+    jcImage: any;
+
+    // Callback for button click
+    onButtonClick: any;
+
+    constructor(baseUrl: string, buttonName: string, onButtonClick: any) {
         baseUrl += "assets/img/TutorImage/";
+        this.onButtonClick = onButtonClick;
 
         this.imageTypeList.forEach(type => {
             this.imageSrcList.push(baseUrl + buttonName + "_" + type + ".png");
@@ -159,19 +190,21 @@ export class AnnGuideActionButton {
     }
 }
 
-export enum PositionInRectangle {
-    Top,
-    TopLeft,
-    TopRight,
-    Left,
-    Right,
-    Bottom,
-    BottomLeft,
-    BottomRight
+
+export class AnnGuideData {
+    annName: string;
+    cursor: string;
+
+    guideStepConfigList: Array<AnnGuideStepConfig> = [];
+
+    constructor(annName: string, cursor: string) {
+        this.annName = annName;
+        this.cursor = cursor;
+    }
+
+    addStepData(annGuideStepConfig: AnnGuideStepConfig) {
+        this.guideStepConfigList.push(annGuideStepConfig);
+    }
 }
 
-export enum AnnType {
-    Line = 1,
-    Circle = 2,
-    Rectangle = 3
-}
+
