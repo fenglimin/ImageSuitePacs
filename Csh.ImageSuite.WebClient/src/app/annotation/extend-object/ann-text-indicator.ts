@@ -1,5 +1,5 @@
-﻿import { Point, PositionInRectangle } from '../../models/annotation';
-import { MouseEventType, AnnObject } from '../ann-object';
+﻿import { Point, PositionInRectangle, MouseEventType } from '../../models/annotation';
+import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnExtendObject } from "./ann-extend-object";
 import { AnnText } from "./ann-text";
@@ -82,9 +82,9 @@ export class AnnTextIndicator extends AnnExtendObject {
 
         //let i = 0;
         //for (; i < 4; i ++) {
-        //    const textPointList = AnnObject.pointListFrom(arrowStartPoint, posList[i], textRect.width, textRect.height);
+        //    const textPointList = AnnTool.pointListFrom(arrowStartPoint, posList[i], textRect.width, textRect.height);
         //    const arrowPointList = this.getShortestDistancePoint(parentPosList, textPointList);
-        //    if (AnnObject.equalPoint(arrowStartPoint, arrowPointList[1])) {
+        //    if (AnnTool.equalPoint(arrowStartPoint, arrowPointList[1])) {
         //        break;
         //    }
         //}
@@ -124,7 +124,7 @@ export class AnnTextIndicator extends AnnExtendObject {
 
         for (let i = 0; i < lenDest; i++) {
             for (let j = 0; j < lenText; j++) {
-                const distance = AnnObject.countDistance(destPointList[i], textPointList[j]);
+                const distance = AnnTool.countDistance(destPointList[i], textPointList[j]);
                 if (distance < minLen) {
                     minLen = distance;
                     retPointList[0] = destPointList[i];

@@ -1,5 +1,4 @@
-﻿import { Point, Rectangle } from '../../models/annotation';
-import { MouseEventType, AnnObject } from '../ann-object';
+﻿import { Point, Rectangle, MouseEventType } from '../../models/annotation';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnExtendObject } from "./ann-extend-object";
 import { AnnBaseRectangle } from "../base-object/ann-base-rectangle";

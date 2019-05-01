@@ -1,5 +1,5 @@
-﻿import { Point, AnnGuideStepData, AnnGuideActionButton, AnnGuideData, AnnGuideStepConfig } from '../../models/annotation';
-import { MouseEventType, AnnObject } from '../ann-object';
+﻿import { Point, AnnGuideStepData, AnnGuideActionButton, AnnGuideData, AnnGuideStepConfig, MouseEventType } from '../../models/annotation';
+import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnExtendObject } from "../extend-object/ann-extend-object";
 import { FontData } from '../../models/misc-data';
@@ -193,7 +193,7 @@ export class AnnGuide {
 
     // Check if the mouse is clicked in the guide area
     hitTest(point: Point): boolean {
-        return !this.isHidden() && this.jcBackground && AnnObject.pointInRect(point, this.jcBackground.getRect());
+        return !this.isHidden() && this.jcBackground && AnnTool.pointInRect(point, this.jcBackground.getRect());
     }
 
     // Step to the given step index

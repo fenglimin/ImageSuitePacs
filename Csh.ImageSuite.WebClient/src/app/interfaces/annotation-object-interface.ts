@@ -1,5 +1,4 @@
-﻿import { Point } from '../models/annotation';
-import { MouseEventType } from '../annotation/ann-object';
+﻿import { Point, MouseEventType } from '../models/annotation';
 
 export interface IAnnotationObject {
     isSelected(): boolean;

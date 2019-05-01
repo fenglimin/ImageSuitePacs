@@ -1,5 +1,5 @@
-﻿import { Point } from '../../models/annotation';
-import { MouseEventType, AnnObject } from '../ann-object';
+﻿import { Point, MouseEventType } from '../../models/annotation';
+import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
 import { AnnExtendObject } from "../extend-object/ann-extend-object";
@@ -57,7 +57,7 @@ export class AnnBaseLine extends AnnBaseObject {
     }
 
     getLengthInPixel(): number {
-        return AnnObject.countDistance(this.getStartPosition(), this.getEndPosition());
+        return AnnTool.countDistance(this.getStartPosition(), this.getEndPosition());
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions

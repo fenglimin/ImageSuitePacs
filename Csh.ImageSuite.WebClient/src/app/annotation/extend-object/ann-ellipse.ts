@@ -1,5 +1,5 @@
-﻿import { Point } from '../../models/annotation';
-import { MouseEventType, AnnObject } from '../ann-object';
+﻿import { Point, MouseEventType } from '../../models/annotation';
+import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnPoint } from "./ann-point";
 import { AnnBaseEllipse } from "../base-object/ann-base-ellipse";
@@ -24,7 +24,7 @@ export class AnnEllipse extends AnnExtendObject {
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
-        const imagePoint = AnnObject.screenToImage(point, this.image.transformMatrix);
+        const imagePoint = AnnTool.screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === MouseEventType.MouseDown) {
 
             if (this.created) {

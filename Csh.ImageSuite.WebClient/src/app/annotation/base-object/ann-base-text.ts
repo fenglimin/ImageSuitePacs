@@ -1,6 +1,6 @@
-﻿import { Point, Rectangle } from '../../models/annotation';
+﻿import { Point, Rectangle, MouseEventType } from '../../models/annotation';
 import { FontData} from "../../models/misc-data"
-import { MouseEventType, AnnObject } from '../ann-object';
+import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
 import { AnnExtendObject } from "../extend-object/ann-extend-object";
@@ -13,7 +13,7 @@ export class AnnBaseText extends AnnBaseObject {
 
         
         // The coordinate of input point is for annotation layer, since text will always be drawn in label layer, need to convert the coordinate
-        startPoint = AnnObject.annLayerToAnnLabelLayer(startPoint, imageViewer);
+        startPoint = AnnTool.annLayerToAnnLabelLayer(startPoint, imageViewer);
 
         const font = new FontData("Times New Roman", "#FFF", this.parentObj.getFontSize());
         this.jcObj = jCanvaScript.text(text, startPoint.x, startPoint.y).color(this.selectedColor).font(font.getCanvasFontString()).layer(this.labelLayerId).align("left");
@@ -32,7 +32,7 @@ export class AnnBaseText extends AnnBaseObject {
     onMove(point: Point) {
 
         // The coordinate of input point is for annotation layer, since text will always be drawn in label layer, need to convert the coordinate
-        point = AnnObject.annLayerToAnnLabelLayer(point, this.imageViewer);
+        point = AnnTool.annLayerToAnnLabelLayer(point, this.imageViewer);
         super.onMove(point);
     }
 

@@ -1,5 +1,5 @@
-﻿import { Point } from '../../models/annotation';
-import { MouseEventType, AnnObject } from '../ann-object';
+﻿import { Point, MouseEventType } from '../../models/annotation';
+import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseLine } from "../base-object/ann-base-line";
 import { AnnExtendObject } from "./ann-extend-object";
@@ -21,7 +21,7 @@ export class AnnArrow extends AnnExtendObject {
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
-        const imagePoint = AnnObject.screenToImage(point, this.image.transformMatrix);
+        const imagePoint = AnnTool.screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === MouseEventType.MouseDown) {
 
             if (this.created) {
@@ -93,8 +93,8 @@ export class AnnArrow extends AnnExtendObject {
     // Private functions
     private redrawArrow(startPoint: Point, endPoint: Point) {
         const arrowLength = this.getArrowLineLength();
-        const sineTheta = AnnObject.getSineTheta(endPoint, startPoint);
-        const cosineTheta = AnnObject.getCosineTheta(endPoint, startPoint);
+        const sineTheta = AnnTool.getSineTheta(endPoint, startPoint);
+        const cosineTheta = AnnTool.getCosineTheta(endPoint, startPoint);
 
         const lineAEndPoint = {
             x: endPoint.x + arrowLength * cosineTheta - arrowLength / 2.0 * sineTheta,

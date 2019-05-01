@@ -18,8 +18,9 @@ import { FontData } from "../../../../models/misc-data"
 import { IImageViewer } from "../../../../interfaces/image-viewer-interface";
 import { IAnnotationObject } from "../../../../interfaces/annotation-object-interface";
 
-import { Point } from '../../../../models/annotation';
-import { AnnObject, MouseEventType } from "../../../../annotation/ann-object";
+import { Point, MouseEventType } from '../../../../models/annotation';
+import { AnnObject } from "../../../../annotation/ann-object";
+import { AnnTool } from "../../../../annotation/ann-tool";
 import { AnnEllipse } from "../../../../annotation/extend-object/ann-ellipse";
 import { AnnLine } from "../../../../annotation/extend-object/ann-line";
 import { AnnRectangle } from "../../../../annotation/extend-object/ann-rectangle";
@@ -1323,7 +1324,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         //covert screen point to image point
         if (arg.x) {
-            arg = AnnObject.screenToImage(arg, this.imgLayer.transform());
+            arg = AnnTool.screenToImage(arg, this.imgLayer.transform());
         }
 
         handlers.forEach(function(obj) {

@@ -15,6 +15,18 @@ export enum AnnType {
     Rectangle = 3
 }
 
+export enum MouseEventType {
+    Click = 1,
+    MouseDown = 2,
+    MouseMove = 3,
+    MouseUp = 4,
+    MouseOver = 5,
+    MouseOut = 6,
+    RightClick = 7,
+    DblClick = 8,
+    MouseWheel = 9
+}
+
 export class Point {
     x: number;
     y: number;

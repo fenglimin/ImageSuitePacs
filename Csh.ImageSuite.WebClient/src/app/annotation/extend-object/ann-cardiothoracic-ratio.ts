@@ -1,5 +1,5 @@
-﻿import { Point } from '../../models/annotation';
-import { MouseEventType, AnnObject } from '../ann-object';
+﻿import { Point, MouseEventType } from '../../models/annotation';
+import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnExtendObject } from "./ann-extend-object";
 import { AnnBaseLine } from "../base-object/ann-base-line";
@@ -47,7 +47,7 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
     // Override functions of base class
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
-        const imagePoint = AnnObject.screenToImage(point, this.image.transformMatrix);
+        const imagePoint = AnnTool.screenToImage(point, this.image.transformMatrix);
         const stepIndex = this.imageViewer.getCurrentStepIndex();
 
         if (mouseEventType === MouseEventType.MouseDown) {
@@ -265,9 +265,9 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
         const pointA = this.annBaseLineAb.getStartPosition();
         const pointB = this.annBaseLineAb.getEndPosition();
 
-        const footPoint = AnnObject.calcFootPoint(pointA, pointB, point);
+        const footPoint = AnnTool.calcFootPoint(pointA, pointB, point);
 
-        const chestPointResult = AnnObject.pointInLine(footPoint, pointA, pointB);
+        const chestPointResult = AnnTool.pointInLine(footPoint, pointA, pointB);
         if (!chestPointResult.isInLine) {
             this.onNewFootPoint(footPoint, chestPointResult.nearStart ? 0 : 1);
         }
@@ -283,7 +283,7 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
         }
 
         const startPoint = this.annPointList[index].getPosition();
-        if (AnnObject.countDistance(footPoint, startPoint) > this.annLineList[index].getLengthInPixel()) {
+        if (AnnTool.countDistance(footPoint, startPoint) > this.annLineList[index].getLengthInPixel()) {
             this.annLineList[index].onMoveEndPoint(footPoint);
         }
     }

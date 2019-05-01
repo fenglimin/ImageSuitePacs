@@ -1,5 +1,5 @@
-﻿import { Point, Rectangle } from '../../models/annotation';
-import { MouseEventType, AnnObject } from '../ann-object';
+﻿import { Point, Rectangle, MouseEventType } from '../../models/annotation';
+import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseLine } from "../base-object/ann-base-line";
 import { AnnExtendObject } from "./ann-extend-object";
@@ -32,7 +32,7 @@ export class AnnRectangle extends AnnExtendObject {
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point) {
 
-        const imagePoint = AnnObject.screenToImage(point, this.image.transformMatrix);
+        const imagePoint = AnnTool.screenToImage(point, this.image.transformMatrix);
         if (mouseEventType === MouseEventType.MouseDown) {
 
             if (this.created) {

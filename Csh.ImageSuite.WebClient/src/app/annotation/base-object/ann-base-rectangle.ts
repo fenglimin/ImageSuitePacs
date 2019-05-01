@@ -1,5 +1,6 @@
 ﻿import { Point, Rectangle } from "../../models/annotation";
 import { AnnObject } from "../ann-object";
+import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
 import { AnnExtendObject } from "../extend-object/ann-extend-object";
@@ -39,9 +40,9 @@ export class AnnBaseRectangle extends AnnBaseObject {
     // Public functions
     getSurroundPointList(): Point[] {
         const rect = new Rectangle(this.jcObj._x, this.jcObj._y, this.jcObj._width, this.jcObj._height);
-        const pointList = AnnObject.pointListFromRect(rect);
+        const pointList = AnnTool.pointListFromRect(rect);
         return this.forText
-            ? AnnObject.imageListToImageList(pointList,
+            ? AnnTool.imageListToImageList(pointList,
                 this.imageViewer.getAnnLabelLayer().transform(),
                 this.imageViewer.getImageLayer().transform())
             : pointList;

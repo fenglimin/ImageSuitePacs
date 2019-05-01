@@ -1,5 +1,5 @@
-﻿import { Point } from '../../models/annotation';
-import { MouseEventType, AnnObject } from '../ann-object';
+﻿import { Point, MouseEventType } from '../../models/annotation';
+import { AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 
 
