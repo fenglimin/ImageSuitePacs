@@ -106,10 +106,6 @@ export class AnnEllipse extends AnnExtendObject {
         }
     }
 
-    onRotate(angle: number) {
-        this.annTextIndicator.onRotate(angle);
-    }
-
     getSurroundPointList(): Point[] {
 
         const pointList = [];

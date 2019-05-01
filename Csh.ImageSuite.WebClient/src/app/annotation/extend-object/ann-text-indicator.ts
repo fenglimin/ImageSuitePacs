@@ -63,8 +63,12 @@ export class AnnTextIndicator extends AnnExtendObject {
 
     redrawArrow() {
         // Draw the arrow, keep text position unchanged.
-
         const parentPosList = this.parentObj.getSurroundPointList();
+        if (parentPosList.length === 0) {
+            alert(this.parentObj.constructor.name +
+                " did NOT implement function getSurroundPointList. For annotations contain text indicator, must implement it.");
+            return;
+        }
         const posList = this.getShortestDistancePoint(parentPosList, this.getTextPointList());
 
         this.annArrow.onMoveStartPoint(posList[1]);

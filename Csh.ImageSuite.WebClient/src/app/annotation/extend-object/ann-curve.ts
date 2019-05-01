@@ -92,11 +92,6 @@ export class AnnCurve extends AnnExtendObject {
         this.redraw(startPoint, endPoint, middlePoint);
     }
 
-    // The text indicator is drawn in the separated layer, need to rotate it.
-    onRotate(angle: number) {
-        this.annTextIndicator.onRotate(angle);
-    }
-
     // The arrow of the text indicator will always point to the middle point
     getSurroundPointList(): Point[] {
         return [this.annMiddlePoint.getPosition()];

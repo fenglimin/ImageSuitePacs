@@ -84,6 +84,15 @@ export abstract class AnnExtendObject extends AnnObject {
         }
     }
 
+    onRotate(angle: number) {
+        this.annObjList.forEach(annObj => {
+            // The text indicator is drawn in the separated layer, need to rotate it.
+            if (annObj.constructor.name === "AnnTextIndicator") {
+                annObj.onRotate(angle);
+            }
+        });
+    }
+
     onScale() {
         this.annObjList.forEach(annObj => annObj.onScale());
     }
