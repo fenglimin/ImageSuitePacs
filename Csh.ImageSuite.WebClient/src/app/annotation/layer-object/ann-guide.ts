@@ -43,6 +43,7 @@ export class AnnGuide {
     private jcStepText: any;
 
     private showStepList = true;
+    private actionButtonLoaded = false;
 
     private annGuideTarget: AnnExtendObject;
     private targetAnnName: string;
@@ -118,12 +119,12 @@ export class AnnGuide {
         // show the guide layer
         this.imageViewer.getAnnGuideLayer().visible(true);
         
-        // 
+        // Different annotation, need to lo
         if (this.targetAnnName !== targetAnnName) {
             this.targetAnnName = targetAnnName;
             this.stepIndex = stepIndex;
 
-            this.delJcObj();
+            this.delJcObj(true);
 
             this.createStepButtonList(targetAnnName);
            
@@ -132,14 +133,18 @@ export class AnnGuide {
                 promiseList.push(this.createPromiseForStepButton(i));
             }
 
-            promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideCloseButton));
-            promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideResetButton));
-            promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideHideButton));
-            promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideShowButton));
+            if (!this.actionButtonLoaded) {
+                promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideCloseButton));
+                promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideResetButton));
+                promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideHideButton));
+                promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideShowButton));
+            }
+            
 
             // Draw the guide UI when all necessary data are loaded from server
             Promise.all(promiseList).then(arg => {
                 this.draw();
+                this.actionButtonLoaded = true;
             }).catch(arg => {
                 console.error(arg);
             });
@@ -184,7 +189,6 @@ export class AnnGuide {
             // If ended, hide the guide
             this.imageViewer.getAnnGuideLayer().visible(false);
         }
-        
     }
 
     // Get current step index
@@ -194,7 +198,7 @@ export class AnnGuide {
 
     // Check if the mouse is clicked in the guide area
     hitTest(point: Point): boolean {
-        return this.imageViewer.getAnnGuideLayer()._visible && this.jcBackground && AnnObject.pointInRect(point, this.jcBackground.getRect());
+        return !this.isHidden() && this.jcBackground && AnnObject.pointInRect(point, this.jcBackground.getRect());
     }
 
     // Step to the given step index
@@ -419,20 +423,22 @@ export class AnnGuide {
     }
 
     // Delete all jc object
-    private delJcObj() {
-        if (this.jcBackground) this.jcBackground.del();
-        if (this.jcBackgroundBorder) this.jcBackgroundBorder.del();
-        if (this.jcTextAreaBackground) this.jcTextAreaBackground.del();
+    private delJcObj(onlyStepObj: boolean) {
+
+        if (!onlyStepObj) {
+            if (this.jcBackground) this.jcBackground.del();
+            if (this.jcBackgroundBorder) this.jcBackgroundBorder.del();
+            if (this.jcTextAreaBackground) this.jcTextAreaBackground.del();
+            this.annGuideCloseButton.del();
+            this.annGuideResetButton.del();
+            this.annGuideHideButton.del();
+            this.annGuideShowButton.del();
+        }
+
         if (this.jcTutorImage) this.jcTutorImage.del();
         if (this.jcCurrentStep) this.jcCurrentStep.del();
         if (this.jcAnnotationName) this.jcAnnotationName.del();
         if (this.jcStepText) this.jcStepText.del();
-
-        this.annGuideCloseButton.del();
-        this.annGuideResetButton.del();
-        this.annGuideHideButton.del();
-        this.annGuideShowButton.del();
-
         this.annStepButtonList.forEach(stepObj => stepObj.del());
     }
 
@@ -450,7 +456,7 @@ export class AnnGuide {
 
     // Hide the step list
     private onHide() {
-        this.delJcObj();
+        this.delJcObj(false);
         this.showStepList = false;
         this.draw();
         this.imageViewer.setCursor(this.oldCursor);
@@ -458,7 +464,7 @@ export class AnnGuide {
 
     // Show the step list
     private onShow() {
-        this.delJcObj();
+        this.delJcObj(false);
         this.showStepList = true;
         this.draw();
         this.imageViewer.setCursor("default");
