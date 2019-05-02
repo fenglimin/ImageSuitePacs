@@ -9,7 +9,6 @@ export class AnnGuide {
     private layerId: string;
     private baseUrl: string;
     private font: FontData;
-    private oldCursor: any;
 
     private backgroundColor = "rgba(96,96,96,0.6)";
     private borderColor = "#888";
@@ -48,7 +47,7 @@ export class AnnGuide {
     private targetAnnName: string;
 
     static annGuideDataList: Array<AnnGuideData> = [];
-   // static 
+
     constructor(private imageViewer: IImageViewer) {
         this.layerId = imageViewer.getAnnGuideLayerId();
         this.baseUrl = this.imageViewer.getBaseUrl();
@@ -76,7 +75,7 @@ export class AnnGuide {
 
         guideLayer.mouseout((arg) => {
             if (!this.isHidden()) {
-                this.imageViewer.setCursor(this.oldCursor);
+                this.imageViewer.setCursor(undefined);
             }
             
             return false;
@@ -85,32 +84,40 @@ export class AnnGuide {
 
     static createAnnGuideDataList() {
         const annGuideCervicalCurve = new AnnGuideData("Cervical Curve", "ann_cervicalcurve");
-        annGuideCervicalCurve.addStepData(new AnnGuideStepConfig("CGXAnnCervicalCurve_01.png", "Step 1. Click to place a point on the center of the anterior tubercle of the anterior arch"));
-        annGuideCervicalCurve.addStepData(new AnnGuideStepConfig("CGXAnnCervicalCurve_02.png", "Step 2. Click to place a point on the top center of the first thoracic vertebrae"));
-        annGuideCervicalCurve.addStepData(new AnnGuideStepConfig("CGXAnnCervicalCurve_03.png", "Step 3. Click on either side of the line to flip the curve. Move center point to change radius of curve",
+        annGuideCervicalCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnCervicalCurve_01.png", "Step 1. Click to place a point on the center of the anterior tubercle of the anterior arch"));
+        annGuideCervicalCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnCervicalCurve_02.png", "Step 2. Click to place a point on the top center of the first thoracic vertebrae"));
+        annGuideCervicalCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnCervicalCurve_03.png", "Step 3. Click on either side of the line to flip the curve. Move center point to change radius of curve",
             "Step 3. Move center point to change radius of curve"));
-
         this.annGuideDataList.push(annGuideCervicalCurve);
 
         const annCardiothoracicRatio = new AnnGuideData("Cardiothoracic Ratio", "ann_cervicalcurve");
-        annCardiothoracicRatio.addStepData(new AnnGuideStepConfig("CGXAnnHCRatio_01.png", "Step 1. Click to place a point on the highest point of the spine"));
-        annCardiothoracicRatio.addStepData(new AnnGuideStepConfig("CGXAnnHCRatio_02.png", "Step 2. Click to place a point on the lowest point of the spine"));
-        annCardiothoracicRatio.addStepData(new AnnGuideStepConfig("CGXAnnHCRatio_03.png", "Step 3. Click to place a point on the right side of the heart at its widest point"));
-        annCardiothoracicRatio.addStepData(new AnnGuideStepConfig("CGXAnnHCRatio_04.png", "Step 4. Click to place a point on the left side of the heart at its widest point"));
-        annCardiothoracicRatio.addStepData(new AnnGuideStepConfig("CGXAnnHCRatio_05.png", "Step 5. Click to place a point on the right side of the chest at its widest point"));
-        annCardiothoracicRatio.addStepData(new AnnGuideStepConfig("CGXAnnHCRatio_06.png", "Step 6. Click to place a point on the left side of the chest at its widest point"));
-
+        annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_01.png", "Step 1. Click to place a point on the highest point of the spine"));
+        annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_02.png", "Step 2. Click to place a point on the lowest point of the spine"));
+        annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_03.png", "Step 3. Click to place a point on the right side of the heart at its widest point"));
+        annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_04.png", "Step 4. Click to place a point on the left side of the heart at its widest point"));
+        annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_05.png", "Step 5. Click to place a point on the right side of the chest at its widest point"));
+        annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_06.png", "Step 6. Click to place a point on the left side of the chest at its widest point"));
         this.annGuideDataList.push(annCardiothoracicRatio);
-
     }
+
+    static findAnnGuideData(annName: string): AnnGuideData {
+        const result = AnnGuide.annGuideDataList.filter(guideData => guideData.annName === annName);
+        if (result.length === 0) {
+            alert("AnnGuide.findAnnGuideData() - Can not find guide data for annotation " + annName + " in the list");
+            return undefined;
+        } else {
+            if (result.length > 1) {
+                alert("AnnGuide.findAnnGuideData() - There are more than one guide data for annotation " + annName + " in the list");
+            }
+            return result[0];
+        }
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 
     // Show the guide
     show(targetAnnName: string, stepIndex: number = 0) {
-        // Save the old cursor
-        this.oldCursor = this.imageViewer.getCursor();
-
         // show the guide layer
         this.imageViewer.getAnnGuideLayer().visible(true);
         
@@ -120,14 +127,17 @@ export class AnnGuide {
             this.stepIndex = stepIndex;
 
             this.delJcObj(false);
-
-            this.createStepDataList(targetAnnName);
-           
             let promiseList = [];
-            for (let i = 0; i < this.annStepDataList.length; i++) {
-                promiseList.push(this.createPromiseForStepData(i));
+
+            const tutorImageAlreadyLoaded = this.createStepDataList(targetAnnName);
+            if (!tutorImageAlreadyLoaded) {
+                // The tutor images of this annotation are NOT loaded
+                for (let i = 0; i < this.annStepDataList.length; i++) {
+                    promiseList.push(this.createPromiseForStepData(i));
+                }
             }
 
+            // Load action button images if NOT loaded
             if (!this.actionButtonLoaded) {
                 promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideCloseButton));
                 promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideResetButton));
@@ -135,14 +145,22 @@ export class AnnGuide {
                 promiseList = promiseList.concat(this.createPromiseListForActionButton(this.annGuideShowButton));
             }
             
-
-            // Draw the guide UI when all necessary data are loaded from server
-            Promise.all(promiseList).then(arg => {
+            if (promiseList.length !== 0) {
+                // Draw the guide UI when all necessary data are loaded from server
+                Promise.all(promiseList).then(arg => {
+                    if (!tutorImageAlreadyLoaded) {
+                        this.cacheTutorImage(this.targetAnnName);
+                    }
+                    this.draw();
+                    this.actionButtonLoaded = true;
+                }).catch(arg => {
+                    console.error(arg);
+                });
+            } else {
+                // All images are loaded, start to draw.
                 this.draw();
-                this.actionButtonLoaded = true;
-            }).catch(arg => {
-                console.error(arg);
-            });
+            }
+            
         } else {
             // Same annotation
             this.stepTo(stepIndex);
@@ -230,6 +248,17 @@ export class AnnGuide {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 
+    // Save the tutor image
+    private cacheTutorImage(annName: string) {
+        const annGuideData = AnnGuide.findAnnGuideData(annName);
+        if (!annGuideData) return;
+
+        annGuideData.guideStepImageList.length = 0;
+        for (let i = 0; i < this.annStepDataList.length; i++) {
+            annGuideData.guideStepImageList.push(this.annStepDataList[i].imageData);
+        }
+    }
+
     // Draw the guide
     private draw() {
         const width = this.showStepList ? this.totalWidth : this.totalWidth - this.textAreaWidth - this.interval;
@@ -264,9 +293,9 @@ export class AnnGuide {
     }
 
     // Create promise list for loading the image of action button
-    private createPromiseListForActionButton(annGuideButton: AnnGuideActionButton): any {
+    private createPromiseListForActionButton(annGuideActionButton: AnnGuideActionButton): any {
         const promiseList = [];
-        annGuideButton.imageDataList.forEach(imageData => {
+        annGuideActionButton.imageDataList.forEach(imageData => {
             const promise = new Promise((resolve, reject) => {
                 imageData.onload = ev => {
                     resolve();
@@ -276,7 +305,7 @@ export class AnnGuide {
                     reject(ev);
                 };
 
-                annGuideButton.loadImage();
+                annGuideActionButton.loadImage();
             });
 
             promiseList.push(promise);
@@ -454,7 +483,7 @@ export class AnnGuide {
         this.delJcObj(false);
         this.showStepList = false;
         this.draw();
-        this.imageViewer.setCursor(this.oldCursor);
+        this.imageViewer.setCursor(undefined);
     }
 
     // Show the step list
@@ -466,18 +495,26 @@ export class AnnGuide {
     }
 
     // Create the step button list for the annotation
-    private createStepDataList(annName: string) {
-        const result = AnnGuide.annGuideDataList.filter(guideData => guideData.annName === annName);
-        if (result.length === 0) {
-            alert("Can't find annotation " + annName + " in the list");
-            return;
-        }
+    private createStepDataList(annName: string): boolean {
+        const annGuideData = AnnGuide.findAnnGuideData(annName);
+        if (!annGuideData) return;
 
         this.annStepDataList.length = 0;
-        const stepList = result[0].guideStepConfigList;
-        for (let i = 0; i < stepList.length; i ++) {
-            this.annStepDataList.push(new AnnGuideStepData(i, this.baseUrl, stepList[i]));
+        const stepConfigList = annGuideData.guideStepConfigList;
+        for (let i = 0; i < stepConfigList.length; i ++) {
+            this.annStepDataList.push(new AnnGuideStepData(i, this.baseUrl, stepConfigList[i]));
         }
+
+        const stepImageList = annGuideData.guideStepImageList;
+        if (stepImageList.length === stepConfigList.length) {
+            // The images were alreay loaded before
+            for (let i = 0; i < stepImageList.length; i++) {
+                this.annStepDataList[i].imageData = stepImageList[i];
+            }
+            return true;
+        }
+
+        return false;
     }
 
     // If the target annotation is created or NOT

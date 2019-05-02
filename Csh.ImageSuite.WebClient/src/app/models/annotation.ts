@@ -208,14 +208,19 @@ export class AnnGuideData {
     cursor: string;
 
     guideStepConfigList: Array<AnnGuideStepConfig> = [];
+    guideStepImageList = [];
 
     constructor(annName: string, cursor: string) {
         this.annName = annName;
         this.cursor = cursor;
     }
 
-    addStepData(annGuideStepConfig: AnnGuideStepConfig) {
+    addStepConfig(annGuideStepConfig: AnnGuideStepConfig) {
         this.guideStepConfigList.push(annGuideStepConfig);
+    }
+
+    addStepImage(stepImage: any) {
+        this.guideStepImageList.push(stepImage);
     }
 }
 
