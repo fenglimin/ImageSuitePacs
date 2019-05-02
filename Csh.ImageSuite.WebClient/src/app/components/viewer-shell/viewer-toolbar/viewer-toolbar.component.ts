@@ -5,6 +5,7 @@ import { OperationEnum, ViewContextEnum, ViewContext, ViewContextService } from 
 import { SelectedButtonData } from "../../../models/dropdown-button-menu-data";
 import { ConfigurationService } from "../../../services/configuration.service";
 
+import { Annotation } from "../../../models/annotation";
 import { AnnLine } from "../../../annotation/extend-object/ann-line";
 import { AnnEllipse } from "../../../annotation/extend-object/ann-ellipse";
 import { AnnRectangle } from "../../../annotation/extend-object/ann-rectangle";
@@ -120,18 +121,24 @@ export class ViewerToolbarComponent implements OnInit {
     };
 
     simpleAnnotation1ButtonMenu: SelectedButtonData[] = [
-        { name: "ann_line", tip: "Line", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnLine) } },
-        { name: "ann_ellipse", tip: "Eclipse", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnEllipse) } },
-        { name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnRectangle) } },
-        { name: "ann_arrow", tip: "Arrow", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnArrow) } }
+        { name: "ann_line", tip: "Line", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnLine, "Line", "ann_line", false))}},
+        { name: "ann_ellipse", tip: "Eclipse", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnEllipse, "Ellipse", "ellipse", false))}},
+        { name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data: 
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnRectangle, "Rectangle", "rect", false))}},
+        { name: "ann_arrow", tip: "Arrow", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnArrow, "Arrow", "ann_line", false))}}
     ];
 
     extendAnnotation1ButtonMenu: SelectedButtonData[] = [
-        { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnCurve) } }
+        { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnCurve, "Cervical Curve", "ann_cervicalcurve", true))}}
     ];
 
     extendAnnotation2ButtonMenu: SelectedButtonData[] = [
-        { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnCardiothoracicRatio) } }
+        { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnCardiothoracicRatio, "Cardiothoracic Ratio", "ann_cervicalcurve", true))}}
     ];
 
     private baseUrl: string;

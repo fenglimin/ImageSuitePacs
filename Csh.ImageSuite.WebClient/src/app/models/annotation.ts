@@ -61,6 +61,20 @@ export class Rectangle {
     }
 }
 
+export class Annotation {
+    classType: any;
+    className: string;
+    cursorName: string;
+    needGuide: boolean;
+
+    constructor(classType: any, className: string, cursorName: string, needGuide: boolean) {
+        this.classType = classType;
+        this.className = className;
+        this.cursorName = cursorName;
+        this.needGuide = needGuide;
+    }
+}
+
 // The configuration data for each step of the annotation
 export class AnnGuideStepConfig {
     // The name of the guide picture

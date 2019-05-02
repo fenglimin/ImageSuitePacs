@@ -808,61 +808,22 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         } else if (curContext.action === ViewContextEnum.SelectAnn) {
             cursor = cursorUrl.format("select");
         } else if (curContext.action === ViewContextEnum.CreateAnn) {
-
-            if (curContext.data === AnnLine || curContext.data === AnnArrow) {
-                cursor = cursorUrl.format("ann_line");
-            } else if (curContext.data === AnnRectangle) {
-                cursor = cursorUrl.format("rect");
-            } else if (curContext.data === AnnEllipse) {
-                cursor = cursorUrl.format("ellipse");
-            } else if (curContext.data === AnnCurve) {
-                cursor = cursorUrl.format("ann_cervicalcurve");
-                } else if (curContext.data === AnnCardiothoracicRatio) {
-                cursor = cursorUrl.format("ann_cervicalcurve");
-            }
+            cursor = cursorUrl.format(curContext.data.cursorName);
         }
 
         return cursor;
     }
 
     private setCursorFromContext() {
+        const cursor = this.getCursorFromContext();
+        this.setCursor(cursor);
+
         const curContext = this.viewContext.curContext;
-        const cursorUrl = `url(${this.baseUrl}/assets/img/cursor/{0}.cur),move`;
-
-        let cursor = "default";
-
-        if (curContext.action === ViewContextEnum.WL) {
-            cursor = cursorUrl.format("adjustwl");
-        } else if (curContext.action === ViewContextEnum.Pan) {
-            cursor = cursorUrl.format("hand");
-        } else if (curContext.action === ViewContextEnum.Select) {
-            cursor = "default";
-        } else if (curContext.action === ViewContextEnum.Zoom) {
-            cursor = cursorUrl.format("zoom");
-        } else if (curContext.action === ViewContextEnum.Magnifier) {
-            cursor = cursorUrl.format("zoom");
-        } else if (curContext.action === ViewContextEnum.ROIZoom) {
-            cursor = cursorUrl.format("rectzoom");
-        } else if (curContext.action === ViewContextEnum.SelectAnn) {
-            cursor = cursorUrl.format("select");
-        } else if (curContext.action === ViewContextEnum.CreateAnn) {
-            
-            if (curContext.data === AnnLine || curContext.data === AnnArrow) {
-                cursor = cursorUrl.format("ann_line");
-            } else if (curContext.data === AnnRectangle) {
-                cursor = cursorUrl.format("rect");
-            } else if (curContext.data === AnnEllipse) {
-                cursor = cursorUrl.format("ellipse");
-            } else if (curContext.data === AnnCurve) {
-                cursor = cursorUrl.format("ann_cervicalcurve");
-                this.annGuide.show("Cervical Curve");
-            } else if (curContext.data === AnnCardiothoracicRatio) {
-                cursor = cursorUrl.format("ann_cervicalcurve");
-                this.annGuide.show("Cardiothoracic Ratio");
+        if (curContext.action === ViewContextEnum.CreateAnn) {
+            if (curContext.data.needGuide) {
+                this.annGuide.show(curContext.data.className);
             }
         }
-
-        this.setCursor(cursor);
     }
 
     rotate(angle) {
@@ -1702,9 +1663,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private startCreateAnnAtPoint(point: Point) {
         this.updateImageTransform();
-        const annType = this.viewContext.curContext.data;
+        const annType = this.viewContext.curContext.data.classType;
         this.curSelectObj = new annType(undefined, this);
-        if (this.curSelectObj.isGuideNeeded()) {
+        if (this.viewContext.curContext.data.needGuide) {
+            this.curSelectObj.setGuideNeeded(true);
             this.annGuide.setGuideTargetObj(this.curSelectObj);
         }
         this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point, null);

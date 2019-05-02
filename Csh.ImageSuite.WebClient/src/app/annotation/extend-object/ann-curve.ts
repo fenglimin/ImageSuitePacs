@@ -16,7 +16,6 @@ export class AnnCurve extends AnnExtendObject {
 
     constructor(parent: AnnExtendObject, imageViewer: IImageViewer) {
         super(parent, imageViewer);
-        this.guideNeeded = true;
         this.annTypeName = "Cervical Curve";
     }
 

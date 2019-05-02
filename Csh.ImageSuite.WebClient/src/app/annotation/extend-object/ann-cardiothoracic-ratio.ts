@@ -39,7 +39,6 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
 
     constructor(parent: AnnExtendObject, imageViewer: IImageViewer) {
         super(parent, imageViewer);
-        this.guideNeeded = true;
         this.annTypeName = "Cardiothoracic Ratio";
     }
 

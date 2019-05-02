@@ -21,6 +21,10 @@ export abstract class AnnExtendObject extends AnnObject {
         return this.annTypeName;
     }
 
+    setGuideNeeded(guideNeeded: boolean) {
+        this.guideNeeded = guideNeeded;
+    }
+
     isGuideNeeded(): boolean {
         return this.guideNeeded;
     }
