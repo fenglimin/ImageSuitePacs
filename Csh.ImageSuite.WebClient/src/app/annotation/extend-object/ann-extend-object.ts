@@ -121,6 +121,10 @@ export abstract class AnnExtendObject extends AnnObject {
         this.annObjList.forEach(annObj => annObj.onLevelDown(level));
     }
 
+    getPosition(): Point {
+        return { x: 0, y: 0 }
+    }
+
     getSurroundPointList(): Point[] {
         return [];
     }

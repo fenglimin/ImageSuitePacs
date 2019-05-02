@@ -5,14 +5,6 @@ import { IImageViewer } from "../interfaces/image-viewer-interface";
 import { IAnnotationObject } from "../interfaces/annotation-object-interface";
 import { ViewContext, ViewContextEnum } from "../services/view-context.service"
 
-export enum StepEnum {
-    Step1= 1,
-    Step2= 2,
-    Step3= 3,
-    Step4= 4,
-    Step5= 5
-}
-
 export class Colors {
     static white = "#ffffff";
     static red = "#ff0000";
@@ -293,25 +285,21 @@ export abstract class AnnObject {
         return !this.dragging && this.imageViewer.getContext().action === ViewContextEnum.SelectAnn;
     }
 
-    getPosition(): Point {
-        alert("Internal error : AnnObject.getPosition should never be called.");
-        return { x: 0, y: 0 }
-    }
-
-    onRotate(angle: number) {
-    }
 
     abstract onSelect(selected: boolean, focused: boolean);
     abstract onDrag(deltaX: number, deltaY: number);
-    abstract onDrawEnded();
     abstract onTranslate(deltaX: number, deltaY: number);
-    abstract onDeleteChildren();
-    abstract getSurroundPointList(): Point[];
-    abstract onLevelUp(level: any);
-    abstract onLevelDown(level: any);
+    abstract onRotate(angle: number);
     abstract onScale();
     abstract onFlip(vertical: boolean);
     abstract onMove(point: Point);
     abstract onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any);
+    abstract onLevelUp(level: any);
+    abstract onLevelDown(level: any);
     abstract onChildCreated(annChildObj: AnnObject);
+    abstract onDeleteChildren();
+    abstract onDrawEnded();
+    abstract getPosition(): Point;
+    abstract getSurroundPointList(): Point[];
+
 }

@@ -124,7 +124,7 @@ export class AnnCurve extends AnnExtendObject {
         const middlePoint = this.annMiddlePoint.getPosition();
         const lineCenter = AnnTool.centerPoint(startPoint, endPoint);
 
-        // nother middle point
+        // another middle point
         const newMiddlePoint = { x: lineCenter.x * 2 - middlePoint.x, y: lineCenter.y * 2 - middlePoint.y };
 
         // The nearest is the wanted

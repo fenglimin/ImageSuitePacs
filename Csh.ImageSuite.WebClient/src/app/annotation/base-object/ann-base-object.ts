@@ -77,6 +77,11 @@ export abstract class AnnBaseObject extends AnnObject {
         this.jcObj._y = point.y;
     }
 
+    onRotate(angle: number) {
+        // For annotation drawn on the ann layer, nothing need to do for rotating,
+        // because the ann layer and the image layer are binded.
+    }
+
     onDeleteChildren() {
         this.deleteObject(this.jcObj);
     }
