@@ -15,9 +15,31 @@
     padding: 10px 10px;
 }
 
-.mat-dialog-actions { margin-right: -12px; }
+.mat-form-field-appearance-legacy .mat-form-field-wrapper {
+    padding-bottom: 2px;
+}
 
-.mat-form-field { }
+.mat-form-field-appearance-legacy .mat-form-field-infix {
+    padding: 0;
+}
+
+.matInput {
+    caret-color: #F90;
+    color: green;
+}
+
+.mat-input-element {
+    caret-color: #F90;
+    padding-left: 5px;
+}
+
+.mat-form-field-label-wrapper {
+    padding-top: 3px;
+}
+
+.mat-form-field-infix {
+    border-top: 0;
+}
 
 .mat-raised-button {
     background-color: #444;
@@ -27,18 +49,15 @@
     font-size: 13px;
     margin-left: 6px;
     padding: 1px;
-    width: 100px;
+    width: 90px;
+    height: 30px;
+    line-height: 10px;
 }
+
+.mat-dialog-actions { margin-right: -12px; }
 
 .mat-raised-button:disabled:hover { color: #999; }
 
 .mat-raised-button:hover { color: #f90; }
 
 .mat-dialog-actions { flex-direction: row-reverse; }
-
-.matInput {
-    caret-color: #F90;
-    color: green;
-}
-
-.mat-input-element { caret-color: #F90; }

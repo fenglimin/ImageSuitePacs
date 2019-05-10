@@ -39,7 +39,7 @@ export class LogService {
     private logInternal(log: string, level: string) {
         const cur = new Date();
         const timeStamp = cur.getFullYear() + '-' + this.formatNumberToString(cur.getMonth() + 1) + '-' + this.formatNumberToString(cur.getDate())
-            + ' ' + this.formatNumberToString(cur.getHours()) + ':' + this.formatNumberToString(cur.getHours())
+            + ' ' + this.formatNumberToString(cur.getHours()) + ':' + this.formatNumberToString(cur.getMinutes())
             + ':' + this.formatNumberToString(cur.getSeconds()) + '.' + this.formatNumberToString(cur.getMilliseconds(), 3);
 
         const content = timeStamp + ' ' + level + ' ' + log;

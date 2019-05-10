@@ -34,7 +34,8 @@ export enum OperationEnum {
     FitOriginal,
     Reset,
     ShowGraphicOverlay,
-    ToggleKeyImage
+    ToggleKeyImage,
+    Marker
 }
 
 export class OperationData {

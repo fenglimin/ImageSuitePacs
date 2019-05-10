@@ -11,7 +11,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
 {
     public class DicomImageController : Controller
     {
-        private IMiniPacsDicomHelper _miniPacsDicomHelper;
+        private readonly IMiniPacsDicomHelper _miniPacsDicomHelper;
 
         public DicomImageController(IMiniPacsDicomHelper miniPacsDicomHelper)
         {

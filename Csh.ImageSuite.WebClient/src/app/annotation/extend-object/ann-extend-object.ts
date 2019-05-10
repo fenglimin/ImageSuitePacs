@@ -1,11 +1,11 @@
-﻿import { Point, MouseEventType } from '../../models/annotation';
+﻿import { Point, MouseEventType, Rectangle } from '../../models/annotation';
 import { AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 
 
 export abstract class AnnExtendObject extends AnnObject {
 
-    private annObjList: Array<AnnObject> = [];
+    protected annObjList: Array<AnnObject> = [];
     protected guideNeeded = false;
     protected annTypeName: string;
 
@@ -55,7 +55,19 @@ export abstract class AnnExtendObject extends AnnObject {
         this.onChildSelected(this.annObjList[nextIndex]);
     }
 
+    onDeleteChild(annChildObj: AnnObject) {
+        annChildObj.onDeleteChildren();
+
+        const index = this.annObjList.findIndex(annObj => annObj === annChildObj);
+        if (index !== -1) {
+            this.annObjList.splice(index, 1);
+        } else {
+            alert("Internal error!  AnnExtendObject.onDeleteChild() - Can NOT find child to be delete");
+        }
+    }
+
     onChildCreated(annChildObj: AnnObject) {
+        // A child annotation is created, add it to the children list
         this.addChildObj(annChildObj);
     }
 
@@ -130,12 +142,22 @@ export abstract class AnnExtendObject extends AnnObject {
     }
 
     getSurroundPointList(): Point[] {
+        alert("Internal error : AnnExtendObject.getSurroundPointList() should never be called.");
         return [];
+    }
+
+    getRect(): Rectangle {
+        alert("Internal error : AnnExtendObject.getRect() should never be called.");
+        return undefined;
     }
 
     setStepIndex(stepIndex: number) {
         super.setStepIndex(stepIndex);
         this.annObjList.forEach(annObj => annObj.setStepIndex(stepIndex));
+    }
+
+    setVisible(visible: boolean) {
+        this.annObjList.forEach(annObj => annObj.setVisible(visible));
     }
 
     private addChildObj(annObj: AnnObject) {

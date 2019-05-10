@@ -9,6 +9,7 @@ export interface IImageViewer {
     getAnnotationLayerId(): string;
     getAnnLabelLayerId(): string;
     getAnnGuideLayerId(): string;
+    getAnnImageRulerLayerId(): string;
     getImageLayer(): any;
     getAnnLabelLayer(): any;
     getAnnGuideLayer(): any;

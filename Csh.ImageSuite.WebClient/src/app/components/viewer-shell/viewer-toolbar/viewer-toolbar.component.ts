@@ -11,7 +11,11 @@ import { AnnEllipse } from "../../../annotation/extend-object/ann-ellipse";
 import { AnnRectangle } from "../../../annotation/extend-object/ann-rectangle";
 import { AnnArrow } from "../../../annotation/extend-object/ann-arrow";
 import { AnnCurve } from "../../../annotation/extend-object/ann-curve";
+import { AnnRuler } from "../../../annotation/extend-object/ann-ruler";
 import { AnnCardiothoracicRatio } from "../../../annotation/extend-object/ann-cardiothoracic-ratio";
+import { AnnVerticalAxis } from "../../../annotation/extend-object/ann-vertical-axis";
+import { AnnMarkSpot } from "../../../annotation/extend-object/ann-mark-spot";
+import { AnnImage } from "../../../annotation/extend-object/ann-image";
 
 @Component({
     selector: "app-viewer-toolbar",
@@ -128,7 +132,19 @@ export class ViewerToolbarComponent implements OnInit {
         { name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data: 
             new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnRectangle, "Rectangle", "rect", false))}},
         { name: "ann_arrow", tip: "Arrow", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnArrow, "Arrow", "ann_line", false))}}
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnArrow, "Arrow", "ann_line", false))
+        }
+        },
+        {
+            name: "ann_ruler", tip: "Ruler", operationData: {
+                type: OperationEnum.SetContext, data:
+                new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnRuler, "Ruler", "ann_line", false))
+            }
+        },
+        { name: "ann_vaxis", tip: "Vertical Axis", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnVerticalAxis, "Vertical Axis", "ann_cervicalcurve", false))}},
+        { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnMarkSpot, "Mark Spot", "ann_line", true))}}
     ];
 
     extendAnnotation1ButtonMenu: SelectedButtonData[] = [
@@ -140,6 +156,12 @@ export class ViewerToolbarComponent implements OnInit {
         { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: { type: OperationEnum.SetContext, data:
             new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnCardiothoracicRatio, "Cardiothoracic Ratio", "ann_cervicalcurve", true))}}
     ];
+
+    markerButtonMenu: SelectedButtonData = {
+        name: "ann_stamp", tip: "Markers", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnImage, "Marker", "ann_stamp", false))
+        }
+    };
 
     private baseUrl: string;
 

@@ -13,6 +13,9 @@ export class AnnText extends AnnExtendObject {
         super(parentObj, imageViewer);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
+
     onCreate(position: Point, text: string) {
         this.annText = new AnnBaseText(this, " " + text + " ", position, this.imageViewer);
         const rect = this.annText.getRect();
@@ -62,6 +65,8 @@ export class AnnText extends AnnExtendObject {
         return this.annText.getRect();
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
     private redrawRect() {
         const rect = this.annText.getRect();
         this.annRectangle.redraw(rect);

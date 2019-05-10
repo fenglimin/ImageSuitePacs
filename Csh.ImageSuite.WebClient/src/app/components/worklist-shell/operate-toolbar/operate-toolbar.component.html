@@ -1,37 +1,37 @@
 <table>
     <tr>
         <td>
-            <button class="loadImage" role="button" title="Load Image" (click)="onLoadImage()" [disabled]="disableLoadImageButton"></button>
+            <button class="loadImage" role="button" title="Load Image" (click)="onLoadImage()" [disabled]="worklistService.bDisableLoadImageButton"></button>
         </td>
         <td>
-            <button class="loadKeyImage" role="button" title="Load Key Image" (click)="onLoadKeyImage()"></button>
+            <button class="loadKeyImage" role="button" title="Load Key Image" (click)="onLoadKeyImage()" [disabled]="worklistService.bDisableLoadKeyImage"></button>
         </td>
         <td>
-            <button class="setRead" role="button" title="Set Read" (click)="onSetRead()" [disabled]="worklistService.bShowSetReadBtn"></button>
+            <button class="setRead" role="button" title="Set Read" (click)="onSetRead()" [disabled]="worklistService.bDisableSetReadBtn"></button>
         </td>
         <td>
-            <button class="setUnread" role="button" title="Set Unread" (click)="onSetUnread()" [disabled]="worklistService.bShowSetUnreadBtn"></button>
+            <button class="setUnread" role="button" title="Set Unread" (click)="onSetUnread()" [disabled]="worklistService.bDisableSetUnreadBtn"></button>
         </td>
         <td>
-            <button class="changeImageSeriesOrder" role="button" title="Change Image Series Order" (click)="onChangeImageSeriesOrder()"></button>
+            <button class="changeImageSeriesOrder" role="button" title="Change Image Series Order" (click)="onChangeImageSeriesOrder()" [disabled]="worklistService.bDisableChangeImageSeriesOrder"></button>
         </td>
         <td>
-            <button class="reassign" role="button" title="Reassign" (click)="onReassign()"></button>
+            <button class="reassign" role="button" title="Reassign" (click)="onReassign()" [disabled]="worklistService.bDisableReassign"></button>
         </td>
         <td>
-            <button class="transfer" role="button" title="Export/Transfer" (click)="onTransfer()"></button>
+            <button class="transfer" role="button" title="Export/Transfer" (click)="onTransfer()" [disabled]="worklistService.bDisableTransfer"></button>
         </td>
         <td>
-            <button class="tagEdit" role="button" title="Patient Edit" (click)="onTagEdit()"></button>
+            <button class="tagEdit" role="button" title="Patient Edit" (click)="onTagEdit()" [disabled]="worklistService.bDisableTagEdit"></button>
         </td>
         <td>
-            <button class="deletePrevent" role="button" title="Prevent Delete Study" (click)="onDeletePrevent()" [disabled]="worklistService.bShowDeletePreventBtn"></button>
+            <button class="deletePrevent" role="button" title="Prevent Delete Study" (click)="onDeletePrevent()" [disabled]="worklistService.bDisableDeletePreventBtn"></button>
         </td>
         <td>
-            <button class="deleteAllow" role="button" title="Allow Delete Study" (click)="onDeleteAllow()" [disabled]="worklistService.bShowDeleteAllowBtn"></button>
+            <button class="deleteAllow" role="button" title="Allow Delete Study" (click)="onDeleteAllow()" [disabled]="worklistService.bDisableDeleteAllowBtn"></button>
         </td>
         <td>
-            <button class="delete" role="button" title="Delete Study" (click)="onDeleteStudy()"></button>
+            <button class="delete" role="button" title="Delete Study" (click)="onDeleteStudy()" [disabled]="worklistService.bDisableDeleteStudy"></button>
         </td>
         <td>
             <button class="import" role="button" title="Import" (click)="onImport()"></button>

@@ -7,20 +7,20 @@
 <mat-dialog-content>
     <table>
         <tr>
-            <td>Window Center</td>
+            <td style="padding-left: 5px">Window Center</td>
             <td style="width: 10px"></td>
-            <td>Window Width</td>
+            <td style="padding-left: 5px">Window Width</td>
         </tr>
         <tr>
             <td>
                 <mat-form-field>
-                    <input matInput [(ngModel)]="data.windowWidth" cdkFocusInitial>
+                    <input type="number" matInput [(ngModel)]="data.windowWidth" cdkFocusInitial>
                 </mat-form-field>
             </td>
             <td></td>
             <td>
                 <mat-form-field>
-                    <input matInput [(ngModel)]="data.windowCenter">
+                    <input type="number" matInput [(ngModel)]="data.windowCenter">
                 </mat-form-field>
             </td>
         </tr>

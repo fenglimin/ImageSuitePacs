@@ -117,7 +117,6 @@ export class WorklistComponent implements OnInit {
     }
 
     onAllStudyChecked(event) {
-
         this.worklistService.studies.forEach(study => study.checked = event.target.checked);
     }
 

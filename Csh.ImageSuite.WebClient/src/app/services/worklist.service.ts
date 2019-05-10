@@ -19,10 +19,18 @@ export class WorklistService {
     pageCount: number;
     pages: number[];
     querying = false;
-    bShowSetReadBtn = true;
-    bShowSetUnreadBtn = true;
-    bShowDeletePreventBtn = true;
-    bShowDeleteAllowBtn = true;
+    bDisableLoadImageButton = true;
+    bDisableLoadKeyImage = true;
+    bDisableChangeImageSeriesOrder = true;
+    bDisableReassign = true;
+    bDisableTransfer = true;
+    bDisableTagEdit = true;
+    bDisableDeleteStudy = true;
+    bDisableSetReadBtn = true;
+    bDisableSetUnreadBtn = true;
+    bDisableDeletePreventBtn = true;
+    bDisableDeleteAllowBtn = true;
+
     loadedStudyCount = 0;
     loadedStudy: Study[];
 
@@ -205,9 +213,12 @@ export class WorklistService {
         let scanStatusEndedCount = 0;
         let deletePreventCount = 0;
         let deleteAllowCount = 0;
+        let checkedStudyCount = 0;
 
         this.studies.forEach(study => {
             if (study.checked) {
+                checkedStudyCount++;
+
                 if (study.scanStatus == "Completed") {
                     scanStatusCompletedCount++;
                 }
@@ -224,40 +235,64 @@ export class WorklistService {
             }
         });
 
-        // Scan Status
-        if (scanStatusCompletedCount == 0) {
-            this.bShowSetReadBtn = false;
-        } else {
-            this.bShowSetReadBtn = true;
+        if (checkedStudyCount == 0) {
+            this.bDisableLoadImageButton = true;
+            this.bDisableLoadKeyImage = true;
+            this.bDisableChangeImageSeriesOrder = true;
+            this.bDisableReassign = true;
+            this.bDisableTransfer = true;
+            this.bDisableTagEdit = true;
+            this.bDisableDeleteStudy = true;
+            this.bDisableSetReadBtn = true;
+            this.bDisableSetUnreadBtn = true;
+            this.bDisableDeletePreventBtn = true;
+            this.bDisableDeleteAllowBtn = true;
         }
-            
-        if (scanStatusEndedCount == 0) {
-            this.bShowSetUnreadBtn = false;
-        } else {
-            this.bShowSetUnreadBtn = true;
-        }
+        else
+        {
+            this.bDisableLoadImageButton = false;
+            this.bDisableLoadKeyImage = false;
+            this.bDisableChangeImageSeriesOrder = false;
+            this.bDisableReassign = false;
+            this.bDisableTransfer = false;
+            this.bDisableTagEdit = false;
+            this.bDisableDeleteStudy = false;
 
-        if (scanStatusCompletedCount == 0 && scanStatusEndedCount == 0) {
-            this.bShowSetReadBtn = false;
-            this.bShowSetUnreadBtn = false;
-        }
+            // Scan Status
+            if (scanStatusCompletedCount == 0) {
+                this.bDisableSetUnreadBtn = true;
+            } else {
+                this.bDisableSetUnreadBtn = false;
+            }
 
-        // reserved
-        if (deletePreventCount == 0) {
-            this.bShowDeleteAllowBtn = false;
-        } else {
-            this.bShowDeleteAllowBtn = true;
-        }
+            if (scanStatusEndedCount == 0) {
+                this.bDisableSetReadBtn = true;
+            } else {
+                this.bDisableSetReadBtn = false;
+            }
 
-        if (deleteAllowCount == 0) {
-            this.bShowDeletePreventBtn = false;
-        } else {
-            this.bShowDeletePreventBtn = true;
-        }
+            if (scanStatusCompletedCount != 0 && scanStatusEndedCount != 0) {
+                this.bDisableSetReadBtn = true;
+                this.bDisableSetUnreadBtn = true;
+            }
 
-        if (deletePreventCount == 0 && deleteAllowCount == 0) {
-            this.bShowDeletePreventBtn = false;
-            this.bShowDeleteAllowBtn = false;
+            // reserved
+            if (deletePreventCount == 0) {
+                this.bDisableDeletePreventBtn = true;
+            } else {
+                this.bDisableDeletePreventBtn = false;
+            }
+
+            if (deleteAllowCount == 0) {
+                this.bDisableDeleteAllowBtn = true;
+            } else {
+                this.bDisableDeleteAllowBtn = false;
+            }
+
+            if (deletePreventCount != 0 && deleteAllowCount != 0) {
+                this.bDisableDeletePreventBtn = true;
+                this.bDisableDeleteAllowBtn = true;
+            }
         }
     }
 

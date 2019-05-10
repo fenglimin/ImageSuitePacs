@@ -225,4 +225,19 @@ export class AnnTool {
 
         return { x: point1.x + dLineAM * dCosB, y: point1.y + dLineAM * dSinB };
     }
+
+    static formatRect(rect: Rectangle): Rectangle {
+        // Format the rect to make sure that both width and height are positive
+        if (rect.width < 0) {
+            rect.x += rect.width;
+            rect.width = -rect.width;
+        }
+
+        if (rect.height < 0) {
+            rect.y += rect.height;
+            rect.height = -rect.height;
+        }
+
+        return rect;
+    }
 }

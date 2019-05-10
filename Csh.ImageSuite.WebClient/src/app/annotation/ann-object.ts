@@ -297,9 +297,12 @@ export abstract class AnnObject {
     abstract onLevelUp(level: any);
     abstract onLevelDown(level: any);
     abstract onChildCreated(annChildObj: AnnObject);
+    abstract onDeleteChild(annChildObj: AnnObject);
     abstract onDeleteChildren();
     abstract onDrawEnded();
+    abstract getRect(): Rectangle;
     abstract getPosition(): Point;
     abstract getSurroundPointList(): Point[];
+    abstract setVisible(visible: boolean);
 
 }

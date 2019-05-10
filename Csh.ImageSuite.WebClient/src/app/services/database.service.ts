@@ -6,7 +6,7 @@ import { catchError, tap } from "rxjs/operators";
 import { Shortcut } from '../models/shortcut';
 import { Patient, Study, Series, Image, RecWorklistData } from '../models/pssi';
 import { Overlay } from '../models/overlay';
-import { FontData } from '../models/misc-data';
+import { FontData, MarkerGroupData } from '../models/misc-data';
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': "application/json"})
@@ -20,6 +20,7 @@ const httpOptions = {
 
 export class DatabaseService {
 
+    private configUrl = "config";
     private shortcutUrl = "shortcut"; // URL to web api
     private pssiUrl = "pssi";
     private overlayUrl = "overlay";
@@ -35,6 +36,14 @@ export class DatabaseService {
         this.localTestData = this.createStudiesTest();
     }
 
+    getMarkerConfig(): Observable<MarkerGroupData[]> {
+        const url = `${this.configUrl}/markerconfig/`;
+        return this.http.get<MarkerGroupData[]>(url)
+            .pipe(
+            tap(MarkerGroupData => this.log("fetched marker config")),
+            catchError(this.handleError("getMarkerConfig", []))
+            );
+    }
 
     getShortcut(id: number): Observable<Shortcut> {
         const url = `${this.shortcutUrl}/details/${id}`;

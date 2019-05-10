@@ -1,4 +1,4 @@
-﻿import { Point, MouseEventType } from '../../models/annotation';
+﻿import { Point, MouseEventType, Rectangle } from '../../models/annotation';
 import { AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 
@@ -134,8 +134,16 @@ export abstract class AnnBaseObject extends AnnObject {
         return [];
     }
 
+    getRect(): Rectangle {
+        return this.jcObj.getRect("poor");
+    }
+
     onChildCreated(annChildObj: AnnObject) {
-        alert("Internal error : AnnBaseObject.onChildCreated should never be called.");
+        alert("Internal error : AnnBaseObject.onChildCreated() should never be called.");
+    }
+
+    onDeleteChild(annChildObj: AnnObject) {
+        alert("Internal error : AnnBaseObject.onDeleteChild() should never be called.");
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions

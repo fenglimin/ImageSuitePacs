@@ -98,6 +98,10 @@ export class AnnGuide {
         annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_05.png", "Step 5. Click to place a point on the right side of the chest at its widest point"));
         annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_06.png", "Step 6. Click to place a point on the left side of the chest at its widest point"));
         this.annGuideDataList.push(annCardiothoracicRatio);
+
+        const annGuideMarkSpot = new AnnGuideData("Mark Spot", "ann_line");
+        annGuideMarkSpot.addStepConfig(new AnnGuideStepConfig("CGXAnnMarkSpot_01.png", "Step 1.Click to place point(s) on the anatomy. Double Click when complete"));
+        this.annGuideDataList.push(annGuideMarkSpot);
     }
 
     static findAnnGuideData(annName: string): AnnGuideData {
@@ -114,7 +118,7 @@ export class AnnGuide {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Private functions
+    // Public functions
 
     // Show the guide
     show(targetAnnName: string, stepIndex: number = 0) {

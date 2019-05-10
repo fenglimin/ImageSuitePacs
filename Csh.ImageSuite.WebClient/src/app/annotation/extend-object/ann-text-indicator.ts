@@ -15,6 +15,8 @@ export class AnnTextIndicator extends AnnExtendObject {
         super(parentObj, imageViewer);
     }     
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
 
     // The point is the coordinate of image layer, for text, need to convert to text layer coordinate
     onCreate(targetPoint: Point, text: string) {
@@ -116,6 +118,9 @@ export class AnnTextIndicator extends AnnExtendObject {
         this.redrawArrow();
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
     private getShortestDistancePoint(destPointList: Point[], textPointList: Point[]): Point[] {
 
         const lenDest = destPointList.length;

@@ -137,9 +137,16 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
         }
     }
 
-    // The text indicator is drawn in the separated layer, need to rotate it.
-    onRotate(angle: number) {
-        this.annTextIndicator.onRotate(angle);
+    onSwitchFocus() {
+        const index = this.annPointList.findIndex(annObj => annObj === this.focusedObj);
+        if (index === -1) {
+            // Current focused object is text indicator
+            this.onChildSelected(this.annPointList[0]);
+        } else if (index === this.annPointList.length - 1) {
+            this.onChildSelected(this.annTextIndicator);
+        } else {
+            this.onChildSelected(this.annPointList[index+1]);
+        }
     }
 
     // The arrow of the text indicator will always point to the  point A
@@ -165,7 +172,7 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
 
     private onStep2(imagePoint: Point) {
         const pointA = this.annLineAb.getStartPosition();
-        this.annLineAb.onDeleteChildren();
+        this.onDeleteChild(this.annLineAb);
 
         this.annBaseLineAb = new AnnBaseLine(this, pointA, imagePoint, this.imageViewer);
 
@@ -191,7 +198,7 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
     private onStep4(imagePoint: Point) {
         const pointC = this.annLineCd.getStartPosition();
         const pointD = this.annLineCd.getEndPosition();
-        this.annLineCd.onDeleteChildren();
+        this.onDeleteChild(this.annLineCd);
 
         const footPointC = this.handleFootPoint(pointC);
         const annBaseLineCc = new AnnBaseLine(this, pointC, footPointC, this.imageViewer);
@@ -221,11 +228,7 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
     private onStep6(imagePoint: Point) {
         const pointE = this.annLineEf.getStartPosition();
         const pointF = this.annLineEf.getEndPosition();
-        this.annLineEf.onDeleteChildren();
-
-        const pointA = this.annLineAb.getStartPosition();
-        const pointB = this.annLineAb.getEndPosition();
-        this.annLineAb.onDeleteChildren();
+        this.onDeleteChild(this.annLineEf);
 
         const footPointE = this.handleFootPoint(pointE);
         const annBaseLineEe = new AnnBaseLine(this, pointE, footPointE, this.imageViewer);
@@ -241,7 +244,7 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
         this.annPointList.push(annPointF);
 
         this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-        this.annTextIndicator.onCreate(pointA, this.getText());
+        this.annTextIndicator.onCreate(this.annBaseLineAb.getStartPosition(), this.getText());
 
         this.focusedObj = this.annPointList[0];
 

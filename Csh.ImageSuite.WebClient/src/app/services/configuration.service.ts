@@ -3,7 +3,7 @@ import { LocationStrategy } from "@angular/common";
 import { DatabaseService } from "./database.service";
 import { Overlay, OverlayDisplayGroup } from '../models/overlay';
 import { LogService } from "../services/log.service";
-import { FontData } from '../models/misc-data';
+import { FontData, MarkerGroupData } from '../models/misc-data';
 import { AnnGuide } from "../annotation/layer-object/ann-guide";
 
 @Injectable({
@@ -13,6 +13,7 @@ export class ConfigurationService {
 
     private baseUrl: string;
     private overLayList: Overlay[] = [];
+    private markerConfig: MarkerGroupData[] = [];
     private textOverlayFont: FontData;
     
     constructor(private databaseService: DatabaseService, private locationStrategy: LocationStrategy,
@@ -25,9 +26,12 @@ export class ConfigurationService {
             this.overLayList = overlayList;
         });
 
-        this.databaseService.getOverFont().subscribe(fontData => {
-            this.textOverlayFont = fontData;
+        this.databaseService.getMarkerConfig().subscribe(markerConfig => {
+            this.markerConfig = markerConfig;
         });
+        //this.databaseService.getOverFont().subscribe(fontData => {
+        //    this.textOverlayFont = fontData;
+        //});
 
         AnnGuide.createAnnGuideDataList();
     }
@@ -44,5 +48,8 @@ export class ConfigurationService {
         this.textOverlayFont = new FontData("Times New Roman", "#FFF", 15);
         return this.textOverlayFont;
     }
-    
+
+    getMarkerConfig(): MarkerGroupData[] {
+        return this.markerConfig;
+    }
 }

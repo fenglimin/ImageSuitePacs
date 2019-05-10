@@ -17,7 +17,7 @@ export class AnnArrow extends AnnExtendObject {
     } 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Implementation of interface IAnnotationObject
+    // Override functions of base class
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 

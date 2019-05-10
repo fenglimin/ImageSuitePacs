@@ -5,31 +5,26 @@ import { DicomImageService } from "../../../../services/dicom-image.service";
 import { ViewContextEnum, ViewContext, OperationEnum, OperationData, ViewContextService } from
     "../../../../services/view-context.service"
 import { Subscription } from "rxjs";
-import { Image } from "../../../../models/pssi";
+import { Image as DicomImage } from "../../../../models/pssi";
 import { ViewerImageData } from "../../../../models/viewer-image-data";
 import { WorklistService } from "../../../../services/worklist.service";
 import { ConfigurationService } from "../../../../services/configuration.service";
 import { DialogService } from "../../../../services/dialog.service";
 import { LogService } from "../../../../services/log.service";
 import { WindowLevelData } from "../../../../models/dailog-data/image-process";
-import { ManualWlDialogComponent } from "../../../../components/dialog/manual-wl-dialog/manual-wl-dialog.component";
+import { ManualWlDialogComponent } from "../../../dialog/manual-wl-dialog/manual-wl-dialog.component";
+import { SelectMarkerDialogComponent } from "../../../dialog/select-marker-dialog/select-marker-dialog.component";
 import { FontData } from "../../../../models/misc-data"
 
 import { IImageViewer } from "../../../../interfaces/image-viewer-interface";
-import { IAnnotationObject } from "../../../../interfaces/annotation-object-interface";
-
 import { Point, MouseEventType } from '../../../../models/annotation';
 import { AnnObject } from "../../../../annotation/ann-object";
 import { AnnTool } from "../../../../annotation/ann-tool";
-import { AnnEllipse } from "../../../../annotation/extend-object/ann-ellipse";
-import { AnnLine } from "../../../../annotation/extend-object/ann-line";
-import { AnnRectangle } from "../../../../annotation/extend-object/ann-rectangle";
-import { AnnArrow } from "../../../../annotation/extend-object/ann-arrow";
-import { AnnCurve } from "../../../../annotation/extend-object/ann-curve";
-import { AnnCardiothoracicRatio } from "../../../../annotation/extend-object/ann-cardiothoracic-ratio";
-
 import { AnnExtendObject } from "../../../../annotation/extend-object/ann-extend-object";
 import { AnnGuide } from "../../../../annotation/layer-object/ann-guide";
+import { AnnImageRuler } from "../../../../annotation/layer-object/ann-image-ruler";
+import { AnnImage } from "../../../../annotation/extend-object/ann-image";
+
 
 @Component({
     selector: "app-image-viewer",
@@ -39,7 +34,7 @@ import { AnnGuide } from "../../../../annotation/layer-object/ann-guide";
 })
 export class ImageViewerComponent implements OnInit, AfterContentInit, IImageViewer {
     private _imageData: ViewerImageData;
-    private image: Image;
+    private image: DicomImage;
     private ctImage: any; //cornerstone image
     private isImageLoaded: boolean;
     private needResize = true;
@@ -74,8 +69,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private mgLayerId: string;
     private olLayer: any;
     private olLayerId: string;
-    private rulerLayer: any;
-    private rulerLayerId: string;
+    private imgRulerLayer: any;
+    private imgRulerLayerId: string;
     private tooltipLayer: any;
     private tooltipLayerId: string;
 
@@ -107,6 +102,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private ctrlKeyPressed = false;
 
     private annGuide: AnnGuide;
+
+    private annImageRuler: AnnImageRuler;
 
     private jcTextOverlayList = [];
 
@@ -197,6 +194,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
 
         this.annGuide = new AnnGuide(this);
+        this.annImageRuler = new AnnImageRuler(this);
+
         this.isViewInited = true;
     }
 
@@ -226,12 +225,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 if (this.olLayer) {
                     this.showTextOverlay();
                 }
-
+                this.annImageRuler.reDraw(this);
             } else {
                 this.jcanvas.clear();
             }
-
-            
 
             this.needResize = false;
         }
@@ -266,6 +263,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.tooltipLayerId;
     }
 
+    getAnnImageRulerLayerId(): string {
+        return this.imgRulerLayerId;
+    }
+
     getImageLayer(): any {
         return this.imgLayer;
     }
@@ -278,7 +279,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.tooltipLayer;
     }
 
-    getImage(): Image {
+    getImage(): DicomImage {
         return this.image;
     }
 
@@ -640,9 +641,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         self.olLayer = jCanvaScript.layer(self.olLayerId).level(10); //layer to show overlay
         self.olLayer.id = self.olLayerId;
 
-        self.rulerLayerId = canvasId + "_rulerLayer"; // layer to show ruler
-        self.rulerLayer = jc.layer(self.rulerLayerId).level(9);
-        self.rulerLayer.id = self.rulerLayerId;
+        self.imgRulerLayerId = canvasId + "_imgRulerLayer"; // layer to show ruler
+        self.imgRulerLayer = jc.layer(self.imgRulerLayerId).level(9);
+        self.imgRulerLayer.id = self.imgRulerLayerId;
 
         self.tooltipLayerId = canvasId + "_tooltipLayer"; // layer to show tooltip dialog
         self.tooltipLayer = jc.layer(self.tooltipLayerId).draggable(true).level(20);
@@ -680,7 +681,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.selected = (this._imageData === viewerImageData);
     }
 
-    doSelectImageByThumbnail(image: Image) {
+    doSelectImageByThumbnail(image: DicomImage) {
         this.selected = (this.image === image);
     }
 
@@ -740,18 +741,18 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
 
         switch (operation.type) {
-        case OperationEnum.Rotate:
-        {
-            this.rotate(operation.data.angle);
-            break;
-        }
-        case OperationEnum.Flip:
-        {
-            this.flip(operation.data);
-            break;
-        }
-        case OperationEnum.Invert:
-        {
+            case OperationEnum.Rotate:
+            {
+                this.rotate(operation.data.angle);
+                break;
+            }
+            case OperationEnum.Flip:
+            {
+                this.flip(operation.data);
+                break;
+            }
+            case OperationEnum.Invert:
+            {
 
             break;
         }
@@ -772,18 +773,32 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         {
             this.olLayer.visible(operation.data.show);
             break;
-        }
-        case OperationEnum.ShowAnnotation:
-        {
-            this.annLayer.visible(operation.data.show);
-            break;
-        }
-        case OperationEnum.ManualWL:
-        {
-            this.doManualWl();
-            break;
-        }
-
+            }
+        case OperationEnum.ShowRuler:
+                {
+                    this.imgRulerLayer.visible(operation.data.show);
+                break;
+            }
+            case OperationEnum.Reset:
+            {
+                this.doReset();
+                break;
+            }
+            case OperationEnum.ShowOverlay:
+            {
+                this.olLayer.visible(operation.data.show);
+                break;
+            }
+            case OperationEnum.ShowAnnotation:
+            {
+                this.annLayer.visible(operation.data.show);
+                break;
+            }
+            case OperationEnum.ManualWL:
+            {
+                this.doManualWl();
+                break;
+            }
         }
     }
 
@@ -822,6 +837,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (curContext.action === ViewContextEnum.CreateAnn) {
             if (curContext.data.needGuide) {
                 this.annGuide.show(curContext.data.className);
+            } else if (curContext.data.cursorName === "ann_stamp") {
+                this.selectMarker();
             }
         }
     }
@@ -1073,7 +1090,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (visible === undefined) {
             visible = false;
         }
-        this.rulerLayer.visible(visible);
+        this.imgRulerLayer.visible(visible);
     }
 
     draggable(draggable: boolean) {
@@ -1158,6 +1175,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private refreshUi() {
         this.annObjList.forEach(annObject => annObject.onScale(this.getScale()));
+        this.annImageRuler.reDraw(this);
     }
 
     private registerImgLayerEvents() {
@@ -1365,8 +1383,29 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private onCanvasDblClick(evt) {
         //the imagelayer's double click events fires mousedown=>mouseup=>mousedown, which missed the last mosueup event, so we manually fire the mouseup here
-        if (!this.isViewInited)
+
+        if (!this.isImageLoaded) {
             return;
+        }
+
+        const point = { x: evt.offsetX, y: evt.offsetY };
+
+        if (this.annGuide.hitTest(point)) {
+            return;
+        }
+
+        this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
+
+        this.mouseEventHelper._mouseDownPosCvs = point;
+
+        if (this.mouseEventHelper._mouseWhich === 1) {
+
+            if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
+                if (this.curSelectObj && !this.curSelectObj.isCreated()) {
+                    this.curSelectObj.onMouseEvent(MouseEventType.DblClick, point, null);
+                }
+            }
+        }
 
         this.canvas.onmouseup(evt); //cause jc to trigger mouseup event, which will stop the drag (imglayer)
         //log('canvas dblclick: ' + this.canvas.id);
@@ -1676,5 +1715,23 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.deleteAnnotation(this.curSelectObj);
         this.curSelectObj = undefined;
         this.annGuide.hide();
+    }
+
+    private selectMarker() {
+        this.dialogService.showDialog(SelectMarkerDialogComponent, undefined).subscribe(
+            val => {
+                if (val) {
+                    const imageData = new Image();
+                    imageData.onload = ev => {
+                        this.updateImageTransform();
+                        const annImage = new AnnImage(undefined, this);
+                        annImage.onCreate(imageData, new Point(0, 0));
+                        this.curSelectObj = annImage;
+                    };
+
+                    imageData.src = val;
+                }
+            }
+        );
     }
 }

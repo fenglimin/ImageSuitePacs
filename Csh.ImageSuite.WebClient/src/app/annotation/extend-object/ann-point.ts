@@ -8,11 +8,15 @@ export class AnnPoint extends AnnExtendObject {
 
     private annCenterCircle: AnnBaseCircle;
     private annOuterCircle: AnnBaseCircle;
+    private showAlways = false;
 
     constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
 
@@ -53,7 +57,7 @@ export class AnnPoint extends AnnExtendObject {
             this.focusedObj = this.annCenterCircle;
         }
 
-        this.annCenterCircle.setVisible(selected);
+        this.annCenterCircle.setVisible(selected || this.showAlways);
         this.annCenterCircle.setColor(color);
 
         this.annOuterCircle.setVisible(selected && focused);
@@ -66,5 +70,16 @@ export class AnnPoint extends AnnExtendObject {
 
     getPosition(): Point {
         return this.annCenterCircle.getPosition();
+    }
+
+    setVisible(visible: boolean) {
+        this.annCenterCircle.setVisible(visible);
+        this.annOuterCircle.setVisible(visible && this.parentObj.getFocusedObj() === this);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    enableShowAlways(showAlways: boolean) {
+        this.showAlways = showAlways;
     }
 }

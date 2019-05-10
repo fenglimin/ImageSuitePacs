@@ -9,6 +9,7 @@ using Csh.ImageSuite.Common.Database;
 using Csh.ImageSuite.Common.Interface;
 using Csh.ImageSuite.Model.Dicom;
 using System.Data.SqlClient;
+using System.Diagnostics.Eventing.Reader;
 using System.Xml;
 using System.IO;
 using Csh.ImageSuite.Model.Enum;
@@ -68,85 +69,98 @@ namespace Csh.ImageSuite.MiniPacs
         {
             try
             {
-                DataSet ds;
-                string strSQL = "";
+                string strSql = "";
                 List<SqlParameter> lstParameter = new List<SqlParameter>();
 
-                strSQL = @"SELECT [PropertyName], [PropertyValue] FROM  [UserProfile] " +
+                strSql = @"SELECT [PropertyName], [PropertyValue] FROM  [UserProfile] " +
                             "WHERE  [PropertyName] like @PropertyName AND [UserName] = @UserName AND [RoleName] = @RoleName " +
                             "ORDER BY [PropertyName]";
 
                 lstParameter.Add(new SqlParameter("@UserName", "admin"));
                 lstParameter.Add(new SqlParameter("@RoleName", "administrator"));
-                lstParameter.Add(new SqlParameter("@PropertyName", string.Format("{0}{1}", "Web_WorklistShortcut", "%")));
+                lstParameter.Add(new SqlParameter("@PropertyName", "Web_WorklistShortcut%"));
 
-                ds = SqlHelper.ExecuteQuery(strSQL, lstParameter.ToArray(), _connectionString);
+                var ds = SqlHelper.ExecuteQuery(strSql, lstParameter.ToArray(), _connectionString);
 
                 List<QueryShortcut> lstShortcut = new List<QueryShortcut>();
-                QueryShortcut mdl;
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    mdl = new QueryShortcut();
+                    var mdl = new QueryShortcut();
 
                     // eg: Web_WorklistShortcut1|LocalDataSource|2|s
                     var names = row["PropertyName"].ToString().Split('|');
                     mdl.Name = names[3];
 
-                    XmlDocument xmldoc = new XmlDocument();
-                    xmldoc.LoadXml(row["PropertyValue"].ToString());
+                    XmlDocument xmlDoc = new XmlDocument();
+                    xmlDoc.LoadXml(row["PropertyValue"].ToString());
 
                     // Get all child node from root node
-                    foreach (XmlNode node in xmldoc.LastChild)
+                    foreach (XmlNode node in xmlDoc.LastChild)
                     {
-                        if (node.Name == "TagPatientsBirthDate")
+                        switch (node.Name)
                         {
-                            foreach (XmlNode _node in node.ChildNodes)
+                            case "TagPatientsBirthDate":
                             {
-                                if (_node.Name == "From")
+                                foreach (XmlNode xmlNode in node.ChildNodes)
                                 {
-                                    try { mdl.PatientBirthDateFrom = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
-                                    catch { }
-                                }
-                                else if (_node.Name == "To")
-                                {
-                                    try { mdl.PatientBirthDateTo = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
-                                    catch { }
-                                }
-                            }
-
-                            continue;
-                        }
-
-                        if (node.Name == "TagStudyDate")
-                        {
-                            if (node.ChildNodes.Count == 2)
-                            {
-                                foreach (XmlNode _node in node.ChildNodes)
-                                {
-                                    if (_node.Name == "From")
+                                    switch (xmlNode.Name)
                                     {
-                                        try { mdl.StudyDateFrom = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
-                                        catch { }
-                                    }
-                                    else if (_node.Name == "To")
-                                    {
-                                        try { mdl.StudyDateTo = Convert.ToDateTime(_node.InnerText).AddMinutes(1); }
-                                        catch { }
+                                        case "From":
+                                            try { mdl.PatientBirthDateFrom = Convert.ToDateTime(xmlNode.InnerText).AddMinutes(1); }
+                                            catch { }
+
+                                            break;
+
+                                        case "To":
+                                            try { mdl.PatientBirthDateTo = Convert.ToDateTime(xmlNode.InnerText).AddMinutes(1); }
+                                            catch { }
+
+                                            break;
                                     }
                                 }
-                            }
-                            else if (node.ChildNodes.Count == 1)
-                            {
-                                mdl.StudyDate = node.InnerText;
+
+                                continue;
                             }
 
-                            continue;
+                            case "TagStudyDate":
+                            {
+                                switch (node.ChildNodes.Count)
+                                {
+                                    case 2:
+                                    {
+                                        foreach (XmlNode xmlNode in node.ChildNodes)
+                                        {
+                                            switch (xmlNode.Name)
+                                            {
+                                                case "From":
+                                                    mdl.StudyDateFrom = Convert.ToDateTime(xmlNode.InnerText).AddMinutes(1);
+                                                    break;
+                                                case "To":
+                                                    mdl.StudyDateTo = Convert.ToDateTime(xmlNode.InnerText).AddMinutes(1);
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }
+
+                                        break;
+                                    }
+
+                                    case 1:
+                                        mdl.StudyDate = node.InnerText;
+                                        break;
+                                    default:
+                                        break;
+                                }
+
+                                continue;
+                            }
                         }
 
                         // Get all property of QueryShortcut
-                        foreach (System.Reflection.PropertyInfo info in mdl.GetType().GetProperties())
+                        foreach (var info in mdl.GetType().GetProperties())
                         {
-                            string propertyName = info.Name;
+                            var propertyName = info.Name;
                             // Transform old web pacs name
                             foreach (var value in DicOldWebPacsTransform.Values)
                             {
@@ -175,11 +189,9 @@ namespace Csh.ImageSuite.MiniPacs
 
         public void SaveShortcut(QueryShortcut shortcut)
         {
-            MemoryStream stream = new MemoryStream();
-            XmlWriterSettings setting = new XmlWriterSettings();
-            setting.Encoding = new UTF8Encoding(false);
-            setting.Indent = false;
-            XmlWriter writer = XmlWriter.Create(stream, setting);
+            var stream = new MemoryStream();
+            var setting = new XmlWriterSettings {Encoding = new UTF8Encoding(false), Indent = false};
+            var writer = XmlWriter.Create(stream, setting);
 
             //Write root
             writer.WriteStartDocument();
@@ -187,65 +199,61 @@ namespace Csh.ImageSuite.MiniPacs
 
 
             // Get all property of QueryShortcut
-            foreach (System.Reflection.PropertyInfo info in shortcut.GetType().GetProperties())
+            foreach (var info in shortcut.GetType().GetProperties())
             {
-                string propertyValue = (info.GetValue(shortcut, null) ?? "").ToString();
-                string propertyName = info.Name;
+                var propertyValue = (info.GetValue(shortcut, null) ?? "").ToString();
+                var propertyName = info.Name;
 
-                if (!String.IsNullOrEmpty(propertyValue))
+                if (string.IsNullOrEmpty(propertyValue)) continue;
+                if (info.PropertyType == typeof(DateTime))
                 {
-                    if (info.PropertyType == typeof(DateTime))
+                    if (propertyName == "PatientBirthDateFrom")
                     {
-                        if (propertyName == "PatientBirthDateFrom")
-                        {
-                            writer.WriteStartElement("Tag" + "PatientsBirthDate");
-                            writer.WriteStartElement("From");
-                            writer.WriteValue(propertyValue);
-                            writer.WriteEndElement();
-                            writer.WriteStartElement("To");
-                            writer.WriteValue(shortcut.PatientBirthDateTo.ToString());
-                            writer.WriteEndElement();
-                            writer.WriteEndElement();
-                            continue;
-                        }
+                        writer.WriteStartElement("Tag" + "PatientsBirthDate");
+                        writer.WriteStartElement("From");
+                        writer.WriteValue(propertyValue);
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("To");
+                        writer.WriteValue(shortcut.PatientBirthDateTo.ToString());
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
+                        continue;
                     }
+                }
 
-                    if (propertyName == "StudyDate" || propertyName == "StudyDateFrom")
+                if (propertyName == "StudyDate" || propertyName == "StudyDateFrom")
+                {
+                    if (string.IsNullOrEmpty(shortcut.StudyDate) || shortcut.StudyDate == "7")
                     {
-                        if (String.IsNullOrEmpty(shortcut.StudyDate) || shortcut.StudyDate == "7")
-                        {
-                            writer.WriteStartElement("Tag" + "StudyDate");
-                            writer.WriteStartElement("From");
-                            writer.WriteValue(shortcut.StudyDateFrom.ToString());
-                            writer.WriteEndElement();
-                            writer.WriteStartElement("To");
-                            writer.WriteValue(shortcut.StudyDateTo.ToString());
-                            writer.WriteEndElement();
-                            writer.WriteEndElement();
-                        }
-                        else
-                        {
-                            if (propertyName == "StudyDate")
-                            {
-                                writer.WriteStartElement("Tag" + propertyName);
-                                writer.WriteValue(propertyValue);
-                                writer.WriteEndElement();
-                            }
-                        }
+                        writer.WriteStartElement("Tag" + "StudyDate");
+                        writer.WriteStartElement("From");
+                        writer.WriteValue(shortcut.StudyDateFrom.ToString());
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("To");
+                        writer.WriteValue(shortcut.StudyDateTo.ToString());
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
                     }
-
-                    foreach (var value in DicOldWebPacsTransform.Values)
+                    else
                     {
-
-                        if (propertyName == value)
+                        if (propertyName == "StudyDate")
                         {
-                            propertyName = DicOldWebPacsTransform.FirstOrDefault(x => x.Value == value).Key;
-
                             writer.WriteStartElement("Tag" + propertyName);
                             writer.WriteValue(propertyValue);
                             writer.WriteEndElement();
                         }
                     }
+                }
+
+                foreach (var value in DicOldWebPacsTransform.Values)
+                {
+                    if (propertyName != value) continue;
+
+                    propertyName = DicOldWebPacsTransform.FirstOrDefault(x => x.Value == value).Key;
+
+                    writer.WriteStartElement("Tag" + propertyName);
+                    writer.WriteValue(propertyValue);
+                    writer.WriteEndElement();
                 }
             }
 
@@ -254,12 +262,12 @@ namespace Csh.ImageSuite.MiniPacs
 
             writer.Close();
 
-            string strCondition = Encoding.UTF8.GetString(stream.ToArray());
-            string shortcutName = "Web_WorklistShortcut1|LocalDataSource|2|"+ shortcut.Name.Trim();
-            string shortcutXml = strCondition;
+            var strCondition = Encoding.UTF8.GetString(stream.ToArray());
+            var shortcutName = "Web_WorklistShortcut1|LocalDataSource|2|"+ shortcut.Name.Trim();
+            var shortcutXml = strCondition;
 
-            SqlWrapper sql = new SqlWrapper();
-            List<SqlParameter> lstSqlPara = new List<SqlParameter>();
+            var sql = new SqlWrapper();
+            var lstSqlPara = new List<SqlParameter>();
 
             sql.SqlString = "INSERT INTO [UserProfile]([PropertyName],[PropertyValue],[Inheritance],[UserName],[RoleName],[ModuleName], [Exportable]) "
                           + "VALUES(@PropertyName, @PropertyValue, 1, @UserName, @RoleName, @ModuleName, @Exportable)";
@@ -282,8 +290,8 @@ namespace Csh.ImageSuite.MiniPacs
             {
                 shortcutName = "Web_WorklistShortcut1|LocalDataSource|2|" + shortcutName.Trim();
 
-                SqlWrapper sql = new SqlWrapper();
-                List<SqlParameter> lstSqlPara = new List<SqlParameter>();
+                var sql = new SqlWrapper();
+                var lstSqlPara = new List<SqlParameter>();
 
                 sql.SqlString = "delete from UserProfile where PropertyName = @PropertyName";
 
@@ -298,14 +306,14 @@ namespace Csh.ImageSuite.MiniPacs
                 throw;
             }
         }
-        public List<WorklistColumn> GetWorklistColumnConfig(string UserId, string UILanguage)
+        public List<WorklistColumn> GetWorklistColumnConfig(string userId, string uiLanguage)
         {
             try
             {
                 //
                 // Get All Modality Type
-                Dictionary<string, string> dicModality = new Dictionary<string, string>();
-                DataSet dsModality = GetAllModality();
+                var dicModality = new Dictionary<string, string>();
+                var dsModality = GetAllModality();
                 foreach (DataRow row in dsModality.Tables[0].Rows)
                 {
                     dicModality.Add(row["ModalityType"].ToString(), row["ModalityType"].ToString());
@@ -313,49 +321,51 @@ namespace Csh.ImageSuite.MiniPacs
 
                 //
                 // Get Study Date Type
-                Dictionary<string, string> dicStudyDate = new Dictionary<string, string>();
+                var dicStudyDate = new Dictionary<string, string>();
                 foreach (int i in Enum.GetValues(typeof(StudyDateType)))
                 {
-                    String name = Enum.GetName(typeof(StudyDateType), i);
+                    var name = Enum.GetName(typeof(StudyDateType), i);
                     dicStudyDate.Add(i.ToString(), name);
                 }
 
                 //
                 // Get Body Part Local Name
-                Dictionary<string, string> dicBodyPartLocalName = new Dictionary<string, string>();
-                DataTable tb = QueryBodyPartList("", "").Tables[0];
+                var dicBodyPartLocalName = new Dictionary<string, string>();
+                var tb = QueryBodyPartList("", "").Tables[0];
 
-                foreach (DataRow Row in tb.Rows)
+                foreach (DataRow row in tb.Rows)
                 {
-                    string bodyPartName = Row["BodyPartName"].ToString().Trim();
-                    string localName = Row["LocalName"].ToString().Trim();
+                    var bodyPartName = row["BodyPartName"].ToString().Trim();
+                    var localName = row["LocalName"].ToString().Trim();
                     dicBodyPartLocalName.Add(bodyPartName, localName);
                 }
 
 
-                SqlWrapper sql = new SqlWrapper();
-                sql.CommandType = CommandType.StoredProcedure;
-                sql.SqlString = "[WGGC_SP_GetWorklistColumn]";
-                List<SqlParameter> lstParas = new List<SqlParameter>();
-                SqlParameter para1 = new SqlParameter("@UserName", UserId);
-                SqlParameter para2 = new SqlParameter("@LanguageType", UILanguage);
-                SqlParameter para3 = new SqlParameter("@PssiLevel", 3);
-                para3.DbType = DbType.Int32;
+                var sql = new SqlWrapper
+                {
+                    CommandType = CommandType.StoredProcedure, SqlString = "[WGGC_SP_GetWorklistColumn]"
+                };
+
+                var para1 = new SqlParameter("@UserName", userId);
+                var para2 = new SqlParameter("@LanguageType", uiLanguage);
+                var para3 = new SqlParameter("@PssiLevel", 3) {DbType = DbType.Int32};
                 sql.Parameter = new SqlParameter[] { para1, para2, para3 };
 
-                DataSet ds = SqlHelper.ExecuteQuery(sql, _connectionString);
+                var ds = SqlHelper.ExecuteQuery(sql, _connectionString);
 
-                List<WorklistColumn> lstWorklistColumn = new List<WorklistColumn>();
+                var lstWorklistColumn = new List<WorklistColumn>();
 
                 // Use a list to check if duplicate
-                List<string> lstColumnId = new List<string>();
+                var lstColumnId = new List<string>();
 
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
-                    WorklistColumn mdl = new WorklistColumn();
-                    mdl.ColumnSequence = Convert.ToInt16(row["ColumnIndex"]);
+                    var mdl = new WorklistColumn
+                    {
+                        ColumnSequence = Convert.ToInt16(row["ColumnIndex"]),
+                        ColumnId = row["PropertyValue"].ToString().Trim()
+                    };
 
-                    mdl.ColumnId = row["PropertyValue"].ToString().Trim();
 
                     foreach (var value in DicOldWebPacsTransform.Keys)
                     {
@@ -370,15 +380,15 @@ namespace Csh.ImageSuite.MiniPacs
                     mdl.ColumnText = row["LanguageValue"].ToString();
                     mdl.ControlType = row["ControlType"].ToString();
                     
-                    string initValueList = row["ValueList"].ToString();
+                    var initValueList = row["ValueList"].ToString();
                     if (initValueList != "")
                     {
-                        string[] valueListOptions = initValueList.Split(',');
-                        Dictionary<string, string> dicValueList = new Dictionary<string, string>();
+                        var valueListOptions = initValueList.Split(',');
+                        var dicValueList = new Dictionary<string, string>();
 
-                        foreach (string valueListOption in valueListOptions)
+                        foreach (var valueListOption in valueListOptions)
                         {
-                            string[] initValueListKeyValue = valueListOption.Split('=');
+                            var initValueListKeyValue = valueListOption.Split('=');
                             // Remove | from N|
                             initValueListKeyValue[0] = initValueListKeyValue[0].Replace("|", "");
                             initValueListKeyValue[1] = initValueListKeyValue[1].Replace("|", "");
@@ -388,22 +398,22 @@ namespace Csh.ImageSuite.MiniPacs
                         mdl.ValueList = dicValueList;
                     }
 
-                    if (mdl.ColumnId == "modality")
+                    switch (mdl.ColumnId)
                     {
-                        mdl.ControlType = "DropDownList";
-                        mdl.ValueList = dicModality;
-                    }
-
-                    if (mdl.ColumnId == "studyDate")
-                    {
-                        mdl.ControlType = "DropDownList";
-                        mdl.ValueList = dicStudyDate;
-                    }
-
-                    if (mdl.ColumnId == "bodyPartExamined")
-                    {
-                        mdl.ControlType = "DropDownList";
-                        mdl.ValueList = dicBodyPartLocalName;
+                        case "modality":
+                            mdl.ControlType = "DropDownList";
+                            mdl.ValueList = dicModality;
+                            break;
+                        case "studyDate":
+                            mdl.ControlType = "DropDownList";
+                            mdl.ValueList = dicStudyDate;
+                            break;
+                        case "bodyPartExamined":
+                            mdl.ControlType = "DropDownList";
+                            mdl.ValueList = dicBodyPartLocalName;
+                            break;
+                        default:
+                            break;
                     }
 
                     mdl.OverlayID = row["OverlayID"].ToString();
@@ -413,7 +423,7 @@ namespace Csh.ImageSuite.MiniPacs
                     {
                         if (mdl.ColumnText.StartsWith("UserDefinedField"))
                         {
-                            string localName = row["LocalName"].ToString();
+                            var localName = row["LocalName"].ToString();
                             if (!string.IsNullOrEmpty(localName))
                             {
                                 mdl.UserDefinedName = localName;
@@ -422,8 +432,8 @@ namespace Csh.ImageSuite.MiniPacs
 
                         if (row["Visible"] != null)
                         {
-                            string visible = row["Visible"].ToString();
-                            if (string.Compare(visible, "0", true) == 0)
+                            var visible = row["Visible"].ToString();
+                            if (string.Compare(visible, "0", StringComparison.OrdinalIgnoreCase) == 0)
                             {
                                 mdl.Visible = false;
                             }
@@ -448,8 +458,8 @@ namespace Csh.ImageSuite.MiniPacs
         {
             try
             {
-                string strSQL = @"SELECT ModalityType FROM ModalityTypeList ORDER BY ModalityType";
-                DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+                const string strSql = @"SELECT ModalityType FROM ModalityTypeList ORDER BY ModalityType";
+                var ds = SqlHelper.ExecuteQuery(strSql, _connectionString);
                 return ds;
             }
             catch (Exception)
@@ -460,17 +470,16 @@ namespace Csh.ImageSuite.MiniPacs
 
         public List<Study> GetStudies(QueryShortcut queryShortcut, string sortPara, int pageIndex, out int pageCount)
         {
-            string dateFormat = GetDateFormat();
-            string timeFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.LongTimePattern;
-            int studiesCount = GetStudiesCount(queryShortcut);
-            int pageSize = GetWorklistPageSize();
+            var dateFormat = GetDateFormat();
+            var studiesCount = GetStudiesCount(queryShortcut);
+            var pageSize = GetWorklistPageSize();
             pageCount = studiesCount / pageSize + 1;
 
-            string orderByCondition = "ORDER BY PatientID ";
-            if (!String.IsNullOrEmpty(sortPara))
+            string orderByCondition;
+            if (!string.IsNullOrEmpty(sortPara))
             {
-                string sortName = (sortPara.Split('|'))[0];
-                string sortOrder = (sortPara.Split('|'))[1];
+                var sortName = (sortPara.Split('|'))[0];
+                var sortOrder = (sortPara.Split('|'))[1];
                 orderByCondition = "ORDER BY " + sortName + " " + sortOrder;
             }
             else
@@ -506,32 +515,32 @@ namespace Csh.ImageSuite.MiniPacs
                     study = _pssiObjectCreator.CreateStudy(row);
                     study.Patient = _pssiObjectCreator.CreatPatient(row);
 
-                    if (!String.IsNullOrEmpty(study.Patient.PatientBirthDate))
+                    if (!string.IsNullOrEmpty(study.Patient.PatientBirthDate))
                     {
-                        string today = System.DateTime.Now.ToString("yyyyMMdd");
+                        var today = DateTime.Now.ToString("yyyyMMdd");
                         study.Patient.PatientAge = GetPatientAge(study.Patient.PatientBirthDate, today);
                         study.Patient.PatientBirthDate = DateTime.ParseExact(study.Patient.PatientBirthDate, "yyyyMMdd", null).ToString(dateFormat);
                     }
 
-                    if (!String.IsNullOrEmpty(study.StudyDate))
+                    if (!string.IsNullOrEmpty(study.StudyDate))
                     {
                         study.StudyDate = DateTime.ParseExact(study.StudyDate, "yyyyMMdd", null).ToString(dateFormat);
                     }
 
-                    if (!String.IsNullOrEmpty(study.StudyTime))
+                    if (!string.IsNullOrEmpty(study.StudyTime))
                     {
                         study.StudyTime = FormatTimeString(study.StudyTime.Trim(), "HHmmss", "HH:mm:ss");
                     }
 
-                    if (!String.IsNullOrEmpty(study.Patient.PatientName))
+                    if (!string.IsNullOrEmpty(study.Patient.PatientName))
                     {
                         study.Patient.PatientName = HandlePatientName(study.Patient.PatientName);
                     }
 
-                    if (!String.IsNullOrEmpty(study.ScanStatus))
+                    if (!string.IsNullOrEmpty(study.ScanStatus))
                     {
-                        int iScanStatus = Int32.Parse(study.ScanStatus);
-                        ScanStatus scanStatus = (ScanStatus)iScanStatus;
+                        var iScanStatus = int.Parse(study.ScanStatus);
+                        var scanStatus = (ScanStatus)iScanStatus;
 
                         study.ScanStatus = scanStatus.ToString();
                     }
@@ -548,8 +557,6 @@ namespace Csh.ImageSuite.MiniPacs
 
         public int GetStudiesCount(QueryShortcut queryShortcut)
         {
-            int studiesCount = 0;
-
             var sqlStr = string.Format("SELECT " +
                                       "COUNT(*) " +
                                        "FROM Patient P, Study S " +
@@ -562,7 +569,7 @@ namespace Csh.ImageSuite.MiniPacs
                 sqlStr += $" AND S.StudyInstanceUID in (SELECT StudyInstanceUID FROM Series WHERE Series.Modality = '{queryShortcut.Modality}')";
             }
 
-            studiesCount = Int32.Parse(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
+            var studiesCount = int.Parse(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
 
             return studiesCount;
         }
@@ -625,10 +632,7 @@ namespace Csh.ImageSuite.MiniPacs
         {
             var sqlStr = "SELECT SerialNo ID_Image, ImageNo, SOPInstanceUID, ImageColumns, ImageRows, ObjectFile FROM Image WHERE serialNo = " + serialNo;
             var result = SqlHelper.ExecuteQuery(sqlStr, _connectionString);
-            if (result.Tables[0].Rows.Count != 1)
-                return null;
-
-            return _pssiObjectCreator.CreateImage(result.Tables[0].Rows[0]);
+            return result.Tables[0].Rows.Count != 1 ? null : _pssiObjectCreator.CreateImage(result.Tables[0].Rows[0]);
         }
 
         public string GetImageRootDir(int serialNo)
@@ -666,12 +670,12 @@ namespace Csh.ImageSuite.MiniPacs
             }
         }
 
-        private List<OverlayItemConfig> LoadOverlayConfig(string moduleName, string modality, string language)
+        private IEnumerable<OverlayItemConfig> LoadOverlayConfig(string moduleName, string modality, string language)
         {
             try
             {
                 var sqlStr = $"SELECT PropertyValue FROM SystemProfile WHERE ModuleName = '{moduleName}' AND PropertyName = '{modality}.OverlayCnt' AND Exportable='Overlay'";
-                var overlayCount = Int32.Parse(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
+                var overlayCount = int.Parse(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
 
                 var listConfig = new List<OverlayItemConfig>();
 
@@ -732,7 +736,7 @@ namespace Csh.ImageSuite.MiniPacs
         {
             try
             {
-                var uiLanguage = "zh-CN";
+                const string uiLanguage = "zh-CN";
 
                 // Get UserDefinedField
                 SqlWrapper sql = new SqlWrapper();
@@ -741,8 +745,8 @@ namespace Csh.ImageSuite.MiniPacs
                 sql.SqlString = @"select OL.OverlayUID [OverlayUID], OL.OverlayID [OverlayID], OL.LanguageValue [LanguageValue], UDF.LocalName [LocalName] " +
                     "from [Overlay_language] OL, [OverlayGroup] OG, [UserDefinedField] UDF where OL.OverlayID = OG.OverlayID AND OL.Language = @Language AND OG.Name = UDF.FieldName";
                 sql.Parameter = new SqlParameter[] { new SqlParameter("@Language", uiLanguage) };
-                var _dsOverlay = SqlHelper.ExecuteQuery(sql.SqlString, sql.Parameter, _connectionString);
-                foreach (DataRow row in _dsOverlay.Tables[0].Rows)
+                var dsOverlay = SqlHelper.ExecuteQuery(sql.SqlString, sql.Parameter, _connectionString);
+                foreach (DataRow row in dsOverlay.Tables[0].Rows)
                 {
                     mdl = new OverlayItemConfig();
                     mdl.OverlayUid = row["OverlayUID"].ToString();
@@ -759,8 +763,8 @@ namespace Csh.ImageSuite.MiniPacs
                     Parameter = new SqlParameter[] {new SqlParameter("@Language", uiLanguage)}
                 };
 
-                _dsOverlay = SqlHelper.ExecuteQuery(sql.SqlString, sql.Parameter, _connectionString);
-                foreach (DataRow row in _dsOverlay.Tables[0].Rows)
+                dsOverlay = SqlHelper.ExecuteQuery(sql.SqlString, sql.Parameter, _connectionString);
+                foreach (DataRow row in dsOverlay.Tables[0].Rows)
                 {
                     mdl = new OverlayItemConfig();
                     if (row["Name"].ToString().Contains("USERDEFINEDFIELD"))
@@ -784,15 +788,15 @@ namespace Csh.ImageSuite.MiniPacs
 
         public int GetWorklistPageSize()
         {
-            int pagesize = 0;
+            var pageSize = 0;
 
             var sbSql = new StringBuilder();
             sbSql.Append("SELECT PropertyValue FROM SystemProfile WHERE PropertyName='PageSize' and Exportable='Web_GeneralConfig' ");
 
             var sqlStr = sbSql.ToString();
-            pagesize = Int32.Parse(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
+            pageSize = int.Parse(SqlHelper.GetSingleReturnValue(sqlStr, _connectionString));
 
-            return pagesize;
+            return pageSize;
         }
 
         private string BuildSqlCondition(QueryShortcut queryShortcut, int pageIndex, int pageSize)
@@ -805,8 +809,8 @@ namespace Csh.ImageSuite.MiniPacs
 
             strCondition = BindingStudyCondition(queryShortcut, strCondition);
 
-            int rowFrom = 0;
-            int rowTo = 0;
+            var rowFrom = 0;
+            var rowTo = 0;
             if (pageIndex != 0)
             {
                 rowFrom = (pageIndex - 1) * pageSize;
@@ -835,12 +839,12 @@ namespace Csh.ImageSuite.MiniPacs
                 strCondition += $" AND P.PatientName LIKE '%{queryShortcut.PatientName}%'";
             }
 
-            if (!string.IsNullOrEmpty(queryShortcut.PatientBirthDateFrom.ToString()) && !string.IsNullOrEmpty(queryShortcut.PatientBirthDateTo.ToString()))
+            if (queryShortcut.PatientBirthDateFrom != null && queryShortcut.PatientBirthDateTo != null)
             {
-                DateTime birthDateFrom = (DateTime)queryShortcut.PatientBirthDateFrom;
-                DateTime birthDateTo = (DateTime)queryShortcut.PatientBirthDateTo;
+                var birthDateFrom = (DateTime)queryShortcut.PatientBirthDateFrom;
+                var birthDateTo = (DateTime)queryShortcut.PatientBirthDateTo;
 
-                strCondition += $" AND P.PatientBirthDate BETWEEN '{birthDateFrom.ToString("yyyyMMdd")}' AND '{birthDateTo.ToString("yyyyMMdd")}'";
+                strCondition += $" AND P.PatientBirthDate BETWEEN '{birthDateFrom:yyyyMMdd}' AND '{birthDateTo:yyyyMMdd}'";
             }
 
             if (!string.IsNullOrEmpty(queryShortcut.PatientSex))
@@ -854,10 +858,10 @@ namespace Csh.ImageSuite.MiniPacs
             }
 
             if (!string.IsNullOrEmpty(queryShortcut.StudyDate) || 
-                (!string.IsNullOrEmpty(queryShortcut.StudyDateFrom.ToString()) && !string.IsNullOrEmpty(queryShortcut.StudyDateTo.ToString())))
+                (queryShortcut.StudyDateFrom != null && queryShortcut.StudyDateTo != null))
             {
                 var today = DateTime.Today;
-                string paraStudyDate = String.Empty;
+                var paraStudyDate = string.Empty;
                 switch (queryShortcut.StudyDate)
                 {
                     case "0":
@@ -882,15 +886,15 @@ namespace Csh.ImageSuite.MiniPacs
                         paraStudyDate = today.AddMonths(-12).ToString("yyyyMMdd");
                         break;
                     default:
-                        DateTime studyDateFrom = (DateTime)queryShortcut.StudyDateFrom;
-                        DateTime studyDateTo = (DateTime)queryShortcut.StudyDateTo;
+                        var studyDateFrom = (DateTime)queryShortcut.StudyDateFrom;
+                        var studyDateTo = (DateTime)queryShortcut.StudyDateTo;
 
                         strCondition +=
-                            $" AND S.StudyDate BETWEEN '{studyDateFrom.ToString("yyyyMMdd")}' AND '{studyDateTo.ToString("yyyyMMdd")}' ";
+                            $" AND S.StudyDate BETWEEN '{studyDateFrom:yyyyMMdd}' AND '{studyDateTo:yyyyMMdd}' ";
                         break;
                 }
 
-                if (queryShortcut.StudyDate != "0" && !String.IsNullOrEmpty(paraStudyDate))
+                if (queryShortcut.StudyDate != "0" && !string.IsNullOrEmpty(paraStudyDate))
                 {
                     strCondition += $" AND S.StudyDate >= '{paraStudyDate}'";
                 }
@@ -915,15 +919,8 @@ namespace Csh.ImageSuite.MiniPacs
         /// <returns></returns>
         public string GetDateFormat()
         {
-            string strRet = GetSystemProfileProperty("DateFormat");
-            if (strRet.Length == 0)
-            {
-                strRet = "yyyy/MM/dd";
-            }
-            else
-            {
-                strRet = strRet.Replace("Y", "y").Replace("D", "d");
-            }
+            var strRet = GetSystemProfileProperty("DateFormat");
+            strRet = strRet.Length == 0 ? "yyyy/MM/dd" : strRet.Replace("Y", "y").Replace("D", "d");
             return strRet;
         }
 
@@ -937,10 +934,13 @@ namespace Csh.ImageSuite.MiniPacs
         {
             try
             {
-                SqlWrapper sql = new SqlWrapper();
-                sql.SqlString = @"SELECT PropertyValue FROM SystemProfile WHERE PropertyName = @PropertyName"; ;
-                sql.Parameter = new SqlParameter[] { new SqlParameter("@PropertyName", strPropertyName) };
-                DataSet ds = SqlHelper.ExecuteQuery(sql, _connectionString);
+                var sql = new SqlWrapper
+                {
+                    SqlString = @"SELECT PropertyValue FROM SystemProfile WHERE PropertyName = @PropertyName",
+                    Parameter = new SqlParameter[] {new SqlParameter("@PropertyName", strPropertyName)}
+                };
+
+                var ds = SqlHelper.ExecuteQuery(sql, _connectionString);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     return ds.Tables[0].Rows[0][0].ToString().Trim();
@@ -950,69 +950,58 @@ namespace Csh.ImageSuite.MiniPacs
             return "";
         }
 
-        public string FormatTimeString(string TimeString, string oldTimeFormat, string newTimeFormat)
+        public string FormatTimeString(string timeString, string oldTimeFormat, string newTimeFormat)
         {
             try
             {
-                DateTime dat = DateTime.Now;
+                var dat = DateTime.Now;
 
                 oldTimeFormat = oldTimeFormat.ToLower();
-                string hour = TimeString.Substring(oldTimeFormat.IndexOf("h"), oldTimeFormat.LastIndexOf("h") - oldTimeFormat.IndexOf("h") + 1);
-                string min = TimeString.Substring(oldTimeFormat.IndexOf("m"), oldTimeFormat.LastIndexOf("m") - oldTimeFormat.IndexOf("m") + 1);
-                string sec = TimeString.Substring(oldTimeFormat.IndexOf("s"), oldTimeFormat.LastIndexOf("s") - oldTimeFormat.IndexOf("s") + 1);
+                var hour = timeString.Substring(oldTimeFormat.IndexOf("h", StringComparison.Ordinal),
+                    oldTimeFormat.LastIndexOf("h", StringComparison.Ordinal) - oldTimeFormat.IndexOf("h", StringComparison.Ordinal) + 1);
+                var min = timeString.Substring(oldTimeFormat.IndexOf("m", StringComparison.Ordinal),
+                    oldTimeFormat.LastIndexOf("m", StringComparison.Ordinal) - oldTimeFormat.IndexOf("m", StringComparison.Ordinal) + 1);
+                var sec = timeString.Substring(oldTimeFormat.IndexOf("s", StringComparison.Ordinal),
+                    oldTimeFormat.LastIndexOf("s", StringComparison.Ordinal) - oldTimeFormat.IndexOf("s", StringComparison.Ordinal) + 1);
 
                 dat = new DateTime(dat.Year, dat.Month, dat.Day, Convert.ToInt16(hour), Convert.ToInt16(min), Convert.ToInt16(sec));
                 return dat.ToString(newTimeFormat);
             }
             catch (Exception)
             {
-                return TimeString;
+                return timeString;
             }
         }
 
-        public DataSet QueryBodyPartList(string RegionName, string SPLocal)
+        public DataSet QueryBodyPartList(string regionName, string spLocal)
         {
             try
             {
-                SqlWrapper sql = new SqlWrapper();
-                sql.CommandType = CommandType.StoredProcedure;
-                sql.SqlString = "WGGC_SP_ACQ_GetBodyPartList";
+                var sql = new SqlWrapper
+                {
+                    CommandType = CommandType.StoredProcedure, SqlString = "WGGC_SP_ACQ_GetBodyPartList"
+                };
 
-                List<SqlParameter> lstparas = new List<SqlParameter>();
-                SqlParameter para = new SqlParameter();
-                para.DbType = DbType.Int32;
-                para.ParameterName = "@IsVetApplication";
+                var parasols = new List<SqlParameter>();
+                var para = new SqlParameter {DbType = DbType.Int32, ParameterName = "@IsVetApplication", Value = 0};
                 //para.Value = IsVetApplication ? 1 : 0;
-                para.Value = 0;
-                lstparas.Add(para);
+                parasols.Add(para);
 
-                para = new SqlParameter();
-                para.DbType = DbType.String;
-                para.ParameterName = "@RegionName";
-                para.Value = RegionName;
-                lstparas.Add(para);
+                para = new SqlParameter {DbType = DbType.String, ParameterName = "@RegionName", Value = regionName};
+                parasols.Add(para);
 
-                para = new SqlParameter();
-                para.DbType = DbType.String;
-                para.ParameterName = "@SPLocal";
-                para.Value = SPLocal;
-                lstparas.Add(para);
+                para = new SqlParameter {DbType = DbType.String, ParameterName = "@SPLocal", Value = spLocal};
+                parasols.Add(para);
 
-                para = new SqlParameter();
-                para.DbType = DbType.Int32;
-                para.ParameterName = "@LT_MAMMO";
+                para = new SqlParameter {DbType = DbType.Int32, ParameterName = "@LT_MAMMO", Value = 1};
                 //para.Value = MLicense.IsMammoEnable() ? 1 : 0;
-                para.Value = 1;
-                lstparas.Add(para);
+                parasols.Add(para);
 
-                para = new SqlParameter();
-                para.DbType = DbType.Int32;
-                para.ParameterName = "@LT_LLI_IMAGING";
-                para.Value = 1/*MLicense.Options[MLicenseType.LT_LLI_IMAGING] ? 1 : 0*/;
-                lstparas.Add(para);
+                para = new SqlParameter {DbType = DbType.Int32, ParameterName = "@LT_LLI_IMAGING", Value = 1};
+                parasols.Add(para);
 
-                sql.Parameter = lstparas.ToArray();
-                DataSet ds = SqlHelper.ExecuteQuery(sql, _connectionString);
+                sql.Parameter = parasols.ToArray();
+                var ds = SqlHelper.ExecuteQuery(sql, _connectionString);
                 return ds;
             }
             catch (Exception)
@@ -1021,21 +1010,22 @@ namespace Csh.ImageSuite.MiniPacs
             }
         }
 
-        public string GetPatientAge(string StartDate, string EndDate)
+        public string GetPatientAge(string startDate, string endDate)
         {
-            string strSql = "EXECUTE [WGGC].[dbo].[WGGC_SP_GetPatientAge] @StartDate,@EndDate,@RetValue OUTPUT";
+            if (startDate == null) throw new ArgumentNullException(nameof(startDate));
+            const string strSql = "EXECUTE [WGGC].[dbo].[WGGC_SP_GetPatientAge] @StartDate,@EndDate,@RetValue OUTPUT";
 
-            List<SqlParameter> lstParas = new List<SqlParameter>();
-            lstParas.Add(new SqlParameter("@StartDate", StartDate));
-            lstParas.Add(new SqlParameter("@EndDate", EndDate));
+            var lstParas = new List<SqlParameter>
+            {
+                new SqlParameter("@StartDate", startDate), new SqlParameter("@EndDate", endDate)
+            };
 
-            SqlParameter RetValue = new SqlParameter("@RetValue", SqlDbType.VarChar, 64);
-            RetValue.Direction = ParameterDirection.Output;
-            lstParas.Add(RetValue);
+            var retValue = new SqlParameter("@RetValue", SqlDbType.VarChar, 64) {Direction = ParameterDirection.Output};
+            lstParas.Add(retValue);
 
             SqlHelper.ExecuteQuery(strSql, lstParas.ToArray(), _connectionString);
 
-            return RetValue.Value.ToString();
+            return retValue.Value.ToString();
         }
 
         /// <summary>
@@ -1047,13 +1037,13 @@ namespace Csh.ImageSuite.MiniPacs
         {
             try
             {
-                string strLocalPatientName = GetLocalPatientName(strPatName);
+                var strLocalPatientName = GetLocalPatientName(strPatName);
 
                 if (strLocalPatientName.Length > 0)
                     return strLocalPatientName;
 
 
-                if (strPatName.IndexOf("^") > -1)
+                if (strPatName.IndexOf("^", StringComparison.Ordinal) > -1)
                 {
                     if (System.Text.Encoding.UTF8.GetBytes(strPatName).Length != strPatName.Length)
                     {
@@ -1094,37 +1084,37 @@ namespace Csh.ImageSuite.MiniPacs
             return "";
         }
 
-        public int UpdateStudyScanStatus(string StudyInstanceUID, ScanStatus NewStatus)
+        public int UpdateStudyScanStatus(string studyInstanceUid, ScanStatus newStatus)
         {
-            List<SqlWrapper> lstSql = GetUpdateScanStatusSql(StudyInstanceUID, NewStatus);
+            var lstSql = GetUpdateScanStatusSql(studyInstanceUid, newStatus);
             return SqlHelper.ExecuteNonQuery(lstSql, _connectionString);
         }
 
-        private List<SqlWrapper> GetUpdateScanStatusSql(string StudyInstanceUID, ScanStatus NewStatus)
+        private static List<SqlWrapper> GetUpdateScanStatusSql(string studyInstanceUid, ScanStatus newStatus)
         {
-            List<SqlWrapper> lstSql = new List<SqlWrapper>();
+            var lstSql = new List<SqlWrapper>();
 
             // Update STUDY Table
-            SqlWrapper sql = new SqlWrapper();
-            string strSQL = @"UPDATE STUDY SET [SCANSTATUS]=@SCANSTATUS, CompleteToken=@TokenID, AcqDateTime = getdate() WHERE [StudyInstanceUID]=@StudyInstanceUID";
-            SqlParameter[] paras = new SqlParameter[] {
-                new SqlParameter("@StudyInstanceUID", StudyInstanceUID),
+            var sql = new SqlWrapper();
+            var strSql = @"UPDATE STUDY SET [SCANSTATUS]=@SCANSTATUS, CompleteToken=@TokenID, AcqDateTime = getdate() WHERE [StudyInstanceUID]=@StudyInstanceUID";
+            var paras = new[] {
+                new SqlParameter("@StudyInstanceUID", studyInstanceUid),
                 new SqlParameter("@TokenID", Guid.NewGuid().ToString()),
-                new SqlParameter("@SCANSTATUS", ((int)NewStatus).ToString())
+                new SqlParameter("@SCANSTATUS", ((int)newStatus).ToString())
             };
-            sql.SqlString = strSQL;
+            sql.SqlString = strSql;
             sql.Parameter = paras;
             lstSql.Add(sql);
 
 
             // Update MWLOrder Table
             sql = new SqlWrapper();
-            strSQL = @"UPDATE MWLOrder SET [SCANSTATUS]=@SCANSTATUS WHERE [StudyInstanceUID]=@StudyInstanceUID";
-            paras = new SqlParameter[] {
-                new SqlParameter("@StudyInstanceUID", StudyInstanceUID),
-                new SqlParameter("@SCANSTATUS", ((int)NewStatus).ToString())
+            strSql = @"UPDATE MWLOrder SET [SCANSTATUS]=@SCANSTATUS WHERE [StudyInstanceUID]=@StudyInstanceUID";
+            paras = new [] {
+                new SqlParameter("@StudyInstanceUID", studyInstanceUid),
+                new SqlParameter("@SCANSTATUS", ((int)newStatus).ToString())
             };
-            sql.SqlString = strSQL;
+            sql.SqlString = strSql;
             sql.Parameter = paras;
             lstSql.Add(sql);
 
@@ -1136,9 +1126,8 @@ namespace Csh.ImageSuite.MiniPacs
         /// </summary>
         public void SetReserved(string studyInstanceUID, ReservedStatus reserved)
         {
-            string chReserved = reserved == ReservedStatus.Reserved ? "Y" : "N";
-            string strSQL = String.Format("UPDATE Study SET [Reserved]='{0}' WHERE StudyInstanceUID='{1}'",
-                chReserved, studyInstanceUID);
+            var chReserved = reserved == ReservedStatus.Reserved ? "Y" : "N";
+            var strSQL = $"UPDATE Study SET [Reserved]='{chReserved}' WHERE StudyInstanceUID='{studyInstanceUID}'";
 
             try
             {
@@ -1150,13 +1139,13 @@ namespace Csh.ImageSuite.MiniPacs
             }
         }
 
-        public void DeletedStudy(string studyGUID, string deleteReason)
+        public void DeletedStudy(string studyGuid, string deleteReason)
         {
             var sqlWrapper = new SqlWrapper();
 
-            string strSQL = "WGGC_QC_DeleteStudy";
-            var parameters = new SqlParameter[]{
-                new SqlParameter("@strStudyInstanceUID", studyGUID),
+            var strSQL = "WGGC_QC_DeleteStudy";
+            var parameters = new []{
+                new SqlParameter("@strStudyInstanceUID", studyGuid),
                 new SqlParameter("@strOpUser", "admin"),
                 new SqlParameter("@strDelReason", deleteReason),
                 new SqlParameter("@bAdmin", true) };
@@ -1168,31 +1157,25 @@ namespace Csh.ImageSuite.MiniPacs
             SqlHelper.ExecuteNonQuery(sqlWrapper, _connectionString);
         }
 
-        public List<Study> GetHasHistoryStudyUidArray(string studyUids)
+        public List<Study> GetHasHistoryStudyUidArray(string studyUid)
         {
-            List<Study> result = new List<Study>();
+            var result = new List<Study>();
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append("SELECT 	A.* FROM Study A INNER JOIN Study B ON A.PatientGUID = B.PatientGUID ");
-            sb.Append(" WHERE A.Hide <> 1 AND B.StudyInstanceUID IN('" + studyUids + "')");
-            string strSQL = sb.ToString();
-            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            sb.Append(" WHERE A.Hide <> 1 AND B.StudyInstanceUID IN('" + studyUid + "')");
+            var strSql = sb.ToString();
+            var ds = SqlHelper.ExecuteQuery(strSql, _connectionString);
 
-            DataTable tb = new DataTable();
-            if (ds.Tables.Count > 0)
+            if (ds.Tables.Count <= 0) return result;
+            var tb = ds.Tables[0];
+            foreach (DataRow dr in tb.Rows)
             {
-                tb = ds.Tables[0];
-
-                foreach (DataRow dr in tb.Rows)
+                var serialNo = dr["SerialNo"].ToString().Trim();
+                var study = GetStudy(int.Parse(serialNo));
+                if (!result.Contains(study))
                 {
-                    string serialNo = dr["SerialNo"].ToString().Trim();
-
-                    Study study = GetStudy(Int32.Parse(serialNo));
-
-                    if (!result.Contains(study))
-                    {
-                        result.Add(study);
-                    }
+                    result.Add(study);
                 }
             }
             return result;

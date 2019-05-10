@@ -13,3 +13,13 @@
         return "{0}px {1}".format(this.size, this.name);
     }
 } 
+
+export class MarkerData {
+    displayText: string;
+    imageName: string;
+}
+
+export class MarkerGroupData {
+    groupName: string;
+    markerDataTable: MarkerData[][];
+}

@@ -1,4 +1,4 @@
-﻿import { Point, Rectangle, MouseEventType } from '../../models/annotation';
+﻿import { Point, Rectangle, MouseEventType, PositionInRectangle } from '../../models/annotation';
 import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseLine } from "../base-object/ann-base-line";
@@ -21,7 +21,7 @@ export class AnnRectangle extends AnnExtendObject {
     */
 
     private annPointList = new Array<AnnPoint>();
-    private annRectangle: AnnBaseRectangle;
+    private annBaseRectangle: AnnBaseRectangle;
     private annTextIndicator: AnnTextIndicator;
 
 
@@ -29,6 +29,8 @@ export class AnnRectangle extends AnnExtendObject {
         super(parentObj, imageViewer);
     }     
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point) {
 
@@ -45,7 +47,7 @@ export class AnnRectangle extends AnnExtendObject {
                 annTopLeftPoint.onCreate(imagePoint);
                 this.annPointList.push(annTopLeftPoint);
             } else {
-                this.focusedObj = this.annRectangle;
+                this.focusedObj = this.annBaseRectangle;
                 if (!this.parentObj) {
                     this.onDrawEnded();
                 }
@@ -62,7 +64,7 @@ export class AnnRectangle extends AnnExtendObject {
                 pointList.push({ x: topLeftPoint.x, y: imagePoint.y });
                 
 
-                if (this.annRectangle) {
+                if (this.annBaseRectangle) {
                     this.redraw(pointList);
                 } else {
 
@@ -72,20 +74,25 @@ export class AnnRectangle extends AnnExtendObject {
                         this.annPointList.push(annPoint);
                     }
 
-                    this.annRectangle = new AnnBaseRectangle(this, topLeftPoint, imagePoint.x - topLeftPoint.x, imagePoint.y - topLeftPoint.y, this.imageViewer);
-                    this.annRectangle.onLevelDown();
+                    this.annBaseRectangle = new AnnBaseRectangle(this, topLeftPoint, imagePoint.x - topLeftPoint.x, imagePoint.y - topLeftPoint.y, this.imageViewer);
+                    this.annBaseRectangle.onLevelDown("bottom");
 
                     this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-                    this.annTextIndicator.onCreate(topLeftPoint, this.annRectangle.getAreaString());
+                    this.annTextIndicator.onCreate(topLeftPoint, this.annBaseRectangle.getAreaString());
                 }
             }
         }
     }
 
+    onCreate(topLeftPoint: Point, width: number, height: number, showIndicator: boolean) {
+        const pointList = AnnTool.pointListFrom(topLeftPoint, PositionInRectangle.TopLeft, width, height);
+        this.createFromPointList(pointList, false);
+        this.focusedObj = this.annBaseRectangle;
+    }
 
     onDrag(deltaX: number, deltaY: number) {
 
-        if (this.annRectangle === this.focusedObj) {
+        if (this.annBaseRectangle === this.focusedObj) {
             this.onTranslate(deltaX, deltaY);
         } else if (this.annPointList.some(annObj => annObj === this.focusedObj)) {
             this.focusedObj.onTranslate(deltaX, deltaY);
@@ -106,6 +113,29 @@ export class AnnRectangle extends AnnExtendObject {
         return pointList;
     }
 
+    getRect(): Rectangle {
+        return this.annBaseRectangle.getRect();
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    redraw(pointList: Point[]) {
+
+        for (let i = 0; i < 4; i++) {
+            this.annPointList[i].onMove(pointList[i]);
+        }
+
+        this.annBaseRectangle.redraw(new Rectangle(pointList[0].x, pointList[0].y, pointList[2].x - pointList[0].x, pointList[2].y - pointList[0].y));
+
+        if (this.annTextIndicator) {
+            this.annTextIndicator.redrawArrow();
+            this.annTextIndicator.setText(this.annBaseRectangle.getAreaString());
+        }
+    }
+
+    showBorder(show: boolean) {
+        this.annBaseRectangle.setVisible(show);
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
     private onPointDragged(draggedObj: any, deltaX: number, deltaY: number) {
@@ -133,14 +163,19 @@ export class AnnRectangle extends AnnExtendObject {
         this.annTextIndicator.onDrag(deltaX, deltaY);
     }
 
-    private redraw(pointList: Point[]) {
-
+    private createFromPointList(pointList: Point[], showIndicator: boolean) {
         for (let i = 0; i < 4; i++) {
-            this.annPointList[i].onMove(pointList[i]);
+            const annPoint = new AnnPoint(this, this.imageViewer);
+            annPoint.onCreate(pointList[i]);
+            this.annPointList.push(annPoint);
         }
 
-        this.annRectangle.redraw(new Rectangle(pointList[0].x, pointList[0].y, pointList[2].x - pointList[0].x, pointList[2].y - pointList[0].y));
-        this.annTextIndicator.redrawArrow();
-        this.annTextIndicator.setText(this.annRectangle.getAreaString());
+        this.annBaseRectangle = new AnnBaseRectangle(this, pointList[0], pointList[2].x - pointList[0].x, pointList[2].y - pointList[0].y, this.imageViewer);
+        this.annBaseRectangle.onLevelDown("bottom");
+
+        if (showIndicator) {
+            this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
+            this.annTextIndicator.onCreate(pointList[0], this.annBaseRectangle.getAreaString());
+        }
     }
 }
