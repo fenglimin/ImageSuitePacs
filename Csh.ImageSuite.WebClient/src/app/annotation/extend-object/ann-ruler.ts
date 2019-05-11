@@ -124,12 +124,13 @@ export class AnnRuler extends AnnExtendObject {
     private getLength(ptStart, ptEnd) {
         let strDist;
 
-        const dDistance = AnnTool.countDistance(ptStart, ptEnd);
-        if (!this.pixelSpacing) {
-            strDist = dDistance.toFixed(2) + "pt";
+        if (this.pixelSpacing) {
+            const dDistance = AnnTool.countPhysicalDistance(ptStart, ptEnd, this.pixelSpacing);
+            strDist = dDistance.toFixed(2) + "mm";
         }
         else {
-            strDist = dDistance.toFixed(2) + "mm";
+            const dDistance = AnnTool.countDistance(ptStart, ptEnd);
+            strDist = dDistance.toFixed(2) + "pt";
         }
 
         return strDist;

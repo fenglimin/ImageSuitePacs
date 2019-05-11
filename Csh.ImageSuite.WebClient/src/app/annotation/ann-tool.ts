@@ -91,6 +91,14 @@ export class AnnTool {
         return value;
     }
 
+    static countPhysicalDistance(point1: Point, point2: Point, pixelSpacing: Size) {
+        const phyDistX = Math.abs(point1.x - point2.x) * pixelSpacing.cx;
+        const phyDistY = Math.abs(point1.y - point2.y) * pixelSpacing.cy;
+
+        let value = Math.pow(phyDistX, 2) + Math.pow(phyDistY, 2);
+        value = Math.sqrt(value);
+        return value;
+    }
 
     static getSineTheta(pt1: Point, pt2: Point) {
         const distance = AnnTool.countDistance(pt1, pt2);
