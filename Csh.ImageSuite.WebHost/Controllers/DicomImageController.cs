@@ -5,17 +5,21 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
+using Csh.ImageSuite.Common.Interface;
 using Csh.ImageSuite.MiniPacs.Interface;
+using Csh.ImageSuite.Model.JsonWrapper;
+using Dicom;
 
 namespace Csh.ImageSuite.WebHost.Controllers
 {
     public class DicomImageController : Controller
     {
         private readonly IMiniPacsDicomHelper _miniPacsDicomHelper;
-
-        public DicomImageController(IMiniPacsDicomHelper miniPacsDicomHelper)
+        private readonly ICommonTool _commonTool;
+        public DicomImageController(IMiniPacsDicomHelper miniPacsDicomHelper, ICommonTool commonTool)
         {
-            this._miniPacsDicomHelper = miniPacsDicomHelper;
+            _miniPacsDicomHelper = miniPacsDicomHelper;
+            _commonTool = commonTool;
         }
 
         // GET: DicomImage
@@ -27,7 +31,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
         // GET: DicomImage/Dicom/5
         public ActionResult Dicom(string id)
         {
-            var jpgFile = _miniPacsDicomHelper.GetDicomFile(Convert.ToInt32(id));
+            var jpgFile = _miniPacsDicomHelper.GetDicomFile(Convert.ToInt32(id), true);
             if (jpgFile == string.Empty)
             {
                 return null;
@@ -73,6 +77,15 @@ namespace Csh.ImageSuite.WebHost.Controllers
         {
             return View();
         }
+
+        // POST: dicomImage/saveAnnotation/
+        [HttpPost]
+        public string SaveAnnotation(RevAnnImage revAnnImage)
+        {
+            var ret = _miniPacsDicomHelper.SaveAnnToDicomFile(revAnnImage);
+            return _commonTool.GetJsonStringFromObject(ret);
+        }
+
 
         // POST: DicomImage/Create
         [HttpPost]

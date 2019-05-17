@@ -164,10 +164,21 @@ export class DatabaseService {
             );
     }
 
+    /** Set Key Image */
+    setKeyImage(id, marked): Observable<boolean> {
+        const url = `${this.pssiUrl}/setkeyimage/`;
+        let data = { id: id, marked: marked };
+
+        return this.http.post<boolean>(url, data, httpOptions)
+            .pipe(
+            catchError(this.handleError<boolean>('setKeyImage'))
+            );
+    }
+
   /** GET study from the server */
-    getStudiesForDcmViewer(id: number, showHistoryStudies): Observable<Study[]> {
+    getStudiesForDcmViewer(id: number, showHistoryStudies, showKeyImage): Observable<Study[]> {
         const url = `${this.pssiUrl}/GetStudiesForDcmViewer/`;
-        let data = { id: id, showHistoryStudies: showHistoryStudies};
+        let data = { id: id, showHistoryStudies: showHistoryStudies, showKeyImage: showKeyImage};
 
         return this.http.post<Study[]>(url, data, httpOptions)
             .pipe(
@@ -175,8 +186,6 @@ export class DatabaseService {
             catchError(this.handleError<Study[]>('getRecWorklistData'))
             );
     }
-
-
 
     getStudiesTest(): Study[] {
         const aa = this.localTestData.sort(this.compareStudy);

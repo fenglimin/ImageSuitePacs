@@ -39,7 +39,7 @@ export class AnnRuler extends AnnExtendObject {
                 this.annMiddlePoint.onCreate(AnnTool.centerPoint(this.annLine.getStartPosition(), imagePoint));
 
                 let text = this.getLength(this.annLine.getStartPosition(), this.annLine.getEndPosition());
-                this.annTextIndicator.onCreate(this.annMiddlePoint.getPosition(), text);
+                this.annTextIndicator.onCreate(text, this.annMiddlePoint.getPosition());
 
                 this.focusedObj = this.annLine;
 

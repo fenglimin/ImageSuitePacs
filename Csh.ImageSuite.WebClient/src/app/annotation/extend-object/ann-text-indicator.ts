@@ -4,7 +4,8 @@ import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnExtendObject } from "./ann-extend-object";
 import { AnnText } from "./ann-text";
 import { AnnArrow } from "./ann-arrow";
-
+import { AnnSerialize } from "../ann-serialize";
+import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnTextIndicator extends AnnExtendObject {
 
@@ -19,12 +20,14 @@ export class AnnTextIndicator extends AnnExtendObject {
     // Override functions of base class
 
     // The point is the coordinate of image layer, for text, need to convert to text layer coordinate
-    onCreate(targetPoint: Point, text: string) {
+    onCreate(text: string, targetPoint: Point, arrowStartPoint: Point = undefined) {
         this.onDeleteChildren();
 
-        const delta = 30 / this.image.getScaleValue();
-        const arrowStartPoint = { x: targetPoint.x + delta, y: targetPoint.y - delta };
-
+        if (!arrowStartPoint) {
+            const delta = 30 / this.image.getScaleValue();
+            arrowStartPoint = { x: targetPoint.x + delta, y: targetPoint.y - delta };
+        }
+  
         this.annArrow = new AnnArrow(this, this.imageViewer);
         this.annArrow.onCreate(arrowStartPoint, targetPoint);
         this.annArrow.onLevelDown("bottom");
@@ -37,6 +40,15 @@ export class AnnTextIndicator extends AnnExtendObject {
         if (!this.parentObj) {
             this.onDrawEnded();
         }
+    }
+
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString("CGXAnnLabel");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 1);
+
+        this.annArrow.onSave(annSerialize, false);
+        this.annText.onSave(annSerialize);
     }
 
     onDrag(deltaX: number, deltaY: number) {

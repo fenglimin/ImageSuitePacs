@@ -3,6 +3,7 @@ import { AnnObject } from "../ann-object";
 import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
+import { AnnSerialize } from "../ann-serialize";
 
 export class AnnBaseRectangle extends AnnBaseObject {
 
@@ -24,6 +25,22 @@ export class AnnBaseRectangle extends AnnBaseObject {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString("CGXAnnRectangle");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 4);
+        annSerialize.writeNumber(0, 1);
+
+        const topLeftPoint = this.getPosition()
+        const rect = new Rectangle(topLeftPoint.x, topLeftPoint.y, this.getWidth(), this.getHeight());
+        const pointList = AnnTool.pointListFromRect(rect);
+
+        annSerialize.writePoint(pointList[0]); // top left
+        annSerialize.writePoint(pointList[2]); // bottom right
+        annSerialize.writePoint(pointList[1]); // top right
+        annSerialize.writePoint(pointList[3]); // bottom left
+    }
+
     onFlip(vertical: boolean) {
 
         if (vertical) {

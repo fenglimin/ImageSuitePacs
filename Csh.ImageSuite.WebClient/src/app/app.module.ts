@@ -52,6 +52,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { MatMomentDateModule } from "@angular/material-moment-adapter";
 import { SelectStudydateDialogComponent } from './components/dialog/select-studydate-dialog/select-studydate-dialog.component';
 import { SelectMarkerDialogComponent } from './components/dialog/select-marker-dialog/select-marker-dialog.component';
+import { ViewerBottombarComponent } from './components/viewer-shell/viewer-bottombar/viewer-bottombar.component';
 
 
 @NgModule({
@@ -74,7 +75,8 @@ import { SelectMarkerDialogComponent } from './components/dialog/select-marker-d
         DropdownButtonMenuButtonComponent,
         ManualWlDialogComponent,
         SelectStudydateDialogComponent,
-        SelectMarkerDialogComponent
+        SelectMarkerDialogComponent,
+        ViewerBottombarComponent
     ],
     imports: [
         BrowserModule,

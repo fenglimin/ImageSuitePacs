@@ -244,7 +244,7 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
         this.annPointList.push(annPointF);
 
         this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-        this.annTextIndicator.onCreate(this.annBaseLineAb.getStartPosition(), this.getText());
+        this.annTextIndicator.onCreate(this.getText(), this.annBaseLineAb.getStartPosition());
 
         this.focusedObj = this.annPointList[0];
 

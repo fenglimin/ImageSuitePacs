@@ -78,6 +78,7 @@ export class ViewContextService {
     private _showOverlay = true;
     private _showRuler = true;
     private _showGraphicOverlay = false;
+    public _keyImage = false;
 
     private viewContextChangedSource = new Subject<ViewContext>();
     viewContextChanged$ = this.viewContextChangedSource.asObservable();
@@ -193,6 +194,9 @@ export class ViewContextService {
             return this._showRuler;
         case OperationEnum.ShowGraphicOverlay:
             return this._showGraphicOverlay;
+        case OperationEnum.ToggleKeyImage:
+            return this._keyImage;
+
         default:
             return buttonData.operationData.data == this._curContext.action;
         }
@@ -205,6 +209,7 @@ export class ViewContextService {
         case OperationEnum.ShowRuler:
         case OperationEnum.ShowGraphicOverlay:
         case OperationEnum.SetContext:
+        case OperationEnum.ToggleKeyImage:
             return true;
         default:
             return false;

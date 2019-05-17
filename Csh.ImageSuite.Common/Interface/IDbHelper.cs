@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Csh.ImageSuite.Model.Dicom;
 using System.Data;
+using Csh.ImageSuite.Model.Config;
 using Csh.ImageSuite.Model.Enum;
 
 namespace Csh.ImageSuite.Common.Interface
@@ -19,7 +20,7 @@ namespace Csh.ImageSuite.Common.Interface
 
         List<Study> GetStudies(QueryShortcut query, string sortPara, int pageNumber, out int pageCount);
 
-        Study GetStudy(int serialNo);
+        Study GetStudy(int serialNo, bool showKeyImage);
 
         Image GetImage(int serialNo);
 
@@ -37,7 +38,11 @@ namespace Csh.ImageSuite.Common.Interface
 
         void DeletedStudy(string studyGUID, string deleteReason);
 
-        List<Study> GetHasHistoryStudyUidArray(string studyUid);
+        List<Study> GetHasHistoryStudyUidArray(string studyUid, bool showKeyImage);
+
+        void SetKeyImage(string sopInstanceUID, bool marked);
+
+        List<string> GetKeyImageList(List<string> lstImageUidList);
 
     }
 }

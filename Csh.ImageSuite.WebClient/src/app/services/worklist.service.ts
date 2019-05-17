@@ -7,6 +7,8 @@ import { HangingProtocolService } from "./hanging-protocol.service";
 import { ShellNavigatorService } from "./shell-navigator.service";
 import { Study, RecWorklistData, WorklistColumn } from "../models/pssi";
 import { DataSource } from "../models/shortcut";
+import { MessageBoxType, MessageBoxContent, DialogResult } from "../models/messageBox";
+import { DialogService } from "./dialog.service";
 
 @Injectable({
     providedIn: "root"
@@ -67,7 +69,8 @@ export class WorklistService {
 
     constructor(private databaseService: DatabaseService,
         private shellNavigatorService: ShellNavigatorService,
-        private hangingProtocolService: HangingProtocolService) {
+        private hangingProtocolService: HangingProtocolService,
+        private dialogService: DialogService) {
 
         this._shortcut = new Shortcut();
         this._shortcut.dataSource = DataSource.MiniPacs;
@@ -141,14 +144,7 @@ export class WorklistService {
             viewerShellData.addStudy(study);
             this.shellNavigatorService.shellNavigate(viewerShellData);
         } else {
-            this.databaseService.getStudiesForDcmViewer(study.id, false).subscribe(value => {
-                viewerShellData.addStudy(value[0]);
-                // If the PSSI information changed, need to update worklist ??
-                // study = value;
-                // study = Study.clone(value, false);
-                // study.patient = Patient.clone(value.patient, false);
-                this.shellNavigatorService.shellNavigate(viewerShellData);
-            });
+            this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, false).subscribe(value => this.studyDetailsLoaded(1, value));
         }
     }
 
@@ -173,11 +169,27 @@ export class WorklistService {
             
             this.studies.forEach(study => {
                 if (study.checked) {
-                    this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies)
+                    this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, false)
                         .subscribe(value => this.studyDetailsLoaded(checkedCount, value));
                 }
             });
         }
+    }
+
+    onLoadKeyImage() {
+        let checkedCount = 0;
+        this.studies.forEach(study => {
+            if (study.checked) {
+                checkedCount++;
+            }
+        });
+
+        this.studies.forEach(study => {
+            if (study.checked) {
+                this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, true)
+                    .subscribe(value => this.studyDetailsLoaded(checkedCount, value));
+            }
+        });
     }
 
     onSetRead(study: Study = null) {
@@ -401,11 +413,26 @@ export class WorklistService {
 
     private studyDetailsLoaded(allCheckedStudyCount: number, getStudies: Study[]) {
         getStudies.forEach(value => {
-            this.loadedStudy.push(value);
+            if (value) {
+                this.loadedStudy.push(value);
+            }
         });
 
         this.loadedStudyCount++;
-        if (allCheckedStudyCount == this.loadedStudyCount) {
+        if (allCheckedStudyCount === this.loadedStudyCount) {
+            if (this.loadedStudy.length === 0)
+            {
+                const content = new MessageBoxContent();
+                content.title = "No Key Image";
+                content.messageText = "There is no key image!";
+                content.messageType = MessageBoxType.Error;
+
+                this.dialogService.showMessageBox(content).subscribe();
+                this.loadedStudyCount = 0;
+
+                return;
+            }
+
             const viewerShellData = new ViewerShellData(this.hangingProtocolService.getDefaultGroupHangingProtocol(),
                 this.hangingProtocolService.getDefaultImageHangingPrococal());
             this.loadedStudy.forEach(value => {

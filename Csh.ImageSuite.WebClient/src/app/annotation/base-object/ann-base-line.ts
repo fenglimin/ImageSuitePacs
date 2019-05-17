@@ -3,19 +3,37 @@ import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
 import { AnnObject } from '../ann-object';
+import { AnnSerialize } from "../ann-serialize";
+import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnBaseLine extends AnnBaseObject {
 
-    constructor(parentObj: AnnObject, posStart: Point, posEnd: Point, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnObject, startPoint: Point, endPoint: Point, imageViewer: IImageViewer, annSerialize: AnnSerialize = undefined) {
 
         super(parentObj, imageViewer);
 
-        this.jcObj = jCanvaScript.line([[posStart.x, posStart.y], [posEnd.x, posEnd.y]], this.selectedColor).layer(this.layerId);
+        if (annSerialize) {
+            const config = AnnConfigLoader.loadBaseLine(annSerialize);
+            startPoint = config.startPoint;
+            endPoint = config.endPoint;
+        } 
+
+        this.jcObj = jCanvaScript.line([[startPoint.x, startPoint.y], [endPoint.x, endPoint.y]], this.selectedColor).layer(this.layerId);
         super.setJcObj();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString("CGXAnnLine");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 4);
+        annSerialize.writeNumber(0, 1);
+
+        annSerialize.writePoint(this.getStartPosition());
+        annSerialize.writePoint(this.getEndPosition());
+    }
+
     onFlip(vertical: boolean) {
 
         if (vertical) {

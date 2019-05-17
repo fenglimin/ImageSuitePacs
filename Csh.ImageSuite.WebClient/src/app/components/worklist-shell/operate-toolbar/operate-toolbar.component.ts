@@ -24,7 +24,7 @@ export class OperateToolbarComponent implements OnInit {
     }
 
     onLoadKeyImage() {
-
+        this.worklistService.onLoadKeyImage();
     }
 
     onSetRead() {

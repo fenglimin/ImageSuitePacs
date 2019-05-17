@@ -89,7 +89,7 @@ export class AnnEllipse extends AnnExtendObject {
                     this.annCenterPoint.onLevelUp();
 
                     this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-                    this.annTextIndicator.onCreate(topPoint, this.annEllipse.getAreaString());
+                    this.annTextIndicator.onCreate(this.annEllipse.getAreaString(), topPoint);
                 }
             }
         }

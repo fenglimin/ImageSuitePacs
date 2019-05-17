@@ -4,6 +4,7 @@ import { Image } from "../models/pssi";
 import { IImageViewer } from "../interfaces/image-viewer-interface";
 import { IAnnotationObject } from "../interfaces/annotation-object-interface";
 import { ViewContext, ViewContextEnum } from "../services/view-context.service"
+import { AnnSerialize } from "./ann-serialize";
 
 export class Colors {
     static white = "#ffffff";
@@ -304,5 +305,6 @@ export abstract class AnnObject {
     abstract getPosition(): Point;
     abstract getSurroundPointList(): Point[];
     abstract setVisible(visible: boolean);
-
+    abstract onLoad(annSerialize: AnnSerialize): any;
+    abstract onSave(annSerialize: AnnSerialize);
 }

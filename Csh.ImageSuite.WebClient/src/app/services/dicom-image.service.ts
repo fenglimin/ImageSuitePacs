@@ -1,11 +1,15 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 import { Image } from "../models/pssi";
 import { ConfigurationService } from "../services/configuration.service";
 import { Overlay, OverlayDisplayGroup, OverlayDisplayItem } from '../models/overlay';
 import { LogService } from "../services/log.service";
+
+const httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': "application/json" })
+};
 
 @Injectable({
     providedIn: "root"
@@ -17,12 +21,21 @@ export class DicomImageService {
     private baseUrl;
     private overlayDisplayGroupList: OverlayDisplayGroup[] = [];
 
+
     constructor(private http: HttpClient, private configurationService: ConfigurationService,
         private logService: LogService) {
 
         this.baseUrl = this.configurationService.getBaseUrl();
 
         
+    }
+
+    /** Save Image annotation */
+    saveImageAnn(id, annString): Observable<string> {
+        const url = `${this.dicomImageUrl}/saveAnnotation/`;
+        let data = { id: id, annString: annString };
+
+        return this.http.post<string>(url, data, httpOptions);
     }
 
     getDicomFile(image: Image): Observable<Blob> {
@@ -42,7 +55,7 @@ export class DicomImageService {
                 .format(this.baseUrl, image.id, 0);
 
         cornerstone.loadImage(imageUri).then(ctImage => {
-            image.cornerStoneImage = ctImage;
+            image.setCornerStoneImage(ctImage);
         });
     }
 
@@ -65,7 +78,7 @@ export class DicomImageService {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Text overlay funtctions
+    // Text overlay functions
     private formatOverlayList(overlayList: Overlay[]) {
 
         overlayList.forEach(overlay => {

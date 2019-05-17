@@ -1,7 +1,7 @@
 ﻿import { Point, MouseEventType, Rectangle } from '../../models/annotation';
 import { AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
-
+import { AnnSerialize } from "../ann-serialize";
 
 export abstract class AnnExtendObject extends AnnObject {
 
@@ -80,7 +80,7 @@ export abstract class AnnExtendObject extends AnnObject {
         this.created = true;
 
         if (!this.parentObj) {
-            // Parent not set, this mean it is not a child of a parentObj annotion. 
+            // Parent not set, this mean it is not a child of a parentObj annotation. 
             this.imageViewer.onAnnotationCreated(this);
         }
     }
@@ -158,6 +158,15 @@ export abstract class AnnExtendObject extends AnnObject {
 
     setVisible(visible: boolean) {
         this.annObjList.forEach(annObj => annObj.setVisible(visible));
+    }
+
+    onLoad(annSerialize: AnnSerialize): any {
+        alert("Internal error : AnnExtendObject.onLoad() should never be called.");
+        return undefined;
+    }
+
+    onSave(annSerialize: AnnSerialize) {
+        alert("Internal error : AnnExtendObject.onSave() should never be called.");
     }
 
     private addChildObj(annObj: AnnObject) {

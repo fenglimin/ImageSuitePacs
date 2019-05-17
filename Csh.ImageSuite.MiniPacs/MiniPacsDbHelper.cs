@@ -12,6 +12,7 @@ using System.Data.SqlClient;
 using System.Diagnostics.Eventing.Reader;
 using System.Xml;
 using System.IO;
+using Csh.ImageSuite.Model.Config;
 using Csh.ImageSuite.Model.Enum;
 
 
@@ -574,7 +575,7 @@ namespace Csh.ImageSuite.MiniPacs
             return studiesCount;
         }
 
-        public Study GetStudy(int serialNo)
+        public Study GetStudy(int serialNo, bool showKeyImage)
         {
             var sbSql = new StringBuilder();
             sbSql.Append("select Image.SerialNo ID_Image, Image.SOPInstanceUID, Image.ImageColumns, Image.ImageRows, Image.ObjectFile, ");//4
@@ -589,6 +590,10 @@ namespace Csh.ImageSuite.MiniPacs
             sbSql.Append("join Study on Series.StudyInstanceUID = Study.StudyInstanceUID ");
             sbSql.Append("join Patient on study.PatientGUID = Patient.PatientGUID ");
             sbSql.Append("where study.SerialNo=" + serialNo);
+            if (showKeyImage)
+            {
+                sbSql.Append(" and Image.KeyImage='Y'");
+            }
             sbSql.Append(" order by Series.SeriesNo, Image.ImageNo");
 
             var sqlStr = sbSql.ToString();
@@ -1157,12 +1162,12 @@ namespace Csh.ImageSuite.MiniPacs
             SqlHelper.ExecuteNonQuery(sqlWrapper, _connectionString);
         }
 
-        public List<Study> GetHasHistoryStudyUidArray(string studyUid)
+        public List<Study> GetHasHistoryStudyUidArray(string studyUid, bool showKeyImage)
         {
             var result = new List<Study>();
 
             var sb = new StringBuilder();
-            sb.Append("SELECT 	A.* FROM Study A INNER JOIN Study B ON A.PatientGUID = B.PatientGUID ");
+            sb.Append("SELECT A.* FROM Study A INNER JOIN Study B ON A.PatientGUID = B.PatientGUID ");
             sb.Append(" WHERE A.Hide <> 1 AND B.StudyInstanceUID IN('" + studyUid + "')");
             var strSql = sb.ToString();
             var ds = SqlHelper.ExecuteQuery(strSql, _connectionString);
@@ -1172,13 +1177,50 @@ namespace Csh.ImageSuite.MiniPacs
             foreach (DataRow dr in tb.Rows)
             {
                 var serialNo = dr["SerialNo"].ToString().Trim();
-                var study = GetStudy(int.Parse(serialNo));
+                var study = GetStudy(int.Parse(serialNo), showKeyImage);
                 if (!result.Contains(study))
                 {
                     result.Add(study);
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// Mark a Image as KeyImage, or Unmark a KeyImage as general Image.
+        /// </summary>
+        public void SetKeyImage(string id, bool marked)
+        {
+            var chMark = marked ? 'Y' : 'N';
+            var strSQL = $"UPDATE [Image] SET KeyImage='{chMark}' WHERE SerialNo='{id}'";
+
+            try
+            {
+                SqlHelper.ExecuteNonQuery(strSQL, _connectionString);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public List<string> GetKeyImageList(List<string> lstImageUidList)
+        {
+            var sql = new SqlWrapper
+            {
+                SqlString =
+                    $"SELECT [SOPInstanceUID],[KeyImage] FROM [Image] WHERE [SOPInstanceUID] IN ('{string.Join("','", lstImageUidList.ToArray())}') AND [KeyImage]='Y'"
+            };
+
+            var ds = SqlHelper.ExecuteQuery(sql, _connectionString);
+
+            var lstKeyImages = new List<string>();
+            if (ds.Tables.Count != 1) return lstKeyImages;
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                lstKeyImages.Add(row["SOPInstanceUID"].ToString().Trim());
+            }
+            return lstKeyImages;
         }
     }
 }

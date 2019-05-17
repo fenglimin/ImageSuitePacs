@@ -206,7 +206,7 @@ export class Image extends Pssi {
 
 
     cornerStoneImage: any;
-    annotations: Array<any>;
+    annData: Uint8Array;
     serializeJson: string;
     transformMatrix: any;
     windowCenter: number;
@@ -292,8 +292,6 @@ export class Image extends Pssi {
     }
 
     getPixelSpacing(): Size {
-
-        
         let tagValue = this.cornerStoneImage.data.string("x00280030");
         if (!tagValue) {
             tagValue = this.cornerStoneImage.data.string("x00181164");
@@ -312,6 +310,21 @@ export class Image extends Pssi {
         pixelSpacing.cy = Number(valueList[1]);
 
         return pixelSpacing;
+    }
+
+    setCornerStoneImage(ctImage: any) {
+        let annData = undefined;
+
+        const element = ctImage.data.elements["x0011101d"];
+        if (element) {
+            annData = new Uint8Array(element.length);
+            for (let i = 0; i < element.length; i++) {
+                annData[i] = ctImage.data.byteArray[element.dataOffset + i];
+            }
+        }
+
+        this.annData = annData;
+        this.cornerStoneImage = ctImage;
     }
 }
 

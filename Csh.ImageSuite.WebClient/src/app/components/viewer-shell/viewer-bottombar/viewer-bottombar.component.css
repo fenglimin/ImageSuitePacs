@@ -1,0 +1,14 @@
+.saveImage {
+    border: none;
+    height: 40px;
+    outline: none;
+    width: 60px;
+}
+
+.saveImage { background: url(../../../../assets/img/button/Save_60_40_All.png) no-repeat left top; }
+
+.saveImage:hover { background: url(../../../../assets/img/button/Save_60_40_All.png) no-repeat right top; }
+
+.saveImage:active { background: url(../../../../assets/img/button/Save_60_40_All.png) no-repeat left bottom; }
+
+.saveImage:disabled { background: url(../../../../assets/img/button/Save_60_40_All.png) no-repeat right bottom; }

@@ -15,6 +15,7 @@ import { WindowLevelData } from "../../../../models/dailog-data/image-process";
 import { ManualWlDialogComponent } from "../../../dialog/manual-wl-dialog/manual-wl-dialog.component";
 import { SelectMarkerDialogComponent } from "../../../dialog/select-marker-dialog/select-marker-dialog.component";
 import { FontData } from "../../../../models/misc-data"
+import { MessageBoxType, MessageBoxContent } from "../../../../models/messageBox";
 
 import { IImageViewer } from "../../../../interfaces/image-viewer-interface";
 import { Point, MouseEventType } from '../../../../models/annotation';
@@ -24,7 +25,7 @@ import { AnnExtendObject } from "../../../../annotation/extend-object/ann-extend
 import { AnnGuide } from "../../../../annotation/layer-object/ann-guide";
 import { AnnImageRuler } from "../../../../annotation/layer-object/ann-image-ruler";
 import { AnnImage } from "../../../../annotation/extend-object/ann-image";
-
+import { AnnSerialize } from "../../../../annotation/ann-serialize";
 
 @Component({
     selector: "app-image-viewer",
@@ -106,6 +107,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private annImageRuler: AnnImageRuler;
 
     private jcTextOverlayList = [];
+
+    private annSerialize: AnnSerialize;
 
     @Input()
     set imageData(imageData: ViewerImageData) {
@@ -356,10 +359,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     onAnnotationCreated(annObj: AnnExtendObject) {
-        if (this.curSelectObj !== annObj) {
-            alert("error in onAnnotationCreated");
-            return;
-        }
+        //if (this.curSelectObj !== annObj) {
+        //    alert("error in onAnnotationCreated");
+        //    return;
+        //}
+
+        this.curSelectObj = annObj;
 
         if (annObj.isCreated()) {
             this.annObjList.push(this.curSelectObj);
@@ -479,6 +484,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
                     this.isImageLoaded = false;
                     cornerstone.displayImage(this.helpElement, this.ctImage);
+
                     this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
                 }else {
                     this.logService.debug(this.logPrefix + 'local test data, no image to show.');
@@ -516,8 +522,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private onImageLoaded(e, data) {
-
-      this.logService.debug(this.logPrefix + 'onImageLoaded() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
+        this.logService.debug(this.logPrefix + 'onImageLoaded() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
 
         const ctCanvas = cornerstone.getEnabledElement(this.helpElement).canvas;
         this.jcImage = jCanvaScript.image(ctCanvas).layer(this.imgLayerId);
@@ -533,6 +538,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.originalWindowWidth = this.ctImage.windowWidth;
 
         this.hideWaitingText();
+
+        this.syncAnnLabelLayerTransform();
+        this.annSerialize = new AnnSerialize(this.image.annData, this);
+        this.annSerialize.createAnn();
 
         // No need to show text overlay here, since ngAfterViewChecked will call it.
         //this.showTextOverlay();
@@ -662,8 +671,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
         this.annLayer.scale(1);
 
-        this.annLabelLayer.transform(1, 0, 0, 1, 0, 0, true);
+        this.syncAnnLabelLayerTransform();
+    }
 
+    private syncAnnLabelLayerTransform() {
+        this.annLabelLayer.transform(1, 0, 0, 1, 0, 0, true);
         this.annLabelLayer.optns.scaleMatrix = this.imgLayer.optns.scaleMatrix;
         this.annLabelLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
         this.annLabelLayer.scale(1);
@@ -753,9 +765,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
             case OperationEnum.Invert:
             {
-
-            break;
-        }
+                
+                break;
+            }
         case OperationEnum.FitWidth:
         case OperationEnum.FitHeight:
         case OperationEnum.FitOriginal:
@@ -784,11 +796,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 this.doReset();
                 break;
             }
-            case OperationEnum.ShowOverlay:
-            {
-                this.olLayer.visible(operation.data.show);
-                break;
-            }
             case OperationEnum.ShowAnnotation:
             {
                 this.annLayer.visible(operation.data.show);
@@ -797,6 +804,18 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             case OperationEnum.ManualWL:
             {
                 this.doManualWl();
+                break;
+                }
+            case OperationEnum.ToggleKeyImage:
+                {
+
+                if (this.image.keyImage === 'Y') {
+                    this.image.keyImage = 'N';
+                    this.setKeyImage(false);
+                } else {
+                    this.image.keyImage = 'Y';
+                    this.setKeyImage(true);
+                }
                 break;
             }
         }
@@ -1121,6 +1140,23 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     //}
                 });
             }
+        });
+    }
+
+    saveImage() {
+        const annString = this.annSerialize.getAnnString(this.annObjList);
+        this.dicomImageService.saveImageAnn(this.image.id, annString).subscribe(ret => {
+            const content = new MessageBoxContent();
+            content.title = "Save Image";
+            if (ret) {
+                content.messageText = "Save image failed! " + ret;
+                content.messageType = MessageBoxType.Error;
+            } else {
+                content.messageText = "Save image successfully!";
+                content.messageType = MessageBoxType.Info;
+            }
+            
+            this.dialogService.showMessageBox(content);
         });
     }
 
@@ -1733,5 +1769,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 }
             }
         );
+    }
+
+    private setKeyImage(keyImage) {
+        this.configurationService.setKeyImage(this.image.id, keyImage);
     }
 }

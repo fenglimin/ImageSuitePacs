@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using Csh.ImageSuite.Common.Interface;
+using Csh.ImageSuite.Model.Config;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Csh.ImageSuite.Model.Dicom;

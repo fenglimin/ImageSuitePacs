@@ -1,6 +1,7 @@
 ﻿import { Point, MouseEventType, Rectangle } from '../../models/annotation';
 import { AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
+import { AnnSerialize } from "../ann-serialize";
 
 export abstract class AnnBaseObject extends AnnObject {
 
@@ -145,6 +146,16 @@ export abstract class AnnBaseObject extends AnnObject {
     onDeleteChild(annChildObj: AnnObject) {
         alert("Internal error : AnnBaseObject.onDeleteChild() should never be called.");
     }
+
+    onLoad(annSerialize: AnnSerialize): any {
+        alert("Internal error : AnnBaseObject.onLoad() should never be called.");
+        return undefined;
+    }
+
+    onSave(annSerialize: AnnSerialize) {
+        alert("Internal error : AnnBaseObject.onSave() should never be called.");
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
 }

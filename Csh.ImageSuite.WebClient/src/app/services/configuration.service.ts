@@ -15,6 +15,7 @@ export class ConfigurationService {
     private overLayList: Overlay[] = [];
     private markerConfig: MarkerGroupData[] = [];
     private textOverlayFont: FontData;
+    private marked: boolean;
     
     constructor(private databaseService: DatabaseService, private locationStrategy: LocationStrategy,
         private logService: LogService) {
@@ -51,5 +52,9 @@ export class ConfigurationService {
 
     getMarkerConfig(): MarkerGroupData[] {
         return this.markerConfig;
+    }
+
+    setKeyImage(id, marked) {
+        this.databaseService.setKeyImage(id, marked).subscribe(value => this.marked = value);
     }
 }

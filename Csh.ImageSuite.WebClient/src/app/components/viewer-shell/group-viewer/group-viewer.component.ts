@@ -75,7 +75,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
 
     ngAfterViewChecked() {
         if (this.childImages) {
-            this.setHeight(this.childImages.first.canvas.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.clientHeight);
+            this.setHeight(this.childImages.first.canvas.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.clientHeight);
 
             this.childImages.forEach(child => child.adjustHeight());
         }
@@ -161,5 +161,13 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
             o.style.height = height.toString() + "px";
 
         }
+    }
+
+    saveSelectedImage() {
+        this.childImages.forEach(imageViewer => {
+            if (imageViewer.selected) {
+                imageViewer.saveImage();
+            }
+        });
     }
 }

@@ -83,4 +83,12 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
         return this.groupDataList[groupIndex];
         //return this.viewerShellData.getGroup(rowIndex, colIndex);
     }
+
+    onSaveImage(event) {
+        this.childGroups.forEach(groupViewer => {
+            if (groupViewer.selected) {
+                groupViewer.saveSelectedImage();
+            }
+        });
+    }
 }

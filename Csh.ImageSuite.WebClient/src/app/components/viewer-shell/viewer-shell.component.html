@@ -8,7 +8,7 @@
 
     <div class="sp_panel-right">
         <div class="DivToolbar">
-            <app-viewer-toolbar (layout)="onChangeGroupLayout($event)"></app-viewer-toolbar>
+            <app-viewer-toolbar></app-viewer-toolbar>
         </div>
 
         <div class="DivViewerBack">
@@ -21,7 +21,7 @@
         </div>
         
         <div class="DivOperationBar">
-            
+            <app-viewer-bottombar (save)="onSaveImage($event)"></app-viewer-bottombar>
         </div>
 
     </div>

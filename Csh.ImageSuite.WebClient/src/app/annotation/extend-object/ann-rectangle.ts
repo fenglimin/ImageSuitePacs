@@ -6,6 +6,8 @@ import { AnnExtendObject } from "./ann-extend-object";
 import { AnnPoint } from "./ann-point";
 import { AnnBaseRectangle } from "../base-object/ann-base-rectangle";
 import { AnnTextIndicator } from "./ann-text-indicator"
+import { AnnSerialize } from "../ann-serialize";
+import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnRectangle extends AnnExtendObject {
     
@@ -78,16 +80,42 @@ export class AnnRectangle extends AnnExtendObject {
                     this.annBaseRectangle.onLevelDown("bottom");
 
                     this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-                    this.annTextIndicator.onCreate(topLeftPoint, this.annBaseRectangle.getAreaString());
+                    this.annTextIndicator.onCreate(this.annBaseRectangle.getAreaString(), topLeftPoint);
                 }
             }
         }
     }
 
-    onCreate(topLeftPoint: Point, width: number, height: number, showIndicator: boolean) {
+    onCreate(topLeftPoint: Point, width: number, height: number, showIndicator: boolean, arrowStartPoint: Point = undefined, arrowEndPoint: Point = undefined ) {
         const pointList = AnnTool.pointListFrom(topLeftPoint, PositionInRectangle.TopLeft, width, height);
-        this.createFromPointList(pointList, false);
+        if (arrowStartPoint) {
+            pointList.push(arrowStartPoint);
+        }
+
+        if (arrowEndPoint) {
+            pointList.push(arrowEndPoint);
+        }
+
+        this.createFromPointList(pointList, showIndicator);
         this.focusedObj = this.annBaseRectangle;
+    }
+
+    onLoad(annSerialize: AnnSerialize) {
+        const config = AnnConfigLoader.loadRectangle(annSerialize);
+        this.onCreate(config.baseRect.topLeftPoint, config.baseRect.width, config.baseRect.height, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
+    }
+
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString("CGXAnnSquare");
+        annSerialize.writeNumber(2, 4);
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(1, 1);
+
+        this.annBaseRectangle.onSave(annSerialize);
+        this.annTextIndicator.onSave(annSerialize);
     }
 
     onDrag(deltaX: number, deltaY: number) {
@@ -175,7 +203,9 @@ export class AnnRectangle extends AnnExtendObject {
 
         if (showIndicator) {
             this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-            this.annTextIndicator.onCreate(pointList[0], this.annBaseRectangle.getAreaString());
+            const arrowStartPoint = pointList.length >= 5 ? pointList[4] : undefined;
+            const arrowEndPoint = pointList.length === 6 ? pointList[5] : pointList[0];
+            this.annTextIndicator.onCreate(this.annBaseRectangle.getAreaString(), arrowEndPoint, arrowStartPoint);
         }
     }
 }

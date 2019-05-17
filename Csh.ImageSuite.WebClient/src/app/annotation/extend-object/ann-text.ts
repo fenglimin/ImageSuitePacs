@@ -3,10 +3,11 @@ import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnExtendObject } from "./ann-extend-object";
 import { AnnBaseRectangle } from "../base-object/ann-base-rectangle";
 import { AnnBaseText } from "../base-object/ann-base-text";
+import { AnnSerialize } from "../ann-serialize";
 
 export class AnnText extends AnnExtendObject {
 
-    private annText: AnnBaseText;
+    private annBaseText: AnnBaseText;
     private annRectangle: AnnBaseRectangle;
 
     constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
@@ -17,22 +18,37 @@ export class AnnText extends AnnExtendObject {
     // Override functions of base class
 
     onCreate(position: Point, text: string) {
-        this.annText = new AnnBaseText(this, " " + text + " ", position, this.imageViewer);
-        const rect = this.annText.getRect();
+        this.annBaseText = new AnnBaseText(this, " " + text + " ", position, this.imageViewer);
+        const rect = this.annBaseText.getRect();
         this.annRectangle = new AnnBaseRectangle(this, { x: rect.x, y: rect.y }, rect.width, rect.height, this.imageViewer, true);
-        this.annText.onLevelUp();
+        this.annBaseText.onLevelUp();
 
-        this.focusedObj = this.annText;
+        this.focusedObj = this.annBaseText;
 
         if (!this.parentObj) {
             this.onDrawEnded();
         }
     }
 
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString("CGXAnnText");
+        annSerialize.writeNumber(2, 4);
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(1, 1);
+
+        const pointList = this.annRectangle.getSurroundPointList();
+        annSerialize.writePoint(pointList[2]);
+        annSerialize.writePoint(pointList[0]);
+        annSerialize.writeString(this.annBaseText.getText());
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 4);
+        annSerialize.writeNumber(20, 4);
+    }
+
     onSelect(selected: boolean, focused: boolean) {
 
         this.selected = selected;
-        this.annText.onSelect(selected, focused);
+        this.annBaseText.onSelect(selected, focused);
         this.annRectangle.setVisible(selected && focused);
     }
 
@@ -44,7 +60,7 @@ export class AnnText extends AnnExtendObject {
     }
 
     onMove(point: Point) {
-        this.annText.onMove(point);
+        this.annBaseText.onMove(point);
         this.redrawRect();
     }
 
@@ -57,19 +73,19 @@ export class AnnText extends AnnExtendObject {
     }
 
     setText(text: string) {
-        this.annText.setText(text);
+        this.annBaseText.setText(text);
         this.redrawRect();
     }
 
     getRect(): Rectangle {
-        return this.annText.getRect();
+        return this.annBaseText.getRect();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
     private redrawRect() {
-        const rect = this.annText.getRect();
+        const rect = this.annBaseText.getRect();
         this.annRectangle.redraw(rect);
-        this.annText.onLevelUp();
+        this.annBaseText.onLevelUp();
     }
 }

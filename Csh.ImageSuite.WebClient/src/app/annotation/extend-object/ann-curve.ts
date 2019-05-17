@@ -363,7 +363,7 @@ export class AnnCurve extends AnnExtendObject {
             this.annCurve = new AnnBaseCurve(this, arcData.centerPoint, arcData.radius, arcData.startAngle, arcData.endAngle, arcData.anticlockwise, this.imageViewer);
 
             this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-            this.annTextIndicator.onCreate(middlePoint, this.annCurve.getText());
+            this.annTextIndicator.onCreate(this.annCurve.getText(), middlePoint);
 
             this.annCurve.onLevelDown();
         }

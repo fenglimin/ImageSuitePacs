@@ -44,13 +44,14 @@
   <ItemGroup>
     <Compile Include="Dicom\Image.cs" />
     <Compile Include="Config\MarkerConfig.cs" />
-    <Compile Include="Dicom\OverlayItemConfig.cs" />
+    <Compile Include="Config\OverlayItemConfig.cs" />
     <Compile Include="Dicom\Patient.cs" />
-    <Compile Include="Dicom\QueryShortcut.cs" />
+    <Compile Include="Config\QueryShortcut.cs" />
     <Compile Include="Dicom\Series.cs" />
     <Compile Include="Dicom\Study.cs" />
-    <Compile Include="Dicom\WorklistColumn.cs" />
+    <Compile Include="Config\WorklistColumn.cs" />
     <Compile Include="Enum\PacsType.cs" />
+    <Compile Include="JsonWrapper\DicomImageJson.cs" />
     <Compile Include="JsonWrapper\PssiJson.cs" />
     <Compile Include="JsonWrapper\ShortcutJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

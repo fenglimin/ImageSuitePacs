@@ -23,8 +23,6 @@ import { AnnImage } from "../../../annotation/extend-object/ann-image";
     styleUrls: ["./viewer-toolbar.component.css"]
 })
 export class ViewerToolbarComponent implements OnInit {
-    @Output()
-    layout = new EventEmitter<number>();
     buttonDivideSrc: string;
 
     selectPanButtonMenuList: SelectedButtonData[] = [

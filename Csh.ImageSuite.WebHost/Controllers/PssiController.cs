@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Data;
 using System.Web.Http;
+using Csh.ImageSuite.Model.Config;
 using Csh.ImageSuite.Model.Enum;
 using Csh.ImageSuite.Model.JsonWrapper;
 
@@ -39,26 +40,33 @@ namespace Csh.ImageSuite.WebHost.Controllers
         // GET: Pssi/Details/5
         public string Details(int id)
         {
-            var study = _dbHelper.GetStudy(id);
+            //var study = _dbHelper.GetStudy(id);
 
             //List<Study>  lstStudy = _dbHelper.GetHasHistoryStudyUidArray(study.StudyInstanceUid);
 
-            return _commonTool.GetJsonStringFromObject(study);
+            //return _commonTool.GetJsonStringFromObject(study);
+            return "";
         }
 
         [System.Web.Mvc.HttpPost]
-        public string GetStudiesForDcmViewer(StudyIdShowHistoryStudy studyIdShowHistoryStudy)
+        public string GetStudiesForDcmViewer(RevStudiesForDcmViewer revStudiesForDcmViewer)
         {
-            List<Study> lstStudy = new List<Study>();
+            var lstStudy = new List<Study>();
+            //var study = new Study();
 
-            var study = _dbHelper.GetStudy(studyIdShowHistoryStudy.Id);
-
-            if (studyIdShowHistoryStudy.ShowHistoryStudies)
+            if (revStudiesForDcmViewer.ShowHistoryStudies)
             {
-                lstStudy = _dbHelper.GetHasHistoryStudyUidArray(study.StudyInstanceUid);
+                var study = _dbHelper.GetStudy(revStudiesForDcmViewer.Id, false);
+
+                lstStudy = _dbHelper.GetHasHistoryStudyUidArray(study.StudyInstanceUid, revStudiesForDcmViewer.ShowKeyImage);
             }
             else
             {
+                var study = _dbHelper.GetStudy(revStudiesForDcmViewer.Id, revStudiesForDcmViewer.ShowKeyImage);
+
+                if (study == null)
+                    return "";
+
                 lstStudy.Add(study);
             }
 
@@ -126,6 +134,14 @@ namespace Csh.ImageSuite.WebHost.Controllers
             _dbHelper.DeletedStudy(deleteStudyJson.Id, deleteStudyJson.DeletionReason);
 
             return _commonTool.GetJsonStringFromObject("test");
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public string SetKeyImage(RevKeyImage revKeyImage)
+        {
+            _dbHelper.SetKeyImage(revKeyImage.Id, revKeyImage.Marked);
+
+            return _commonTool.GetJsonStringFromObject("");
         }
 
         public class DeleteStudyJson

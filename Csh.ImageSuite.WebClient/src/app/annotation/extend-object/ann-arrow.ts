@@ -5,6 +5,8 @@ import { AnnBaseLine } from "../base-object/ann-base-line";
 import { AnnExtendObject } from "./ann-extend-object";
 import { AnnPoint } from "./ann-point";
 import { AnnLine } from "./ann-line";
+import { AnnSerialize } from "../ann-serialize";
+import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnArrow extends AnnExtendObject {
 
@@ -53,6 +55,32 @@ export class AnnArrow extends AnnExtendObject {
         this.annLine = new AnnLine(this, this.imageViewer);
         this.annLine.onCreate(arrowStartPoint, arrowEndPoint);
         this.redrawArrow(arrowStartPoint, arrowEndPoint);
+    }
+
+    onLoad(annSerialize: AnnSerialize) {
+        const config = AnnConfigLoader.loadArrow(annSerialize);
+
+        this.onCreate(config.startPoint, config.endPoint);
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
+    }
+
+    onSave(annSerialize: AnnSerialize, saveArrowMark: boolean = true) {
+        if (saveArrowMark) {
+            annSerialize.writeString("CGXAnnArrowMark");
+            annSerialize.writeNumber(10, 4);
+            annSerialize.writeNumber(1, 4);
+            annSerialize.writeNumber(1, 1);
+        }
+        
+        annSerialize.writeString("CGXAnnArrow");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 1);
+
+        this.annLine.getBaseLine().onSave(annSerialize);
+        this.annArrowLineA.onSave(annSerialize);
+        this.annArrowLineB.onSave(annSerialize);
     }
 
     onDrag(deltaX: number, deltaY: number) {
