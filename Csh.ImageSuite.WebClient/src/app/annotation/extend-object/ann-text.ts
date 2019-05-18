@@ -21,7 +21,7 @@ export class AnnText extends AnnExtendObject {
         this.annBaseText = new AnnBaseText(this, " " + text + " ", position, this.imageViewer);
         const rect = this.annBaseText.getRect();
         this.annRectangle = new AnnBaseRectangle(this, { x: rect.x, y: rect.y }, rect.width, rect.height, this.imageViewer, true);
-        this.annBaseText.onLevelUp();
+        this.annBaseText.onLevelDown("bottom");
 
         this.focusedObj = this.annBaseText;
 
@@ -43,13 +43,6 @@ export class AnnText extends AnnExtendObject {
         annSerialize.writeNumber(1, 4);
         annSerialize.writeNumber(0, 4);
         annSerialize.writeNumber(20, 4);
-    }
-
-    onSelect(selected: boolean, focused: boolean) {
-
-        this.selected = selected;
-        this.annBaseText.onSelect(selected, focused);
-        this.annRectangle.setVisible(selected && focused);
     }
 
     onScale() {
