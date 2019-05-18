@@ -418,6 +418,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     onKeyUp(event) {
 
+        let needRedraw = true;
         if (event.code === "Delete") {
             this.deleteSelectedAnnotation();
         }else if (event.code === "KeyA") {
@@ -430,10 +431,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         else if (event.code === "ArrowUp" || event.code === "ArrowDown" || event.code === "ArrowLeft" || event.code === "ArrowRight") {
             if (this.curSelectObj) {
                 this.curSelectObj.onKeyDown(event);
+            } else {
+                needRedraw = false;
             }
         } else if (event.code === "ControlLeft" || event.code === "ControlRight") {
             this.ctrlKeyPressed = false;
+            needRedraw = false;
         } 
+
+        if (needRedraw) {
+            this.redraw(1);
+        }
     }
 
     onKeyDown(event) {
@@ -548,8 +556,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annSerialize = new AnnSerialize(this.image.annData, this);
         this.annSerialize.createAnn();
 
-        // No need to show text overlay here, since ngAfterViewChecked will call it.
-        //this.showTextOverlay();
+        this.redraw(1);
     }
 
     private showWaitingText() {
@@ -558,7 +565,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         const font = this.configurationService.getOverlayFont();
         this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
             .color(font.color).font(font.getCanvasFontString()).align('center');
-
+        this.redraw(1);
         //jc.arc(60, 100, 60, 90, 180, 1, 'rgb(25,99,253)', 0).draggable();
 
         //var imgData = jc.imageData(100, 100); //设置渐变区域的大小
@@ -610,6 +617,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.jcTextOverlayList.push(label);
         });
 
+        this.redraw(1);
+
         //this.configurationService.overlayList.forEach(overlay => {
         //    var overlayValue = this.dicomImageService.getTextOverlayValue(this.image, overlay);
         //    var displayText = overlay.prefix + overlayValue + overlay.suffix;
@@ -632,36 +641,43 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private createLayers(canvasId) {
         //create layers
-        const self = this;
+
         this.imgLayerId = canvasId + "_imgLayer";
         this.imgLayer = jCanvaScript.layer(this.imgLayerId).level(0); //layer to hold the image
         this.imgLayer.id = this.imgLayerId;
+        this.imgLayer.needRedraw = true;
 
-        self.annLayerId = canvasId + "_annLayer";
-        self.annLayer = jc.layer(self.annLayerId).level(1); //layer to draw annotations
-        self.annLayer.onBeforeDraw = function () { self.onBeforeDrawAnnLayer.call(self); };
-        self.annLayer.id = self.annLayerId;
+        this.annLayerId = canvasId + "_annLayer";
+        this.annLayer = jCanvaScript.layer(this.annLayerId).level(1); //layer to draw annotations
+        this.annLayer.onBeforeDraw = () => this.onBeforeDrawAnnLayer();
+        this.annLayer.id = this.annLayerId;
+        this.annLayer.needRedraw = true;
 
-        self.annLabelLayerId = canvasId + "_annLabelLayer";
-        self.annLabelLayer = jc.layer(self.annLabelLayerId).level(2); //layer to draw annotations label.
-        self.annLabelLayer.id = self.annLabelLayerId;
+        this.annLabelLayerId = canvasId + "_annLabelLayer";
+        this.annLabelLayer = jCanvaScript.layer(this.annLabelLayerId).level(2); //layer to draw annotations label.
+        this.annLabelLayer.id = this.annLabelLayerId;
+        this.annLabelLayer.needRedraw = true;
 
-        self.mgLayerId = canvasId + "_mgLayer";
-        self.mgLayer = jc.layer(self.mgLayerId).level(4); //layer to show magnified image
-        self.mgLayer.visible(false);
-        self.mgLayer.id = self.mgLayerId;
+        this.mgLayerId = canvasId + "_mgLayer";
+        this.mgLayer = jCanvaScript.layer(this.mgLayerId).level(4); //layer to show magnified image
+        this.mgLayer.visible(false);
+        this.mgLayer.id = this.mgLayerId;
+        this.mgLayer.needRedraw = true;
 
-        self.olLayerId = canvasId + "_overlayLayer";
-        self.olLayer = jCanvaScript.layer(self.olLayerId).level(10); //layer to show overlay
-        self.olLayer.id = self.olLayerId;
+        this.olLayerId = canvasId + "_overlayLayer";
+        this.olLayer = jCanvaScript.layer(this.olLayerId).level(10); //layer to show overlay
+        this.olLayer.id = this.olLayerId;
+        this.olLayer.needRedraw = true;
 
-        self.imgRulerLayerId = canvasId + "_imgRulerLayer"; // layer to show ruler
-        self.imgRulerLayer = jc.layer(self.imgRulerLayerId).level(9);
-        self.imgRulerLayer.id = self.imgRulerLayerId;
+        this.imgRulerLayerId = canvasId + "_imgRulerLayer"; // layer to show ruler
+        this.imgRulerLayer = jCanvaScript.layer(this.imgRulerLayerId).level(9);
+        this.imgRulerLayer.id = this.imgRulerLayerId;
+        this.imgRulerLayer.needRedraw = true;
 
-        self.tooltipLayerId = canvasId + "_tooltipLayer"; // layer to show tooltip dialog
-        self.tooltipLayer = jc.layer(self.tooltipLayerId).draggable(true).level(20);
-        self.tooltipLayer.id = self.tooltipLayerId;
+        this.tooltipLayerId = canvasId + "_tooltipLayer"; // layer to show tooltip dialog
+        this.tooltipLayer = jCanvaScript.layer(this.tooltipLayerId).draggable(true).level(20);
+        this.tooltipLayer.id = this.tooltipLayerId;
+        this.tooltipLayer.needRedraw = true;
     }
 
     private onBeforeDrawAnnLayer() {
@@ -824,6 +840,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 break;
             }
         }
+
+        this.redraw(1);
     }
 
     private getCursorFromContext() {
@@ -861,6 +879,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (curContext.action === ViewContextEnum.CreateAnn) {
             if (curContext.data.needGuide) {
                 this.annGuide.show(curContext.data.className);
+                this.redraw(1);
             } else if (curContext.data.cursorName === "ann_stamp") {
                 this.selectMarker();
             }
@@ -1523,7 +1542,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
         }
 
-        this.jcanvas.frame();
+        this.redraw(1);
     }
 
     private onCanvasMouseMove(evt) {
@@ -1582,8 +1601,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
         }
 
-        this.jcanvas.frame();
-        this.jcanvas.frame();
+        this.redraw(this.dragging ? 2 : 1);
         self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
     }
 
@@ -1622,8 +1640,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             //}
         }
 
-        this.jcanvas.frame();
-        this.jcanvas.frame();
+        this.redraw(2);
         self.mouseEventHelper._mouseWhich = 0;
     }
 
@@ -1807,5 +1824,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private setKeyImage(keyImage) {
         this.configurationService.setKeyImage(this.image.id, keyImage);
+    }
+
+    private redraw(count: number) {
+        for (let i = 0; i < count; i++) {
+            this.jcanvas.frame();
+        }
     }
 }

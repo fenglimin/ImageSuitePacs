@@ -3079,7 +3079,7 @@
             }
             for (i = 0; i < limit; i++) {
                 var object = this.layers[i];
-                if (typeof (object.draw) == 'function')
+                if (typeof (object.draw) == 'function' && object.needRedraw)
                     if (object.beforeDraw(optns)) {
                         if (typeof (object.draw) == 'function') {
                             object.draw(optns);
