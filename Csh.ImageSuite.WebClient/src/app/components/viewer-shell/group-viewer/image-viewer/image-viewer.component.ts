@@ -40,6 +40,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private isImageLoaded: boolean;
     private needResize = true;
     selected = false;
+    private dragging = false;
 
     private baseUrl: string;
     private isViewInited: boolean;
@@ -408,6 +409,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
         this.logService.debug(`Set cursor to ${cursor}`);
         this.canvas.style.cursor = cursor;
+    }
+
+    isDragging(): boolean {
+        return this.dragging;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
 
@@ -1240,10 +1245,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private onMouseDown(evt) {
+
         const self = this;
         if (!self.isImageLoaded) {
             return;
         }
+
+        this.logService.debug("Image Layer - onMouseDown");
 
         const viewContext = self.viewContext;
         //log('viwer mouse down: ' + this.canvasId);
@@ -1274,15 +1282,18 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private onMouseMove(evt) {
+        this.logService.debug("Image Layer - onMouseMove");
         this.emitEvent(evt, MouseEventType.MouseMove, "onMouseMove");
     }
 
     private onMouseOut(evt) {
+        this.logService.debug("Image Layer - onMouseOut");
         //log('viwer mouse out: ' + this.canvasId);
         this.emitEvent(evt, MouseEventType.MouseOut, "onMouseOut");
     }
 
     private onMouseUp(evt) {
+        this.logService.debug("Image Layer - onMouseUp");
         //log('viwer mouse up: ' +this.canvasId);
         this.emitEvent(evt, MouseEventType.MouseUp, "onMouseUp");
     }
@@ -1459,6 +1470,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private onCanvasMouseDown(evt) {
+        console.log("");
+        console.error("onCanvasMouseDown");
         if (!this.isImageLoaded) {
             return;
         }
@@ -1469,6 +1482,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
         }
 
+        this.dragging = true;
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
         
         this.mouseEventHelper._mouseDownPosCvs = point;
@@ -1508,9 +1522,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             else if (this.viewContext.curContext.action === ViewContextEnum.SelectAnn) {
             }
         }
+
+        this.jcanvas.frame();
     }
 
     private onCanvasMouseMove(evt) {
+
+        console.log("");
+        console.error("onCanvasMouseMove");
+
         const self = this;
         if (!this.isImageLoaded) {
             return;
@@ -1562,15 +1582,21 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
         }
 
+        this.jcanvas.frame();
+        this.jcanvas.frame();
         self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
     }
 
     private onCanvasMouseUp(evt) {
+
+        console.log("");
+        console.error("onCanvasMouseUp");
         const self = this;
         if (!self.isImageLoaded) {
             return;
         }
 
+        this.dragging = false;
         const curContext = this.viewContext.curContext;
 
         if (self.mouseEventHelper._mouseWhich == 3) {
@@ -1596,10 +1622,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             //}
         }
 
+        this.jcanvas.frame();
+        this.jcanvas.frame();
         self.mouseEventHelper._mouseWhich = 0;
     }
 
     private onCanvasMouseOut(evt) {
+
+        console.log("");
+        console.error("onCanvasMouseOut");
         const self = this;
         if (!self.isImageLoaded) {
             return;
@@ -1622,6 +1653,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private onCanvasMouseOver(evt) {
+
+        console.log("");
+        console.error("onCanvasMouseOver");
         const self = this;
         if (!self.isImageLoaded) {
             return;

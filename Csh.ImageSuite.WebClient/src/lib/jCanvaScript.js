@@ -2988,13 +2988,14 @@
                 };
                 optns.timeLast = new Date();
 
-                if (!jCanvaScript.frameInterval) {
-                    console.info('start jcFrame');
-                    jCanvaScript.frameInterval = jcFrame();
-                } else {
-                    console.info('jcFrame already run');
-                }
+                //if (!jCanvaScript.frameInterval) {
+                //    console.info('start jcFrame');
+                //    jCanvaScript.frameInterval = jcFrame();
+                //} else {
+                //    console.info('jcFrame already run');
+                //}
 
+                this.frame();
                 this.isPaused = false;
                 //this.interval = requestAnimFrame(function (time) {
                 //    canvas.interval = canvas.interval || 1;
@@ -3011,7 +3012,7 @@
             return this;
         }
         canvas.restart = function () {
-            return this.pause().start(true);
+            return this.pause().start(this.isAnimated);
         }
         canvas.del = function () {
             //cancelRequestAnimFrame(this.interval);
@@ -3044,6 +3045,7 @@
             return this;
         }
         canvas.frame = function (time) {
+            console.log("frame() entered");
             var optns = this.optns, thisCanvas = this;
             time = time || (new Date());
             optns.timeDiff = time - optns.timeLast;
@@ -3052,10 +3054,16 @@
             //    this.interval = requestAnimFrame(function (time) { thisCanvas.frame(time); }, thisCanvas.cnv);
             //    this.interval = this.interval || 1;
             //}
-            if (!optns.redraw) return this;
+            if (!optns.redraw) {
+                console.log("frame() exited - no need to redarw");
+                return this;
+            }
             optns.redraw--;
             optns.ctx.clearRect(0, 0, optns.width, optns.height);
-            if (this.layers.length == 0) return this;
+            if (this.layers.length == 0) {
+                console.log("frame() exited - no layer created");
+                 return this;
+            }
             limit = this.layers.length;
             if (optns.anyLayerLevelChanged)
                 limit = levelChanger(this.layers);
@@ -3256,8 +3264,11 @@
                 dblClick.objects = [];
             }
             optns.keyUp.val = optns.keyDown.val = optns.keyPress.val = click.x = dblClick.x = mouseUp.x = mouseDown.x = mm.x = false;
+            console.log("frame() exited - nomally");
             return this;
         }
+
+        console.log("canvas created!");
         return canvas;
     }
     function stopDrag(object, event, optns) {

@@ -214,16 +214,17 @@ export abstract class AnnObject {
             },
             drag: arg => {
 
-                if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn) {
+                if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn && this.imageViewer.isDragging()) {
                     const point = AnnTool.screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
 
-                    console.log(parentObj.constructor.name + " on dragging");
+                    
                     parentObj.dragging = true;
 
                     if (typeof (child._lastPos.x) != "undefined") {
                         const deltaX = point.x - child._lastPos.x;
                         const deltaY = point.y - child._lastPos.y;
 
+                        console.log(parentObj.constructor.name + " do dragging, deltaX = " + deltaX + " deltaY = " + deltaY);
                         //child._x += deltaX;
                         //child._y += deltaY;
 
