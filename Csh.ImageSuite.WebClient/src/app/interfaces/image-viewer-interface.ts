@@ -32,4 +32,5 @@ export interface IImageViewer {
     setCursor(cursor: any): void;
 
     isDragging(): boolean;
+    refresh(): void;
 }

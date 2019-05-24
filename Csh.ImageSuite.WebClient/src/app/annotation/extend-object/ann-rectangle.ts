@@ -112,7 +112,7 @@ export class AnnRectangle extends AnnExtendObject {
         annSerialize.writeString("CGXAnnSquare");
         annSerialize.writeNumber(2, 4);
         annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(1, 1);
+        annSerialize.writeNumber(0, 1);
 
         this.annBaseRectangle.onSave(annSerialize);
         this.annTextIndicator.onSave(annSerialize);

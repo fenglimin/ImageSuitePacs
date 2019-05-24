@@ -20,10 +20,7 @@ export class AnnBaseRectangle extends AnnBaseObject {
         this.jcObj = jCanvaScript.rect(topLeft.x, topLeft.y, width, height, this.selectedColor).layer(forText? this.labelLayerId : this.layerId);
         super.setJcObj();
 
-        if (forText) {
-            this.defaultColor = "rgba(0,0,0,0)";
-        }
-        //this.setMouseResponsible(!forText);
+        this.setTransparent(forText);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,6 +86,9 @@ export class AnnBaseRectangle extends AnnBaseObject {
         return areaString;
     }
 
+    getTransformMatrix(): any {
+        return this.forText ? this.imageViewer.getAnnLabelLayer().transform() : this.image.transformMatrix;;
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 }

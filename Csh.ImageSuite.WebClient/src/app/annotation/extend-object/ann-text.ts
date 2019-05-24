@@ -32,14 +32,15 @@ export class AnnText extends AnnExtendObject {
 
     onSave(annSerialize: AnnSerialize) {
         annSerialize.writeString("CGXAnnText");
-        annSerialize.writeNumber(2, 4);
         annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(1, 1);
+        annSerialize.writeNumber(0, 4);
+        annSerialize.writeNumber(0, 1);
 
         const pointList = this.annRectangle.getSurroundPointList();
         annSerialize.writePoint(pointList[2]);
         annSerialize.writePoint(pointList[0]);
-        annSerialize.writeString(this.annBaseText.getText());
+
+        annSerialize.writeString(this.annBaseText.getText().trim());
         annSerialize.writeNumber(1, 4);
         annSerialize.writeNumber(0, 4);
         annSerialize.writeNumber(20, 4);

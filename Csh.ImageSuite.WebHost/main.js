@@ -310,6 +310,134 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 
 /***/ }),
 
+/***/ "./src/app/annotation/ann-config-loader.ts":
+/*!*************************************************!*\
+  !*** ./src/app/annotation/ann-config-loader.ts ***!
+  \*************************************************/
+/*! exports provided: AnnConfigLoader */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnConfigLoader", function() { return AnnConfigLoader; });
+var AnnConfigLoader = /** @class */ (function () {
+    function AnnConfigLoader() {
+    }
+    AnnConfigLoader.loadBaseLine = function (annSerialize) {
+        var annName = annSerialize.readString(); // CGXAnnLine
+        var created = annSerialize.readNumber(4);
+        var moving = annSerialize.readNumber(4);
+        var selected = annSerialize.readNumber(1);
+        var startPoint = annSerialize.readPoint();
+        var endPoint = annSerialize.readPoint();
+        return { startPoint: startPoint, endPoint: endPoint };
+    };
+    AnnConfigLoader.loadLine = function (annSerialize) {
+        var annType = annSerialize.readNumber(4); // 33
+        var created = annSerialize.readNumber(4);
+        var selected = annSerialize.readNumber(1);
+        var config = AnnConfigLoader.loadBaseLine(annSerialize);
+        return config;
+    };
+    AnnConfigLoader.loadArrow = function (annSerialize, loadArrowMark) {
+        if (loadArrowMark === void 0) { loadArrowMark = true; }
+        // CGXAnnArrowMark
+        if (loadArrowMark) {
+            var annType = annSerialize.readNumber(4); // 10
+            var created = annSerialize.readNumber(4);
+            var selected = annSerialize.readNumber(1);
+        }
+        // CGXAnnArrow
+        var annName1 = annSerialize.readString();
+        var created1 = annSerialize.readNumber(4);
+        var selected1 = annSerialize.readNumber(1);
+        var config = AnnConfigLoader.loadBaseLine(annSerialize);
+        // The two small lines of the arrow will be created dynamically, read but ignore it
+        AnnConfigLoader.loadBaseLine(annSerialize);
+        AnnConfigLoader.loadBaseLine(annSerialize);
+        return config;
+    };
+    AnnConfigLoader.loadBaseText = function (annSerialize) {
+        var annName = annSerialize.readString(); // CGXAnnText
+        var created = annSerialize.readNumber(4);
+        var moving = annSerialize.readNumber(4);
+        var selected = annSerialize.readNumber(1);
+        var bottomRightPoint = annSerialize.readPoint();
+        var topLeftPoint = annSerialize.readPoint();
+        var text = annSerialize.readString();
+        var isRotateCreated = annSerialize.readNumber(4);
+        var rotateCreated = annSerialize.readNumber(4);
+        var fontHeight = annSerialize.readNumber(4);
+        return { topLeftPoint: topLeftPoint, bottomRightPoint: bottomRightPoint, text: text };
+    };
+    AnnConfigLoader.loadTextIndicator = function (annSerialize) {
+        var annName = annSerialize.readString(); // CGXAnnLabel
+        var created = annSerialize.readNumber(4);
+        var selected = annSerialize.readNumber(1);
+        var arrow = AnnConfigLoader.loadArrow(annSerialize, false);
+        var baseText = AnnConfigLoader.loadBaseText(annSerialize);
+        return arrow;
+    };
+    AnnConfigLoader.loadBaseRectangle = function (annSerialize) {
+        var annName = annSerialize.readString(); // CGXAnnRectangle
+        var created = annSerialize.readNumber(4);
+        var moving = annSerialize.readNumber(4);
+        var selected = annSerialize.readNumber(1);
+        var topLeftPoint = annSerialize.readPoint();
+        var bottomRightPoint = annSerialize.readPoint();
+        var topRightPoint = annSerialize.readPoint();
+        var bottomLeftPoint = annSerialize.readPoint();
+        return { topLeftPoint: topLeftPoint, width: bottomRightPoint.x - topLeftPoint.x, height: bottomRightPoint.y - topLeftPoint.y };
+    };
+    AnnConfigLoader.loadRectangle = function (annSerialize) {
+        var annType = annSerialize.readNumber(4); // 2
+        var created = annSerialize.readNumber(4);
+        var selected = annSerialize.readNumber(1);
+        var baseRect = AnnConfigLoader.loadBaseRectangle(annSerialize);
+        var textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
+        return { baseRect: baseRect, textIndicator: textIndicator };
+    };
+    AnnConfigLoader.loadPolygon = function (annSerialize) {
+        var annType = annSerialize.readNumber(4); // 24
+        var created = annSerialize.readNumber(4);
+        var selected = annSerialize.readNumber(1);
+        var pointCount = annSerialize.readNumber(4);
+        var lineCount = annSerialize.readNumber(4);
+        var pointList = [];
+        for (var i = 0; i < pointCount; i++) {
+            pointList.push(annSerialize.readPoint());
+        }
+        for (var i = 0; i < lineCount; i++) {
+            AnnConfigLoader.loadBaseLine(annSerialize);
+        }
+        var textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
+        return { pointList: pointList, textIndicator: textIndicator };
+    };
+    AnnConfigLoader.loadAngle = function (annSerialize) {
+        var annType = annSerialize.readNumber(4); // 8
+        var created = annSerialize.readNumber(4);
+        var moving = annSerialize.readNumber(4);
+        var selected = annSerialize.readNumber(1);
+        var arcAndTextOnly = annSerialize.readNumber(1);
+        var createState = annSerialize.readNumber(4);
+        var angle = annSerialize.readNumber(8);
+        for (var i = 0; i < 4; i++) {
+            annSerialize.readPoint();
+        }
+        var lineList = [];
+        for (var i = 0; i < 2; i++) {
+            lineList.push(AnnConfigLoader.loadBaseLine(annSerialize));
+        }
+        var textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
+        return { lineList: lineList, textIndicator: textIndicator };
+    };
+    return AnnConfigLoader;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/annotation/ann-object.ts":
 /*!******************************************!*\
   !*** ./src/app/annotation/ann-object.ts ***!
@@ -369,6 +497,9 @@ var AnnObject = /** @class */ (function () {
     };
     AnnObject.prototype.setStepIndex = function (stepIndex) {
         this.stepIndex = stepIndex;
+    };
+    AnnObject.prototype.getDefaultColor = function () {
+        return this.defaultColor;
     };
     AnnObject.prototype.getFocusedObj = function () {
         return this.focusedObj;
@@ -486,13 +617,13 @@ var AnnObject = /** @class */ (function () {
                 }
             },
             drag: function (arg) {
-                if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn) {
+                if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn && _this.imageViewer.isDragging()) {
                     var point = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
-                    console.log(parentObj.constructor.name + " on dragging");
                     parentObj.dragging = true;
                     if (typeof (child._lastPos.x) != "undefined") {
                         var deltaX = point.x - child._lastPos.x;
                         var deltaY = point.y - child._lastPos.y;
+                        console.log(parentObj.constructor.name + " do dragging, deltaX = " + deltaX + " deltaY = " + deltaY);
                         //child._x += deltaX;
                         //child._y += deltaY;
                         //if (onDrag) {
@@ -509,12 +640,15 @@ var AnnObject = /** @class */ (function () {
         });
     };
     AnnObject.prototype.setChildMouseEvent = function (parentObj, child) {
+        var _this = this;
         child._onmouseover = function (arg) {
             if (parentObj.needResponseToChildMouseEvent()) {
                 console.log(parentObj.constructor.name + " on mouse over");
                 parentObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOver, arg, child);
-                parentObj.oldCursor = parentObj.getCursor();
-                parentObj.setCursor(child.mouseStyle);
+                if (!_this.imageViewer.isDragging()) {
+                    parentObj.oldCursor = parentObj.getCursor();
+                    parentObj.setCursor(child.mouseStyle);
+                }
             }
             return false;
         };
@@ -522,7 +656,9 @@ var AnnObject = /** @class */ (function () {
             if (parentObj.needResponseToChildMouseEvent()) {
                 console.log(parentObj.constructor.name + " on mouse out");
                 parentObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseOut, arg, child);
-                parentObj.setCursor(undefined);
+                if (!_this.imageViewer.isDragging()) {
+                    parentObj.setCursor(undefined);
+                }
             }
             return false;
         };
@@ -543,6 +679,134 @@ var AnnObject = /** @class */ (function () {
         return !this.dragging && this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn;
     };
     return AnnObject;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/ann-serialize.ts":
+/*!*********************************************!*\
+  !*** ./src/app/annotation/ann-serialize.ts ***!
+  \*********************************************/
+/*! exports provided: AnnSerialize */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnSerialize", function() { return AnnSerialize; });
+/* harmony import */ var _extend_object_ann_line__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./extend-object/ann-line */ "./src/app/annotation/extend-object/ann-line.ts");
+/* harmony import */ var _extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./extend-object/ann-arrow */ "./src/app/annotation/extend-object/ann-arrow.ts");
+/* harmony import */ var _extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./extend-object/ann-rectangle */ "./src/app/annotation/extend-object/ann-rectangle.ts");
+/* harmony import */ var _extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./extend-object/ann-polygon */ "./src/app/annotation/extend-object/ann-polygon.ts");
+/* harmony import */ var _extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./extend-object/ann-angle */ "./src/app/annotation/extend-object/ann-angle.ts");
+
+
+
+
+
+var AnnSerialize = /** @class */ (function () {
+    function AnnSerialize(annData, imageViewer) {
+        this.annString = "";
+        this.version = 1023;
+        this.annData = annData;
+        this.imageViewer = imageViewer;
+    }
+    AnnSerialize.prototype.createAnn = function () {
+        if (!this.annData)
+            return;
+        if (this.annData[this.annData.length - 1] === 0X20) {
+            // Remove the last 0X20
+            this.readNumber(1);
+        }
+        this.version = this.readNumber(4);
+        var annCount = this.readNumber(4);
+        for (var i = 0; i < annCount; i++) {
+            var annObj = undefined;
+            var annName = this.readString();
+            switch (annName) {
+                case "CGXAnnLineEx":
+                    annObj = new _extend_object_ann_line__WEBPACK_IMPORTED_MODULE_0__["AnnLine"](undefined, this.imageViewer);
+                    break;
+                case "CGXAnnArrowMark":
+                    annObj = new _extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_1__["AnnArrow"](undefined, this.imageViewer);
+                    break;
+                case "CGXAnnSquare":
+                    annObj = new _extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_2__["AnnRectangle"](undefined, this.imageViewer);
+                    break;
+                case "CGXAnnPolygon":
+                    annObj = new _extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_3__["AnnPolygon"](undefined, this.imageViewer);
+                    break;
+                case "CGXAnnProtractor":
+                    annObj = new _extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_4__["AnnAngle"](undefined, this.imageViewer);
+                    break;
+                default:
+                    alert("Unknown annotation " + annName);
+            }
+            if (annObj) {
+                annObj.onLoad(this);
+            }
+        }
+    };
+    AnnSerialize.prototype.getAnnString = function (annList) {
+        var _this = this;
+        this.annString = "";
+        this.writeNumber(this.version, 4);
+        this.writeNumber(annList.length, 4);
+        annList.forEach(function (annObj) { return annObj.onSave(_this); });
+        return this.annString;
+    };
+    AnnSerialize.prototype.readNumber = function (bytes) {
+        var length = this.annData.length;
+        var value = 0;
+        for (var i = 0; i < bytes; i++) {
+            value += this.annData[length - i - 1] << (i * 8);
+        }
+        this.annData = this.annData.slice(0, length - bytes);
+        return value;
+    };
+    AnnSerialize.prototype.readString = function () {
+        var strLen = this.readNumber(4) / 2;
+        var str = "";
+        for (var index = 0; index < strLen; index++) {
+            var ch = this.readNumber(2);
+            str += String.fromCharCode(ch);
+        }
+        return str;
+    };
+    AnnSerialize.prototype.readPoint = function () {
+        return { x: this.readNumber(4), y: this.readNumber(4) };
+    };
+    AnnSerialize.prototype.writePoint = function (point) {
+        this.writeNumber(point.x, 4);
+        this.writeNumber(point.y, 4);
+    };
+    AnnSerialize.prototype.writeNumber = function (value, bytes) {
+        // Old image suite annotation save the number in integer. Need to round it.
+        value = Math.round(value);
+        var byteArray = [];
+        for (var index = 0; index < bytes; index++) {
+            var byte = value & 0xff;
+            byteArray.unshift(byte);
+            value = (value - byte) / 256;
+        }
+        this.annString = this.byteArrayToHexString(byteArray) + this.annString;
+    };
+    AnnSerialize.prototype.writeString = function (str) {
+        var length = str.length;
+        this.writeNumber(length * 2, 4);
+        for (var index = 0; index < length; index++) {
+            this.writeNumber(str.charCodeAt(index), 2);
+        }
+    };
+    AnnSerialize.prototype.byteArrayToHexString = function (byteArray) {
+        var s = "";
+        byteArray.forEach(function (byte) {
+            s += ("0" + (byte & 0xFF).toString(16)).slice(-2);
+        });
+        return s;
+    };
+    return AnnSerialize;
 }());
 
 
@@ -628,6 +892,24 @@ var AnnTool = /** @class */ (function () {
         var value = Math.pow((point1.x - point2.x), 2) + Math.pow((point1.y - point2.y), 2);
         value = Math.sqrt(value);
         return value;
+    };
+    AnnTool.countPhysicalDistance = function (point1, point2, pixelSpacing) {
+        var phyDistX = Math.abs(point1.x - point2.x) * pixelSpacing.cx;
+        var phyDistY = Math.abs(point1.y - point2.y) * pixelSpacing.cy;
+        var value = Math.pow(phyDistX, 2) + Math.pow(phyDistY, 2);
+        value = Math.sqrt(value);
+        return value;
+    };
+    AnnTool.countTriangleArea = function (point1, point2, point3) {
+        return (point2.x * point3.y +
+            point1.x * point2.y +
+            point1.y * point3.x -
+            point1.y * point2.x -
+            point2.y * point3.x -
+            point1.x * point3.y) / 2.0;
+    };
+    AnnTool.countTrianglePhysicalArea = function (point1, point2, point3, pixelSpacing) {
+        return AnnTool.countTriangleArea(point1, point2, point3) * pixelSpacing.cx * pixelSpacing.cy;
     };
     AnnTool.getSineTheta = function (pt1, pt2) {
         var distance = AnnTool.countDistance(pt1, pt2);
@@ -757,6 +1039,135 @@ var AnnTool = /** @class */ (function () {
         }
         return rect;
     };
+    AnnTool.pointInLineByDistance = function (lineStartPoint, lineEndPoint, distanceToStart) {
+        var lineDistance = AnnTool.countDistance(lineStartPoint, lineEndPoint);
+        var lineRatio = distanceToStart / lineDistance;
+        var x = (lineEndPoint.x - lineStartPoint.x) * lineRatio + lineStartPoint.x;
+        var y = (lineEndPoint.y - lineStartPoint.y) * lineRatio + lineStartPoint.y;
+        return { x: x, y: y };
+    };
+    // Calculate the middle point of the curve (The curve is determined by start/end point and its radius, default direction is left or up)
+    AnnTool.calcMiddlePointOfArc = function (startPoint, endPoint, radius) {
+        var pointDir = { x: 1, y: 1 };
+        var centerPoint = AnnTool.centerPoint(startPoint, endPoint);
+        var dSinAB = AnnTool.getSineTheta(startPoint, endPoint);
+        var dCosAB = AnnTool.getCosineTheta(startPoint, endPoint);
+        var dLineAD = AnnTool.countDistance(startPoint, centerPoint);
+        var ptO1 = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
+        var ptO2 = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
+        //get the two center ponints.
+        //check if the arc is almost 180, if true, lineAd is the radius
+        if (Math.abs(dLineAD - radius) < AnnTool.minDelta || radius < dLineAD) {
+            ptO1.x = ptO2.x = centerPoint.x;
+            ptO1.y = ptO2.y = centerPoint.y;
+        }
+        else {
+            var dLineOD = Math.sqrt(Math.abs(radius * radius - dLineAD * dLineAD));
+            ptO1.x = centerPoint.x + dLineOD * dSinAB;
+            ptO1.y = centerPoint.y - dLineOD * dCosAB;
+            ptO2.x = centerPoint.x - dLineOD * dSinAB;
+            ptO2.y = centerPoint.y + dLineOD * dCosAB;
+        }
+        var dSinBA = AnnTool.getSineTheta(endPoint, startPoint), dCosBA = AnnTool.getCosineTheta(endPoint, startPoint), dSinBC = AnnTool.getSineTheta(endPoint, pointDir), dCosBC = AnnTool.getCosineTheta(endPoint, pointDir);
+        //determine the center point
+        var middlePoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
+        var dSinBC_BA = dSinBC * dCosBA - dCosBC * dSinBA;
+        if (dSinBC_BA < 0.0) {
+            middlePoint.x = ptO1.x - radius * dSinAB;
+            middlePoint.y = ptO1.y + radius * dCosAB;
+        }
+        else {
+            middlePoint.x = ptO2.x + radius * dSinAB;
+            middlePoint.y = ptO2.y - radius * dCosAB;
+        }
+        return middlePoint;
+    };
+    // Calculate the center point of the curve ( The curve is determined by three points )
+    AnnTool.calcCenterBy3Points = function (startPoint, endPoint, middlePoint) {
+        var isInvalid = false;
+        var needRevert = false;
+        // D and E is center point of Line AB and Line BC
+        var ptD = AnnTool.centerPoint(startPoint, endPoint);
+        var ptE = AnnTool.centerPoint(endPoint, middlePoint);
+        // k of Line OD and Line OE
+        // O is center point of arc
+        //
+        var dkOD = -(endPoint.x - startPoint.x) / (endPoint.y - startPoint.y);
+        var dkOE = -(middlePoint.x - endPoint.x) / (middlePoint.y - endPoint.y);
+        var centerPoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
+        if (Math.abs(middlePoint.y - endPoint.y) < AnnTool.minDelta) {
+            centerPoint.x = ptE.x;
+            centerPoint.y = (ptE.x - ptD.x) * dkOD + ptD.y;
+        }
+        else if (Math.abs(endPoint.y - startPoint.y) < AnnTool.minDelta) {
+            centerPoint.x = ptD.x;
+            centerPoint.y = (ptD.x - ptE.x) * dkOE + ptE.y;
+        }
+        else if (Math.abs(middlePoint.x - endPoint.x) < AnnTool.minDelta) {
+            centerPoint.y = ptE.y;
+            centerPoint.x = (ptE.y - ptD.y) / dkOD + ptD.x;
+        }
+        else if (Math.abs(endPoint.x - startPoint.x) < AnnTool.minDelta) {
+            centerPoint.y = ptD.y;
+            centerPoint.x = (ptD.y - ptE.y) / dkOE + ptE.x;
+        }
+        else {
+            centerPoint.x = (ptE.y - ptD.y - (ptE.x * dkOE) + (ptD.x * dkOD)) / (dkOD - dkOE);
+            centerPoint.y = ptD.y + dkOD * (centerPoint.x - ptD.x);
+        }
+        // Analysis Start Point and End point
+        // Arc() always draw arc in a Clockwise
+        //
+        var dSinBA = AnnTool.getSineTheta(endPoint, startPoint), dCosBA = AnnTool.getCosineTheta(endPoint, startPoint), dSinBC = AnnTool.getSineTheta(endPoint, middlePoint), dCosBC = AnnTool.getCosineTheta(endPoint, middlePoint);
+        var dSinBC_BA = dSinBC * dCosBA - dCosBC * dSinBA;
+        // Check Arc angle
+        //
+        var dSinOA = AnnTool.getSineTheta(centerPoint, startPoint), dCosOA = AnnTool.getCosineTheta(centerPoint, startPoint), dSinOB = AnnTool.getSineTheta(centerPoint, endPoint), dCosOB = AnnTool.getCosineTheta(centerPoint, endPoint);
+        var dSinArc = dSinOA * dCosOB - dCosOA * dSinOB;
+        if (dSinBC_BA > 0.0) {
+            dSinArc = (-1.0) * dSinArc;
+        }
+        if (dSinArc < 0.0) {
+            isInvalid = true;
+        }
+        //need to revert start and end.
+        if (dSinBC_BA > 0.0) {
+            needRevert = true;
+        }
+        return { centerPoint: centerPoint, isInvalid: isInvalid, needRevert: needRevert };
+    };
+    // Calculate all necessary information of a curve
+    AnnTool.calcArcBy3Points = function (startPoint, endPoint, middlePoint, needCheckArc) {
+        var arcData = AnnTool.calcCenterBy3Points(startPoint, endPoint, middlePoint);
+        if (needCheckArc && arcData.isInvalid)
+            return false; //user may drag the point out of range
+        var radius = AnnTool.countDistance(arcData.centerPoint, startPoint);
+        var dSinAB = AnnTool.getSineTheta(startPoint, endPoint);
+        var dCosAB = AnnTool.getCosineTheta(startPoint, endPoint);
+        if (arcData.needRevert) {
+            middlePoint.x = arcData.centerPoint.x + radius * dSinAB;
+            middlePoint.y = arcData.centerPoint.y - radius * dCosAB;
+        }
+        else {
+            middlePoint.x = arcData.centerPoint.x - radius * dSinAB;
+            middlePoint.y = arcData.centerPoint.y + radius * dCosAB;
+        }
+        var arcStart = AnnTool.calcLineAngle(arcData.centerPoint, startPoint);
+        var arcEnd = AnnTool.calcLineAngle(arcData.centerPoint, endPoint);
+        if (arcEnd < arcStart) {
+            arcEnd = arcEnd + 360.0;
+        }
+        return {
+            centerPoint: arcData.centerPoint,
+            startPoint: startPoint,
+            endPoint: endPoint,
+            middlePoint: middlePoint,
+            radius: radius,
+            startAngle: arcStart,
+            endAngle: arcEnd,
+            anticlockwise: !arcData.needRevert
+        };
+    };
     AnnTool.minDelta = 0.0000000001;
     return AnnTool;
 }());
@@ -852,10 +1263,19 @@ var AnnBaseCurve = /** @class */ (function (_super) {
     AnnBaseCurve.prototype.setAnticlockwise = function (anticlockwise) {
         this.jcObj._anticlockwise = anticlockwise;
     };
-    AnnBaseCurve.prototype.getText = function () {
+    AnnBaseCurve.prototype.getAngle = function () {
         var arcAngle = this.jcObj._endAngle - this.jcObj._startAngle;
         if (arcAngle > 180) {
             arcAngle = 360 - arcAngle;
+        }
+        return arcAngle;
+    };
+    AnnBaseCurve.prototype.getText = function (angleOnly) {
+        if (angleOnly === void 0) { angleOnly = false; }
+        var arcAngle = this.getAngle();
+        var angleText = arcAngle.toFixed(2) + "\xb0";
+        if (angleOnly) {
+            return angleText;
         }
         // Display radius, not the length of the arc
         //const arcLength = Math.PI * this.jcObj._radius * arcAngle / 180;
@@ -866,7 +1286,7 @@ var AnnBaseCurve = /** @class */ (function (_super) {
         else {
             text = this.jcObj._radius.toFixed(2) + "pt";
         }
-        text += " " + arcAngle.toFixed(2) + "\xb0";
+        text += " " + angleText;
         return text;
     };
     return AnnBaseCurve;
@@ -1018,6 +1438,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnBaseLine", function() { return AnnBaseLine; });
 /* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
 /* harmony import */ var _ann_base_object__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ann-base-object */ "./src/app/annotation/base-object/ann-base-object.ts");
+/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -1033,16 +1454,31 @@ var __extends = (undefined && undefined.__extends) || (function () {
 })();
 
 
+
 var AnnBaseLine = /** @class */ (function (_super) {
     __extends(AnnBaseLine, _super);
-    function AnnBaseLine(parentObj, posStart, posEnd, imageViewer) {
+    function AnnBaseLine(parentObj, startPoint, endPoint, imageViewer, annSerialize) {
+        if (annSerialize === void 0) { annSerialize = undefined; }
         var _this = _super.call(this, parentObj, imageViewer) || this;
-        _this.jcObj = jCanvaScript.line([[posStart.x, posStart.y], [posEnd.x, posEnd.y]], _this.selectedColor).layer(_this.layerId);
+        if (annSerialize) {
+            var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_2__["AnnConfigLoader"].loadBaseLine(annSerialize);
+            startPoint = config.startPoint;
+            endPoint = config.endPoint;
+        }
+        _this.jcObj = jCanvaScript.line([[startPoint.x, startPoint.y], [endPoint.x, endPoint.y]], _this.selectedColor).layer(_this.layerId);
         _super.prototype.setJcObj.call(_this);
         return _this;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
+    AnnBaseLine.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString("CGXAnnLine");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 4);
+        annSerialize.writeNumber(0, 1);
+        annSerialize.writePoint(this.getStartPosition());
+        annSerialize.writePoint(this.getEndPosition());
+    };
     AnnBaseLine.prototype.onFlip = function (vertical) {
         if (vertical) {
             this.jcObj._y0 = this.image.height() - this.jcObj._y0;
@@ -1181,26 +1617,32 @@ var AnnBaseObject = /** @class */ (function (_super) {
     AnnBaseObject.prototype.getPosition = function () {
         return { x: this.jcObj._x, y: this.jcObj._y };
     };
+    AnnBaseObject.prototype.getRadius = function () {
+        return this.jcObj._radius;
+    };
     AnnBaseObject.prototype.setRadius = function (radius) {
         this.jcObj._radius = radius;
-    };
-    AnnBaseObject.prototype.setWidth = function (width) {
-        this.jcObj._width = width;
-    };
-    AnnBaseObject.prototype.setHeight = function (height) {
-        this.jcObj._height = height;
     };
     AnnBaseObject.prototype.getWidth = function () {
         return this.jcObj._width;
     };
+    AnnBaseObject.prototype.setWidth = function (width) {
+        this.jcObj._width = width;
+    };
     AnnBaseObject.prototype.getHeight = function () {
         return this.jcObj._height;
+    };
+    AnnBaseObject.prototype.setHeight = function (height) {
+        this.jcObj._height = height;
     };
     AnnBaseObject.prototype.setColor = function (color) {
         this.jcObj.color(color);
     };
     AnnBaseObject.prototype.setVisible = function (visible) {
         this.jcObj.visible(visible);
+    };
+    AnnBaseObject.prototype.setTransparent = function (transparent) {
+        this.defaultColor = transparent ? "rgba(0,0,0,0)" : "#FFF";
     };
     AnnBaseObject.prototype.onLevelUp = function (level) {
         if (level === void 0) { level = 1; }
@@ -1226,8 +1668,163 @@ var AnnBaseObject = /** @class */ (function (_super) {
     AnnBaseObject.prototype.onDeleteChild = function (annChildObj) {
         alert("Internal error : AnnBaseObject.onDeleteChild() should never be called.");
     };
+    AnnBaseObject.prototype.onLoad = function (annSerialize) {
+        alert("Internal error : AnnBaseObject.onLoad() should never be called.");
+        return undefined;
+    };
+    AnnBaseObject.prototype.onSave = function (annSerialize) {
+        alert("Internal error : AnnBaseObject.onSave() should never be called.");
+    };
     return AnnBaseObject;
 }(_ann_object__WEBPACK_IMPORTED_MODULE_1__["AnnObject"]));
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/base-object/ann-base-polygon.ts":
+/*!************************************************************!*\
+  !*** ./src/app/annotation/base-object/ann-base-polygon.ts ***!
+  \************************************************************/
+/*! exports provided: AnnBasePolygon */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnBasePolygon", function() { return AnnBasePolygon; });
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
+/* harmony import */ var _ann_base_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ann-base-object */ "./src/app/annotation/base-object/ann-base-object.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+var AnnBasePolygon = /** @class */ (function (_super) {
+    __extends(AnnBasePolygon, _super);
+    function AnnBasePolygon(parentObj, pointList, imageViewer, annSerialize) {
+        if (annSerialize === void 0) { annSerialize = undefined; }
+        var _this = _super.call(this, parentObj, imageViewer) || this;
+        _this.jcObj = jCanvaScript.lines(pointList, _this.selectedColor).layer(_this.layerId);
+        _super.prototype.setJcObj.call(_this);
+        return _this;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
+    AnnBasePolygon.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString("CGXAnnPolygon");
+        annSerialize.writeNumber(3, 4);
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 1);
+        var points = this.jcObj.points();
+        var length = points.length;
+        annSerialize.writeNumber(length, 4);
+        annSerialize.writeNumber(length, 4);
+        for (var i = 0; i < length; i++) {
+            annSerialize.writeNumber(points[i][0], 4);
+            annSerialize.writeNumber(points[i][1], 4);
+        }
+        for (var i = 0; i < length; i++) {
+            annSerialize.writeString("CGXAnnLine"); // CGXAnnLine
+            annSerialize.writeNumber(1, 4);
+            annSerialize.writeNumber(0, 4);
+            annSerialize.writeNumber(0, 1);
+            if (i !== length - 1) {
+                annSerialize.writeNumber(points[i][0], 4);
+                annSerialize.writeNumber(points[i][1], 4);
+                annSerialize.writeNumber(points[i + 1][0], 4);
+                annSerialize.writeNumber(points[i + 1][1], 4);
+            }
+            else {
+                annSerialize.writeNumber(points[0][0], 4);
+                annSerialize.writeNumber(points[0][1], 4);
+                annSerialize.writeNumber(points[length - 1][0], 4);
+                annSerialize.writeNumber(points[length - 1][1], 4);
+            }
+        }
+    };
+    AnnBasePolygon.prototype.onFlip = function (vertical) {
+        var points = this.jcObj.points();
+        if (vertical) {
+            var height_1 = this.image.height();
+            points.forEach(function (point) {
+                point[1] = height_1 - point[1];
+            });
+        }
+        else {
+            var width_1 = this.image.width();
+            points.forEach(function (point) {
+                point[0] = width_1 - point[0];
+            });
+        }
+        this.jcObj.points(points);
+    };
+    AnnBasePolygon.prototype.onTranslate = function (deltaX, deltaY) {
+        var points = this.jcObj.points();
+        points.forEach(function (point) {
+            point[0] += deltaX;
+            point[1] += deltaY;
+        });
+        this.jcObj.points(points);
+    };
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    AnnBasePolygon.prototype.setClosed = function (closed) {
+        this.jcObj._closed = closed;
+    };
+    AnnBasePolygon.prototype.addPoint = function (point) {
+        this.jcObj.addPoint(point.x, point.y);
+    };
+    AnnBasePolygon.prototype.deletePoint = function (point) {
+        this.jcObj.delPoint(point.x, point.y, 1);
+    };
+    AnnBasePolygon.prototype.updateLastPoint = function (point) {
+        this.updatePoint(this.jcObj.points().length - 1, point);
+    };
+    AnnBasePolygon.prototype.updatePoint = function (index, point) {
+        var points = this.jcObj.points();
+        if (index >= points.length || index < 0) {
+            alert("Internal error, invalid index in AnnBasePolygon.updatePoint()");
+            return;
+        }
+        points[index][0] = point.x;
+        points[index][1] = point.y;
+        this.jcObj.points(points);
+    };
+    AnnBasePolygon.prototype.getAreaString = function () {
+        var areaString = "Size = ";
+        var originalPoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
+        var points = this.jcObj.points();
+        var length = points.length;
+        var area = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countTriangleArea(originalPoint, new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](points[length - 1][0], points[length - 1][1]), new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](points[0][0], points[0][1]));
+        for (var i = 1; i < length; i++) {
+            area += _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countTriangleArea(originalPoint, new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](points[i - 1][0], points[i - 1][1]), new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](points[i][0], points[i][1]));
+        }
+        area = Math.abs(area);
+        if (this.pixelSpacing) {
+            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm2";
+        }
+        else {
+            areaString += area.toFixed(2) + "pt2";
+        }
+        return areaString;
+    };
+    AnnBasePolygon.prototype.setPointList = function (pointList) {
+        this.jcObj.points(pointList);
+    };
+    return AnnBasePolygon;
+}(_ann_base_object__WEBPACK_IMPORTED_MODULE_2__["AnnBaseObject"]));
 
 
 
@@ -1273,11 +1870,24 @@ var AnnBaseRectangle = /** @class */ (function (_super) {
         _this.forText = forText;
         _this.jcObj = jCanvaScript.rect(topLeft.x, topLeft.y, width, height, _this.selectedColor).layer(forText ? _this.labelLayerId : _this.layerId);
         _super.prototype.setJcObj.call(_this);
-        _this.setMouseResponsible(!forText);
+        _this.setTransparent(forText);
         return _this;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
+    AnnBaseRectangle.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString("CGXAnnRectangle");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 4);
+        annSerialize.writeNumber(0, 1);
+        var topLeftPoint = this.getPosition();
+        var rect = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Rectangle"](topLeftPoint.x, topLeftPoint.y, this.getWidth(), this.getHeight());
+        var pointList = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointListFromRect(rect);
+        annSerialize.writePoint(pointList[0]); // top left
+        annSerialize.writePoint(pointList[2]); // bottom right
+        annSerialize.writePoint(pointList[1]); // top right
+        annSerialize.writePoint(pointList[3]); // bottom left
+    };
     AnnBaseRectangle.prototype.onFlip = function (vertical) {
         if (vertical) {
             this.jcObj._y = this.image.height() - this.jcObj._y;
@@ -1315,6 +1925,10 @@ var AnnBaseRectangle = /** @class */ (function (_super) {
         }
         return areaString;
     };
+    AnnBaseRectangle.prototype.getTransformMatrix = function () {
+        return this.forText ? this.imageViewer.getAnnLabelLayer().transform() : this.image.transformMatrix;
+        ;
+    };
     return AnnBaseRectangle;
 }(_ann_base_object__WEBPACK_IMPORTED_MODULE_2__["AnnBaseObject"]));
 
@@ -1332,9 +1946,10 @@ var AnnBaseRectangle = /** @class */ (function (_super) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnBaseText", function() { return AnnBaseText; });
-/* harmony import */ var _models_misc_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/misc-data */ "./src/app/models/misc-data.ts");
-/* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
-/* harmony import */ var _ann_base_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ann-base-object */ "./src/app/annotation/base-object/ann-base-object.ts");
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _models_misc_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../models/misc-data */ "./src/app/models/misc-data.ts");
+/* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
+/* harmony import */ var _ann_base_object__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-base-object */ "./src/app/annotation/base-object/ann-base-object.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -1351,27 +1966,41 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 
+
 var AnnBaseText = /** @class */ (function (_super) {
     __extends(AnnBaseText, _super);
     function AnnBaseText(parentObj, text, startPoint, imageViewer) {
         var _this = _super.call(this, parentObj, imageViewer) || this;
         // The coordinate of input point is for annotation layer, since text will always be drawn in label layer, need to convert the coordinate
-        startPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].annLayerToAnnLabelLayer(startPoint, imageViewer);
-        var font = new _models_misc_data__WEBPACK_IMPORTED_MODULE_0__["FontData"]("Times New Roman", "#FFF", _this.parentObj.getFontSize());
+        startPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_2__["AnnTool"].annLayerToAnnLabelLayer(startPoint, imageViewer);
+        var font = new _models_misc_data__WEBPACK_IMPORTED_MODULE_1__["FontData"]("Times New Roman", "#FFF", _this.parentObj.getFontSize());
         _this.jcObj = jCanvaScript.text(text, startPoint.x, startPoint.y).color(_this.selectedColor).font(font.getCanvasFontString()).layer(_this.labelLayerId).align("left");
         _super.prototype.setJcObj.call(_this);
         return _this;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
+    AnnBaseText.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString("CGXAnnLabel");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 4);
+        annSerialize.writeNumber(0, 1);
+        var topLeftPoint = this.getPosition();
+        var rect = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Rectangle"](topLeftPoint.x, topLeftPoint.y, this.getWidth(), this.getHeight());
+        var pointList = _ann_tool__WEBPACK_IMPORTED_MODULE_2__["AnnTool"].pointListFromRect(rect);
+        annSerialize.writePoint(pointList[0]); // top left
+        annSerialize.writePoint(pointList[2]); // bottom right
+        annSerialize.writePoint(pointList[1]); // top right
+        annSerialize.writePoint(pointList[3]); // bottom left
+    };
     AnnBaseText.prototype.onScale = function () {
         // When scale value changed, the font size need to be changed as well to make sure it look unchanged in the screen
-        var font = new _models_misc_data__WEBPACK_IMPORTED_MODULE_0__["FontData"]("Times New Roman", "#FFF", this.parentObj.getFontSize());
+        var font = new _models_misc_data__WEBPACK_IMPORTED_MODULE_1__["FontData"]("Times New Roman", "#FFF", this.parentObj.getFontSize());
         this.jcObj.font(font.getCanvasFontString());
     };
     AnnBaseText.prototype.onMove = function (point) {
         // The coordinate of input point is for annotation layer, since text will always be drawn in label layer, need to convert the coordinate
-        point = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].annLayerToAnnLabelLayer(point, this.imageViewer);
+        point = _ann_tool__WEBPACK_IMPORTED_MODULE_2__["AnnTool"].annLayerToAnnLabelLayer(point, this.imageViewer);
         _super.prototype.onMove.call(this, point);
     };
     AnnBaseText.prototype.getRect = function () {
@@ -1382,6 +2011,7 @@ var AnnBaseText = /** @class */ (function (_super) {
         rect.height = newHeight + 4;
         rect.x -= 2;
         rect.width += 4;
+        // the coordinate is for annotation label layer
         return rect;
     };
     AnnBaseText.prototype.getTransformMatrix = function () {
@@ -1390,11 +2020,235 @@ var AnnBaseText = /** @class */ (function (_super) {
     };
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
+    AnnBaseText.prototype.getText = function () {
+        return this.jcObj._string;
+    };
     AnnBaseText.prototype.setText = function (text) {
         this.jcObj.string(text);
     };
     return AnnBaseText;
-}(_ann_base_object__WEBPACK_IMPORTED_MODULE_2__["AnnBaseObject"]));
+}(_ann_base_object__WEBPACK_IMPORTED_MODULE_3__["AnnBaseObject"]));
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/extend-object/ann-angle.ts":
+/*!*******************************************************!*\
+  !*** ./src/app/annotation/extend-object/ann-angle.ts ***!
+  \*******************************************************/
+/*! exports provided: AnnAngle */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnAngle", function() { return AnnAngle; });
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
+/* harmony import */ var _ann_extend_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ann-extend-object */ "./src/app/annotation/extend-object/ann-extend-object.ts");
+/* harmony import */ var _ann_point__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-point */ "./src/app/annotation/extend-object/ann-point.ts");
+/* harmony import */ var _base_object_ann_base_curve__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../base-object/ann-base-curve */ "./src/app/annotation/base-object/ann-base-curve.ts");
+/* harmony import */ var _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ann-text-indicator */ "./src/app/annotation/extend-object/ann-text-indicator.ts");
+/* harmony import */ var _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../base-object/ann-base-line */ "./src/app/annotation/base-object/ann-base-line.ts");
+/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+
+
+
+
+var AnnAngle = /** @class */ (function (_super) {
+    __extends(AnnAngle, _super);
+    function AnnAngle(parent, imageViewer) {
+        var _this = _super.call(this, parent, imageViewer) || this;
+        _this.line1Drawn = false;
+        return _this;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
+    AnnAngle.prototype.onMouseEvent = function (mouseEventType, point, mouseObj) {
+        var imagePoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].screenToImage(point, this.image.transformMatrix);
+        if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
+            if (this.created) {
+                this.onSelect(true, false);
+                return;
+            }
+            if (!this.annStartPoint) {
+                this.annStartPoint = this.createPoint(imagePoint);
+            }
+            else if (!this.line1Drawn) {
+                this.line1Drawn = true;
+            }
+            else {
+                this.focusedObj = this.annStartPoint;
+                this.redrawAngle();
+                if (!this.parentObj) {
+                    this.onDrawEnded();
+                }
+            }
+        }
+        else if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
+            if (!this.annStartPoint) {
+                return;
+            }
+            if (this.annBaseLine1) {
+                if (this.line1Drawn) {
+                    if (this.annBaseLine2) {
+                        this.annBaseLine2.onMoveEndPoint(imagePoint);
+                        this.annEndPoint2.onMove(imagePoint);
+                    }
+                    else {
+                        this.annEndPoint2 = this.createPoint(imagePoint);
+                        this.annBaseLine2 = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_6__["AnnBaseLine"](this, this.annStartPoint.getPosition(), imagePoint, this.imageViewer);
+                    }
+                }
+                else {
+                    this.annBaseLine1.onMoveEndPoint(imagePoint);
+                    this.annEndPoint1.onMove(imagePoint);
+                }
+            }
+            else {
+                this.annEndPoint1 = this.createPoint(imagePoint);
+                this.annBaseLine1 = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_6__["AnnBaseLine"](this, this.annStartPoint.getPosition(), imagePoint, this.imageViewer);
+            }
+        }
+    };
+    AnnAngle.prototype.onCreate = function (lineList, arrowStartPoint, arrowEndPoint) {
+        if (arrowStartPoint === void 0) { arrowStartPoint = undefined; }
+        if (arrowEndPoint === void 0) { arrowEndPoint = undefined; }
+        if (lineList.length !== 2) {
+            alert("Error config of AnnAngle!");
+            return;
+        }
+        this.annBaseLine1 = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_6__["AnnBaseLine"](this, lineList[0].startPoint, lineList[0].endPoint, this.imageViewer);
+        this.annBaseLine2 = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_6__["AnnBaseLine"](this, lineList[1].startPoint, lineList[1].endPoint, this.imageViewer);
+        this.annStartPoint = this.createPoint(lineList[0].startPoint);
+        this.annEndPoint1 = this.createPoint(lineList[0].endPoint);
+        this.annEndPoint2 = this.createPoint(lineList[1].endPoint);
+        this.redrawAngle();
+    };
+    AnnAngle.prototype.onLoad = function (annSerialize) {
+        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_7__["AnnConfigLoader"].loadAngle(annSerialize);
+        this.onCreate(config.lineList, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
+    };
+    AnnAngle.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString("CGXAnnProtractor");
+        annSerialize.writeNumber(8, 4); // AnnType
+        annSerialize.writeNumber(1, 4); // created
+        annSerialize.writeNumber(0, 4); // moving
+        annSerialize.writeNumber(0, 1); // selected
+        annSerialize.writeNumber(0, 1); // arcAndTextOnly
+        annSerialize.writeNumber(3, 4); // createState
+        var angle = this.annBaseCurve.getAngle();
+        annSerialize.writeNumber(angle, 8); // angle
+        var startPoint = this.annStartPoint.getPosition();
+        var radius = this.annBaseCurve.getRadius();
+        var arcStartPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointInLineByDistance(startPoint, this.annBaseLine1.getEndPosition(), radius);
+        annSerialize.writePoint(arcStartPoint);
+        var arcEndPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointInLineByDistance(startPoint, this.annBaseLine2.getEndPosition(), radius);
+        annSerialize.writePoint(arcEndPoint);
+        // TopLeft point of curve's rect
+        annSerialize.writePoint({ x: startPoint.x - radius, y: startPoint.y - radius });
+        annSerialize.writePoint({ x: startPoint.x + radius, y: startPoint.y + radius });
+        this.annBaseLine1.onSave(annSerialize);
+        this.annBaseLine2.onSave(annSerialize);
+        this.annTextIndicator.onSave(annSerialize);
+    };
+    AnnAngle.prototype.onDrag = function (deltaX, deltaY) {
+        if (this.focusedObj === this.annStartPoint) {
+            this.annStartPoint.onDrag(deltaX, deltaY);
+            var startPoint = this.annStartPoint.getPosition();
+            this.annBaseLine1.onMoveStartPoint(startPoint);
+            this.annBaseLine2.onMoveStartPoint(startPoint);
+            this.redrawAngle();
+        }
+        else if (this.focusedObj === this.annEndPoint1) {
+            this.annEndPoint1.onDrag(deltaX, deltaY);
+            this.annBaseLine1.onMoveEndPoint(this.annEndPoint1.getPosition());
+            this.redrawAngle();
+        }
+        else if (this.focusedObj === this.annEndPoint2) {
+            this.annEndPoint2.onDrag(deltaX, deltaY);
+            this.annBaseLine2.onMoveEndPoint(this.annEndPoint2.getPosition());
+            this.redrawAngle();
+        }
+        else if (this.focusedObj === this.annTextIndicator) {
+            this.annTextIndicator.onDrag(deltaX, deltaY);
+        }
+        else {
+            this.onTranslate(deltaX, deltaY);
+        }
+    };
+    AnnAngle.prototype.onFlip = function (vertical) {
+        _super.prototype.onFlip.call(this, vertical);
+        this.redrawAngle();
+    };
+    // The arrow of the text indicator will always point to the start point
+    AnnAngle.prototype.getSurroundPointList = function () {
+        return [this.annStartPoint.getPosition()];
+    };
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    AnnAngle.prototype.redrawAngle = function () {
+        var radius = this.getAngelRadius();
+        var arcStartPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointInLineByDistance(this.annStartPoint.getPosition(), this.annBaseLine1.getEndPosition(), radius);
+        var arcEndPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointInLineByDistance(this.annStartPoint.getPosition(), this.annBaseLine2.getEndPosition(), radius);
+        var arcMiddlePoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].calcMiddlePointOfArc(arcStartPoint, arcEndPoint, radius);
+        var lineCenter = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(arcStartPoint, arcEndPoint);
+        // another middle point
+        var newMiddlePoint = { x: lineCenter.x * 2 - arcMiddlePoint.x, y: lineCenter.y * 2 - arcMiddlePoint.y };
+        var startPoint = this.annStartPoint.getPosition();
+        // The nearest is the wanted
+        if (_ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(startPoint, newMiddlePoint) > _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(startPoint, arcMiddlePoint)) {
+            arcMiddlePoint = newMiddlePoint;
+        }
+        var arcData = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].calcArcBy3Points(arcStartPoint, arcEndPoint, arcMiddlePoint, true);
+        if (this.annBaseCurve) {
+            this.annBaseCurve.onMove(arcData.centerPoint);
+            this.annBaseCurve.setRadius(arcData.radius);
+            this.annBaseCurve.setAngle(arcData.startAngle, arcData.endAngle);
+            this.annBaseCurve.setAnticlockwise(arcData.anticlockwise);
+            this.annTextIndicator.setText(this.annBaseCurve.getText(true));
+        }
+        else {
+            this.annBaseCurve = new _base_object_ann_base_curve__WEBPACK_IMPORTED_MODULE_4__["AnnBaseCurve"](this, arcData.centerPoint, arcData.radius, arcData.startAngle, arcData.endAngle, arcData.anticlockwise, this.imageViewer);
+            this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
+            this.annTextIndicator.onCreate(this.annBaseCurve.getText(true), startPoint);
+        }
+    };
+    AnnAngle.prototype.getAngelRadius = function () {
+        var scale = this.image.getScaleValue();
+        var len1 = this.annBaseLine1.getLengthInPixel() * scale;
+        var len2 = this.annBaseLine2.getLengthInPixel() * scale;
+        var radius = Math.min(len1, len2, 30);
+        return radius / scale;
+    };
+    AnnAngle.prototype.createPoint = function (point) {
+        var annPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_3__["AnnPoint"](this, this.imageViewer);
+        annPoint.onCreate(point);
+        annPoint.onLevelUp("top");
+        return annPoint;
+    };
+    return AnnAngle;
+}(_ann_extend_object__WEBPACK_IMPORTED_MODULE_2__["AnnExtendObject"]));
 
 
 
@@ -1415,6 +2269,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../base-object/ann-base-line */ "./src/app/annotation/base-object/ann-base-line.ts");
 /* harmony import */ var _ann_extend_object__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-extend-object */ "./src/app/annotation/extend-object/ann-extend-object.ts");
 /* harmony import */ var _ann_line__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ann-line */ "./src/app/annotation/extend-object/ann-line.ts");
+/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -1428,6 +2283,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 
 
@@ -1470,6 +2326,28 @@ var AnnArrow = /** @class */ (function (_super) {
         this.annLine = new _ann_line__WEBPACK_IMPORTED_MODULE_4__["AnnLine"](this, this.imageViewer);
         this.annLine.onCreate(arrowStartPoint, arrowEndPoint);
         this.redrawArrow(arrowStartPoint, arrowEndPoint);
+    };
+    AnnArrow.prototype.onLoad = function (annSerialize) {
+        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_5__["AnnConfigLoader"].loadArrow(annSerialize);
+        this.onCreate(config.startPoint, config.endPoint);
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
+    };
+    AnnArrow.prototype.onSave = function (annSerialize, saveArrowMark) {
+        if (saveArrowMark === void 0) { saveArrowMark = true; }
+        if (saveArrowMark) {
+            annSerialize.writeString("CGXAnnArrowMark");
+            annSerialize.writeNumber(10, 4);
+            annSerialize.writeNumber(1, 4);
+            annSerialize.writeNumber(1, 1);
+        }
+        annSerialize.writeString("CGXAnnArrow");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 1);
+        this.annLine.getBaseLine().onSave(annSerialize);
+        this.annArrowLineA.onSave(annSerialize);
+        this.annArrowLineB.onSave(annSerialize);
     };
     AnnArrow.prototype.onDrag = function (deltaX, deltaY) {
         this.annLine.onDrag(deltaX, deltaY);
@@ -1746,7 +2624,7 @@ var AnnCardiothoracicRatio = /** @class */ (function (_super) {
         annPointF.setStepIndex(5);
         this.annPointList.push(annPointF);
         this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
-        this.annTextIndicator.onCreate(this.annBaseLineAb.getStartPosition(), this.getText());
+        this.annTextIndicator.onCreate(this.getText(), this.annBaseLineAb.getStartPosition());
         this.focusedObj = this.annPointList[0];
         if (!this.parentObj) {
             this.onDrawEnded();
@@ -1864,12 +2742,12 @@ var AnnCurve = /** @class */ (function (_super) {
                     this.onStep1(imagePoint);
                     break;
                 }
-                // Draw line AB and point B
+                // Draw curve
                 case 1: {
                     this.onStep2(imagePoint);
                     break;
                 }
-                // Draw the start point of line Cd
+                // Adjust curve direction
                 case 2: {
                     this.onStep3(imagePoint);
                     break;
@@ -1926,7 +2804,7 @@ var AnnCurve = /** @class */ (function (_super) {
         if (_ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].equalPoint(imagePoint, startPoint))
             return;
         var radius = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(startPoint, imagePoint);
-        var middlePoint = this.calcMiddlePoint(startPoint, imagePoint, radius);
+        var middlePoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].calcMiddlePointOfArc(startPoint, imagePoint, radius);
         this.redraw(startPoint, imagePoint, middlePoint);
         this.annEndPoint.setStepIndex(1);
     };
@@ -1947,137 +2825,6 @@ var AnnCurve = /** @class */ (function (_super) {
             this.onDrawEnded();
         }
     };
-    // Calculate the middle point of the curve (The curve is determined by start/end point and its radius, default direction is left or up)
-    AnnCurve.prototype.calcMiddlePoint = function (startPoint, endPoint, radius) {
-        var pointDir = { x: 1, y: 1 };
-        var centerPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(startPoint, endPoint);
-        var dSinAB = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(startPoint, endPoint);
-        var dCosAB = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(startPoint, endPoint);
-        var dLineAD = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(startPoint, centerPoint);
-        var ptO1 = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
-        var ptO2 = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
-        //get the two center ponints.
-        //check if the arc is almost 180, if true, lineAd is the radius
-        if (Math.abs(dLineAD - radius) < _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].minDelta || radius < dLineAD) {
-            ptO1.x = ptO2.x = centerPoint.x;
-            ptO1.y = ptO2.y = centerPoint.y;
-        }
-        else {
-            var dLineOD = Math.sqrt(Math.abs(radius * radius - dLineAD * dLineAD));
-            ptO1.x = centerPoint.x + dLineOD * dSinAB;
-            ptO1.y = centerPoint.y - dLineOD * dCosAB;
-            ptO2.x = centerPoint.x - dLineOD * dSinAB;
-            ptO2.y = centerPoint.y + dLineOD * dCosAB;
-        }
-        var dSinBA = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(endPoint, startPoint), dCosBA = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(endPoint, startPoint), dSinBC = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(endPoint, pointDir), dCosBC = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(endPoint, pointDir);
-        //determine the center point
-        var middlePoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
-        var dSinBC_BA = dSinBC * dCosBA - dCosBC * dSinBA;
-        if (dSinBC_BA < 0.0) {
-            middlePoint.x = ptO1.x - radius * dSinAB;
-            middlePoint.y = ptO1.y + radius * dCosAB;
-        }
-        else {
-            middlePoint.x = ptO2.x + radius * dSinAB;
-            middlePoint.y = ptO2.y - radius * dCosAB;
-        }
-        return middlePoint;
-    };
-    // Calculate the center point of the curve ( The curve is determined by three points )
-    AnnCurve.prototype.calcCenterBy3Points = function (startPoint, endPoint, middlePoint) {
-        var isInvalid = false;
-        var needRevert = false;
-        // D and E is center point of Line AB and Line BC
-        var ptD = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(startPoint, endPoint);
-        var ptE = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(endPoint, middlePoint);
-        // k of Line OD and Line OE
-        // O is center point of arc
-        //
-        var dkOD = -(endPoint.x - startPoint.x) / (endPoint.y - startPoint.y);
-        var dkOE = -(middlePoint.x - endPoint.x) / (middlePoint.y - endPoint.y);
-        var centerPoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
-        if (Math.abs(middlePoint.y - endPoint.y) < _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].minDelta) {
-            centerPoint.x = ptE.x;
-            centerPoint.y = (ptE.x - ptD.x) * dkOD + ptD.y;
-        }
-        else if (Math.abs(endPoint.y - startPoint.y) < _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].minDelta) {
-            centerPoint.x = ptD.x;
-            centerPoint.y = (ptD.x - ptE.x) * dkOE + ptE.y;
-        }
-        else if (Math.abs(middlePoint.x - endPoint.x) < _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].minDelta) {
-            centerPoint.y = ptE.y;
-            centerPoint.x = (ptE.y - ptD.y) / dkOD + ptD.x;
-        }
-        else if (Math.abs(endPoint.x - startPoint.x) < _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].minDelta) {
-            centerPoint.y = ptD.y;
-            centerPoint.x = (ptD.y - ptE.y) / dkOE + ptE.x;
-        }
-        else {
-            centerPoint.x = (ptE.y - ptD.y - (ptE.x * dkOE) + (ptD.x * dkOD)) / (dkOD - dkOE);
-            centerPoint.y = ptD.y + dkOD * (centerPoint.x - ptD.x);
-        }
-        // Analysis Start Point and End point
-        // Arc() always draw arc in a Clockwise
-        //
-        var dSinBA = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(endPoint, startPoint), dCosBA = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(endPoint, startPoint), dSinBC = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(endPoint, middlePoint), dCosBC = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(endPoint, middlePoint);
-        var dSinBC_BA = dSinBC * dCosBA - dCosBC * dSinBA;
-        // Check Arc angle
-        //
-        var dSinOA = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(centerPoint, startPoint), dCosOA = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(centerPoint, startPoint), dSinOB = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(centerPoint, endPoint), dCosOB = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(centerPoint, endPoint);
-        var dSinArc = dSinOA * dCosOB - dCosOA * dSinOB;
-        if (dSinBC_BA > 0.0) {
-            dSinArc = (-1.0) * dSinArc;
-        }
-        if (dSinArc < 0.0) {
-            isInvalid = true;
-        }
-        //need to revert start and end.
-        if (dSinBC_BA > 0.0) {
-            needRevert = true;
-        }
-        return { centerPoint: centerPoint, isInvalid: isInvalid, needRevert: needRevert };
-    };
-    // Calculate all necessary information of a curve
-    AnnCurve.prototype.calcArcBy3Points = function (startPoint, endPoint, middlePoint, needCheckArc) {
-        var arcData = this.calcCenterBy3Points(startPoint, endPoint, middlePoint);
-        if (needCheckArc && arcData.isInvalid)
-            return false; //user may drag the point out of range
-        var radius = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(arcData.centerPoint, startPoint);
-        var dSinAB = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(startPoint, endPoint);
-        var dCosAB = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(startPoint, endPoint);
-        if (arcData.needRevert) {
-            middlePoint.x = arcData.centerPoint.x + radius * dSinAB;
-            middlePoint.y = arcData.centerPoint.y - radius * dCosAB;
-        }
-        else {
-            middlePoint.x = arcData.centerPoint.x - radius * dSinAB;
-            middlePoint.y = arcData.centerPoint.y + radius * dCosAB;
-        }
-        var arcStart = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].calcLineAngle(arcData.centerPoint, startPoint);
-        var arcEnd = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].calcLineAngle(arcData.centerPoint, endPoint);
-        if (arcEnd < arcStart) {
-            arcEnd = arcEnd + 360.0;
-        }
-        return {
-            centerPoint: arcData.centerPoint,
-            startPoint: startPoint,
-            endPoint: endPoint,
-            middlePoint: middlePoint,
-            radius: radius,
-            startAngle: arcStart,
-            endAngle: arcEnd,
-            anticlockwise: !arcData.needRevert
-        };
-    };
-    // Calcuate the curve angle of two lines that share the same point
-    //private calcCurveAngle(startPoint: Point, endPoint: Point, centerPoint: Point): any {
-    //    const arcStart = AnnPoint.calcLineAngle(centerPoint, startPoint);
-    //    let arcEnd = AnnPoint.calcLineAngle(centerPoint, endPoint);
-    //    if (arcEnd < arcStart) {
-    //        arcEnd = arcEnd + 360.0;
-    //    }
-    //    return { startAngle: arcStart, endAngle: arcEnd };
-    //}
     AnnCurve.prototype.onDragStartPoint = function (deltaX, deltaY) {
         var startPoint = this.annStartPoint.getPosition();
         var endPoint = this.annEndPoint.getPosition();
@@ -2104,28 +2851,28 @@ var AnnCurve = /** @class */ (function (_super) {
     };
     // Redraw the curve
     AnnCurve.prototype.redraw = function (startPoint, endPoint, middlePoint) {
-        var arcData = this.calcArcBy3Points(startPoint, endPoint, middlePoint, true);
+        var arcData = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].calcArcBy3Points(startPoint, endPoint, middlePoint, true);
         if (!arcData)
             return;
-        if (this.annCurve) {
+        if (this.annBaseCurve) {
             this.annStartPoint.onMove(arcData.startPoint);
             this.annEndPoint.onMove(arcData.endPoint);
             this.annMiddlePoint.onMove(arcData.middlePoint);
-            this.annCurve.onMove(arcData.centerPoint);
-            this.annCurve.setRadius(arcData.radius);
-            this.annCurve.setAngle(arcData.startAngle, arcData.endAngle);
-            this.annCurve.setAnticlockwise(arcData.anticlockwise);
-            this.annTextIndicator.setText(this.annCurve.getText());
+            this.annBaseCurve.onMove(arcData.centerPoint);
+            this.annBaseCurve.setRadius(arcData.radius);
+            this.annBaseCurve.setAngle(arcData.startAngle, arcData.endAngle);
+            this.annBaseCurve.setAnticlockwise(arcData.anticlockwise);
+            this.annTextIndicator.setText(this.annBaseCurve.getText());
         }
         else {
             this.annEndPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_3__["AnnPoint"](this, this.imageViewer);
             this.annEndPoint.onCreate(endPoint);
             this.annMiddlePoint = new _ann_point__WEBPACK_IMPORTED_MODULE_3__["AnnPoint"](this, this.imageViewer);
             this.annMiddlePoint.onCreate(middlePoint);
-            this.annCurve = new _base_object_ann_base_curve__WEBPACK_IMPORTED_MODULE_4__["AnnBaseCurve"](this, arcData.centerPoint, arcData.radius, arcData.startAngle, arcData.endAngle, arcData.anticlockwise, this.imageViewer);
+            this.annBaseCurve = new _base_object_ann_base_curve__WEBPACK_IMPORTED_MODULE_4__["AnnBaseCurve"](this, arcData.centerPoint, arcData.radius, arcData.startAngle, arcData.endAngle, arcData.anticlockwise, this.imageViewer);
             this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
-            this.annTextIndicator.onCreate(middlePoint, this.annCurve.getText());
-            this.annCurve.onLevelDown();
+            this.annTextIndicator.onCreate(this.annBaseCurve.getText(), middlePoint);
+            this.annBaseCurve.onLevelDown();
         }
     };
     return AnnCurve;
@@ -2233,7 +2980,7 @@ var AnnEllipse = /** @class */ (function (_super) {
                     this.annPointList.push(annLeftPoint);
                     this.annCenterPoint.onLevelUp();
                     this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
-                    this.annTextIndicator.onCreate(topPoint, this.annEllipse.getAreaString());
+                    this.annTextIndicator.onCreate(this.annEllipse.getAreaString(), topPoint);
                 }
             }
         }
@@ -2389,7 +3136,7 @@ var AnnExtendObject = /** @class */ (function (_super) {
         }
         this.created = true;
         if (!this.parentObj) {
-            // Parent not set, this mean it is not a child of a parentObj annotion. 
+            // Parent not set, this mean it is not a child of a parentObj annotation. 
             this.imageViewer.onAnnotationCreated(this);
         }
     };
@@ -2452,6 +3199,13 @@ var AnnExtendObject = /** @class */ (function (_super) {
     };
     AnnExtendObject.prototype.setVisible = function (visible) {
         this.annObjList.forEach(function (annObj) { return annObj.setVisible(visible); });
+    };
+    AnnExtendObject.prototype.onLoad = function (annSerialize) {
+        alert("Internal error : AnnExtendObject.onLoad() should never be called.");
+        return undefined;
+    };
+    AnnExtendObject.prototype.onSave = function (annSerialize) {
+        alert("Internal error : AnnExtendObject.onSave() should never be called.");
     };
     AnnExtendObject.prototype.addChildObj = function (annObj) {
         this.annObjList.push(annObj);
@@ -2583,6 +3337,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../base-object/ann-base-line */ "./src/app/annotation/base-object/ann-base-line.ts");
 /* harmony import */ var _ann_extend_object__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-extend-object */ "./src/app/annotation/extend-object/ann-extend-object.ts");
 /* harmony import */ var _ann_point__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ann-point */ "./src/app/annotation/extend-object/ann-point.ts");
+/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -2596,6 +3351,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 
 
@@ -2620,7 +3376,7 @@ var AnnLine = /** @class */ (function (_super) {
                 this.annStartPoint.onCreate(imagePoint);
             }
             else {
-                this.focusedObj = this.annLine;
+                this.focusedObj = this.annBaseLine;
                 if (!this.parentObj) {
                     this.onDrawEnded();
                 }
@@ -2628,14 +3384,14 @@ var AnnLine = /** @class */ (function (_super) {
         }
         else if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
             if (this.annStartPoint) {
-                if (this.annLine) {
-                    this.annLine.onMoveEndPoint(imagePoint);
+                if (this.annBaseLine) {
+                    this.annBaseLine.onMoveEndPoint(imagePoint);
                     this.annEndPoint.onMove(imagePoint);
                 }
                 else {
                     this.annEndPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_4__["AnnPoint"](this, this.imageViewer);
                     this.annEndPoint.onCreate(imagePoint);
-                    this.annLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, this.annStartPoint.getPosition(), imagePoint, this.imageViewer);
+                    this.annBaseLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, this.annStartPoint.getPosition(), imagePoint, this.imageViewer);
                     // Make sure the start point is on the top the line So that we can easily select it for moving
                     this.annStartPoint.onLevelUp();
                 }
@@ -2644,12 +3400,26 @@ var AnnLine = /** @class */ (function (_super) {
     };
     AnnLine.prototype.onCreate = function (startPoint, endPoint) {
         this.onDeleteChildren();
-        this.annLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, startPoint, endPoint, this.imageViewer);
+        this.annBaseLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, startPoint, endPoint, this.imageViewer);
         this.annStartPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_4__["AnnPoint"](this, this.imageViewer);
         this.annStartPoint.onCreate(startPoint);
         this.annEndPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_4__["AnnPoint"](this, this.imageViewer);
         this.annEndPoint.onCreate(endPoint);
-        this.focusedObj = this.annLine;
+        this.focusedObj = this.annBaseLine;
+    };
+    AnnLine.prototype.onLoad = function (annSerialize) {
+        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_5__["AnnConfigLoader"].loadLine(annSerialize);
+        this.onCreate(config.startPoint, config.endPoint);
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
+    };
+    AnnLine.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString("CGXAnnLineEx");
+        annSerialize.writeNumber(33, 4);
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(1, 1);
+        this.annBaseLine.onSave(annSerialize);
     };
     AnnLine.prototype.onDrag = function (deltaX, deltaY) {
         if (this.focusedObj === this.annStartPoint) {
@@ -2663,30 +3433,35 @@ var AnnLine = /** @class */ (function (_super) {
         }
     };
     AnnLine.prototype.onMoveStartPoint = function (point) {
-        this.annLine.onMoveStartPoint(point);
+        this.annBaseLine.onMoveStartPoint(point);
         this.annStartPoint.onMove(point);
     };
     AnnLine.prototype.onMoveEndPoint = function (point) {
-        this.annLine.onMoveEndPoint(point);
+        this.annBaseLine.onMoveEndPoint(point);
         this.annEndPoint.onMove(point);
     };
     AnnLine.prototype.getStartPosition = function () {
-        return this.annLine.getStartPosition();
+        return this.annBaseLine.getStartPosition();
     };
     AnnLine.prototype.getEndPosition = function () {
-        return this.annLine.getEndPosition();
+        return this.annBaseLine.getEndPosition();
+    };
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    AnnLine.prototype.getBaseLine = function () {
+        return this.annBaseLine;
     };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
     AnnLine.prototype.onDragStartPoint = function (deltaX, deltaY) {
         this.annStartPoint.onTranslate(deltaX, deltaY);
         var point = this.annStartPoint.getPosition();
-        this.annLine.onMoveStartPoint(point);
+        this.annBaseLine.onMoveStartPoint(point);
     };
     AnnLine.prototype.onDragEndPoint = function (deltaX, deltaY) {
         this.annEndPoint.onTranslate(deltaX, deltaY);
         var point = this.annEndPoint.getPosition();
-        this.annLine.onMoveEndPoint(point);
+        this.annBaseLine.onMoveEndPoint(point);
     };
     return AnnLine;
 }(_ann_extend_object__WEBPACK_IMPORTED_MODULE_3__["AnnExtendObject"]));
@@ -2828,10 +3603,11 @@ var AnnPoint = /** @class */ (function (_super) {
     };
     AnnPoint.prototype.onCreate = function (position) {
         this.annCenterCircle = new _base_object_ann_base_circle__WEBPACK_IMPORTED_MODULE_2__["AnnBaseCircle"](this, position, this.pointRadius, this.imageViewer, true);
+        this.annCenterCircle.setMouseResponsible(false);
         this.annOuterCircle = new _base_object_ann_base_circle__WEBPACK_IMPORTED_MODULE_2__["AnnBaseCircle"](this, position, this.pointRadius * 2, this.imageViewer, false);
-        this.annOuterCircle.setVisible(false);
-        this.annOuterCircle.setMouseResponsible(false);
-        this.annOuterCircle.onLevelDown("bottom");
+        this.annOuterCircle.setTransparent(true);
+        this.annOuterCircle.setColor(this.annOuterCircle.getDefaultColor());
+        this.annOuterCircle.onLevelUp("top");
         this.focusedObj = this.annCenterCircle;
     };
     AnnPoint.prototype.onScale = function () {
@@ -2847,7 +3623,7 @@ var AnnPoint = /** @class */ (function (_super) {
         }
         this.annCenterCircle.setVisible(selected || this.showAlways);
         this.annCenterCircle.setColor(color);
-        this.annOuterCircle.setVisible(selected && focused);
+        this.annOuterCircle.setColor(focused ? color : this.annOuterCircle.getDefaultColor());
     };
     AnnPoint.prototype.setRadius = function (radius) {
         this.annCenterCircle.setRadius(radius);
@@ -2872,6 +3648,160 @@ var AnnPoint = /** @class */ (function (_super) {
 
 /***/ }),
 
+/***/ "./src/app/annotation/extend-object/ann-polygon.ts":
+/*!*********************************************************!*\
+  !*** ./src/app/annotation/extend-object/ann-polygon.ts ***!
+  \*********************************************************/
+/*! exports provided: AnnPolygon */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnPolygon", function() { return AnnPolygon; });
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
+/* harmony import */ var _ann_extend_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ann-extend-object */ "./src/app/annotation/extend-object/ann-extend-object.ts");
+/* harmony import */ var _ann_point__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-point */ "./src/app/annotation/extend-object/ann-point.ts");
+/* harmony import */ var _base_object_ann_base_polygon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../base-object/ann-base-polygon */ "./src/app/annotation/base-object/ann-base-polygon.ts");
+/* harmony import */ var _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ann-text-indicator */ "./src/app/annotation/extend-object/ann-text-indicator.ts");
+/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+
+
+
+var AnnPolygon = /** @class */ (function (_super) {
+    __extends(AnnPolygon, _super);
+    function AnnPolygon(parent, imageViewer) {
+        var _this = _super.call(this, parent, imageViewer) || this;
+        _this.moveToCreate = true;
+        return _this;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
+    AnnPolygon.prototype.onMouseEvent = function (mouseEventType, point, mouseObj) {
+        var imagePoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].screenToImage(point, this.image.transformMatrix);
+        if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
+            if (this.created) {
+                this.onSelect(true, false);
+                return;
+            }
+            if (this.annObjList.length === 0) {
+                this.annBasePolygon = new _base_object_ann_base_polygon__WEBPACK_IMPORTED_MODULE_4__["AnnBasePolygon"](this, [[imagePoint.x, imagePoint.y]], this.imageViewer);
+                this.createNewPoint(imagePoint);
+            }
+            this.moveToCreate = true;
+        }
+        else if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].DblClick) {
+            // ********** Mouse down was called two times before calling dbclick, need to delete the additional point
+            var length_1 = this.annObjList.length;
+            if (length_1 > 1) {
+                this.onDeleteChild(this.annObjList[length_1 - 1]);
+            }
+            this.createNewPoint(imagePoint);
+            this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
+            this.annTextIndicator.onCreate(this.annBasePolygon.getAreaString(), imagePoint);
+            this.annBasePolygon.setClosed(true);
+            this.focusedObj = this.annBasePolygon;
+            if (!this.parentObj) {
+                this.onDrawEnded();
+            }
+        }
+        else if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
+            if (this.annObjList.length !== 0) {
+                if (this.moveToCreate) {
+                    this.moveToCreate = false;
+                    this.createNewPoint(imagePoint);
+                    this.annBasePolygon.addPoint(imagePoint);
+                }
+                else {
+                    this.annBasePolygon.updateLastPoint(imagePoint);
+                    this.annPoint.onMove(imagePoint);
+                }
+            }
+        }
+    };
+    AnnPolygon.prototype.onCreate = function (pointList, showIndicator, arrowStartPoint, arrowEndPoint) {
+        if (arrowStartPoint === void 0) { arrowStartPoint = undefined; }
+        if (arrowEndPoint === void 0) { arrowEndPoint = undefined; }
+        this.annBasePolygon = new _base_object_ann_base_polygon__WEBPACK_IMPORTED_MODULE_4__["AnnBasePolygon"](this, [], this.imageViewer);
+        var dataList = [];
+        var length = pointList.length;
+        for (var i = 0; i < length; i++) {
+            dataList.push([pointList[i].x, pointList[i].y]);
+            this.createNewPoint(pointList[i]);
+        }
+        this.annBasePolygon.setPointList(dataList);
+        this.annBasePolygon.setClosed(true);
+        if (showIndicator) {
+            this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
+            this.annTextIndicator.onCreate(this.annBasePolygon.getAreaString(), arrowEndPoint, arrowStartPoint);
+        }
+    };
+    AnnPolygon.prototype.onLoad = function (annSerialize) {
+        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_6__["AnnConfigLoader"].loadPolygon(annSerialize);
+        this.onCreate(config.pointList, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
+    };
+    AnnPolygon.prototype.onSave = function (annSerialize) {
+        this.annBasePolygon.onSave(annSerialize);
+        this.annTextIndicator.onSave(annSerialize);
+    };
+    AnnPolygon.prototype.onDrag = function (deltaX, deltaY) {
+        var _this = this;
+        if (this.focusedObj === this.annBasePolygon) {
+            this.onTranslate(deltaX, deltaY);
+        }
+        else if (this.annTextIndicator === this.focusedObj) {
+            this.annTextIndicator.onDrag(deltaX, deltaY);
+        }
+        else {
+            this.focusedObj.onTranslate(deltaX, deltaY);
+            var index = this.annObjList.findIndex(function (annObj) { return annObj === _this.focusedObj; });
+            this.annBasePolygon.updatePoint(index - 1, this.focusedObj.getPosition());
+            if (this.annTextIndicator) {
+                this.annTextIndicator.redrawArrow();
+                this.annTextIndicator.setText(this.annBasePolygon.getAreaString());
+            }
+        }
+    };
+    AnnPolygon.prototype.getSurroundPointList = function () {
+        var pointList = [];
+        for (var i = 1; i < this.annObjList.length - 1; i++) {
+            pointList.push(this.annObjList[i].getPosition());
+        }
+        return pointList;
+    };
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    AnnPolygon.prototype.createNewPoint = function (imagePoint) {
+        this.annPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_3__["AnnPoint"](this, this.imageViewer);
+        this.annPoint.onCreate(imagePoint);
+    };
+    return AnnPolygon;
+}(_ann_extend_object__WEBPACK_IMPORTED_MODULE_2__["AnnExtendObject"]));
+
+
+
+/***/ }),
+
 /***/ "./src/app/annotation/extend-object/ann-rectangle.ts":
 /*!***********************************************************!*\
   !*** ./src/app/annotation/extend-object/ann-rectangle.ts ***!
@@ -2888,6 +3818,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ann_point__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-point */ "./src/app/annotation/extend-object/ann-point.ts");
 /* harmony import */ var _base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../base-object/ann-base-rectangle */ "./src/app/annotation/base-object/ann-base-rectangle.ts");
 /* harmony import */ var _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ann-text-indicator */ "./src/app/annotation/extend-object/ann-text-indicator.ts");
+/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -2901,6 +3832,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 
 
@@ -2965,15 +3897,38 @@ var AnnRectangle = /** @class */ (function (_super) {
                     this.annBaseRectangle = new _base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_4__["AnnBaseRectangle"](this, topLeftPoint, imagePoint.x - topLeftPoint.x, imagePoint.y - topLeftPoint.y, this.imageViewer);
                     this.annBaseRectangle.onLevelDown("bottom");
                     this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
-                    this.annTextIndicator.onCreate(topLeftPoint, this.annBaseRectangle.getAreaString());
+                    this.annTextIndicator.onCreate(this.annBaseRectangle.getAreaString(), topLeftPoint);
                 }
             }
         }
     };
-    AnnRectangle.prototype.onCreate = function (topLeftPoint, width, height, showIndicator) {
+    AnnRectangle.prototype.onCreate = function (topLeftPoint, width, height, showIndicator, arrowStartPoint, arrowEndPoint) {
+        if (arrowStartPoint === void 0) { arrowStartPoint = undefined; }
+        if (arrowEndPoint === void 0) { arrowEndPoint = undefined; }
         var pointList = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointListFrom(topLeftPoint, _models_annotation__WEBPACK_IMPORTED_MODULE_0__["PositionInRectangle"].TopLeft, width, height);
-        this.createFromPointList(pointList, false);
+        if (arrowStartPoint) {
+            pointList.push(arrowStartPoint);
+        }
+        if (arrowEndPoint) {
+            pointList.push(arrowEndPoint);
+        }
+        this.createFromPointList(pointList, showIndicator);
         this.focusedObj = this.annBaseRectangle;
+    };
+    AnnRectangle.prototype.onLoad = function (annSerialize) {
+        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_6__["AnnConfigLoader"].loadRectangle(annSerialize);
+        this.onCreate(config.baseRect.topLeftPoint, config.baseRect.width, config.baseRect.height, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
+    };
+    AnnRectangle.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString("CGXAnnSquare");
+        annSerialize.writeNumber(2, 4);
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 1);
+        this.annBaseRectangle.onSave(annSerialize);
+        this.annTextIndicator.onSave(annSerialize);
     };
     AnnRectangle.prototype.onDrag = function (deltaX, deltaY) {
         var _this = this;
@@ -3048,7 +4003,9 @@ var AnnRectangle = /** @class */ (function (_super) {
         this.annBaseRectangle.onLevelDown("bottom");
         if (showIndicator) {
             this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
-            this.annTextIndicator.onCreate(pointList[0], this.annBaseRectangle.getAreaString());
+            var arrowStartPoint = pointList.length >= 5 ? pointList[4] : undefined;
+            var arrowEndPoint = pointList.length === 6 ? pointList[5] : pointList[0];
+            this.annTextIndicator.onCreate(this.annBaseRectangle.getAreaString(), arrowEndPoint, arrowStartPoint);
         }
     };
     return AnnRectangle;
@@ -3118,7 +4075,7 @@ var AnnRuler = /** @class */ (function (_super) {
                 this.annMiddlePoint = new _ann_point__WEBPACK_IMPORTED_MODULE_4__["AnnPoint"](this, this.imageViewer);
                 this.annMiddlePoint.onCreate(_ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(this.annLine.getStartPosition(), imagePoint));
                 var text = this.getLength(this.annLine.getStartPosition(), this.annLine.getEndPosition());
-                this.annTextIndicator.onCreate(this.annMiddlePoint.getPosition(), text);
+                this.annTextIndicator.onCreate(text, this.annMiddlePoint.getPosition());
                 this.focusedObj = this.annLine;
                 if (!this.parentObj) {
                     this.onDrawEnded();
@@ -3191,12 +4148,13 @@ var AnnRuler = /** @class */ (function (_super) {
     };
     AnnRuler.prototype.getLength = function (ptStart, ptEnd) {
         var strDist;
-        var dDistance = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(ptStart, ptEnd);
-        if (!this.pixelSpacing) {
-            strDist = dDistance.toFixed(2) + "pt";
+        if (this.pixelSpacing) {
+            var dDistance = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countPhysicalDistance(ptStart, ptEnd, this.pixelSpacing);
+            strDist = dDistance.toFixed(2) + "mm";
         }
         else {
-            strDist = dDistance.toFixed(2) + "mm";
+            var dDistance = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(ptStart, ptEnd);
+            strDist = dDistance.toFixed(2) + "pt";
         }
         return strDist;
     };
@@ -3246,10 +4204,13 @@ var AnnTextIndicator = /** @class */ (function (_super) {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
     // The point is the coordinate of image layer, for text, need to convert to text layer coordinate
-    AnnTextIndicator.prototype.onCreate = function (targetPoint, text) {
+    AnnTextIndicator.prototype.onCreate = function (text, targetPoint, arrowStartPoint) {
+        if (arrowStartPoint === void 0) { arrowStartPoint = undefined; }
         this.onDeleteChildren();
-        var delta = 30 / this.image.getScaleValue();
-        var arrowStartPoint = { x: targetPoint.x + delta, y: targetPoint.y - delta };
+        if (!arrowStartPoint) {
+            var delta = 30 / this.image.getScaleValue();
+            arrowStartPoint = { x: targetPoint.x + delta, y: targetPoint.y - delta };
+        }
         this.annArrow = new _ann_arrow__WEBPACK_IMPORTED_MODULE_3__["AnnArrow"](this, this.imageViewer);
         this.annArrow.onCreate(arrowStartPoint, targetPoint);
         this.annArrow.onLevelDown("bottom");
@@ -3260,6 +4221,13 @@ var AnnTextIndicator = /** @class */ (function (_super) {
         if (!this.parentObj) {
             this.onDrawEnded();
         }
+    };
+    AnnTextIndicator.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString("CGXAnnLabel");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 1);
+        this.annArrow.onSave(annSerialize, false);
+        this.annText.onSave(annSerialize);
     };
     AnnTextIndicator.prototype.onDrag = function (deltaX, deltaY) {
         this.annText.onDrag(deltaX, deltaY);
@@ -3393,19 +4361,27 @@ var AnnText = /** @class */ (function (_super) {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
     AnnText.prototype.onCreate = function (position, text) {
-        this.annText = new _base_object_ann_base_text__WEBPACK_IMPORTED_MODULE_2__["AnnBaseText"](this, " " + text + " ", position, this.imageViewer);
-        var rect = this.annText.getRect();
+        this.annBaseText = new _base_object_ann_base_text__WEBPACK_IMPORTED_MODULE_2__["AnnBaseText"](this, " " + text + " ", position, this.imageViewer);
+        var rect = this.annBaseText.getRect();
         this.annRectangle = new _base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_1__["AnnBaseRectangle"](this, { x: rect.x, y: rect.y }, rect.width, rect.height, this.imageViewer, true);
-        this.annText.onLevelUp();
-        this.focusedObj = this.annText;
+        this.annBaseText.onLevelDown("bottom");
+        this.focusedObj = this.annBaseText;
         if (!this.parentObj) {
             this.onDrawEnded();
         }
     };
-    AnnText.prototype.onSelect = function (selected, focused) {
-        this.selected = selected;
-        this.annText.onSelect(selected, focused);
-        this.annRectangle.setVisible(selected && focused);
+    AnnText.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString("CGXAnnText");
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 4);
+        annSerialize.writeNumber(0, 1);
+        var pointList = this.annRectangle.getSurroundPointList();
+        annSerialize.writePoint(pointList[2]);
+        annSerialize.writePoint(pointList[0]);
+        annSerialize.writeString(this.annBaseText.getText().trim());
+        annSerialize.writeNumber(1, 4);
+        annSerialize.writeNumber(0, 4);
+        annSerialize.writeNumber(20, 4);
     };
     AnnText.prototype.onScale = function () {
         _super.prototype.onScale.call(this);
@@ -3413,7 +4389,7 @@ var AnnText = /** @class */ (function (_super) {
         this.onLevelUp();
     };
     AnnText.prototype.onMove = function (point) {
-        this.annText.onMove(point);
+        this.annBaseText.onMove(point);
         this.redrawRect();
     };
     AnnText.prototype.getPosition = function () {
@@ -3423,18 +4399,18 @@ var AnnText = /** @class */ (function (_super) {
         return this.annRectangle.getSurroundPointList();
     };
     AnnText.prototype.setText = function (text) {
-        this.annText.setText(text);
+        this.annBaseText.setText(text);
         this.redrawRect();
     };
     AnnText.prototype.getRect = function () {
-        return this.annText.getRect();
+        return this.annBaseText.getRect();
     };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
     AnnText.prototype.redrawRect = function () {
-        var rect = this.annText.getRect();
+        var rect = this.annBaseText.getRect();
         this.annRectangle.redraw(rect);
-        this.annText.onLevelUp();
+        this.annBaseText.onLevelUp();
     };
     return AnnText;
 }(_ann_extend_object__WEBPACK_IMPORTED_MODULE_0__["AnnExtendObject"]));
@@ -3751,6 +4727,7 @@ var AnnGuide = /** @class */ (function () {
             this.drawStepList();
         }
         this.drawActionButton();
+        this.imageViewer.refresh();
     };
     // Create promise for loading the image of step button
     AnnGuide.prototype.createPromiseForStepData = function (index) {
@@ -3878,15 +4855,15 @@ var AnnGuide = /** @class */ (function () {
             if (_this.ignoreMouseEvent(annGuideButton))
                 return false;
             annGuideButton.onSelect();
+            if (annGuideButton.onButtonClick) {
+                annGuideButton.onButtonClick.call(_this);
+            }
             return false;
         };
         annGuideButton.jcImage._onmouseup = function (arg) {
             if (_this.ignoreMouseEvent(annGuideButton))
                 return false;
             annGuideButton.onUp();
-            if (annGuideButton.onButtonClick) {
-                annGuideButton.onButtonClick.call(_this);
-            }
             return false;
         };
     };
@@ -3946,7 +4923,7 @@ var AnnGuide = /** @class */ (function () {
     AnnGuide.prototype.createStepDataList = function (annName) {
         var annGuideData = AnnGuide.findAnnGuideData(annName);
         if (!annGuideData)
-            return;
+            return false;
         this.annStepDataList.length = 0;
         var stepConfigList = annGuideData.guideStepConfigList;
         for (var i = 0; i < stepConfigList.length; i++) {
@@ -3954,7 +4931,7 @@ var AnnGuide = /** @class */ (function () {
         }
         var stepImageList = annGuideData.guideStepImageList;
         if (stepImageList.length === stepConfigList.length) {
-            // The images were alreay loaded before
+            // The images were already loaded before
             for (var i = 0; i < stepImageList.length; i++) {
                 this.annStepDataList[i].imageData = stepImageList[i];
             }
@@ -4036,8 +5013,10 @@ var AnnImageRuler = /** @class */ (function () {
         }
         var canvasWidth = canvas.width;
         var canvasHeight = canvas.height;
-        this.linesVertical.forEach(function (line) { line.del(); });
-        this.linesHorizontal.forEach(function (line) { line.del(); });
+        this.linesVertical.forEach(function (line) { if (line)
+            line.del(); });
+        this.linesHorizontal.forEach(function (line) { if (line)
+            line.del(); });
         this.linesVertical = [];
         this.linesHorizontal = [];
         var strRulerInfo = '';
@@ -4351,19 +5330,8 @@ var AppComponent = /** @class */ (function () {
         componentRef.instance.hideMe = false;
     };
     AppComponent.prototype.createViewerShell = function (viewerShellData) {
-        var _this = this;
         this.logService.seperator();
         this.logService.info('User: Open study - ' + viewerShellData.getName());
-        viewerShellData.patientList.forEach(function (patient) {
-            return patient.studyList.forEach(function (study) {
-                return study.seriesList.forEach(function (series) {
-                    return series.imageList.forEach(function (image) {
-                        return _this.worklistService.isUsingLocalTestData() ? image.cornerStoneImage = null :
-                            _this.dicomImageService.getCornerStoneImage(image);
-                    });
-                });
-            });
-        });
         var componentFactory = this.resolver.resolveComponentFactory(_components_viewer_shell_viewer_shell_component__WEBPACK_IMPORTED_MODULE_2__["ViewerShellComponent"]);
         var componentRef = this.container.createComponent(componentFactory);
         componentRef.instance.hideMe = false;
@@ -4455,12 +5423,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_material_moment_adapter__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! @angular/material-moment-adapter */ "./node_modules/@angular/material-moment-adapter/esm5/material-moment-adapter.es5.js");
 /* harmony import */ var _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./components/dialog/select-studydate-dialog/select-studydate-dialog.component */ "./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.ts");
 /* harmony import */ var _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./components/dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
+/* harmony import */ var _components_viewer_shell_viewer_bottombar_viewer_bottombar_component__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./components/viewer-shell/viewer-bottombar/viewer-bottombar.component */ "./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -4518,7 +5488,8 @@ var AppModule = /** @class */ (function () {
                 _components_common_dropdown_button_menu_button_dropdown_button_menu_button_component__WEBPACK_IMPORTED_MODULE_21__["DropdownButtonMenuButtonComponent"],
                 _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"],
                 _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_30__["SelectStudydateDialogComponent"],
-                _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectMarkerDialogComponent"]
+                _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectMarkerDialogComponent"],
+                _components_viewer_shell_viewer_bottombar_viewer_bottombar_component__WEBPACK_IMPORTED_MODULE_32__["ViewerBottombarComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -5525,6 +6496,13 @@ var GroupViewerComponent = /** @class */ (function () {
             o.style.height = height.toString() + "px";
         }
     };
+    GroupViewerComponent.prototype.saveSelectedImage = function () {
+        this.childImages.forEach(function (imageViewer) {
+            if (imageViewer.selected) {
+                imageViewer.saveImage();
+            }
+        });
+    };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_image_viewer_image_viewer_component__WEBPACK_IMPORTED_MODULE_5__["ImageViewerComponent"]),
         __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["QueryList"])
@@ -5596,11 +6574,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../../models/dailog-data/image-process */ "./src/app/models/dailog-data/image-process.ts");
 /* harmony import */ var _dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../dialog/manual-wl-dialog/manual-wl-dialog.component */ "./src/app/components/dialog/manual-wl-dialog/manual-wl-dialog.component.ts");
 /* harmony import */ var _dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
-/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../../models/annotation */ "./src/app/models/annotation.ts");
-/* harmony import */ var _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../../annotation/ann-tool */ "./src/app/annotation/ann-tool.ts");
-/* harmony import */ var _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-guide */ "./src/app/annotation/layer-object/ann-guide.ts");
-/* harmony import */ var _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-image-ruler */ "./src/app/annotation/layer-object/ann-image-ruler.ts");
-/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
+/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../../models/messageBox */ "./src/app/models/messageBox.ts");
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../annotation/ann-tool */ "./src/app/annotation/ann-tool.ts");
+/* harmony import */ var _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-guide */ "./src/app/annotation/layer-object/ann-guide.ts");
+/* harmony import */ var _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-image-ruler */ "./src/app/annotation/layer-object/ann-image-ruler.ts");
+/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
+/* harmony import */ var _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../../../annotation/ann-serialize */ "./src/app/annotation/ann-serialize.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -5610,6 +6590,8 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
+
 
 
 
@@ -5639,8 +6621,9 @@ var ImageViewerComponent = /** @class */ (function () {
         this.dialogService = dialogService;
         this.logService = logService;
         this.ngZone = ngZone;
-        this.needResize = true;
+        this.needResize = false;
         this.selected = false;
+        this.dragging = false;
         this.mouseEventHelper = {};
         this.eventHandlers = {};
         this.annObjList = [];
@@ -5673,7 +6656,11 @@ var ImageViewerComponent = /** @class */ (function () {
             if (this._imageData !== imageData) {
                 this._imageData = imageData;
                 this.image = this._imageData.image;
-                this.checkLoadImage();
+                // If the view is NOT inited, will load image after view inited ( in ngAfterViewInit )
+                // If the view is already inited, which means this component is created before, load image here
+                if (this.isViewInited) {
+                    this.loadImage();
+                }
             }
         },
         enumerable: true,
@@ -5688,6 +6675,7 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.ngAfterViewInit = function () {
         this.logService.debug(this.logPrefix + "ngAfterViewInit");
+        this.loadImage();
         this.canvas = this.canvasRef.nativeElement;
         this.helpElement = this.helpElementRef.nativeElement;
         var canvasId = this.getCanvasId();
@@ -5701,12 +6689,62 @@ var ImageViewerComponent = /** @class */ (function () {
         this.createLayers(canvasId);
         this.registerCanvasEvents();
         this.registerImgLayerEvents();
+        this.isViewInited = true;
         if (this.image) {
             this.showWaitingText();
         }
-        this.annGuide = new _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_15__["AnnGuide"](this);
-        this.annImageRuler = new _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_16__["AnnImageRuler"](this);
-        this.isViewInited = true;
+        this.annGuide = new _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_16__["AnnGuide"](this);
+        this.annImageRuler = new _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_17__["AnnImageRuler"](this);
+    };
+    ImageViewerComponent.prototype.showImage = function () {
+        this.ctImage = this.image.cornerStoneImage;
+        if (this.ctImage) {
+            this.initHelpElement();
+            this.canvas = this.canvasRef.nativeElement;
+            var canvasId = this.getCanvasId();
+            jCanvaScript.start(canvasId, true);
+            this.jcanvas = jCanvaScript.canvas(canvasId);
+            var parent_1 = this.canvas.parentElement.parentElement;
+            this.canvas.width = parent_1.clientWidth;
+            this.canvas.height = parent_1.clientHeight;
+            this.jcanvas.width(this.canvas.width);
+            this.jcanvas.height(this.canvas.height);
+            this.logService.debug(this.logPrefix + 'showImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
+            this.isImageLoaded = false;
+            cornerstone.displayImage(this.helpElement, this.ctImage);
+            this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
+        }
+        else {
+            this.logService.debug(this.logPrefix + 'local test data, no image to show.');
+        }
+    };
+    ImageViewerComponent.prototype.loadImage = function () {
+        //// Make sure this function is called after view is inited.
+        //if (!this.isViewInited) {
+        //    alert("Internal error : Must load image after view is inited");
+        //    return;
+        //}
+        var _this = this;
+        // The image is null, which means to clear the image viewer
+        if (!this.image) {
+            if (this.jcanvas) {
+                this.jcanvas.clear();
+            }
+            return;
+        }
+        if (this.image.cornerStoneImage) {
+            // The image is already downloaded, show the image
+            this.showImage();
+        }
+        else {
+            // The image is NOT downloaded, get the image from server and show it after download
+            this.dicomImageService.getCornerStoneImage(this.image).then(function (ctImage) { return _this.onImageDownloaded(ctImage); });
+        }
+    };
+    ImageViewerComponent.prototype.onImageDownloaded = function (ctImage) {
+        this.logService.info(this.logPrefix + "Image is downloaded from server. Start to show it by cornerstone.");
+        this.image.setCornerStoneImage(ctImage);
+        this.showImage();
     };
     ImageViewerComponent.prototype.adjustHeight = function () {
         var parent = this.canvas.parentElement.parentElement;
@@ -5714,9 +6752,9 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.ngAfterViewChecked = function () {
         if (this.needResize && this.isImageLoaded) {
-            var parent_1 = this.canvas.parentElement.parentElement;
-            var curWidth = parent_1.clientWidth;
-            var curHeight = parent_1.clientHeight;
+            var parent_2 = this.canvas.parentElement.parentElement;
+            var curWidth = parent_2.clientWidth;
+            var curHeight = parent_2.clientHeight;
             this.canvas.width = curWidth;
             this.canvas.height = curHeight;
             this.jcanvas.width(this.canvas.width);
@@ -5728,7 +6766,9 @@ var ImageViewerComponent = /** @class */ (function () {
                 if (this.olLayer) {
                     this.showTextOverlay();
                 }
-                this.annImageRuler.reDraw(this);
+                if (this.imgRulerLayer) {
+                    this.annImageRuler.reDraw(this);
+                }
             }
             else {
                 this.jcanvas.clear();
@@ -5837,10 +6877,11 @@ var ImageViewerComponent = /** @class */ (function () {
         this.selectAnnotation(this.annObjList[nextIndex]);
     };
     ImageViewerComponent.prototype.onAnnotationCreated = function (annObj) {
-        if (this.curSelectObj !== annObj) {
-            alert("error in onAnnotationCreated");
-            return;
-        }
+        //if (this.curSelectObj !== annObj) {
+        //    alert("error in onAnnotationCreated");
+        //    return;
+        //}
+        this.curSelectObj = annObj;
         if (annObj.isCreated()) {
             this.annObjList.push(this.curSelectObj);
         }
@@ -5876,8 +6917,15 @@ var ImageViewerComponent = /** @class */ (function () {
         this.logService.debug("Set cursor to " + cursor);
         this.canvas.style.cursor = cursor;
     };
+    ImageViewerComponent.prototype.isDragging = function () {
+        return this.dragging;
+    };
+    ImageViewerComponent.prototype.refresh = function () {
+        this.redraw(1);
+    };
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
     ImageViewerComponent.prototype.onKeyUp = function (event) {
+        var needRedraw = true;
         if (event.code === "Delete") {
             this.deleteSelectedAnnotation();
         }
@@ -5893,9 +6941,16 @@ var ImageViewerComponent = /** @class */ (function () {
             if (this.curSelectObj) {
                 this.curSelectObj.onKeyDown(event);
             }
+            else {
+                needRedraw = false;
+            }
         }
         else if (event.code === "ControlLeft" || event.code === "ControlRight") {
             this.ctrlKeyPressed = false;
+            needRedraw = false;
+        }
+        if (needRedraw) {
+            this.redraw(1);
         }
     };
     ImageViewerComponent.prototype.onKeyDown = function (event) {
@@ -5911,45 +6966,41 @@ var ImageViewerComponent = /** @class */ (function () {
         //TODO: make sure the canvas is unique, even two viewer opened the same image
         return "viewerCanvas_" + this.imageData.getId();
     };
-    ImageViewerComponent.prototype.checkLoadImage = function () {
-        var _this = this;
-        if (!this.isViewInited || (this.image && this.image.cornerStoneImage === undefined)) {
-            this.logService.debug(this.logPrefix + 'view not inited or image not loaded, wait...');
-            setTimeout(function () {
-                _this.checkLoadImage();
-            }, 100);
-        }
-        else {
-            if (!this.image) {
-                if (this.jcanvas) {
-                    this.jcanvas.clear();
-                }
-                this.logService.debug(this.logPrefix + 'image is null, clear the canvas.');
-            }
-            else {
-                this.initHelpElement();
-                this.ctImage = this.image.cornerStoneImage;
-                if (this.ctImage) {
-                    this.canvas = this.canvasRef.nativeElement;
-                    var canvasId = this.getCanvasId();
-                    jCanvaScript.start(canvasId, true);
-                    this.jcanvas = jCanvaScript.canvas(canvasId);
-                    var parent_2 = this.canvas.parentElement.parentElement;
-                    this.canvas.width = parent_2.clientWidth;
-                    this.canvas.height = parent_2.clientHeight;
-                    this.jcanvas.width(this.canvas.width);
-                    this.jcanvas.height(this.canvas.height);
-                    this.logService.debug(this.logPrefix + 'checkLoadImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
-                    this.isImageLoaded = false;
-                    cornerstone.displayImage(this.helpElement, this.ctImage);
-                    this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
-                }
-                else {
-                    this.logService.debug(this.logPrefix + 'local test data, no image to show.');
-                }
-            }
-        }
-    };
+    //private checkLoadImage() {
+    //    if (!this.isViewInited || (this.image && this.image.cornerStoneImage === undefined)) {
+    //        this.logService.debug(this.logPrefix + 'view not inited or image not loaded, wait...');
+    //        setTimeout(() => {
+    //            this.checkLoadImage();
+    //        }, 100);
+    //    } else {
+    //        if (!this.image) {
+    //            if (this.jcanvas) {
+    //                this.jcanvas.clear();
+    //            }
+    //            this.logService.debug(this.logPrefix + 'image is null, clear the canvas.');
+    //        } else {
+    //            this.initHelpElement();
+    //            this.ctImage = this.image.cornerStoneImage;
+    //            if (this.ctImage) {
+    //                this.canvas = this.canvasRef.nativeElement;
+    //                const canvasId = this.getCanvasId();
+    //                jCanvaScript.start(canvasId, true);
+    //                this.jcanvas = jCanvaScript.canvas(canvasId);
+    //                const parent = this.canvas.parentElement.parentElement;
+    //                this.canvas.width = parent.clientWidth;
+    //                this.canvas.height = parent.clientHeight;
+    //                this.jcanvas.width(this.canvas.width);
+    //                this.jcanvas.height(this.canvas.height);
+    //                this.logService.debug(this.logPrefix + 'checkLoadImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
+    //                this.isImageLoaded = false;
+    //                cornerstone.displayImage(this.helpElement, this.ctImage);
+    //                this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
+    //            }else {
+    //                this.logService.debug(this.logPrefix + 'local test data, no image to show.');
+    //            }
+    //        }
+    //    }
+    //}
     ImageViewerComponent.prototype.initHelpElement = function () {
         var _this = this;
         this.ngZone.runOutsideAngular(function () {
@@ -5974,6 +7025,7 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.onImageRendered = function (e, data) {
         this.logService.debug(this.logPrefix + 'onImageRendered() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
+        this.redraw(1);
     };
     ImageViewerComponent.prototype.onImageLoaded = function (e, data) {
         this.logService.debug(this.logPrefix + 'onImageLoaded() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
@@ -5986,14 +7038,19 @@ var ImageViewerComponent = /** @class */ (function () {
         this.originalWindowCenter = this.ctImage.windowCenter;
         this.originalWindowWidth = this.ctImage.windowWidth;
         this.hideWaitingText();
-        // No need to show text overlay here, since ngAfterViewChecked will call it.
-        //this.showTextOverlay();
+        this.showTextOverlay();
+        this.syncAnnLabelLayerTransform();
+        this.annSerialize = new _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_19__["AnnSerialize"](this.image.annData, this);
+        this.annSerialize.createAnn();
+        this.redraw(2);
+        //  setTimeout(() => { this.jcanvas.frame(); }, 1);
     };
     ImageViewerComponent.prototype.showWaitingText = function () {
         this.olLayer.visible(true);
         var font = this.configurationService.getOverlayFont();
         this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
             .color(font.color).font(font.getCanvasFontString()).align('center');
+        this.redraw(1);
         //jc.arc(60, 100, 60, 90, 180, 1, 'rgb(25,99,253)', 0).draggable();
         //var imgData = jc.imageData(100, 100); //���ý�������Ĵ�С
         //for (var i = 0; i < 100; i++) {
@@ -6034,6 +7091,7 @@ var ImageViewerComponent = /** @class */ (function () {
             }
             _this.jcTextOverlayList.push(label);
         });
+        this.redraw(1);
         //this.configurationService.overlayList.forEach(overlay => {
         //    var overlayValue = this.dicomImageService.getTextOverlayValue(this.image, overlay);
         //    var displayText = overlay.prefix + overlayValue + overlay.suffix;
@@ -6049,30 +7107,37 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.createLayers = function (canvasId) {
         //create layers
-        var self = this;
+        var _this = this;
         this.imgLayerId = canvasId + "_imgLayer";
         this.imgLayer = jCanvaScript.layer(this.imgLayerId).level(0); //layer to hold the image
         this.imgLayer.id = this.imgLayerId;
-        self.annLayerId = canvasId + "_annLayer";
-        self.annLayer = jc.layer(self.annLayerId).level(1); //layer to draw annotations
-        self.annLayer.onBeforeDraw = function () { self.onBeforeDrawAnnLayer.call(self); };
-        self.annLayer.id = self.annLayerId;
-        self.annLabelLayerId = canvasId + "_annLabelLayer";
-        self.annLabelLayer = jc.layer(self.annLabelLayerId).level(2); //layer to draw annotations label.
-        self.annLabelLayer.id = self.annLabelLayerId;
-        self.mgLayerId = canvasId + "_mgLayer";
-        self.mgLayer = jc.layer(self.mgLayerId).level(4); //layer to show magnified image
-        self.mgLayer.visible(false);
-        self.mgLayer.id = self.mgLayerId;
-        self.olLayerId = canvasId + "_overlayLayer";
-        self.olLayer = jCanvaScript.layer(self.olLayerId).level(10); //layer to show overlay
-        self.olLayer.id = self.olLayerId;
-        self.imgRulerLayerId = canvasId + "_imgRulerLayer"; // layer to show ruler
-        self.imgRulerLayer = jc.layer(self.imgRulerLayerId).level(9);
-        self.imgRulerLayer.id = self.imgRulerLayerId;
-        self.tooltipLayerId = canvasId + "_tooltipLayer"; // layer to show tooltip dialog
-        self.tooltipLayer = jc.layer(self.tooltipLayerId).draggable(true).level(20);
-        self.tooltipLayer.id = self.tooltipLayerId;
+        this.imgLayer.needRedraw = true;
+        this.annLayerId = canvasId + "_annLayer";
+        this.annLayer = jCanvaScript.layer(this.annLayerId).level(1); //layer to draw annotations
+        this.annLayer.onBeforeDraw = function () { return _this.onBeforeDrawAnnLayer(); };
+        this.annLayer.id = this.annLayerId;
+        this.annLayer.needRedraw = true;
+        this.annLabelLayerId = canvasId + "_annLabelLayer";
+        this.annLabelLayer = jCanvaScript.layer(this.annLabelLayerId).level(2); //layer to draw annotations label.
+        this.annLabelLayer.id = this.annLabelLayerId;
+        this.annLabelLayer.needRedraw = true;
+        this.mgLayerId = canvasId + "_mgLayer";
+        this.mgLayer = jCanvaScript.layer(this.mgLayerId).level(4); //layer to show magnified image
+        this.mgLayer.visible(false);
+        this.mgLayer.id = this.mgLayerId;
+        this.mgLayer.needRedraw = true;
+        this.olLayerId = canvasId + "_overlayLayer";
+        this.olLayer = jCanvaScript.layer(this.olLayerId).level(10); //layer to show overlay
+        this.olLayer.id = this.olLayerId;
+        this.olLayer.needRedraw = true;
+        this.imgRulerLayerId = canvasId + "_imgRulerLayer"; // layer to show ruler
+        this.imgRulerLayer = jCanvaScript.layer(this.imgRulerLayerId).level(9);
+        this.imgRulerLayer.id = this.imgRulerLayerId;
+        this.imgRulerLayer.needRedraw = true;
+        this.tooltipLayerId = canvasId + "_tooltipLayer"; // layer to show tooltip dialog
+        this.tooltipLayer = jCanvaScript.layer(this.tooltipLayerId).draggable(true).level(20);
+        this.tooltipLayer.id = this.tooltipLayerId;
+        this.tooltipLayer.needRedraw = true;
     };
     ImageViewerComponent.prototype.onBeforeDrawAnnLayer = function () {
         if (!this.isImageLoaded)
@@ -6083,6 +7148,9 @@ var ImageViewerComponent = /** @class */ (function () {
         this.annLayer.optns.rotateMatrix = this.imgLayer.optns.rotateMatrix;
         this.annLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
         this.annLayer.scale(1);
+        this.syncAnnLabelLayerTransform();
+    };
+    ImageViewerComponent.prototype.syncAnnLabelLayerTransform = function () {
         this.annLabelLayer.transform(1, 0, 0, 1, 0, 0, true);
         this.annLabelLayer.optns.scaleMatrix = this.imgLayer.optns.scaleMatrix;
         this.annLabelLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
@@ -6121,6 +7189,9 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.setContext = function (context) {
         //const draggable = (context.action == ViewContextEnum.Pan) ||
         //    (context.action == ViewContextEnum.Select && this.curSelectObj == undefined);
+        if (!this.isImageLoaded) {
+            return;
+        }
         var draggable = context.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Pan;
         this.draggable(draggable);
         //each time context changed, we should unselect cur selected object
@@ -6188,11 +7259,6 @@ var ImageViewerComponent = /** @class */ (function () {
                     this.doReset();
                     break;
                 }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ShowOverlay:
-                {
-                    this.olLayer.visible(operation.data.show);
-                    break;
-                }
             case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ShowAnnotation:
                 {
                     this.annLayer.visible(operation.data.show);
@@ -6203,7 +7269,20 @@ var ImageViewerComponent = /** @class */ (function () {
                     this.doManualWl();
                     break;
                 }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ToggleKeyImage:
+                {
+                    if (this.image.keyImage === 'Y') {
+                        this.image.keyImage = 'N';
+                        this.setKeyImage(false);
+                    }
+                    else {
+                        this.image.keyImage = 'Y';
+                        this.setKeyImage(true);
+                    }
+                    break;
+                }
         }
+        this.redraw(1);
     };
     ImageViewerComponent.prototype.getCursorFromContext = function () {
         var curContext = this.viewContext.curContext;
@@ -6242,6 +7321,7 @@ var ImageViewerComponent = /** @class */ (function () {
         if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
             if (curContext.data.needGuide) {
                 this.annGuide.show(curContext.data.className);
+                this.redraw(1);
             }
             else if (curContext.data.cursorName === "ann_stamp") {
                 this.selectMarker();
@@ -6476,6 +7556,23 @@ var ImageViewerComponent = /** @class */ (function () {
             }
         });
     };
+    ImageViewerComponent.prototype.saveImage = function () {
+        var _this = this;
+        var annString = this.annSerialize.getAnnString(this.annObjList);
+        this.dicomImageService.saveImageAnn(this.image.id, annString).subscribe(function (ret) {
+            var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_13__["MessageBoxContent"]();
+            content.title = "Save Image";
+            if (ret) {
+                content.messageText = "Save image failed! " + ret;
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_13__["MessageBoxType"].Error;
+            }
+            else {
+                content.messageText = "Save image successfully!";
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_13__["MessageBoxType"].Info;
+            }
+            _this.dialogService.showMessageBox(content);
+        });
+    };
     ImageViewerComponent.prototype.doWL = function (deltaX, deltaY) {
         if (!this.isImageLoaded)
             return;
@@ -6547,6 +7644,7 @@ var ImageViewerComponent = /** @class */ (function () {
         if (!self.isImageLoaded) {
             return;
         }
+        this.logService.debug("Image Layer - onMouseDown");
         var viewContext = self.viewContext;
         //log('viwer mouse down: ' + this.canvasId);
         //if in select context, and not click any object, will unselect all objects.
@@ -6571,18 +7669,21 @@ var ImageViewerComponent = /** @class */ (function () {
                 parm.objCreated = true; //stop create the annObject again
             }
         }
-        self.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_13__["MouseEventType"].MouseDown, "onMouseDown");
+        self.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseDown, "onMouseDown");
     };
     ImageViewerComponent.prototype.onMouseMove = function (evt) {
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_13__["MouseEventType"].MouseMove, "onMouseMove");
+        //this.logService.debug("Image Layer - onMouseMove");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseMove, "onMouseMove");
     };
     ImageViewerComponent.prototype.onMouseOut = function (evt) {
+        this.logService.debug("Image Layer - onMouseOut");
         //log('viwer mouse out: ' + this.canvasId);
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_13__["MouseEventType"].MouseOut, "onMouseOut");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseOut, "onMouseOut");
     };
     ImageViewerComponent.prototype.onMouseUp = function (evt) {
+        this.logService.debug("Image Layer - onMouseUp");
         //log('viwer mouse up: ' +this.canvasId);
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_13__["MouseEventType"].MouseUp, "onMouseUp");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseUp, "onMouseUp");
     };
     //image layer events
     ImageViewerComponent.prototype.registerEvent = function (obj, type) {
@@ -6627,7 +7728,7 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         //covert screen point to image point
         if (arg.x) {
-            arg = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_14__["AnnTool"].screenToImage(arg, this.imgLayer.transform());
+            arg = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_15__["AnnTool"].screenToImage(arg, this.imgLayer.transform());
         }
         handlers.forEach(function (obj) {
             if (obj[handler]) {
@@ -6697,11 +7798,12 @@ var ImageViewerComponent = /** @class */ (function () {
         if (this.mouseEventHelper._mouseWhich === 1) {
             if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
                 if (this.curSelectObj && !this.curSelectObj.isCreated()) {
-                    this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_13__["MouseEventType"].DblClick, point, null);
+                    this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].DblClick, point, null);
                 }
             }
         }
         this.canvas.onmouseup(evt); //cause jc to trigger mouseup event, which will stop the drag (imglayer)
+        this.redraw(1);
         //log('canvas dblclick: ' + this.canvas.id);
     };
     ImageViewerComponent.prototype.onCanvasContextMenu = function (evt) {
@@ -6714,13 +7816,16 @@ var ImageViewerComponent = /** @class */ (function () {
         evt.preventDefault();
     };
     ImageViewerComponent.prototype.onCanvasMouseDown = function (evt) {
+        this.logService.debug("onCanvasMouseDown");
         if (!this.isImageLoaded) {
             return;
         }
         var point = { x: evt.offsetX, y: evt.offsetY };
         if (this.annGuide.hitTest(point)) {
+            this.redraw(1);
             return;
         }
+        this.dragging = true;
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
         this.mouseEventHelper._mouseDownPosCvs = point;
         if (this.mouseEventHelper._mouseWhich === 3) { //right mouse
@@ -6742,7 +7847,7 @@ var ImageViewerComponent = /** @class */ (function () {
                     // There is annotation selected
                     if (!this.curSelectObj.isCreated()) {
                         // The selected annotation is creating
-                        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_13__["MouseEventType"].MouseDown, point, null);
+                        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseDown, point, null);
                     }
                     else {
                         // The selected annotation is created
@@ -6759,6 +7864,7 @@ var ImageViewerComponent = /** @class */ (function () {
             else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].SelectAnn) {
             }
         }
+        this.redraw(1);
     };
     ImageViewerComponent.prototype.onCanvasMouseMove = function (evt) {
         var self = this;
@@ -6775,7 +7881,7 @@ var ImageViewerComponent = /** @class */ (function () {
         if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
             if (this.curSelectObj && !this.curSelectObj.isCreated()) {
                 var point = { x: evt.offsetX, y: evt.offsetY };
-                this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_13__["MouseEventType"].MouseMove, point, null);
+                this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseMove, point, null);
             }
         }
         else {
@@ -6808,13 +7914,21 @@ var ImageViewerComponent = /** @class */ (function () {
                 }
             }
         }
+        this.redraw(this.dragging ? 2 : 1);
         self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
     };
     ImageViewerComponent.prototype.onCanvasMouseUp = function (evt) {
+        this.logService.debug("onCanvasMouseUp");
         var self = this;
         if (!self.isImageLoaded) {
             return;
         }
+        var point = { x: evt.offsetX, y: evt.offsetY };
+        if (this.annGuide.hitTest(point)) {
+            this.redraw(2);
+            return;
+        }
+        this.dragging = false;
         var curContext = this.viewContext.curContext;
         if (self.mouseEventHelper._mouseWhich == 3) {
             if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
@@ -6837,9 +7951,11 @@ var ImageViewerComponent = /** @class */ (function () {
             //    self._applyROIZoom(self._mouseDownPosCvs, endPosCvs);
             //}
         }
+        this.redraw(2);
         self.mouseEventHelper._mouseWhich = 0;
     };
     ImageViewerComponent.prototype.onCanvasMouseOut = function (evt) {
+        this.logService.debug("onCanvasMouseOut");
         var self = this;
         if (!self.isImageLoaded) {
             return;
@@ -6858,6 +7974,7 @@ var ImageViewerComponent = /** @class */ (function () {
         //}
     };
     ImageViewerComponent.prototype.onCanvasMouseOver = function (evt) {
+        this.logService.debug("onCanvasMouseOver");
         var self = this;
         if (!self.isImageLoaded) {
             return;
@@ -6942,10 +8059,14 @@ var ImageViewerComponent = /** @class */ (function () {
         this.updateWlTextOverlay(width, center);
     };
     ImageViewerComponent.prototype.updateWlTextOverlay = function (width, center) {
-        this.wlLabel.string(this.wlLabelFormat.format(width, center));
+        if (this.wlLabel) {
+            this.wlLabel.string(this.wlLabelFormat.format(width, center));
+        }
     };
     ImageViewerComponent.prototype.updateZoomRatioTextOverlay = function (roomRatio) {
-        this.zoomRatioLabel.string(this.zoomRatioFormat.format(roomRatio.toFixed(2)));
+        if (this.zoomRatioLabel) {
+            this.zoomRatioLabel.string(this.zoomRatioFormat.format(roomRatio.toFixed(2)));
+        }
     };
     ImageViewerComponent.prototype.startCreateAnnAtPoint = function (point) {
         this.updateImageTransform();
@@ -6955,7 +8076,7 @@ var ImageViewerComponent = /** @class */ (function () {
             this.curSelectObj.setGuideNeeded(true);
             this.annGuide.setGuideTargetObj(this.curSelectObj);
         }
-        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_13__["MouseEventType"].MouseDown, point, null);
+        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseDown, point, null);
     };
     ImageViewerComponent.prototype.deleteSelectedAnnotation = function () {
         this.deleteAnnotation(this.curSelectObj);
@@ -6969,13 +8090,21 @@ var ImageViewerComponent = /** @class */ (function () {
                 var imageData_1 = new Image();
                 imageData_1.onload = function (ev) {
                     _this.updateImageTransform();
-                    var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_17__["AnnImage"](undefined, _this);
-                    annImage.onCreate(imageData_1, new _models_annotation__WEBPACK_IMPORTED_MODULE_13__["Point"](0, 0));
+                    var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_18__["AnnImage"](undefined, _this);
+                    annImage.onCreate(imageData_1, new _models_annotation__WEBPACK_IMPORTED_MODULE_14__["Point"](0, 0));
                     _this.curSelectObj = annImage;
                 };
                 imageData_1.src = val;
             }
         });
+    };
+    ImageViewerComponent.prototype.setKeyImage = function (keyImage) {
+        this.configurationService.setKeyImage(this.image.id, keyImage);
+    };
+    ImageViewerComponent.prototype.redraw = function (count) {
+        for (var i = 0; i < count; i++) {
+            this.jcanvas.frame();
+        }
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])("viewerCanvas"),
@@ -7331,6 +8460,77 @@ var ThumbnailComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.css":
+/*!*****************************************************************************************!*\
+  !*** ./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.css ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".saveImage {\r\n    border: none;\r\n    height: 40px;\r\n    outline: none;\r\n    width: 60px;\r\n}\r\n\r\n.saveImage { background: url('Save_60_40_All.png') no-repeat left top; }\r\n\r\n.saveImage:hover { background: url('Save_60_40_All.png') no-repeat right top; }\r\n\r\n.saveImage:active { background: url('Save_60_40_All.png') no-repeat left bottom; }\r\n\r\n.saveImage:disabled { background: url('Save_60_40_All.png') no-repeat right bottom; }\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy92aWV3ZXItc2hlbGwvdmlld2VyLWJvdHRvbWJhci92aWV3ZXItYm90dG9tYmFyLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxZQUFZO0lBQ1osWUFBWTtJQUNaLGFBQWE7SUFDYixXQUFXO0FBQ2Y7O0FBRUEsYUFBYSx3REFBb0YsRUFBRTs7QUFFbkcsbUJBQW1CLHlEQUFxRixFQUFFOztBQUUxRyxvQkFBb0IsMkRBQXVGLEVBQUU7O0FBRTdHLHNCQUFzQiw0REFBd0YsRUFBRSIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvdmlld2VyLXNoZWxsL3ZpZXdlci1ib3R0b21iYXIvdmlld2VyLWJvdHRvbWJhci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnNhdmVJbWFnZSB7XHJcbiAgICBib3JkZXI6IG5vbmU7XHJcbiAgICBoZWlnaHQ6IDQwcHg7XHJcbiAgICBvdXRsaW5lOiBub25lO1xyXG4gICAgd2lkdGg6IDYwcHg7XHJcbn1cclxuXHJcbi5zYXZlSW1hZ2UgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vU2F2ZV82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cclxuXHJcbi5zYXZlSW1hZ2U6aG92ZXIgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vU2F2ZV82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XHJcblxyXG4uc2F2ZUltYWdlOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9TYXZlXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxyXG5cclxuLnNhdmVJbWFnZTpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9TYXZlXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IH0iXX0= */"
+
+/***/ }),
+
+/***/ "./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.html":
+/*!******************************************************************************************!*\
+  !*** ./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.html ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<table>\r\n    <tr>\r\n        <td>\r\n            <button class=\"saveImage\" role=\"button\" title=\"Save Image\" (click)=\"onSaveImage()\"></button>\r\n        </td>\r\n    </tr>\r\n</table>"
+
+/***/ }),
+
+/***/ "./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.ts":
+/*!****************************************************************************************!*\
+  !*** ./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.ts ***!
+  \****************************************************************************************/
+/*! exports provided: ViewerBottombarComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ViewerBottombarComponent", function() { return ViewerBottombarComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var ViewerBottombarComponent = /** @class */ (function () {
+    function ViewerBottombarComponent() {
+        this.save = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
+    }
+    ViewerBottombarComponent.prototype.ngOnInit = function () {
+    };
+    ViewerBottombarComponent.prototype.onSaveImage = function () {
+        this.save.emit(0);
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
+        __metadata("design:type", Object)
+    ], ViewerBottombarComponent.prototype, "save", void 0);
+    ViewerBottombarComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-viewer-bottombar',
+            template: __webpack_require__(/*! ./viewer-bottombar.component.html */ "./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.html"),
+            styles: [__webpack_require__(/*! ./viewer-bottombar.component.css */ "./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.css")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], ViewerBottombarComponent);
+    return ViewerBottombarComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/components/viewer-shell/viewer-shell.component.css":
 /*!********************************************************************!*\
   !*** ./src/app/components/viewer-shell/viewer-shell.component.css ***!
@@ -7349,7 +8549,7 @@ module.exports = ".DivToolbar {\r\n    background-color: black;\r\n    color: #F
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div [style.visibility]=\"viewerShellData.hide? 'hidden' : 'visible'\" id=\"divContainer\" class=\"sp_panel-container\">\r\n    <div class=\"sp_panel-left\">\r\n        <app-navigation [viewerShellData]=\"viewerShellData\" (layout)=\"onChangeGroupLayout($event)\"></app-navigation>\r\n    </div>\r\n\r\n    <div class=\"sp_splitter\">\r\n    </div>\r\n\r\n    <div class=\"sp_panel-right\">\r\n        <div class=\"DivToolbar\">\r\n            <app-viewer-toolbar (layout)=\"onChangeGroupLayout($event)\"></app-viewer-toolbar>\r\n        </div>\r\n\r\n        <div class=\"DivViewerBack\">\r\n            <div class=\"div-flex-column\" *ngFor=\"let b of Arr(viewerShellData.groupMatrix.colCount).fill(1); let colIndex = index\">\r\n                <div class=\"div-flex-row\" *ngFor=\"let a of Arr(viewerShellData.groupMatrix.rowCount).fill(1); let rowIndex = index\">\r\n                    <app-group-viewer [groupData]=\"getGroupData(rowIndex, colIndex)\" class=\"div-flex-row\">\r\n                    </app-group-viewer>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        \r\n        <div class=\"DivOperationBar\">\r\n            \r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n"
+module.exports = "<div [style.visibility]=\"viewerShellData.hide? 'hidden' : 'visible'\" id=\"divContainer\" class=\"sp_panel-container\">\r\n    <div class=\"sp_panel-left\">\r\n        <app-navigation [viewerShellData]=\"viewerShellData\" (layout)=\"onChangeGroupLayout($event)\"></app-navigation>\r\n    </div>\r\n\r\n    <div class=\"sp_splitter\">\r\n    </div>\r\n\r\n    <div class=\"sp_panel-right\">\r\n        <div class=\"DivToolbar\">\r\n            <app-viewer-toolbar></app-viewer-toolbar>\r\n        </div>\r\n\r\n        <div class=\"DivViewerBack\">\r\n            <div class=\"div-flex-column\" *ngFor=\"let b of Arr(viewerShellData.groupMatrix.colCount).fill(1); let colIndex = index\">\r\n                <div class=\"div-flex-row\" *ngFor=\"let a of Arr(viewerShellData.groupMatrix.rowCount).fill(1); let rowIndex = index\">\r\n                    <app-group-viewer [groupData]=\"getGroupData(rowIndex, colIndex)\" class=\"div-flex-row\">\r\n                    </app-group-viewer>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        \r\n        <div class=\"DivOperationBar\">\r\n            <app-viewer-bottombar (save)=\"onSaveImage($event)\"></app-viewer-bottombar>\r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -7421,6 +8621,9 @@ var ViewerShellComponent = /** @class */ (function () {
         //    return;
         if (!this.childGroups)
             return;
+        if (this.childGroups) {
+            this.childGroups.forEach(function (child) { return child.setHeight(0); });
+        }
         this.logService.debug("Viewer: onResize()");
         this.childGroups.forEach(function (groupViewer) {
             groupViewer.onResize();
@@ -7430,6 +8633,13 @@ var ViewerShellComponent = /** @class */ (function () {
         var groupIndex = rowIndex * this.viewerShellData.groupMatrix.colCount + colIndex;
         return this.groupDataList[groupIndex];
         //return this.viewerShellData.getGroup(rowIndex, colIndex);
+    };
+    ViewerShellComponent.prototype.onSaveImage = function (event) {
+        this.childGroups.forEach(function (groupViewer) {
+            if (groupViewer.selected) {
+                groupViewer.saveSelectedImage();
+            }
+        });
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_group_viewer_group_viewer_component__WEBPACK_IMPORTED_MODULE_1__["GroupViewerComponent"]),
@@ -7470,7 +8680,7 @@ module.exports = ".imageOperate-div {\r\n    height: 44px;\r\n    margin-left: -
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--<button class=\"image-button\" (click)=\"onRotate(30)\">Rotate</button>\r\n<button class=\"image-button\" (click)=\"onAddRuler()\">Ruler</button>\r\n-->\r\n\r\n<div class=\"container-fluid\">\r\n    <div class=\"row imageOperate-div\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"selectPanButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"zoomButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"magnifyButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"wlButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"selectAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"fitButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"rotateFlipButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"resetButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"keyImageButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"markerButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"simpleAnnotation1ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"extendAnnotation1ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"extendAnnotation2ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\" />\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showRulerButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showGraphicOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n</div>\r\n<!--\r\n<div class=\"collapse navbar-collapse\" id=\"navTopToggle\">\r\n    <ul id=\"navBarGroup\" class=\"nav navbar-nav\">\r\n        <li class=\"\">\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSelect\" alt=\"Select\" title=\"Select\" src=\"../../../../assets/img/Toolbar/selection/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnPan\" alt=\"Pan\" title=\"Pan\" src=\"../../../../assets/img/Toolbar/Pan/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCW\" title=\"RotateCW\" src=\"../../../../assets/img/Toolbar/Rotatecw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"VFlip\" title=\"VFlip\" src=\"../../../../assets/img/Toolbar/FlipV/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"HFlip\" title=\"HFlip\" src=\"../../../../assets/img/Toolbar/FlipH/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX2\" title=\"MagnifyX2\" src=\"../../../../assets/img/Toolbar/magnify2/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX4\" title=\"MagnifyX4\" src=\"../../../../assets/img/Toolbar/magnify4/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"ROIZoom\" title=\"ROI Zoom\" src=\"../../../../assets/img/Toolbar/rectzoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"Set ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineAll\" title=\"Set ScoutLine All\" src=\"../../../../assets/img/Toolbar/scoutline_set_all/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineSrc\" title=\"Set ScoutLine Source\" src=\"../../../../assets/img/Toolbar/scoutline_src_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineDest\" title=\"Set ScoutLine Destination\" src=\"../../../../assets/img/Toolbar/scoutline_dst_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnWL\" alt=\"W/L\" title=\"W/L\" src=\"../../../../assets/img/Toolbar/WL/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnInvert\" alt=\"Invert\" title=\"Invert\" src=\"../../../../assets/img/Toolbar/Invert/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnReset\" alt=\"TrueSize\" title=\"TrueSize\" src=\"../../../../assets/img/Toolbar/Reset/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"nav\">\r\n                <img title=\"Markers\" src=\"../../../../assets/img/Toolbar/ann_stamp/normal/bitmap.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu\">\r\n                <li id=\"liMarkerTab\">\r\n                    <ul class=\"nav nav-tabs nav-justified\">\r\n                        <li class=\"active\"><a id=\"tabMarkerPanel1\" data-toggle=\"tab\" href=\"#divMarkerPanel1\">Favorites</a></li>\r\n                        <li><a id=\"tabMarkerPanel2\" data-toggle=\"tab\" href=\"#divMarkerPanel2\">Panel 2</a></li>\r\n                        <li><a id=\"tabMarkerPanel3\" data-toggle=\"tab\" href=\"#divMarkerPanel3\">Panel 3</a></li>\r\n                    </ul>\r\n                    <div class=\"tab-content\">\r\n                        <div id=\"divMarkerPanel1\" class=\"tab-pane in active\">\r\n                            <div>\r\n                                <table class=\"table table-bordered table-marker\">\r\n                                    <tbody id=\"tblMarkerTable1\"></tbody>\r\n                                </table>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel2\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable2\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel3\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable3\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                    </div>\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnBestFit\" alt=\"BestFit\" title=\"BestFit\" src=\"../../../../assets/img/Toolbar/fitwindow/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRect\" alt=\"annRect\" title=\"Rect\" src=\"../../../../assets/img/Toolbar/ann_rectangle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRuler\" alt=\"annLine\" title=\"Ruler\" src=\"../../../../assets/img/Toolbar/Ruler/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddCurve\" alt=\"annCurve\" title=\"Curve\" src=\"../../../../assets/img/Toolbar/ann_cervicalcurve/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddAngle\" alt=\"annAngle\" title=\"Angle\" src=\"../../../../assets/img/Toolbar/ann_angle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowOverlay\" alt=\"ShowOverlay\" title=\"Show Overlay\" src=\"../../../../assets/img/Toolbar/showoverlay/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowAnnotation\" alt=\"ShowAnnotation\" title=\"Show Annotation\" src=\"../../../../assets/img/Toolbar/showannotation/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowRuler\" alt=\"ShowRuler\" title=\"Show Ruler\" src=\"../../../../assets/img/Toolbar/showruler/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnDelete\" alt=\"Delete\" title=\"Delete\" src=\"../../../../assets/img/Toolbar/Delete.png\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSave\" alt=\"Save\" title=\"Save\" src=\"../../../../assets/img/Toolbar/Save.png\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n</div>\r\n-->\r\n"
+module.exports = "<!--<button class=\"image-button\" (click)=\"onRotate(30)\">Rotate</button>\r\n<button class=\"image-button\" (click)=\"onAddRuler()\">Ruler</button>\r\n-->\r\n\r\n<div class=\"container-fluid\">\r\n    <div class=\"row imageOperate-div\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"selectPanButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"zoomButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"magnifyButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"wlButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"selectAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"fitButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"rotateFlipButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"resetButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"keyImageButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"markerButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"simpleAnnotation1ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"simpleAnnotation2ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"extendAnnotation1ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"extendAnnotation2ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\" />\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showRulerButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showGraphicOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n</div>\r\n<!--\r\n<div class=\"collapse navbar-collapse\" id=\"navTopToggle\">\r\n    <ul id=\"navBarGroup\" class=\"nav navbar-nav\">\r\n        <li class=\"\">\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSelect\" alt=\"Select\" title=\"Select\" src=\"../../../../assets/img/Toolbar/selection/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnPan\" alt=\"Pan\" title=\"Pan\" src=\"../../../../assets/img/Toolbar/Pan/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCW\" title=\"RotateCW\" src=\"../../../../assets/img/Toolbar/Rotatecw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"VFlip\" title=\"VFlip\" src=\"../../../../assets/img/Toolbar/FlipV/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"HFlip\" title=\"HFlip\" src=\"../../../../assets/img/Toolbar/FlipH/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX2\" title=\"MagnifyX2\" src=\"../../../../assets/img/Toolbar/magnify2/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX4\" title=\"MagnifyX4\" src=\"../../../../assets/img/Toolbar/magnify4/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"ROIZoom\" title=\"ROI Zoom\" src=\"../../../../assets/img/Toolbar/rectzoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"Set ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineAll\" title=\"Set ScoutLine All\" src=\"../../../../assets/img/Toolbar/scoutline_set_all/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineSrc\" title=\"Set ScoutLine Source\" src=\"../../../../assets/img/Toolbar/scoutline_src_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineDest\" title=\"Set ScoutLine Destination\" src=\"../../../../assets/img/Toolbar/scoutline_dst_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnWL\" alt=\"W/L\" title=\"W/L\" src=\"../../../../assets/img/Toolbar/WL/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnInvert\" alt=\"Invert\" title=\"Invert\" src=\"../../../../assets/img/Toolbar/Invert/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnReset\" alt=\"TrueSize\" title=\"TrueSize\" src=\"../../../../assets/img/Toolbar/Reset/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"nav\">\r\n                <img title=\"Markers\" src=\"../../../../assets/img/Toolbar/ann_stamp/normal/bitmap.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu\">\r\n                <li id=\"liMarkerTab\">\r\n                    <ul class=\"nav nav-tabs nav-justified\">\r\n                        <li class=\"active\"><a id=\"tabMarkerPanel1\" data-toggle=\"tab\" href=\"#divMarkerPanel1\">Favorites</a></li>\r\n                        <li><a id=\"tabMarkerPanel2\" data-toggle=\"tab\" href=\"#divMarkerPanel2\">Panel 2</a></li>\r\n                        <li><a id=\"tabMarkerPanel3\" data-toggle=\"tab\" href=\"#divMarkerPanel3\">Panel 3</a></li>\r\n                    </ul>\r\n                    <div class=\"tab-content\">\r\n                        <div id=\"divMarkerPanel1\" class=\"tab-pane in active\">\r\n                            <div>\r\n                                <table class=\"table table-bordered table-marker\">\r\n                                    <tbody id=\"tblMarkerTable1\"></tbody>\r\n                                </table>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel2\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable2\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel3\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable3\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                    </div>\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnBestFit\" alt=\"BestFit\" title=\"BestFit\" src=\"../../../../assets/img/Toolbar/fitwindow/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRect\" alt=\"annRect\" title=\"Rect\" src=\"../../../../assets/img/Toolbar/ann_rectangle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRuler\" alt=\"annLine\" title=\"Ruler\" src=\"../../../../assets/img/Toolbar/Ruler/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddCurve\" alt=\"annCurve\" title=\"Curve\" src=\"../../../../assets/img/Toolbar/ann_cervicalcurve/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddAngle\" alt=\"annAngle\" title=\"Angle\" src=\"../../../../assets/img/Toolbar/ann_angle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowOverlay\" alt=\"ShowOverlay\" title=\"Show Overlay\" src=\"../../../../assets/img/Toolbar/showoverlay/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowAnnotation\" alt=\"ShowAnnotation\" title=\"Show Annotation\" src=\"../../../../assets/img/Toolbar/showannotation/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowRuler\" alt=\"ShowRuler\" title=\"Show Ruler\" src=\"../../../../assets/img/Toolbar/showruler/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnDelete\" alt=\"Delete\" title=\"Delete\" src=\"../../../../assets/img/Toolbar/Delete.png\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSave\" alt=\"Save\" title=\"Save\" src=\"../../../../assets/img/Toolbar/Save.png\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n</div>\r\n-->\r\n"
 
 /***/ }),
 
@@ -7499,6 +8709,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _annotation_extend_object_ann_vertical_axis__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-vertical-axis */ "./src/app/annotation/extend-object/ann-vertical-axis.ts");
 /* harmony import */ var _annotation_extend_object_ann_mark_spot__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-mark-spot */ "./src/app/annotation/extend-object/ann-mark-spot.ts");
 /* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
+/* harmony import */ var _annotation_extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-polygon */ "./src/app/annotation/extend-object/ann-polygon.ts");
+/* harmony import */ var _annotation_extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-angle */ "./src/app/annotation/extend-object/ann-angle.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7523,12 +8735,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
 var ViewerToolbarComponent = /** @class */ (function () {
     function ViewerToolbarComponent(imageSelectorService, viewContext, configurationService) {
         this.imageSelectorService = imageSelectorService;
         this.viewContext = viewContext;
         this.configurationService = configurationService;
-        this.layout = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.selectPanButtonMenuList = [
             {
                 name: "selection",
@@ -7615,18 +8828,16 @@ var ViewerToolbarComponent = /** @class */ (function () {
         };
         this.simpleAnnotation1ButtonMenu = [
             { name: "ann_line", tip: "Line", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_line__WEBPACK_IMPORTED_MODULE_5__["AnnLine"], "Line", "ann_line", false)) } },
-            { name: "ann_ellipse", tip: "Eclipse", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_ellipse__WEBPACK_IMPORTED_MODULE_6__["AnnEllipse"], "Ellipse", "ellipse", false)) } },
-            { name: "ann_rectangle", tip: "Rectangle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_7__["AnnRectangle"], "Rectangle", "rect", false)) } },
-            { name: "ann_arrow", tip: "Arrow", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_8__["AnnArrow"], "Arrow", "ann_line", false))
-                }
-            },
-            {
-                name: "ann_ruler", tip: "Ruler", operationData: {
-                    type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_ruler__WEBPACK_IMPORTED_MODULE_10__["AnnRuler"], "Ruler", "ann_line", false))
-                }
-            },
+            { name: "ann_angle", tip: "Angle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_16__["AnnAngle"], "Angle", "ann_angle", false)) } },
+            { name: "ann_arrow", tip: "Arrow", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_8__["AnnArrow"], "Arrow", "ann_line", false)) } },
             { name: "ann_vaxis", tip: "Vertical Axis", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_vertical_axis__WEBPACK_IMPORTED_MODULE_12__["AnnVerticalAxis"], "Vertical Axis", "ann_cervicalcurve", false)) } },
             { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_mark_spot__WEBPACK_IMPORTED_MODULE_13__["AnnMarkSpot"], "Mark Spot", "ann_line", true)) } }
+        ];
+        this.simpleAnnotation2ButtonMenu = [
+            { name: "ann_ellipse", tip: "Eclipse", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_ellipse__WEBPACK_IMPORTED_MODULE_6__["AnnEllipse"], "Ellipse", "ellipse", false)) } },
+            { name: "ann_polygon", tip: "Polygon", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_15__["AnnPolygon"], "Polygon", "polygon", false)) } },
+            { name: "ann_rectangle", tip: "Rectangle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_7__["AnnRectangle"], "Rectangle", "rect", false)) } },
+            { name: "ann_ruler", tip: "Ruler", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_ruler__WEBPACK_IMPORTED_MODULE_10__["AnnRuler"], "Ruler", "ann_line", false)) } }
         ];
         this.extendAnnotation1ButtonMenu = [
             { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_curve__WEBPACK_IMPORTED_MODULE_9__["AnnCurve"], "Cervical Curve", "ann_cervicalcurve", true)) } }
@@ -7645,10 +8856,6 @@ var ViewerToolbarComponent = /** @class */ (function () {
     ViewerToolbarComponent.prototype.getButtonDivideSrc = function () {
         return this.buttonDivideSrc;
     };
-    __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Output"])(),
-        __metadata("design:type", Object)
-    ], ViewerToolbarComponent.prototype, "layout", void 0);
     ViewerToolbarComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: "app-viewer-toolbar",
@@ -7727,6 +8934,7 @@ var OperateToolbarComponent = /** @class */ (function () {
         this.worklistService.onShowAllCheckedStudy();
     };
     OperateToolbarComponent.prototype.onLoadKeyImage = function () {
+        this.worklistService.onLoadKeyImage();
     };
     OperateToolbarComponent.prototype.onSetRead = function () {
         this.worklistService.onSetRead();
@@ -8763,7 +9971,7 @@ var OverlayDisplayItem = /** @class */ (function () {
 /*!********************************!*\
   !*** ./src/app/models/pssi.ts ***!
   \********************************/
-/*! exports provided: Pssi, Patient, Study, Series, Image, MultiframeImage, WorklistColumn, RecWorklistData */
+/*! exports provided: Pssi, Patient, Study, Series, Image, MultiframeImage, WorklistColumn, RecWorklistData, RecOfflineImageInfo */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8776,6 +9984,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MultiframeImage", function() { return MultiframeImage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WorklistColumn", function() { return WorklistColumn; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecWorklistData", function() { return RecWorklistData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecOfflineImageInfo", function() { return RecOfflineImageInfo; });
 /* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/annotation */ "./src/app/models/annotation.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -8998,6 +10207,18 @@ var Image = /** @class */ (function (_super) {
         pixelSpacing.cy = Number(valueList[1]);
         return pixelSpacing;
     };
+    Image.prototype.setCornerStoneImage = function (ctImage) {
+        var annData = undefined;
+        var element = ctImage.data.elements["x0011101d"];
+        if (element) {
+            annData = new Uint8Array(element.length);
+            for (var i = 0; i < element.length; i++) {
+                annData[i] = ctImage.data.byteArray[element.dataOffset + i];
+            }
+        }
+        this.annData = annData;
+        this.cornerStoneImage = ctImage;
+    };
     return Image;
 }(Pssi));
 
@@ -9021,6 +10242,17 @@ var RecWorklistData = /** @class */ (function () {
     return RecWorklistData;
 }());
 
+var RecOfflineImageInfo = /** @class */ (function () {
+    function RecOfflineImageInfo() {
+    }
+    return RecOfflineImageInfo;
+}());
+
+var DictOfflineFlag = /** @class */ (function () {
+    function DictOfflineFlag() {
+    }
+    return DictOfflineFlag;
+}());
 
 
 /***/ }),
@@ -9454,6 +10686,10 @@ var ConfigurationService = /** @class */ (function () {
     ConfigurationService.prototype.getMarkerConfig = function () {
         return this.markerConfig;
     };
+    ConfigurationService.prototype.setKeyImage = function (id, marked) {
+        var _this = this;
+        this.databaseService.setKeyImage(id, marked).subscribe(function (value) { return _this.marked = value; });
+    };
     ConfigurationService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: "root"
@@ -9558,35 +10794,35 @@ var DatabaseService = /** @class */ (function () {
         var url = this.pssiUrl + "/setread/";
         var jsonId = { id: id };
         return this.http.post(url, jsonId, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("setRead"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setRead", [])));
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("setRead"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setRead")));
     };
     DatabaseService.prototype.setUnread = function (id) {
         var _this = this;
         var url = this.pssiUrl + "/setunread/";
         var jsonId = { id: id };
         return this.http.post(url, jsonId, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("setUnread"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setUnread", [])));
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("setUnread"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setUnread")));
     };
     DatabaseService.prototype.setDeletePrevent = function (id) {
         var _this = this;
         var url = this.pssiUrl + "/setdeleteprevent/";
         var jsonId = { id: id };
         return this.http.post(url, jsonId, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("set delete prevent"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setDeletePrevent", [])));
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("set delete prevent"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setDeletePrevent")));
     };
     DatabaseService.prototype.setDeleteAllow = function (id) {
         var _this = this;
         var url = this.pssiUrl + "/setdeleteallow/";
         var jsonId = { id: id };
         return this.http.post(url, jsonId, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("set delete prevent"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setDeleteAllow", [])));
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("set delete prevent"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setDeleteAllow")));
     };
     DatabaseService.prototype.deleteStudy = function (id, deletionReason) {
         var _this = this;
         var url = this.pssiUrl + "/deletestudy/";
         var jsonId = { id: id, deletionReason: deletionReason };
         return this.http.post(url, jsonId, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("delete study"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("deleteStudy", [])));
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("delete study"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("deleteStudy")));
     };
     /** Delete shortcut to the server */
     DatabaseService.prototype.deleteShortcut = function (shortcut) {
@@ -9594,6 +10830,14 @@ var DatabaseService = /** @class */ (function () {
         var url = this.shortcutUrl + "/delete";
         return this.http.post(url, shortcut, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("delete shortcut"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("deleteShortcut", [])));
+    };
+    /** Delete shortcut to the server */
+    DatabaseService.prototype.checkStudiesIncludeOffline = function (studyInstanceUIDList) {
+        var _this = this;
+        var url = this.pssiUrl + "/checkstudiesincludeoffline/";
+        var data = { studyInstanceUIDList: studyInstanceUIDList, StudyOfflineMessage: "" };
+        return this.http.post(url, data, httpOptions)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("check Studies Include Offline"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setDeleteAllow")));
     };
     /** GET studies from the server */
     DatabaseService.prototype.getStudies = function (shortcut, pageIndex, sortItem) {
@@ -9603,11 +10847,18 @@ var DatabaseService = /** @class */ (function () {
         return this.http.post(url, data, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (recWorklistData) { return _this.log('fetched recWorklistData'); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('getRecWorklistData')));
     };
+    /** Set Key Image */
+    DatabaseService.prototype.setKeyImage = function (id, marked) {
+        var url = this.pssiUrl + "/setkeyimage/";
+        var data = { id: id, marked: marked };
+        return this.http.post(url, data, httpOptions)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('setKeyImage')));
+    };
     /** GET study from the server */
-    DatabaseService.prototype.getStudiesForDcmViewer = function (id, showHistoryStudies) {
+    DatabaseService.prototype.getStudiesForDcmViewer = function (id, showHistoryStudies, showKeyImage) {
         var _this = this;
         var url = this.pssiUrl + "/GetStudiesForDcmViewer/";
-        var data = { id: id, showHistoryStudies: showHistoryStudies };
+        var data = { id: id, showHistoryStudies: showHistoryStudies, showKeyImage: showKeyImage };
         return this.http.post(url, data, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (recWorklistData) { return _this.log('fetched recWorklistData'); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('getRecWorklistData')));
     };
@@ -9810,6 +11061,9 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+var httpOptions = {
+    headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]({ 'Content-Type': "application/json" })
+};
 var DicomImageService = /** @class */ (function () {
     function DicomImageService(http, configurationService, logService) {
         this.http = http;
@@ -9820,6 +11074,12 @@ var DicomImageService = /** @class */ (function () {
         this.overlayDisplayGroupList = [];
         this.baseUrl = this.configurationService.getBaseUrl();
     }
+    /** Save Image annotation */
+    DicomImageService.prototype.saveImageAnn = function (id, annString) {
+        var url = this.dicomImageUrl + "/saveAnnotation/";
+        var data = { id: id, annString: annString };
+        return this.http.post(url, data, httpOptions);
+    };
     DicomImageService.prototype.getDicomFile = function (image) {
         var imageUrl = this.dicomImageUrl + "/dicom/" + image.id;
         return this.http.get(imageUrl, { responseType: "blob" });
@@ -9829,11 +11089,9 @@ var DicomImageService = /** @class */ (function () {
         return this.http.get(imageUrl, { responseType: "blob" });
     };
     DicomImageService.prototype.getCornerStoneImage = function (image) {
-        var imageUri = "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom"
-            .format(this.baseUrl, image.id, 0);
-        cornerstone.loadImage(imageUri).then(function (ctImage) {
-            image.cornerStoneImage = ctImage;
-        });
+        var imageUri = "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom".format(this.baseUrl, image.id, 0);
+        this.logService.info("Dicom Image Service : Downloading dicom image, url is " + imageUri);
+        return cornerstone.loadImage(imageUri);
     };
     DicomImageService.prototype.getOverlayDisplayList = function (image, canvasWidth, canvasHeight, canvasContext) {
         var _this = this;
@@ -9850,7 +11108,7 @@ var DicomImageService = /** @class */ (function () {
         return overlayDisplayList;
     };
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Text overlay funtctions
+    // Text overlay functions
     DicomImageService.prototype.formatOverlayList = function (overlayList) {
         var _this = this;
         overlayList.forEach(function (overlay) {
@@ -10551,6 +11809,7 @@ var ViewContextService = /** @class */ (function () {
         this._showOverlay = true;
         this._showRuler = true;
         this._showGraphicOverlay = false;
+        this._keyImage = false;
         this.viewContextChangedSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
         this.viewContextChanged$ = this.viewContextChangedSource.asObservable();
         this.operationSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
@@ -10668,6 +11927,8 @@ var ViewContextService = /** @class */ (function () {
                 return this._showRuler;
             case OperationEnum.ShowGraphicOverlay:
                 return this._showGraphicOverlay;
+            case OperationEnum.ToggleKeyImage:
+                return this._keyImage;
             default:
                 return buttonData.operationData.data == this._curContext.action;
         }
@@ -10679,6 +11940,7 @@ var ViewContextService = /** @class */ (function () {
             case OperationEnum.ShowRuler:
             case OperationEnum.ShowGraphicOverlay:
             case OperationEnum.SetContext:
+            case OperationEnum.ToggleKeyImage:
                 return true;
             default:
                 return false;
@@ -10714,6 +11976,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../models/viewer-shell-data */ "./src/app/models/viewer-shell-data.ts");
 /* harmony import */ var _hanging_protocol_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
 /* harmony import */ var _shell_navigator_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./shell-navigator.service */ "./src/app/services/shell-navigator.service.ts");
+/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../models/messageBox */ "./src/app/models/messageBox.ts");
+/* harmony import */ var _dialog_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./dialog.service */ "./src/app/services/dialog.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10731,11 +11995,14 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
 var WorklistService = /** @class */ (function () {
-    function WorklistService(databaseService, shellNavigatorService, hangingProtocolService) {
+    function WorklistService(databaseService, shellNavigatorService, hangingProtocolService, dialogService) {
         this.databaseService = databaseService;
         this.shellNavigatorService = shellNavigatorService;
         this.hangingProtocolService = hangingProtocolService;
+        this.dialogService = dialogService;
         this.querying = false;
         this.bDisableLoadImageButton = true;
         this.bDisableLoadKeyImage = true;
@@ -10850,14 +12117,7 @@ var WorklistService = /** @class */ (function () {
             this.shellNavigatorService.shellNavigate(viewerShellData);
         }
         else {
-            this.databaseService.getStudiesForDcmViewer(study.id, false).subscribe(function (value) {
-                viewerShellData.addStudy(value[0]);
-                // If the PSSI information changed, need to update worklist ??
-                // study = value;
-                // study = Study.clone(value, false);
-                // study.patient = Patient.clone(value.patient, false);
-                _this.shellNavigatorService.shellNavigate(viewerShellData);
-            });
+            this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, false).subscribe(function (value) { return _this.studyDetailsLoaded(1, value); });
         }
     };
     WorklistService.prototype.onShowAllCheckedStudy = function () {
@@ -10880,11 +12140,26 @@ var WorklistService = /** @class */ (function () {
             });
             this.studies.forEach(function (study) {
                 if (study.checked) {
-                    _this.databaseService.getStudiesForDcmViewer(study.id, _this.showHistoryStudies)
+                    _this.databaseService.getStudiesForDcmViewer(study.id, _this.showHistoryStudies, false)
                         .subscribe(function (value) { return _this.studyDetailsLoaded(checkedCount_1, value); });
                 }
             });
         }
+    };
+    WorklistService.prototype.onLoadKeyImage = function () {
+        var _this = this;
+        var checkedCount = 0;
+        this.studies.forEach(function (study) {
+            if (study.checked) {
+                checkedCount++;
+            }
+        });
+        this.studies.forEach(function (study) {
+            if (study.checked) {
+                _this.databaseService.getStudiesForDcmViewer(study.id, _this.showHistoryStudies, true)
+                    .subscribe(function (value) { return _this.studyDetailsLoaded(checkedCount, value); });
+            }
+        });
     };
     WorklistService.prototype.onSetRead = function (study) {
         var _this = this;
@@ -10893,13 +12168,13 @@ var WorklistService = /** @class */ (function () {
             this.studies.forEach(function (study) {
                 if (study.checked) {
                     _this.databaseService.setRead(study.studyInstanceUid)
-                        .subscribe(function (shortcuts) { return _this.refreshShortcuts(); });
+                        .subscribe(function () { return _this.refreshShortcuts(); });
                 }
             });
         }
         else {
             this.databaseService.setRead(study.studyInstanceUid)
-                .subscribe(function (shortcuts) { return _this.refreshShortcuts(); });
+                .subscribe(function () { return _this.refreshShortcuts(); });
         }
     };
     WorklistService.prototype.onSetUnread = function (study) {
@@ -10909,22 +12184,24 @@ var WorklistService = /** @class */ (function () {
             this.studies.forEach(function (study) {
                 if (study.checked) {
                     _this.databaseService.setUnread(study.studyInstanceUid)
-                        .subscribe(function (shortcuts) { return _this.refreshShortcuts(); });
+                        .subscribe(function () { return _this.refreshShortcuts(); });
                 }
             });
         }
         else {
             this.databaseService.setUnread(study.studyInstanceUid)
-                .subscribe(function (shortcuts) { return _this.refreshShortcuts(); });
+                .subscribe(function () { return _this.refreshShortcuts(); });
         }
     };
     WorklistService.prototype.onCheckStudyChanged = function (study) {
+        var _this = this;
         if (study === void 0) { study = null; }
         var scanStatusCompletedCount = 0;
         var scanStatusEndedCount = 0;
         var deletePreventCount = 0;
         var deleteAllowCount = 0;
         var checkedStudyCount = 0;
+        //studyUSBOfflineList = ;
         this.studies.forEach(function (study) {
             if (study.checked) {
                 checkedStudyCount++;
@@ -10943,19 +12220,17 @@ var WorklistService = /** @class */ (function () {
             }
         });
         if (checkedStudyCount == 0) {
-            this.bDisableLoadImageButton = true;
-            this.bDisableLoadKeyImage = true;
-            this.bDisableChangeImageSeriesOrder = true;
-            this.bDisableReassign = true;
-            this.bDisableTransfer = true;
-            this.bDisableTagEdit = true;
-            this.bDisableDeleteStudy = true;
-            this.bDisableSetReadBtn = true;
-            this.bDisableSetUnreadBtn = true;
-            this.bDisableDeletePreventBtn = true;
-            this.bDisableDeleteAllowBtn = true;
+            this.initAllButton();
         }
         else {
+            this.checkedStudiesUid = new Array();
+            // Check Offline Image
+            this.studies.forEach(function (study) {
+                if (study.checked) {
+                    (_this.checkedStudiesUid.push(study.studyInstanceUid));
+                }
+            });
+            this.checkStudiesIncludeOffline(this.checkedStudiesUid);
             this.bDisableLoadImageButton = false;
             this.bDisableLoadKeyImage = false;
             this.bDisableChangeImageSeriesOrder = false;
@@ -10999,12 +12274,29 @@ var WorklistService = /** @class */ (function () {
             }
         }
     };
+    WorklistService.prototype.checkStudiesIncludeOffline = function (checkedStudiesUid) {
+        var _this = this;
+        this.databaseService.checkStudiesIncludeOffline(checkedStudiesUid).subscribe(function (offlineStudiesInfo) { return _this.collectOfflineStudiesInfo(offlineStudiesInfo); });
+        ;
+    };
+    WorklistService.prototype.collectOfflineStudiesInfo = function (offlineStudiesInfo) {
+        var studyOfflineCollection = offlineStudiesInfo;
+        //if (studyOfflineCollection) {
+        //    var studyOfflineMsg = studyOfflineCollection.keys[0];
+        //    studyUSBOfflineList = studyOfflineCollection.values[0];
+        //    studyHasHistoryIsOffline = studyOfflineMsg.keys[0];
+        //    if (__studyHasHistoryIsOffline) {
+        //        __studyOfflineMsg = studyOfflineMsg.values[0];
+        //    }
+        //}
+        //return __studyHasHistoryIsOffline;
+    };
     WorklistService.prototype.onDeletePrevent = function () {
         var _this = this;
         this.studies.forEach(function (study) {
             if (study.checked) {
                 _this.databaseService.setDeletePrevent(study.studyInstanceUid)
-                    .subscribe(function (shortcuts) { return _this.refreshShortcuts(); });
+                    .subscribe(function () { return _this.refreshShortcuts(); });
             }
         });
     };
@@ -11013,7 +12305,7 @@ var WorklistService = /** @class */ (function () {
         this.studies.forEach(function (study) {
             if (study.checked) {
                 _this.databaseService.setDeleteAllow(study.studyInstanceUid)
-                    .subscribe(function (shortcuts) { return _this.refreshShortcuts(); });
+                    .subscribe(function () { return _this.refreshShortcuts(); });
             }
         });
     };
@@ -11022,7 +12314,7 @@ var WorklistService = /** @class */ (function () {
         this.studies.forEach(function (study) {
             if (study.checked) {
                 _this.databaseService.deleteStudy(study.studyInstanceUid, deletionReason)
-                    .subscribe(function (shortcuts) { return _this.refreshShortcuts(); });
+                    .subscribe(function () { return _this.refreshShortcuts(); });
             }
         });
     };
@@ -11088,14 +12380,26 @@ var WorklistService = /** @class */ (function () {
     WorklistService.prototype.refreshShortcuts = function () {
         this.onQueryStudies(1);
         this.onQueryShortcuts();
+        this.initAllButton();
     };
     WorklistService.prototype.studyDetailsLoaded = function (allCheckedStudyCount, getStudies) {
         var _this = this;
         getStudies.forEach(function (value) {
-            _this.loadedStudy.push(value);
+            if (value) {
+                _this.loadedStudy.push(value);
+            }
         });
         this.loadedStudyCount++;
-        if (allCheckedStudyCount == this.loadedStudyCount) {
+        if (allCheckedStudyCount === this.loadedStudyCount) {
+            if (this.loadedStudy.length === 0) {
+                var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxContent"]();
+                content.title = "No Key Image";
+                content.messageText = "There is no key image!";
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxType"].Error;
+                this.dialogService.showMessageBox(content).subscribe();
+                this.loadedStudyCount = 0;
+                return;
+            }
             var viewerShellData_2 = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingPrococal());
             this.loadedStudy.forEach(function (value) {
                 value.detailsLoaded = true;
@@ -11107,13 +12411,27 @@ var WorklistService = /** @class */ (function () {
             this.loadedStudyCount = 0;
         }
     };
+    WorklistService.prototype.initAllButton = function () {
+        this.bDisableLoadImageButton = true;
+        this.bDisableLoadKeyImage = true;
+        this.bDisableChangeImageSeriesOrder = true;
+        this.bDisableReassign = true;
+        this.bDisableTransfer = true;
+        this.bDisableTagEdit = true;
+        this.bDisableDeleteStudy = true;
+        this.bDisableSetReadBtn = true;
+        this.bDisableSetUnreadBtn = true;
+        this.bDisableDeletePreventBtn = true;
+        this.bDisableDeleteAllowBtn = true;
+    };
     WorklistService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: "root"
         }),
         __metadata("design:paramtypes", [_database_service__WEBPACK_IMPORTED_MODULE_3__["DatabaseService"],
             _shell_navigator_service__WEBPACK_IMPORTED_MODULE_6__["ShellNavigatorService"],
-            _hanging_protocol_service__WEBPACK_IMPORTED_MODULE_5__["HangingProtocolService"]])
+            _hanging_protocol_service__WEBPACK_IMPORTED_MODULE_5__["HangingProtocolService"],
+            _dialog_service__WEBPACK_IMPORTED_MODULE_8__["DialogService"]])
     ], WorklistService);
     return WorklistService;
 }());

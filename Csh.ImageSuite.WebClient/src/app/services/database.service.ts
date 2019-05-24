@@ -4,7 +4,7 @@ import { Observable, of } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 
 import { Shortcut } from '../models/shortcut';
-import { Patient, Study, Series, Image, RecWorklistData } from '../models/pssi';
+import { Patient, Study, Series, Image, RecWorklistData, RecOfflineImageInfo } from '../models/pssi';
 import { Overlay } from '../models/overlay';
 import { FontData, MarkerGroupData } from '../models/misc-data';
 
@@ -93,53 +93,53 @@ export class DatabaseService {
             );
     }
 
-    setRead(id: string): Observable<Shortcut[]> {
+    setRead(id: string): Observable<boolean> {
         const url = `${this.pssiUrl}/setread/`;
         let jsonId = { id: id };
-        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+        return this.http.post<boolean>(url, jsonId, httpOptions)
             .pipe(
                 tap(shortcut => this.log("setRead")),
-            catchError(this.handleError("setRead", []))
+            catchError(this.handleError<boolean>("setRead"))
             );
     }
 
-    setUnread(id: string): Observable<Shortcut[]> {
+    setUnread(id: string): Observable<boolean> {
         const url = `${this.pssiUrl}/setunread/`;
         let jsonId = { id: id };
-        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+        return this.http.post<boolean>(url, jsonId, httpOptions)
             .pipe(
             tap(shortcut => this.log("setUnread")),
-            catchError(this.handleError("setUnread", []))
+            catchError(this.handleError<boolean>("setUnread"))
             );
     }
 
-    setDeletePrevent(id: string): Observable<Shortcut[]> {
+    setDeletePrevent(id: string): Observable<boolean> {
         const url = `${this.pssiUrl}/setdeleteprevent/`;
         let jsonId = { id: id };
-        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+        return this.http.post<boolean>(url, jsonId, httpOptions)
             .pipe(
                 tap(shortcut => this.log("set delete prevent")),
-            catchError(this.handleError("setDeletePrevent", []))
+            catchError(this.handleError<boolean>("setDeletePrevent"))
             );
     }
 
-    setDeleteAllow(id: string): Observable<Shortcut[]> {
+    setDeleteAllow(id: string): Observable<boolean> {
         const url = `${this.pssiUrl}/setdeleteallow/`;
         let jsonId = { id: id };
-        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+        return this.http.post<boolean>(url, jsonId, httpOptions)
             .pipe(
                 tap(shortcut => this.log("set delete prevent")),
-            catchError(this.handleError("setDeleteAllow", []))
+                catchError(this.handleError<boolean>("setDeleteAllow"))
             );
     }
 
-    deleteStudy(id: string, deletionReason): Observable<Shortcut[]> {
+    deleteStudy(id: string, deletionReason): Observable<boolean> {
         const url = `${this.pssiUrl}/deletestudy/`;
         let jsonId = { id: id, deletionReason: deletionReason };
-        return this.http.post<Shortcut[]>(url, jsonId, httpOptions)
+        return this.http.post<boolean>(url, jsonId, httpOptions)
             .pipe(
                 tap(shortcut => this.log("delete study")),
-                catchError(this.handleError("deleteStudy", []))
+                catchError(this.handleError<boolean>("deleteStudy"))
             );
     }
 
@@ -150,6 +150,17 @@ export class DatabaseService {
             .pipe(
                 tap(shortcut => this.log("delete shortcut")),
                 catchError(this.handleError("deleteShortcut", []))
+            );
+    }
+
+    /** Delete shortcut to the server */
+    checkStudiesIncludeOffline(studyInstanceUIDList): Observable<RecOfflineImageInfo> {
+        const url = `${this.pssiUrl}/checkstudiesincludeoffline/`;
+        let data = { studyInstanceUIDList: studyInstanceUIDList, StudyOfflineMessage: ""};
+        return this.http.post<RecOfflineImageInfo>(url, data, httpOptions)
+            .pipe(
+            tap(shortcut => this.log("check Studies Include Offline")),
+            catchError(this.handleError<RecOfflineImageInfo>("setDeleteAllow"))
             );
     }
 

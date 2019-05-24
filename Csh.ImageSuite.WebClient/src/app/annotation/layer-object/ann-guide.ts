@@ -277,6 +277,7 @@ export class AnnGuide {
         }
         
         this.drawActionButton();
+        this.imageViewer.refresh();
     }
 
     // Create promise for loading the image of step button
@@ -431,6 +432,9 @@ export class AnnGuide {
             if (this.ignoreMouseEvent(annGuideButton)) return false;
 
             annGuideButton.onSelect();
+            if (annGuideButton.onButtonClick) {
+                annGuideButton.onButtonClick.call(this);
+            }
             return false;
         };
 
@@ -438,9 +442,6 @@ export class AnnGuide {
             if (this.ignoreMouseEvent(annGuideButton)) return false;
 
             annGuideButton.onUp();
-            if (annGuideButton.onButtonClick) {
-                annGuideButton.onButtonClick.call(this);
-            }
             return false;
         };
     }
@@ -501,7 +502,7 @@ export class AnnGuide {
     // Create the step button list for the annotation
     private createStepDataList(annName: string): boolean {
         const annGuideData = AnnGuide.findAnnGuideData(annName);
-        if (!annGuideData) return;
+        if (!annGuideData) return false;
 
         this.annStepDataList.length = 0;
         const stepConfigList = annGuideData.guideStepConfigList;
@@ -511,7 +512,7 @@ export class AnnGuide {
 
         const stepImageList = annGuideData.guideStepImageList;
         if (stepImageList.length === stepConfigList.length) {
-            // The images were alreay loaded before
+            // The images were already loaded before
             for (let i = 0; i < stepImageList.length; i++) {
                 this.annStepDataList[i].imageData = stepImageList[i];
             }

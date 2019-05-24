@@ -29,10 +29,20 @@ export class AnnBaseCurve extends AnnBaseObject {
         this.jcObj._anticlockwise = anticlockwise;
     }
 
-    getText(): string {
+    getAngle(): number {
         let arcAngle = this.jcObj._endAngle - this.jcObj._startAngle;
         if (arcAngle > 180) {
             arcAngle = 360 - arcAngle;
+        }
+
+        return arcAngle;
+    }
+
+    getText(angleOnly: boolean = false): string {
+        const arcAngle = this.getAngle();
+        const angleText = arcAngle.toFixed(2) + "\xb0";
+        if (angleOnly) {
+            return angleText;
         }
 
         // Display radius, not the length of the arc
@@ -45,7 +55,7 @@ export class AnnBaseCurve extends AnnBaseObject {
             text = this.jcObj._radius.toFixed(2) + "pt";
         }
 
-        text += " " + arcAngle.toFixed(2) + "\xb0";
+        text += " " + angleText;
 
         return text;
     }

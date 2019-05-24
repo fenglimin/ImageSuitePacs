@@ -76,6 +76,10 @@ export abstract class AnnObject {
         this.stepIndex = stepIndex;
     }
 
+    getDefaultColor(): string {
+        return this.defaultColor;
+    }
+
     getFocusedObj(): AnnObject {
         return this.focusedObj;
     }
@@ -250,8 +254,11 @@ export abstract class AnnObject {
             if (parentObj.needResponseToChildMouseEvent()) {
                 console.log(parentObj.constructor.name + " on mouse over");
                 parentObj.onMouseEvent(MouseEventType.MouseOver, arg, child);
-                parentObj.oldCursor = parentObj.getCursor();
-                parentObj.setCursor(child.mouseStyle);
+                if (!this.imageViewer.isDragging()) {
+                    parentObj.oldCursor = parentObj.getCursor();
+                    parentObj.setCursor(child.mouseStyle);
+                }
+                
             }
 
             return false;
@@ -261,7 +268,9 @@ export abstract class AnnObject {
             if (parentObj.needResponseToChildMouseEvent()) {
                 console.log(parentObj.constructor.name + " on mouse out");
                 parentObj.onMouseEvent(MouseEventType.MouseOut, arg, child);
-                parentObj.setCursor(undefined);
+                if (!this.imageViewer.isDragging()) {
+                    parentObj.setCursor(undefined);
+                }
             }
 
             return false;

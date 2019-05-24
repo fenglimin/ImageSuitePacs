@@ -139,8 +139,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
 
                 string finalContentType = PickFinalContentType(compatibleContentTypesByOrderOfPreference, dicomFile);
 
-                return ReturnImageAsHttpResponse(dicomFile,
-                    finalContentType, transferSyntax, frameIndex);
+                return ReturnImageAsHttpResponse(dicomFile, finalContentType, transferSyntax, frameIndex);
             }
             catch (Exception ex)
             {
@@ -183,6 +182,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
                 //By default, the transfer syntax shall be
                 //"Explicit VR Little Endian".
                 //Note: This implies that retrieved images are sent un-compressed by default.
+                //DicomTransferSyntax requestedTransferSyntax = DicomTransferSyntax.JPEG2000Lossless;
                 DicomTransferSyntax requestedTransferSyntax = DicomTransferSyntax.ExplicitVRLittleEndian;
 
                 if (transferSyntax != null)

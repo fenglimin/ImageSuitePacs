@@ -74,7 +74,6 @@ namespace Csh.ImageSuite.WebHost.Controllers
         }
 
 
-
         // POST: Pssi/Search/
         [System.Web.Mvc.HttpPost]
         public string Search(RevStudyData studyData)
@@ -98,7 +97,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
             ScanStatus NewStatus = ScanStatus.Completed;
             _dbHelper.UpdateStudyScanStatus(id, NewStatus);
 
-            return _commonTool.GetJsonStringFromObject("test");
+            return _commonTool.GetJsonStringFromObject(true);
         }
 
         [System.Web.Mvc.HttpPost]
@@ -107,7 +106,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
             ScanStatus NewStatus = ScanStatus.Ended;
             _dbHelper.UpdateStudyScanStatus(id, NewStatus);
 
-            return _commonTool.GetJsonStringFromObject("test");
+            return _commonTool.GetJsonStringFromObject(true);
         }
 
         [System.Web.Mvc.HttpPost]
@@ -116,7 +115,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
             ReservedStatus reservedStatus = ReservedStatus.Reserved;
             _dbHelper.SetReserved(id, reservedStatus);
 
-            return _commonTool.GetJsonStringFromObject("test");
+            return _commonTool.GetJsonStringFromObject(true);
         }
 
         [System.Web.Mvc.HttpPost]
@@ -124,37 +123,23 @@ namespace Csh.ImageSuite.WebHost.Controllers
         {
             ReservedStatus reservedStatus = ReservedStatus.UnReserved;
             _dbHelper.SetReserved(id, reservedStatus);
-
-            return _commonTool.GetJsonStringFromObject("test");
+            return _commonTool.GetJsonStringFromObject(true);
         }
 
         [System.Web.Mvc.HttpPost]
         public string DeleteStudy(DeleteStudyJson deleteStudyJson)
         {
             _dbHelper.DeletedStudy(deleteStudyJson.Id, deleteStudyJson.DeletionReason);
-
-            return _commonTool.GetJsonStringFromObject("test");
+            return _commonTool.GetJsonStringFromObject(true);
         }
 
         [System.Web.Mvc.HttpPost]
         public string SetKeyImage(RevKeyImage revKeyImage)
         {
             _dbHelper.SetKeyImage(revKeyImage.Id, revKeyImage.Marked);
-
-            return _commonTool.GetJsonStringFromObject("");
+            return _commonTool.GetJsonStringFromObject(true);
         }
 
-        public class DeleteStudyJson
-        {
-            public string Id { get; set; }
-            public string DeletionReason { get; set; }
-        }
-
-        // GET: Pssi/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
 
         // POST: Pssi/Create
         [System.Web.Mvc.HttpPost]
@@ -172,11 +157,6 @@ namespace Csh.ImageSuite.WebHost.Controllers
             }
         }
 
-        // GET: Pssi/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
 
         // POST: Pssi/Edit/5
         [System.Web.Mvc.HttpPost]
@@ -194,11 +174,6 @@ namespace Csh.ImageSuite.WebHost.Controllers
             }
         }
 
-        // GET: Pssi/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
 
         // POST: Pssi/Delete/5
         [System.Web.Mvc.HttpPost]
@@ -214,6 +189,103 @@ namespace Csh.ImageSuite.WebHost.Controllers
             {
                 return View();
             }
+        }
+
+        [System.Web.Mvc.HttpPost]
+        public string CheckStudiesIncludeOffline(RevCheckedStudiesForOffline revCheckedStudiesForOffline)
+        {
+            Dictionary<Dictionary<bool, string>, List<string>> dictResult = new Dictionary<Dictionary<bool, string>, List<string>>();
+            revCheckedStudiesForOffline.StudyOfflineMessage = "";
+            // This dictionary is include study is offline and popup study offline message.
+            // If study offline on USB, should pop div loading and send socket to sms to online study.
+            Dictionary<bool, string> dictOfflineFlag = new Dictionary<bool, string>();
+            bool isOffline = false;
+            //List<string> studyOfflineUidCDList = new List<string>();
+            List<string> studyOfflineUidUSBList = new List<string>();
+
+            string strPopUpStudyOfflineMessage = revCheckedStudiesForOffline.StudyOfflineMessage;
+            try
+            {
+                List<string> studyInstanceUIDList = revCheckedStudiesForOffline.studyInstanceUIDList;
+                string studyUIDs = GetGUIDsByList(studyInstanceUIDList);
+
+                DataTable tbStudyOffline = _dbHelper.GetTableStudyOffline(studyUIDs, "");
+                if (tbStudyOffline != null && tbStudyOffline.Rows.Count > 0)
+                {
+                    isOffline = true;
+
+                    List<Study> studyInfoModelOfflineUIDList = new List<Study>();
+                    string strOfflineMessage = "";
+
+                    if (isOffline)
+                    {
+                        strOfflineMessage = _dbHelper.GetStringStudyOffline(studyUIDs, "", out studyInfoModelOfflineUIDList);
+                    }
+
+                    // 1.PopUp Message for study offline
+                    if (strOfflineMessage.Trim().Length > 0)
+                    {
+                        strPopUpStudyOfflineMessage += "\n" + strOfflineMessage;
+                    }
+
+                    dictOfflineFlag.Add(isOffline, strPopUpStudyOfflineMessage);
+
+
+                    foreach (Study model in studyInfoModelOfflineUIDList)
+                    {
+                        if (model.IsUSBOffline == true)
+                        {
+                            if (!studyOfflineUidUSBList.Contains(model.StudyInstanceUid))
+                            {
+                                studyOfflineUidUSBList.Add(model.StudyInstanceUid);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    dictOfflineFlag.Add(false, "");
+                }
+                dictResult.Add(dictOfflineFlag, studyOfflineUidUSBList);
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            foreach (var test in dictResult)
+            {
+                return _commonTool.GetJsonStringFromObject(test);
+            }
+
+            return _commonTool.GetJsonStringFromObject(dictResult);
+        }
+
+        public static string GetGUIDsByList(List<string> GUIDList)
+        {
+            string result = string.Empty;
+
+            if (GUIDList.Count > 0)
+            {
+                foreach (string dataKey in GUIDList)
+                {
+                    if (dataKey.Trim().Length > 0)
+                    {
+                        result += "'" + dataKey.Trim() + "',";
+                    }
+                }
+                if (result.Length > 0)
+                {
+                    result = result.Substring(0, result.Length - 1);
+                }
+            }
+            return result;
+        }
+
+        public class RevCheckedStudiesForOffline
+        {
+            public List<string> studyInstanceUIDList { get; set; }
+            public string StudyOfflineMessage { get; set; }
         }
     }
 }

@@ -349,3 +349,14 @@ export class RecWorklistData {
     public pageCount: number;
     public worklistColumns: WorklistColumn[];
 }
+
+export class RecOfflineImageInfo {
+    public key: DictOfflineFlag[];
+    public value : string[];
+
+}
+
+class DictOfflineFlag {
+    public key: boolean;
+    public value: string;
+}

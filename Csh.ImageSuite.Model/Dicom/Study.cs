@@ -91,5 +91,13 @@ namespace Csh.ImageSuite.Model.Dicom
         public string Veterinarian { get; set; }
 
         public string RequestedProcPriority { get; set; }
+
+        public bool IsUSBOffline { get; set; }
+
+        public bool IsCDOffline { get; set; }
+
+        public string OfflinePopupMessage { get; set; }
+
+
     }
 }

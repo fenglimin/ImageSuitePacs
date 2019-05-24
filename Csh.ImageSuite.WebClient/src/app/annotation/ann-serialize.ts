@@ -3,6 +3,8 @@ import { IImageViewer } from "../interfaces/image-viewer-interface";
 import { AnnLine } from "./extend-object/ann-line";
 import { AnnArrow } from "./extend-object/ann-arrow";
 import { AnnRectangle } from "./extend-object/ann-rectangle";
+import { AnnPolygon } from "./extend-object/ann-polygon";
+import { AnnAngle } from "./extend-object/ann-angle";
 import { AnnExtendObject } from "./extend-object/ann-extend-object";
 
 export class AnnSerialize {
@@ -40,6 +42,12 @@ export class AnnSerialize {
                     break;
                 case "CGXAnnSquare":
                     annObj = new AnnRectangle(undefined, this.imageViewer);
+                    break;
+                case "CGXAnnPolygon":
+                    annObj = new AnnPolygon(undefined, this.imageViewer);
+                    break;
+                case "CGXAnnProtractor":
+                    annObj = new AnnAngle(undefined, this.imageViewer);
                     break;
                 default:
                     alert("Unknown annotation " + annName);

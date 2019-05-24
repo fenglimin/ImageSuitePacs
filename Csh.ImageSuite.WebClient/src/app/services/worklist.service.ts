@@ -35,6 +35,8 @@ export class WorklistService {
 
     loadedStudyCount = 0;
     loadedStudy: Study[];
+    studyUSBOfflineList: number[];
+    checkedStudiesUid: string[];
 
     private _shortcut: Shortcut;
     set shortcut(value: Shortcut) {
@@ -197,12 +199,12 @@ export class WorklistService {
             this.studies.forEach(study => {
                 if (study.checked) {
                     this.databaseService.setRead(study.studyInstanceUid)
-                        .subscribe(shortcuts => this.refreshShortcuts());
+                        .subscribe(() => this.refreshShortcuts());
                 }
             });
         } else {
             this.databaseService.setRead(study.studyInstanceUid)
-                .subscribe(shortcuts => this.refreshShortcuts());
+                .subscribe(() => this.refreshShortcuts());
         }
     }
 
@@ -211,12 +213,12 @@ export class WorklistService {
             this.studies.forEach(study => {
                 if (study.checked) {
                     this.databaseService.setUnread(study.studyInstanceUid)
-                        .subscribe(shortcuts => this.refreshShortcuts());
+                        .subscribe(() => this.refreshShortcuts());
                 }
             });
         } else {
             this.databaseService.setUnread(study.studyInstanceUid)
-                .subscribe(shortcuts => this.refreshShortcuts());
+                .subscribe(() => this.refreshShortcuts());
         }
     }
 
@@ -226,6 +228,7 @@ export class WorklistService {
         let deletePreventCount = 0;
         let deleteAllowCount = 0;
         let checkedStudyCount = 0;
+        //studyUSBOfflineList = ;
 
         this.studies.forEach(study => {
             if (study.checked) {
@@ -248,20 +251,19 @@ export class WorklistService {
         });
 
         if (checkedStudyCount == 0) {
-            this.bDisableLoadImageButton = true;
-            this.bDisableLoadKeyImage = true;
-            this.bDisableChangeImageSeriesOrder = true;
-            this.bDisableReassign = true;
-            this.bDisableTransfer = true;
-            this.bDisableTagEdit = true;
-            this.bDisableDeleteStudy = true;
-            this.bDisableSetReadBtn = true;
-            this.bDisableSetUnreadBtn = true;
-            this.bDisableDeletePreventBtn = true;
-            this.bDisableDeleteAllowBtn = true;
+            this.initAllButton();
         }
-        else
-        {
+        else {
+            this.checkedStudiesUid = new Array<string>();
+            // Check Offline Image
+            this.studies.forEach(study => {
+                if (study.checked) {(
+                    this.checkedStudiesUid.push(study.studyInstanceUid));
+                }
+            });
+
+            this.checkStudiesIncludeOffline(this.checkedStudiesUid);
+
             this.bDisableLoadImageButton = false;
             this.bDisableLoadKeyImage = false;
             this.bDisableChangeImageSeriesOrder = false;
@@ -308,11 +310,32 @@ export class WorklistService {
         }
     }
 
+    checkStudiesIncludeOffline(checkedStudiesUid) {
+        this.databaseService.checkStudiesIncludeOffline(checkedStudiesUid).subscribe(offlineStudiesInfo => this.collectOfflineStudiesInfo(offlineStudiesInfo));;
+    }
+
+    collectOfflineStudiesInfo(offlineStudiesInfo) {
+        var studyOfflineCollection = offlineStudiesInfo;
+
+        //if (studyOfflineCollection) {
+
+        //    var studyOfflineMsg = studyOfflineCollection.keys[0];
+        //    studyUSBOfflineList = studyOfflineCollection.values[0];
+
+        //    studyHasHistoryIsOffline = studyOfflineMsg.keys[0];
+
+        //    if (__studyHasHistoryIsOffline) {
+        //        __studyOfflineMsg = studyOfflineMsg.values[0];
+        //    }
+        //}
+        //return __studyHasHistoryIsOffline;
+    }
+
     onDeletePrevent() {
         this.studies.forEach(study => {
             if (study.checked) {
                 this.databaseService.setDeletePrevent(study.studyInstanceUid)
-                    .subscribe(shortcuts => this.refreshShortcuts());
+                    .subscribe(() => this.refreshShortcuts());
             }
         });
     }
@@ -321,7 +344,7 @@ export class WorklistService {
         this.studies.forEach(study => {
             if (study.checked) {
                 this.databaseService.setDeleteAllow(study.studyInstanceUid)
-                    .subscribe(shortcuts => this.refreshShortcuts());
+                    .subscribe(() => this.refreshShortcuts());
             }
         });
     }
@@ -330,7 +353,7 @@ export class WorklistService {
         this.studies.forEach(study => {
             if (study.checked) {
                 this.databaseService.deleteStudy(study.studyInstanceUid, deletionReason)
-                    .subscribe(shortcuts => this.refreshShortcuts());
+                    .subscribe(() => this.refreshShortcuts());
             }
         });
     }
@@ -409,6 +432,7 @@ export class WorklistService {
     private refreshShortcuts() {
         this.onQueryStudies(1);
         this.onQueryShortcuts();
+        this.initAllButton();
     }
 
     private studyDetailsLoaded(allCheckedStudyCount: number, getStudies: Study[]) {
@@ -446,5 +470,19 @@ export class WorklistService {
             this.loadedStudy = new Array<Study>();
             this.loadedStudyCount = 0;
         }
+    }
+
+    private initAllButton() {
+        this.bDisableLoadImageButton = true;
+        this.bDisableLoadKeyImage = true;
+        this.bDisableChangeImageSeriesOrder = true;
+        this.bDisableReassign = true;
+        this.bDisableTransfer = true;
+        this.bDisableTagEdit = true;
+        this.bDisableDeleteStudy = true;
+        this.bDisableSetReadBtn = true;
+        this.bDisableSetUnreadBtn = true;
+        this.bDisableDeletePreventBtn = true;
+        this.bDisableDeleteAllowBtn = true;
     }
 }

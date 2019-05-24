@@ -34,10 +34,12 @@ export class AnnPoint extends AnnExtendObject {
 
     onCreate(position: Point) {
         this.annCenterCircle = new AnnBaseCircle(this, position, this.pointRadius, this.imageViewer, true);
+        this.annCenterCircle.setMouseResponsible(false);
+
         this.annOuterCircle = new AnnBaseCircle(this, position, this.pointRadius * 2, this.imageViewer, false);
-        this.annOuterCircle.setVisible(false);
-        this.annOuterCircle.setMouseResponsible(false);
-        this.annOuterCircle.onLevelDown("bottom");
+        this.annOuterCircle.setTransparent(true);
+        this.annOuterCircle.setColor(this.annOuterCircle.getDefaultColor());
+        this.annOuterCircle.onLevelUp("top");
 
         this.focusedObj = this.annCenterCircle;
     }
@@ -60,7 +62,7 @@ export class AnnPoint extends AnnExtendObject {
         this.annCenterCircle.setVisible(selected || this.showAlways);
         this.annCenterCircle.setColor(color);
 
-        this.annOuterCircle.setVisible(selected && focused);
+        this.annOuterCircle.setColor(focused ? color : this.annOuterCircle.getDefaultColor());
     }
 
     setRadius(radius: number) {

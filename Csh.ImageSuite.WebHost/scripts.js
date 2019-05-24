@@ -24,6 +24,9 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
  *
  * --- Sail Feng Adjusted
  * 1. Support Ellipse
+ * 2. Support Polygon
+ * 3. Use frame, and refresh canvas on demand. ( To improve performance )
+ * 4. Draw the layer on demand. (Check need redraw for the layer)
  */
 (function (window, undefined) {
     var canvases = [],
@@ -333,6 +336,8 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
         optns[key].x = point.pageX - optns.x;
         optns[key].y = point.pageY - optns.y;
         optns.redraw = 1;
+
+        //console.log("Jcanvas mouse event : " + key + ", X=" + optns[key].x + ",Y=" + optns[key].y);
     }
     function setMouseEvent(fn, eventName) {
         if (fn === undefined) this['on' + eventName]();
@@ -1649,6 +1654,17 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
     proto.shape.prototype = new proto.object;
 
     proto.lines = function () {
+        this.draw = function (ctx) {
+            if (this._x0 === undefined) return;
+            ctx.moveTo(this._x0, this._y0);
+            for (var j = 1; j < this.shapesCount; j++) {
+                ctx.lineTo(this['_x' + j], this['_y' + j]);
+            }
+
+            if (this._closed) {
+                ctx.lineTo(this._x0, this._y0);
+            }
+        }
         this.getCenter = function (type) {
             var point = {
                 x: this._x0,
@@ -1690,7 +1706,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             redraw(this);
             if (y === undefined) {
                 var points = this.points();
-                points.splice(x, 1)
+                points.splice(x, 1);
                 this.points(points);
             }
             else {
@@ -2998,13 +3014,14 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
                 };
                 optns.timeLast = new Date();
 
-                if (!jCanvaScript.frameInterval) {
-                    console.info('start jcFrame');
-                    jCanvaScript.frameInterval = jcFrame();
-                } else {
-                    console.info('jcFrame already run');
-                }
+                //if (!jCanvaScript.frameInterval) {
+                //    console.info('start jcFrame');
+                //    jCanvaScript.frameInterval = jcFrame();
+                //} else {
+                //    console.info('jcFrame already run');
+                //}
 
+                this.frame();
                 this.isPaused = false;
                 //this.interval = requestAnimFrame(function (time) {
                 //    canvas.interval = canvas.interval || 1;
@@ -3021,7 +3038,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             return this;
         }
         canvas.restart = function () {
-            return this.pause().start(true);
+            return this.pause().start(this.isAnimated);
         }
         canvas.del = function () {
             //cancelRequestAnimFrame(this.interval);
@@ -3081,7 +3098,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             }
             for (i = 0; i < limit; i++) {
                 var object = this.layers[i];
-                if (typeof (object.draw) == 'function')
+                if (typeof (object.draw) == 'function' && object.needRedraw)
                     if (object.beforeDraw(optns)) {
                         if (typeof (object.draw) == 'function') {
                             object.draw(optns);

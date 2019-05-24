@@ -50,13 +50,9 @@ export class DicomImageService {
 
 
     getCornerStoneImage(image: Image) {
-        const imageUri =
-            "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom"
-                .format(this.baseUrl, image.id, 0);
-
-        cornerstone.loadImage(imageUri).then(ctImage => {
-            image.setCornerStoneImage(ctImage);
-        });
+        const imageUri = "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom".format(this.baseUrl, image.id, 0);
+        this.logService.info("Dicom Image Service : Downloading dicom image, url is " + imageUri);
+        return cornerstone.loadImage(imageUri);
     }
 
     getOverlayDisplayList(image: Image, canvasWidth: number, canvasHeight: number, canvasContext: any): OverlayDisplayItem[] {

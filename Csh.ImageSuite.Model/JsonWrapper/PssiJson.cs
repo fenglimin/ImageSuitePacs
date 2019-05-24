@@ -28,4 +28,11 @@ namespace Csh.ImageSuite.Model.JsonWrapper
         public List<WorklistColumn> WorklistColumns { get; set; }
         public int PageCount { get; set; }
     }
+
+    public class DeleteStudyJson
+    {
+        public string Id { get; set; }
+        public string DeletionReason { get; set; }
+    }
+
 }

@@ -14,6 +14,9 @@
  *
  * --- Sail Feng Adjusted
  * 1. Support Ellipse
+ * 2. Support Polygon
+ * 3. Use frame, and refresh canvas on demand. ( To improve performance )
+ * 4. Draw the layer on demand. (Check need redraw for the layer)
  */
 (function (window, undefined) {
     var canvases = [],
@@ -323,6 +326,8 @@
         optns[key].x = point.pageX - optns.x;
         optns[key].y = point.pageY - optns.y;
         optns.redraw = 1;
+
+        //console.log("Jcanvas mouse event : " + key + ", X=" + optns[key].x + ",Y=" + optns[key].y);
     }
     function setMouseEvent(fn, eventName) {
         if (fn === undefined) this['on' + eventName]();
@@ -1645,7 +1650,10 @@
             for (var j = 1; j < this.shapesCount; j++) {
                 ctx.lineTo(this['_x' + j], this['_y' + j]);
             }
-            ctx.lineTo(this._x0, this._y0);
+
+            if (this._closed) {
+                ctx.lineTo(this._x0, this._y0);
+            }
         }
         this.getCenter = function (type) {
             var point = {
@@ -1688,7 +1696,7 @@
             redraw(this);
             if (y === undefined) {
                 var points = this.points();
-                points.splice(x, 1)
+                points.splice(x, 1);
                 this.points(points);
             }
             else {
@@ -3053,7 +3061,6 @@
             return this;
         }
         canvas.frame = function (time) {
-            console.log("frame() entered");
             var optns = this.optns, thisCanvas = this;
             time = time || (new Date());
             optns.timeDiff = time - optns.timeLast;
@@ -3062,16 +3069,10 @@
             //    this.interval = requestAnimFrame(function (time) { thisCanvas.frame(time); }, thisCanvas.cnv);
             //    this.interval = this.interval || 1;
             //}
-            if (!optns.redraw) {
-                console.log("frame() exited - no need to redarw");
-                return this;
-            }
+            if (!optns.redraw) return this;
             optns.redraw--;
             optns.ctx.clearRect(0, 0, optns.width, optns.height);
-            if (this.layers.length == 0) {
-                console.log("frame() exited - no layer created");
-                 return this;
-            }
+            if (this.layers.length == 0) return this;
             limit = this.layers.length;
             if (optns.anyLayerLevelChanged)
                 limit = levelChanger(this.layers);
@@ -3272,11 +3273,8 @@
                 dblClick.objects = [];
             }
             optns.keyUp.val = optns.keyDown.val = optns.keyPress.val = click.x = dblClick.x = mouseUp.x = mouseDown.x = mm.x = false;
-            console.log("frame() exited - nomally");
             return this;
         }
-
-        console.log("canvas created!");
         return canvas;
     }
     function stopDrag(object, event, optns) {

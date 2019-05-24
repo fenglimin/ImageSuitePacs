@@ -44,5 +44,12 @@ namespace Csh.ImageSuite.Common.Interface
 
         List<string> GetKeyImageList(List<string> lstImageUidList);
 
+        DataTable GetTableStudyOfflineRestoreMessage(string studyGUIDs, string strWhere);
+
+        DataTable GetTableStudyOffline(string studyGUIDs, string strWhere);
+
+        string GetStringStudyOffline(string studyGUIDs, string strWhere, out List<Study> studyInfoModelOfflineUIDList);
+
+
     }
 }

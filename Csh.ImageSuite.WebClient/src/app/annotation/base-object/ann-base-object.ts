@@ -91,24 +91,28 @@ export abstract class AnnBaseObject extends AnnObject {
         return { x: this.jcObj._x, y: this.jcObj._y }
     }
 
+    getRadius(): number {
+        return this.jcObj._radius;
+    }
+
     setRadius(radius: number) {
         this.jcObj._radius = radius;
-    }
-
-    setWidth(width: number) {
-        this.jcObj._width = width;
-    }
-
-    setHeight(height: number) {
-        this.jcObj._height = height;
     }
 
     getWidth(): number {
         return this.jcObj._width;
     }
 
+    setWidth(width: number) {
+        this.jcObj._width = width;
+    }
+
     getHeight(): number {
         return this.jcObj._height;
+    }
+
+    setHeight(height: number) {
+        this.jcObj._height = height;
     }
 
     setColor(color: string) {
@@ -117,6 +121,10 @@ export abstract class AnnBaseObject extends AnnObject {
 
     setVisible(visible: boolean) {
         this.jcObj.visible(visible);
+    }
+
+    setTransparent(transparent: boolean) {
+        this.defaultColor = transparent ? "rgba(0,0,0,0)" : "#FFF";
     }
 
     onLevelUp(level: any = 1) {

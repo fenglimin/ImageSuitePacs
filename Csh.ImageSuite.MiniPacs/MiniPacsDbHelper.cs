@@ -1222,5 +1222,136 @@ namespace Csh.ImageSuite.MiniPacs
             }
             return lstKeyImages;
         }
+
+        public DataTable GetTableStudyOfflineRestoreMessage(string studyGUIDs, string strWhere)
+        {
+            DataTable tb = null;
+
+            var sb = new StringBuilder();
+            sb.Append(" SELECT * FROM View_StudyOffline WHERE 1 = 1 ");
+
+            if (studyGUIDs.Trim().Length > 0)
+            {
+                sb.Append(" AND StudyInstanceUID in (" + studyGUIDs + ")");
+            }
+            if (strWhere.Trim().Length > 0)
+            {
+                sb.Append(" " + strWhere + " ");
+            }
+            var strSQL = sb.ToString();
+            var ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+            }
+            return tb;
+        }
+
+        public DataTable GetTableStudyOffline(string studyGUIDs, string strWhere)
+        {
+            DataTable tb = null;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(" SELECT * FROM Study WHERE InstanceAvailability = 'OFFLINE' ");
+
+            if (studyGUIDs.Trim().Length > 0)
+            {
+                sb.Append(" AND StudyInstanceUID in (" + studyGUIDs + ")");
+            }
+            if (strWhere.Trim().Length > 0)
+            {
+                sb.Append(" " + strWhere + " ");
+            }
+            string strSQL = sb.ToString();
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+            }
+            return tb;
+        }
+
+        public string GetStringStudyOffline(string studyGUIDs, string strWhere, out List<Study> studyInfoModelOfflineUIDList)
+        {
+            string strOfflineMessage = "";
+            studyInfoModelOfflineUIDList = new List<Study>();
+            try
+            {
+                DataTable tbStudyOffline = this.GetTableStudyOfflineRestoreMessage(studyGUIDs, strWhere);
+                DataTable tbStudyDistinct = tbStudyOffline.DefaultView.ToTable(true, "StudyInstanceUID", "PatientID");
+
+                if (tbStudyOffline != null)
+                {
+                    foreach (DataRow dr in tbStudyDistinct.Rows)
+                    {
+                        string strSingleOfflineMessage = "";
+
+                        string patientID = dr["PatientID"].ToString().Trim();
+                        string studyUID = dr["StudyInstanceUID"].ToString().Trim();
+
+                        Study studyInfoModel = new Study(studyUID);
+
+                        string offlineStorageName = "";
+                        string diskName = "";
+
+                        string diskWhere = string.Format(" StudyInstanceUID = '{0}' AND SMS_TYPE >= {1} AND Status = {2} ", studyUID, 16, 1);
+                        DataRow[] drDISK = tbStudyOffline.Select(diskWhere);
+
+                        string mainStorageWhere = string.Format(" StudyInstanceUID = '{0}' AND SMS_TYPE = {1} AND Status = {2} ", studyUID, 1, 4);
+                        DataRow[] drMaimStorage = tbStudyOffline.Select(mainStorageWhere);
+
+                        if (drDISK.Length > 0 && drMaimStorage.Length > 0)
+                        {
+                            diskName = drDISK[0]["SMS_NAME"].ToString().Trim();
+                            studyInfoModel.IsCDOffline = true;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+                        string usbWhere = string.Format(" StudyInstanceUID = '{0}' AND ( SMS_TYPE = {1} OR SMS_TYPE = {2} )  ", studyUID, 8, 9);
+                        DataRow[] drUSB = tbStudyOffline.Select(usbWhere);
+                        if (drUSB.Length > 0)
+                        {
+                            offlineStorageName = drUSB[0]["SMS_NAME"].ToString().Trim();
+                            studyInfoModel.IsUSBOffline = true;
+                        }
+
+                        if (offlineStorageName.Trim().Length > 0)
+                        {
+                            strSingleOfflineMessage += offlineStorageName;
+                        }
+                        else
+                        {
+                            strSingleOfflineMessage += "CD/DVD";
+                        }
+
+                        if (diskName.Trim().Length > 0)
+                        {
+                            strSingleOfflineMessage += " [" + diskName + "]";
+                        }
+                        if (strSingleOfflineMessage.Trim().Length > 0)
+                        {
+                            strSingleOfflineMessage = string.Format("PatientID : {0}, ", patientID) + strSingleOfflineMessage;
+                            strSingleOfflineMessage += "\n";
+                        }
+                        studyInfoModel.OfflinePopupMessage = strSingleOfflineMessage;
+
+                        strOfflineMessage += strSingleOfflineMessage;
+
+                        if (studyInfoModelOfflineUIDList.Find(delegate (Study model) { return model.StudyInstanceUid == studyUID.Trim(); }) == null)
+                        {
+                            studyInfoModelOfflineUIDList.Add(studyInfoModel);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return strOfflineMessage;
+        }
     }
 }

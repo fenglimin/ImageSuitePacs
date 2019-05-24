@@ -72,13 +72,6 @@ export class AppComponent implements OnInit {
         this.logService.seperator();
         this.logService.info('User: Open study - ' + viewerShellData.getName());
 
-        viewerShellData.patientList.forEach(patient =>
-            patient.studyList.forEach(study =>
-                study.seriesList.forEach(series =>
-                    series.imageList.forEach(image =>
-                        this.worklistService.isUsingLocalTestData() ? image.cornerStoneImage = null :
-                            this.dicomImageService.getCornerStoneImage(image)))));
-
         const componentFactory = this.resolver.resolveComponentFactory(ViewerShellComponent);
         const componentRef = this.container.createComponent(componentFactory);
         componentRef.instance.hideMe = false;

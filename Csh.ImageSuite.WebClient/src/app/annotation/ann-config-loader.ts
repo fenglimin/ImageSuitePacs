@@ -97,4 +97,48 @@ export class AnnConfigLoader {
 
         return { baseRect: baseRect, textIndicator: textIndicator}
     }
+
+    static loadPolygon(annSerialize: AnnSerialize): any {
+        const annType = annSerialize.readNumber(4); // 24
+        const created = annSerialize.readNumber(4);
+        const selected = annSerialize.readNumber(1);
+
+        const pointCount = annSerialize.readNumber(4);
+        const lineCount = annSerialize.readNumber(4);
+
+        const pointList = [];
+        for (let i = 0; i < pointCount; i ++) {
+            pointList.push(annSerialize.readPoint());
+        }
+
+        for (let i = 0; i < lineCount; i++) {
+            AnnConfigLoader.loadBaseLine(annSerialize);
+        }
+
+        const textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
+
+        return { pointList: pointList, textIndicator: textIndicator }
+    }
+
+    static loadAngle(annSerialize: AnnSerialize): any {
+        const annType = annSerialize.readNumber(4); // 8
+        const created = annSerialize.readNumber(4);
+        const moving = annSerialize.readNumber(4);
+        const selected = annSerialize.readNumber(1);
+        const arcAndTextOnly = annSerialize.readNumber(1);
+        const createState = annSerialize.readNumber(4);
+        const angle = annSerialize.readNumber(8);
+
+        for (let i = 0; i < 4; i++) {
+            annSerialize.readPoint();
+        }
+
+        const lineList = [];
+        for (let i = 0; i < 2; i++) {
+            lineList.push(AnnConfigLoader.loadBaseLine(annSerialize));
+        }
+
+        const textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
+        return { lineList: lineList, textIndicator: textIndicator }
+    }
 }

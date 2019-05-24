@@ -69,8 +69,8 @@ export class AnnImageRuler {
         let canvasWidth = canvas.width;
         let canvasHeight = canvas.height;
 
-        this.linesVertical.forEach(function (line) { line.del(); });
-        this.linesHorizontal.forEach(function (line) { line.del(); });
+        this.linesVertical.forEach(function (line) { if(line) line.del(); });
+        this.linesHorizontal.forEach(function (line) { if(line) line.del(); });
         this.linesVertical = [];
         this.linesHorizontal = [];
 

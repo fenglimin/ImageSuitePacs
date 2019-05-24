@@ -71,6 +71,10 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
         if (!this.childGroups)
             return;
 
+        if (this.childGroups) {
+            this.childGroups.forEach(child => child.setHeight(0));
+        }
+
         this.logService.debug("Viewer: onResize()");
 
         this.childGroups.forEach((groupViewer) => {

@@ -100,6 +100,19 @@ export class AnnTool {
         return value;
     }
 
+    static countTriangleArea(point1: Point, point2: Point, point3: Point): number {
+        return (point2.x * point3.y +
+                point1.x * point2.y +
+                point1.y * point3.x -
+                point1.y * point2.x -
+                point2.y * point3.x -
+                point1.x * point3.y) / 2.0;
+    }
+
+    static countTrianglePhysicalArea(point1: Point, point2: Point, point3: Point, pixelSpacing: Size): number {
+        return AnnTool.countTriangleArea(point1, point2, point3) * pixelSpacing.cx * pixelSpacing.cy;
+    }
+
     static getSineTheta(pt1: Point, pt2: Point) {
         const distance = AnnTool.countDistance(pt1, pt2);
         if (Math.abs(distance) < AnnTool.minDelta) {
@@ -247,5 +260,166 @@ export class AnnTool {
         }
 
         return rect;
+    }
+
+    static pointInLineByDistance(lineStartPoint: Point, lineEndPoint: Point, distanceToStart: number): Point {
+        const lineDistance = AnnTool.countDistance(lineStartPoint, lineEndPoint);
+        const lineRatio = distanceToStart / lineDistance;
+        const x = (lineEndPoint.x - lineStartPoint.x) * lineRatio + lineStartPoint.x;
+        const y = (lineEndPoint.y - lineStartPoint.y) * lineRatio + lineStartPoint.y;
+        return { x: x, y: y };
+    }
+
+    // Calculate the middle point of the curve (The curve is determined by start/end point and its radius, default direction is left or up)
+    static calcMiddlePointOfArc(startPoint: Point, endPoint: Point, radius: number): Point {
+        const pointDir = { x: 1, y: 1 };
+        const centerPoint = AnnTool.centerPoint(startPoint, endPoint);
+
+        const dSinAB = AnnTool.getSineTheta(startPoint, endPoint);
+        const dCosAB = AnnTool.getCosineTheta(startPoint, endPoint);
+
+        const dLineAD = AnnTool.countDistance(startPoint, centerPoint);
+
+        const ptO1 = new Point(0, 0);
+        const ptO2 = new Point(0, 0);
+
+        //get the two center ponints.
+        //check if the arc is almost 180, if true, lineAd is the radius
+        if (Math.abs(dLineAD - radius) < AnnTool.minDelta || radius < dLineAD) {
+            ptO1.x = ptO2.x = centerPoint.x;
+            ptO1.y = ptO2.y = centerPoint.y;
+        } else {
+            const dLineOD = Math.sqrt(Math.abs(radius * radius - dLineAD * dLineAD));
+
+            ptO1.x = centerPoint.x + dLineOD * dSinAB;
+            ptO1.y = centerPoint.y - dLineOD * dCosAB;
+
+            ptO2.x = centerPoint.x - dLineOD * dSinAB;
+            ptO2.y = centerPoint.y + dLineOD * dCosAB;
+        }
+
+        var dSinBA = AnnTool.getSineTheta(endPoint, startPoint),
+            dCosBA = AnnTool.getCosineTheta(endPoint, startPoint),
+            dSinBC = AnnTool.getSineTheta(endPoint, pointDir),
+            dCosBC = AnnTool.getCosineTheta(endPoint, pointDir);
+
+        //determine the center point
+        const middlePoint = new Point(0, 0);
+        var dSinBC_BA = dSinBC * dCosBA - dCosBC * dSinBA;
+        if (dSinBC_BA < 0.0) {
+            middlePoint.x = ptO1.x - radius * dSinAB;
+            middlePoint.y = ptO1.y + radius * dCosAB;
+        } else {
+            middlePoint.x = ptO2.x + radius * dSinAB;
+            middlePoint.y = ptO2.y - radius * dCosAB;
+        }
+
+        return middlePoint;
+    }
+
+    // Calculate the center point of the curve ( The curve is determined by three points )
+    static calcCenterBy3Points(startPoint: Point, endPoint: Point, middlePoint: Point): any {
+        let isInvalid = false;
+        let needRevert = false;
+
+        // D and E is center point of Line AB and Line BC
+        const ptD = AnnTool.centerPoint(startPoint, endPoint);
+        const ptE = AnnTool.centerPoint(endPoint, middlePoint);
+
+        // k of Line OD and Line OE
+        // O is center point of arc
+        //
+        const dkOD = -(endPoint.x - startPoint.x) / (endPoint.y - startPoint.y);
+        const dkOE = -(middlePoint.x - endPoint.x) / (middlePoint.y - endPoint.y);
+
+        const centerPoint = new Point(0, 0);
+        if (Math.abs(middlePoint.y - endPoint.y) < AnnTool.minDelta) {
+            centerPoint.x = ptE.x;
+            centerPoint.y = (ptE.x - ptD.x) * dkOD + ptD.y;
+        } else if (Math.abs(endPoint.y - startPoint.y) < AnnTool.minDelta) {
+            centerPoint.x = ptD.x;
+            centerPoint.y = (ptD.x - ptE.x) * dkOE + ptE.y;
+        } else if (Math.abs(middlePoint.x - endPoint.x) < AnnTool.minDelta) {
+            centerPoint.y = ptE.y;
+            centerPoint.x = (ptE.y - ptD.y) / dkOD + ptD.x;
+        } else if (Math.abs(endPoint.x - startPoint.x) < AnnTool.minDelta) {
+            centerPoint.y = ptD.y;
+            centerPoint.x = (ptD.y - ptE.y) / dkOE + ptE.x;
+        } else {
+            centerPoint.x = (ptE.y - ptD.y - (ptE.x * dkOE) + (ptD.x * dkOD)) / (dkOD - dkOE);
+            centerPoint.y = ptD.y + dkOD * (centerPoint.x - ptD.x);
+        }
+
+        // Analysis Start Point and End point
+        // Arc() always draw arc in a Clockwise
+        //
+        var dSinBA = AnnTool.getSineTheta(endPoint, startPoint),
+            dCosBA = AnnTool.getCosineTheta(endPoint, startPoint),
+            dSinBC = AnnTool.getSineTheta(endPoint, middlePoint),
+            dCosBC = AnnTool.getCosineTheta(endPoint, middlePoint);
+
+        var dSinBC_BA = dSinBC * dCosBA - dCosBC * dSinBA;
+
+        // Check Arc angle
+        //
+        var dSinOA = AnnTool.getSineTheta(centerPoint, startPoint),
+            dCosOA = AnnTool.getCosineTheta(centerPoint, startPoint),
+            dSinOB = AnnTool.getSineTheta(centerPoint, endPoint),
+            dCosOB = AnnTool.getCosineTheta(centerPoint, endPoint);
+
+        var dSinArc = dSinOA * dCosOB - dCosOA * dSinOB;
+
+        if (dSinBC_BA > 0.0) {
+            dSinArc = (-1.0) * dSinArc;
+        }
+
+        if (dSinArc < 0.0) {
+            isInvalid = true;
+        }
+
+        //need to revert start and end.
+        if (dSinBC_BA > 0.0) {
+            needRevert = true;
+        }
+
+        return { centerPoint: centerPoint, isInvalid: isInvalid, needRevert: needRevert };
+    }
+
+    // Calculate all necessary information of a curve
+    static calcArcBy3Points(startPoint: Point, endPoint: Point, middlePoint: Point, needCheckArc: boolean): any {
+        const arcData = AnnTool.calcCenterBy3Points(startPoint, endPoint, middlePoint);
+
+        if (needCheckArc && arcData.isInvalid)
+            return false; //user may drag the point out of range
+
+        const radius = AnnTool.countDistance(arcData.centerPoint, startPoint);
+
+        const dSinAB = AnnTool.getSineTheta(startPoint, endPoint);
+        const dCosAB = AnnTool.getCosineTheta(startPoint, endPoint);
+
+        if (arcData.needRevert) {
+            middlePoint.x = arcData.centerPoint.x + radius * dSinAB;
+            middlePoint.y = arcData.centerPoint.y - radius * dCosAB;
+        } else {
+            middlePoint.x = arcData.centerPoint.x - radius * dSinAB;
+            middlePoint.y = arcData.centerPoint.y + radius * dCosAB;
+        }
+
+        const arcStart = AnnTool.calcLineAngle(arcData.centerPoint, startPoint);
+        let arcEnd = AnnTool.calcLineAngle(arcData.centerPoint, endPoint);
+        if (arcEnd < arcStart) {
+            arcEnd = arcEnd + 360.0;
+        }
+
+        return {
+            centerPoint: arcData.centerPoint,
+            startPoint: startPoint,
+            endPoint: endPoint,
+            middlePoint: middlePoint,
+            radius: radius,
+            startAngle: arcStart,
+            endAngle: arcEnd,
+            anticlockwise: !arcData.needRevert
+        };
     }
 }
