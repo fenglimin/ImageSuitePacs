@@ -73,12 +73,6 @@ export class AnnPoint extends AnnExtendObject {
     getPosition(): Point {
         return this.annCenterCircle.getPosition();
     }
-
-    setVisible(visible: boolean) {
-        this.annCenterCircle.setVisible(visible);
-        this.annOuterCircle.setVisible(visible && this.parentObj.getFocusedObj() === this);
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
     enableShowAlways(showAlways: boolean) {
