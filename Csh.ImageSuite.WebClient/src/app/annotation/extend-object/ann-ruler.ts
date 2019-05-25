@@ -103,6 +103,7 @@ export class AnnRuler extends AnnExtendObject {
 
         if (!this.lineNodeA) {
             this.lineNodeA = new AnnBaseLine(this, ptStartA, ptStartB, this.imageViewer);
+            this.lineNodeA.onLevelDown("bottom");
         } else {
             this.lineNodeA.onMoveStartPoint(ptStartA);
             this.lineNodeA.onMoveEndPoint(ptStartB);
@@ -110,6 +111,7 @@ export class AnnRuler extends AnnExtendObject {
 
         if (!this.lineNodeB) {
             this.lineNodeB = new AnnBaseLine(this, ptEndA, ptEndB, this.imageViewer);
+            this.lineNodeB.onLevelDown("bottom");
         } else {
             this.lineNodeB.onMoveStartPoint(ptEndA);
             this.lineNodeB.onMoveEndPoint(ptEndB);
