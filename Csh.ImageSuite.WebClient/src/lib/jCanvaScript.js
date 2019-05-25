@@ -651,7 +651,10 @@
             var poorPoint = transformPoint(x, y, multiplyM(object.matrix(), layer.matrix()));
             var dist = pointToLine({ x: object._x0, y: object._y0 }, { x: object._x1, y: object._y1 }, poorPoint);
 
-            if (dist <= 3) {
+            var dist0 = distance({ x: object._x0, y: object._y0 }, poorPoint);
+            var dist1 = distance({ x: object._x1, y: object._y1 }, poorPoint);
+            const distInImage = 3 / layer._transform11;
+            if (dist <= distInImage && dist0 > distInImage && dist1 > distInImage) {
                 //log('in point, proto:' + object._proto);
                 return point;
             }
