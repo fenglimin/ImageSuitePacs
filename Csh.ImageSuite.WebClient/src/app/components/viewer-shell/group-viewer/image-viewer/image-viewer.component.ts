@@ -877,7 +877,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
             case OperationEnum.Invert:
             {
-                
+                this.invert();
                 break;
             }
         case OperationEnum.FitWidth:
@@ -1005,6 +1005,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         cornerstone.setViewport(this.helpElement, viewPort);
 
         this.annObjList.forEach(annObj => annObj.onFlip(flipVertical));
+    }
+
+    invert() {
+        const viewPort = cornerstone.getViewport(this.helpElement);
+        viewPort.invert = !viewPort.invert;
+        cornerstone.setViewport(this.helpElement, viewPort);
     }
 
     scale(value) {
