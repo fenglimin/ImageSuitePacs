@@ -237,6 +237,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         } else {
             this.logService.debug(this.logPrefix + 'local test data, no image to show.');
         }
+
+        const id = this.getId();
+        const index = id.substr(id.length - 4, 4);
+        if (index === "0000") {
+            this.onSelected();
+        }
     }
 
     private loadImage() {
