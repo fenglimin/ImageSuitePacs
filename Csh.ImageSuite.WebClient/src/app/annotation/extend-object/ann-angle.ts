@@ -94,7 +94,9 @@ export class AnnAngle extends AnnExtendObject {
 
     onLoad(annSerialize: AnnSerialize) {
         const config = AnnConfigLoader.loadAngle(annSerialize);
-        this.onCreate(config.lineList,  config.textIndicator.startPoint, config.textIndicator.endPoint);
+        this.onCreate(config.lineList, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        this.focusedObj = this.annStartPoint;
+        this.onSelect(config.selected, config.selected);
         if (!this.parentObj) {
             this.onDrawEnded();
         }
@@ -105,7 +107,7 @@ export class AnnAngle extends AnnExtendObject {
         annSerialize.writeNumber(8, 4);     // AnnType
         annSerialize.writeNumber(1, 4);     // created
         annSerialize.writeNumber(0, 4);     // moving
-        annSerialize.writeNumber(0, 1);     // selected
+        annSerialize.writeNumber(this.selected ? 1 : 0, 1);     // selected
         annSerialize.writeNumber(0, 1);     // arcAndTextOnly
         annSerialize.writeNumber(3, 4);     // createState
         const angle = this.annBaseCurve.getAngle();

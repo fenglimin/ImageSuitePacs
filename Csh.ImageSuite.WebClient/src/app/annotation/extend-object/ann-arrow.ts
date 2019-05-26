@@ -59,8 +59,9 @@ export class AnnArrow extends AnnExtendObject {
 
     onLoad(annSerialize: AnnSerialize) {
         const config = AnnConfigLoader.loadArrow(annSerialize);
-
         this.onCreate(config.startPoint, config.endPoint);
+        this.focusedObj = this.annLine;
+        this.onSelect(config.selected, config.selected);
         if (!this.parentObj) {
             this.onDrawEnded();
         }
@@ -71,7 +72,7 @@ export class AnnArrow extends AnnExtendObject {
             annSerialize.writeString("CGXAnnArrowMark");
             annSerialize.writeNumber(10, 4);
             annSerialize.writeNumber(1, 4);
-            annSerialize.writeNumber(1, 1);
+            annSerialize.writeNumber(0, 1);
         }
         
         annSerialize.writeString("CGXAnnArrow");

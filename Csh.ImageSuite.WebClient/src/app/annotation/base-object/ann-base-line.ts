@@ -28,7 +28,7 @@ export class AnnBaseLine extends AnnBaseObject {
         annSerialize.writeString("CGXAnnLine");
         annSerialize.writeNumber(1, 4);
         annSerialize.writeNumber(0, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeNumber(this.selected ? 1 : 0, 1);
 
         annSerialize.writePoint(this.getStartPosition());
         annSerialize.writePoint(this.getEndPosition());

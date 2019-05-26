@@ -20,7 +20,7 @@ export class AnnBasePolygon extends AnnBaseObject {
         annSerialize.writeString("CGXAnnPolygon");
         annSerialize.writeNumber(3, 4);
         annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeNumber(this.selected ? 1 : 0, 1);
 
         const points = this.jcObj.points();
         const length = points.length;

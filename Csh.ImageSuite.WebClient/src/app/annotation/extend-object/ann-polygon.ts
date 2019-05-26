@@ -90,6 +90,8 @@ export class AnnPolygon extends AnnExtendObject {
     onLoad(annSerialize: AnnSerialize) {
         const config = AnnConfigLoader.loadPolygon(annSerialize);
         this.onCreate(config.pointList, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        this.focusedObj = this.annBasePolygon;
+        this.onSelect(config.selected, config.selected);
         if (!this.parentObj) {
             this.onDrawEnded();
         }

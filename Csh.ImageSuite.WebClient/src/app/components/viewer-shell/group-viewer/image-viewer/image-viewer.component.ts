@@ -792,6 +792,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     onSelected() {
         this.imageSelectorService.selectImage(this.imageData);
+        this.canvas.focus();
     }
 
     getBorderStyle(): string {

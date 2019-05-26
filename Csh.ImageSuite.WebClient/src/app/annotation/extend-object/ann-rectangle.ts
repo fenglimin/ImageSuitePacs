@@ -103,6 +103,8 @@ export class AnnRectangle extends AnnExtendObject {
     onLoad(annSerialize: AnnSerialize) {
         const config = AnnConfigLoader.loadRectangle(annSerialize);
         this.onCreate(config.baseRect.topLeftPoint, config.baseRect.width, config.baseRect.height, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        this.focusedObj = this.annBaseRectangle;
+        this.onSelect(config.selected, config.selected);
         if (!this.parentObj) {
             this.onDrawEnded();
         }
@@ -112,7 +114,7 @@ export class AnnRectangle extends AnnExtendObject {
         annSerialize.writeString("CGXAnnSquare");
         annSerialize.writeNumber(2, 4);
         annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeNumber(this.selected ? 1 : 0, 1);
 
         this.annBaseRectangle.onSave(annSerialize);
         this.annTextIndicator.onSave(annSerialize);

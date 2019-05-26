@@ -72,6 +72,8 @@ export class AnnLine extends AnnExtendObject {
     onLoad(annSerialize: AnnSerialize) {
         const config = AnnConfigLoader.loadLine(annSerialize);
         this.onCreate(config.startPoint, config.endPoint);
+        this.focusedObj = this.annBaseLine;
+        this.onSelect(config.selected, config.selected);
         if (!this.parentObj) {
             this.onDrawEnded();
         }

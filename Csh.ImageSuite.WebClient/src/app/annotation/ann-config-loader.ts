@@ -12,7 +12,7 @@ export class AnnConfigLoader {
         const startPoint = annSerialize.readPoint();
         const endPoint = annSerialize.readPoint();
 
-        return { startPoint: startPoint, endPoint: endPoint };
+        return { startPoint: startPoint, endPoint: endPoint, selected: selected };
     }
 
     static loadLine(annSerialize: AnnSerialize): any {
@@ -95,7 +95,7 @@ export class AnnConfigLoader {
         const baseRect = AnnConfigLoader.loadBaseRectangle(annSerialize);
         const textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
 
-        return { baseRect: baseRect, textIndicator: textIndicator}
+        return { baseRect: baseRect, textIndicator: textIndicator, selected: selected}
     }
 
     static loadPolygon(annSerialize: AnnSerialize): any {
@@ -117,7 +117,7 @@ export class AnnConfigLoader {
 
         const textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
 
-        return { pointList: pointList, textIndicator: textIndicator }
+        return { pointList: pointList, textIndicator: textIndicator, selected: selected }
     }
 
     static loadAngle(annSerialize: AnnSerialize): any {
@@ -139,6 +139,6 @@ export class AnnConfigLoader {
         }
 
         const textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
-        return { lineList: lineList, textIndicator: textIndicator }
+        return { lineList: lineList, textIndicator: textIndicator, selected: selected }
     }
 }
