@@ -6,7 +6,6 @@ import { AnnExtendObject } from "./ann-extend-object";
 import { AnnPoint } from "./ann-point";
 import { AnnLine } from "./ann-line";
 import { AnnSerialize } from "../ann-serialize";
-import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnArrow extends AnnExtendObject {
 
@@ -57,27 +56,22 @@ export class AnnArrow extends AnnExtendObject {
         this.redrawArrow(arrowStartPoint, arrowEndPoint);
     }
 
-    onLoad(annSerialize: AnnSerialize) {
-        const config = AnnConfigLoader.loadArrow(annSerialize);
+    onCreateFromConfig(config: any) {
         this.onCreate(config.startPoint, config.endPoint);
         this.focusedObj = this.annLine;
-        this.onSelect(config.selected, config.selected);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
     }
 
     onSave(annSerialize: AnnSerialize, saveArrowMark: boolean = true) {
         if (saveArrowMark) {
             annSerialize.writeString("CGXAnnArrowMark");
-            annSerialize.writeNumber(10, 4);
-            annSerialize.writeNumber(1, 4);
-            annSerialize.writeNumber(0, 1);
+            annSerialize.writeInteger(10, 4);
+            annSerialize.writeInteger(1, 4);
+            annSerialize.writeInteger(0, 1);
         }
         
         annSerialize.writeString("CGXAnnArrow");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 1);
 
         this.annLine.getBaseLine().onSave(annSerialize);
         this.annArrowLineA.onSave(annSerialize);

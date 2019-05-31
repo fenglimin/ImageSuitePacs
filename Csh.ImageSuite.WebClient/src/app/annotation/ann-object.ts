@@ -315,6 +315,6 @@ export abstract class AnnObject {
     abstract getPosition(): Point;
     abstract getSurroundPointList(): Point[];
     abstract setVisible(visible: boolean);
-    abstract onLoad(annSerialize: AnnSerialize): any;
+    abstract onLoad(config: any): any;
     abstract onSave(annSerialize: AnnSerialize);
 }

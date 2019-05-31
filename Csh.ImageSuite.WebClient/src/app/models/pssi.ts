@@ -351,12 +351,8 @@ export class RecWorklistData {
 }
 
 export class RecOfflineImageInfo {
-    public key: DictOfflineFlag[];
-    public value : string[];
+    public isOffline: boolean;
+    public studyOfflineUidUSBList: string[];
+    public popUpStudyOfflineMessage: string;
 
-}
-
-class DictOfflineFlag {
-    public key: boolean;
-    public value: string;
 }

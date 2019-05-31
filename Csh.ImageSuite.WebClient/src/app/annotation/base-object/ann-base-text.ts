@@ -25,18 +25,18 @@ export class AnnBaseText extends AnnBaseObject {
     // Override functions of base class
     onSave(annSerialize: AnnSerialize) {
         annSerialize.writeString("CGXAnnLabel");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 4);
+        annSerialize.writeInteger(0, 1);
 
         const topLeftPoint = this.getPosition();
         const rect = new Rectangle(topLeftPoint.x, topLeftPoint.y, this.getWidth(), this.getHeight());
         const pointList = AnnTool.pointListFromRect(rect);
 
-        annSerialize.writePoint(pointList[0]); // top left
-        annSerialize.writePoint(pointList[2]); // bottom right
-        annSerialize.writePoint(pointList[1]); // top right
-        annSerialize.writePoint(pointList[3]); // bottom left
+        annSerialize.writeIntegerPoint(pointList[0]); // top left
+        annSerialize.writeIntegerPoint(pointList[2]); // bottom right
+        annSerialize.writeIntegerPoint(pointList[1]); // top right
+        annSerialize.writeIntegerPoint(pointList[3]); // bottom left
     }
 
     onScale() {

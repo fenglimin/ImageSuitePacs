@@ -32,7 +32,7 @@ export class SelectMarkerDialogComponent {
     }
 
     onOkClick(markerData: MarkerData): void {
-        this.dialogRef.close(this.getImageUrl(markerData));
+        this.dialogRef.close(markerData.imageName.substr(0, markerData.imageName.length-4));
     }
 
     getImageUrl(markerData: MarkerData): string {

@@ -5,7 +5,6 @@ import { AnnExtendObject } from "./ann-extend-object";
 import { AnnText } from "./ann-text";
 import { AnnArrow } from "./ann-arrow";
 import { AnnSerialize } from "../ann-serialize";
-import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnTextIndicator extends AnnExtendObject {
 
@@ -44,8 +43,8 @@ export class AnnTextIndicator extends AnnExtendObject {
 
     onSave(annSerialize: AnnSerialize) {
         annSerialize.writeString("CGXAnnLabel");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 1);
 
         this.annArrow.onSave(annSerialize, false);
         this.annText.onSave(annSerialize);

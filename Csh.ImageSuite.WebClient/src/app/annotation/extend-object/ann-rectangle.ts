@@ -7,7 +7,6 @@ import { AnnPoint } from "./ann-point";
 import { AnnBaseRectangle } from "../base-object/ann-base-rectangle";
 import { AnnTextIndicator } from "./ann-text-indicator"
 import { AnnSerialize } from "../ann-serialize";
-import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnRectangle extends AnnExtendObject {
     
@@ -100,21 +99,16 @@ export class AnnRectangle extends AnnExtendObject {
         this.focusedObj = this.annBaseRectangle;
     }
 
-    onLoad(annSerialize: AnnSerialize) {
-        const config = AnnConfigLoader.loadRectangle(annSerialize);
+    onCreateFromConfig(config: any) {
         this.onCreate(config.baseRect.topLeftPoint, config.baseRect.width, config.baseRect.height, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
         this.focusedObj = this.annBaseRectangle;
-        this.onSelect(config.selected, config.selected);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
     }
 
     onSave(annSerialize: AnnSerialize) {
         annSerialize.writeString("CGXAnnSquare");
-        annSerialize.writeNumber(2, 4);
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(this.selected ? 1 : 0, 1);
+        annSerialize.writeInteger(2, 4);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
 
         this.annBaseRectangle.onSave(annSerialize);
         this.annTextIndicator.onSave(annSerialize);

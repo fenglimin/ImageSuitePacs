@@ -4,7 +4,6 @@ import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
 import { AnnObject } from '../ann-object';
 import { AnnSerialize } from "../ann-serialize";
-import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnBasePolygon extends AnnBaseObject {
 
@@ -18,36 +17,36 @@ export class AnnBasePolygon extends AnnBaseObject {
     // Override functions of base class
     onSave(annSerialize: AnnSerialize) {
         annSerialize.writeString("CGXAnnPolygon");
-        annSerialize.writeNumber(3, 4);
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(this.selected ? 1 : 0, 1);
+        annSerialize.writeInteger(3, 4);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
 
         const points = this.jcObj.points();
         const length = points.length;
-        annSerialize.writeNumber(length, 4);
-        annSerialize.writeNumber(length, 4);
+        annSerialize.writeInteger(length, 4);
+        annSerialize.writeInteger(length, 4);
 
         for (let i = 0; i < length; i ++) {
-            annSerialize.writeNumber(points[i][0], 4);
-            annSerialize.writeNumber(points[i][1], 4);
+            annSerialize.writeInteger(points[i][0], 4);
+            annSerialize.writeInteger(points[i][1], 4);
         }
 
         for (let i = 0; i < length; i++) {
             annSerialize.writeString("CGXAnnLine"); // CGXAnnLine
-            annSerialize.writeNumber(1, 4);
-            annSerialize.writeNumber(0, 4);
-            annSerialize.writeNumber(0, 1);
+            annSerialize.writeInteger(1, 4);
+            annSerialize.writeInteger(0, 4);
+            annSerialize.writeInteger(0, 1);
 
             if (i !== length - 1) {
-                annSerialize.writeNumber(points[i][0], 4);
-                annSerialize.writeNumber(points[i][1], 4);
-                annSerialize.writeNumber(points[i + 1][0], 4);
-                annSerialize.writeNumber(points[i + 1][1], 4);
+                annSerialize.writeInteger(points[i][0], 4);
+                annSerialize.writeInteger(points[i][1], 4);
+                annSerialize.writeInteger(points[i + 1][0], 4);
+                annSerialize.writeInteger(points[i + 1][1], 4);
             } else {
-                annSerialize.writeNumber(points[0][0], 4);
-                annSerialize.writeNumber(points[0][1], 4);
-                annSerialize.writeNumber(points[length - 1][0], 4);
-                annSerialize.writeNumber(points[length - 1][1], 4);
+                annSerialize.writeInteger(points[0][0], 4);
+                annSerialize.writeInteger(points[0][1], 4);
+                annSerialize.writeInteger(points[length - 1][0], 4);
+                annSerialize.writeInteger(points[length - 1][1], 4);
             }
         }
     }
@@ -129,11 +128,12 @@ export class AnnBasePolygon extends AnnBaseObject {
 
         area = Math.abs(area);
         if (this.pixelSpacing) {
-            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm2";
+            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm";
         } else {
-            areaString += area.toFixed(2) + "pt2";
+            areaString += area.toFixed(2) + "pt";
         }
 
+        areaString += "\xb2";
         return areaString;
     }
 

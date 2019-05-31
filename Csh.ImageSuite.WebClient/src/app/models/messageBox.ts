@@ -4,7 +4,8 @@ export enum MessageBoxType {
     Question,
     Warning,
     Error,
-    Input
+    Input,
+    InfoCancel
 }
 
 export enum DialogResult {
@@ -18,4 +19,7 @@ export class MessageBoxContent {
     title: string;
     messageText: string;
     messageType: MessageBoxType;
+    callbackOwner: any;
+    callbackFunction: any;
+    callbackArg: any;
 }

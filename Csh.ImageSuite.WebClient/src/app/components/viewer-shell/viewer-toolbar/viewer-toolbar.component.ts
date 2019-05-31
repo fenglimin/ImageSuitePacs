@@ -10,7 +10,6 @@ import { AnnLine } from "../../../annotation/extend-object/ann-line";
 import { AnnEllipse } from "../../../annotation/extend-object/ann-ellipse";
 import { AnnRectangle } from "../../../annotation/extend-object/ann-rectangle";
 import { AnnArrow } from "../../../annotation/extend-object/ann-arrow";
-import { AnnCurve } from "../../../annotation/extend-object/ann-curve";
 import { AnnRuler } from "../../../annotation/extend-object/ann-ruler";
 import { AnnCardiothoracicRatio } from "../../../annotation/extend-object/ann-cardiothoracic-ratio";
 import { AnnVerticalAxis } from "../../../annotation/extend-object/ann-vertical-axis";
@@ -18,6 +17,8 @@ import { AnnMarkSpot } from "../../../annotation/extend-object/ann-mark-spot";
 import { AnnImage } from "../../../annotation/extend-object/ann-image";
 import { AnnPolygon } from "../../../annotation/extend-object/ann-polygon";
 import { AnnAngle } from "../../../annotation/extend-object/ann-angle";
+import { AnnCervicalCurve } from "../../../annotation/extend-object/ann-cervical-curve";
+import { AnnLumbarCurve } from "../../../annotation/extend-object/ann-lumbar-curve";
 
 @Component({
     selector: "app-viewer-toolbar",
@@ -150,7 +151,9 @@ export class ViewerToolbarComponent implements OnInit {
 
     extendAnnotation1ButtonMenu: SelectedButtonData[] = [
         { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnCurve, "Cervical Curve", "ann_cervicalcurve", true))}}
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnCervicalCurve, "Cervical Curve", "ann_cervicalcurve", true))}},
+        { name: "ann_lumbarcurve", tip: "Lumbar Curve", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnLumbarCurve, "Lumbar Curve", "ann_cervicalcurve", true))}}
     ];
 
     extendAnnotation2ButtonMenu: SelectedButtonData[] = [

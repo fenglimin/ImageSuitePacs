@@ -255,7 +255,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         // The image is null, which means to clear the image viewer
         if (!this.image) {
             if (this.jcanvas) {
-                this.jcanvas.clear();
+                this.jcTextOverlayList.forEach(jcText => jcText.del());
+                this.jcTextOverlayList.length = 0;
+
+                this.annImageRuler.reset(this);
+                //this.jcanvas.clear();
+                if (this.jcImage) {
+                    this.jcImage.del();
+                }
             }
             return;
         }
@@ -307,7 +314,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     this.annImageRuler.reDraw(this);
                 }
             } else {
-                this.jcanvas.clear();
+                if (this.jcanvas) {
+                    this.jcTextOverlayList.forEach(jcText => jcText.del());
+                    this.jcTextOverlayList.length = 0;
+
+                    this.annImageRuler.reset(this);
+                    //this.jcanvas.clear();
+                    if (this.jcImage) {
+                        this.jcImage.del();
+                    }
+                }
+                //this.jcanvas.clear();
             }
 
             this.needResize = false;
@@ -402,12 +419,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.curSelectObj = undefined;
         }
 
-        if (this.curSelectObj && this.curSelectObj.isGuideNeeded()) {
-            const stepIndex = this.curSelectObj.getFocusedObj().getStepIndex();
-            if (stepIndex !== -1) {
-                this.annGuide.setGuideTargetObj(this.curSelectObj);
-                this.annGuide.show(this.curSelectObj.getTypeName(), stepIndex);
-            }
+        const stepIndex = (this.curSelectObj && this.curSelectObj.isGuideNeeded()) ? this.curSelectObj.getFocusedObj().getStepIndex() : -1;
+        if (stepIndex !== -1) {
+            this.annGuide.setGuideTargetObj(this.curSelectObj);
+            this.annGuide.show(this.curSelectObj.getTypeName(), stepIndex);
+        } else {
+            this.annGuide.hide();
         }
     }
 
@@ -436,18 +453,16 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     onAnnotationCreated(annObj: AnnExtendObject) {
-        //if (this.curSelectObj !== annObj) {
-        //    alert("error in onAnnotationCreated");
-        //    return;
-        //}
-
-        this.curSelectObj = annObj;
-
-        if (annObj.isCreated()) {
-            this.annObjList.push(this.curSelectObj);
+        if (!annObj.isCreated()) {
+            alert("Internal error in onAnnotationCreated()");
+            return;
         }
 
-        this.viewContext.setContext(ViewContextEnum.SelectAnn);
+        this.annObjList.push(annObj);
+        if (!annObj.isLoadedFromTag()) {
+            this.curSelectObj = annObj;
+            this.viewContext.setContext(ViewContextEnum.SelectAnn);
+        }
     }
 
     stepGuide() {
@@ -625,9 +640,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         const ctCanvas = cornerstone.getEnabledElement(this.helpElement).canvas;
         this.jcImage = jCanvaScript.image(ctCanvas).layer(this.imgLayerId);
 
-        
-
-        this.setContext(this.viewContext.curContext);
         //fit window
         this.fitWindow();
 
@@ -638,13 +650,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.hideWaitingText();
         this.showTextOverlay();
 
+        this.updateImageTransform();
         this.syncAnnLabelLayerTransform();
+        this.viewContext.setContext(ViewContextEnum.SelectAnn);
         this.annSerialize = new AnnSerialize(this.image.annData, this);
-        this.annSerialize.createAnn();
+        if (!this.annSerialize.createAnn()) {
+            this.setContext(this.viewContext.curContext);
+        }
 
         this.redraw(2);
-
-      //  setTimeout(() => { this.jcanvas.frame(); }, 1);
     }
 
     private showWaitingText() {
@@ -1082,6 +1096,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         const curRotate = 0 - this.getRotate(); //get rotate return the minus value
         const width = this.image.width();
         const height = this.image.height();
+
+        const parent = this.canvas.parentElement.parentElement;
+        this.canvas.width = parent.clientWidth;
+        this.canvas.height = parent.clientHeight;
+
         const canvasWidth = this.canvas.width;
         const canvasHeight = this.canvas.height;
         const widthScale = canvasWidth / width;
@@ -1267,6 +1286,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     saveImage() {
         const annString = this.annSerialize.getAnnString(this.annObjList);
+        this.ctImage.data.elements["x0011101d"] = this.annSerialize.annData;
         this.dicomImageService.saveImageAnn(this.image.id, annString).subscribe(ret => {
             const content = new MessageBoxContent();
             content.title = "Save Image";
@@ -1895,6 +1915,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         const annType = this.viewContext.curContext.data.classType;
         this.curSelectObj = new annType(undefined, this);
         if (this.viewContext.curContext.data.needGuide) {
+            this.curSelectObj.setTypeName(this.viewContext.curContext.data.className);
             this.curSelectObj.setGuideNeeded(true);
             this.annGuide.setGuideTargetObj(this.curSelectObj);
         }
@@ -1911,15 +1932,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.dialogService.showDialog(SelectMarkerDialogComponent, undefined).subscribe(
             val => {
                 if (val) {
-                    const imageData = new Image();
-                    imageData.onload = ev => {
-                        this.updateImageTransform();
-                        const annImage = new AnnImage(undefined, this);
-                        annImage.onCreate(imageData, new Point(0, 0));
-                        this.curSelectObj = annImage;
-                    };
-
-                    imageData.src = val;
+                    this.updateImageTransform();
+                    const annImage = new AnnImage(undefined, this);
+                    annImage.onCreate(val, new Point(0, 0));
+                    this.curSelectObj = annImage;
                 }
             }
         );

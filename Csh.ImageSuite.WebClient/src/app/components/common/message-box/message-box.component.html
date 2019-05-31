@@ -7,7 +7,7 @@
     <i *ngIf="content.messageType === 1" class="glyphicon glyphicon-question-sign" style="padding-right: 8px"></i>
     <i *ngIf="content.messageType === 2" class="glyphicon glyphicon-warning-sign" style="color: #F90; padding-right: 8px;"></i>
     <i *ngIf="content.messageType === 3" class="glyphicon glyphicon-remove" style="color: #F90; padding-right: 8px;"></i>
-    <span *ngIf="content.messageType !== 4" style="color: white">{{content.messageText}}</span>
+    <span id="span-message-text" *ngIf="content.messageType !== 4" style="color: white">{{content.messageText}}</span>
     <mat-form-field *ngIf="content.messageType === 4">
         <input matInput
                placeholder="{{content.messageText}}"

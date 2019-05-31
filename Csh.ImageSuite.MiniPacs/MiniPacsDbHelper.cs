@@ -1353,5 +1353,113 @@ namespace Csh.ImageSuite.MiniPacs
             }
             return strOfflineMessage;
         }
+
+        public bool InsertCDJobList(List<string> studyUidList, ref List<string> logMsgList)
+        {
+            string logMsg;
+            bool result = false;
+            try
+            {
+                // SQL Tran
+                List<SqlWrapper> lstSql = new List<SqlWrapper>();
+                SqlWrapper sql;
+                SqlParameter[] parameters;
+
+                foreach (var studyUid in studyUidList)
+                {
+                    logMsg = string.Format("RowIndex {0} Insert Study UID : {1} into CDJobList.", studyUidList.IndexOf(studyUid).ToString(), studyUid);
+                    if (!logMsgList.Contains(logMsg))
+                    {
+                        logMsgList.Add(logMsg);
+                    }
+                    sql = new SqlWrapper();
+                    sql.SqlString = "WGGC_AppendCDJob";
+                    sql.CommandType = CommandType.StoredProcedure;
+                    parameters = new SqlParameter[]{
+                        new SqlParameter("@strStudyInstanceUID", studyUid) };
+                    sql.Parameter = parameters;
+                    lstSql.Add(sql);
+                }
+
+                SqlHelper.ExecuteNonQuery(lstSql, _connectionString);
+                result = true;
+            }
+            catch (System.Exception ex)
+            {
+                logMsg = ex.ToString();
+                if (!logMsgList.Contains(logMsg))
+                {
+                    logMsgList.Add(logMsg);
+                }
+            }
+            return result;
+        }
+
+        public DataTable GetTableStudyOnline(string studyGUIDs, string strWhere)
+        {
+            DataTable tb = null;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(" SELECT * FROM Study WHERE InstanceAvailability = 'ONLINE' ");
+
+            if (studyGUIDs.Trim().Length > 0)
+            {
+                sb.Append(" AND StudyInstanceUID in (" + studyGUIDs + ")");
+            }
+            if (strWhere.Trim().Length > 0)
+            {
+                sb.Append(" " + strWhere + " ");
+            }
+            string strSQL = sb.ToString();
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+            }
+            return tb;
+        }
+
+        public void UpdateCDJobStatus(string studyUid)
+        {
+            try
+            {
+                SqlConnection cnn = new SqlConnection(_connectionString);
+                SqlCommand com = cnn.CreateCommand();
+                com.CommandText = "UPDATE CDJobList SET Status = @EndStatus Where StudyInstanceUID = @studyUid";
+                com.Parameters.AddWithValue("@EndStatus", 3);
+                com.Parameters.AddWithValue("@studyUid", studyUid);
+                cnn.Open();
+                com.ExecuteNonQuery();
+                cnn.Close();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void AddCDJob(List<string> studyUidList)
+        {
+            foreach (string studyUid in studyUidList)
+            {
+                string strStudyUid = studyUid.Trim();
+                try
+                {
+                    SqlConnection cnn = new SqlConnection(_connectionString);
+                    SqlCommand cmd = new SqlCommand("WGGC_AppendCDJob", cnn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add("@strStudyInstanceUID", SqlDbType.Text).Value = strStudyUid;
+                    cnn.Open();
+                    cmd.ExecuteNonQuery();
+                    cnn.Close();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+        }
+
     }
 }

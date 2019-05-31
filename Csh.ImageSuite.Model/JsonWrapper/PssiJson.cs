@@ -10,7 +10,7 @@ namespace Csh.ImageSuite.Model.JsonWrapper
 {
     public class RevStudiesForDcmViewer
     {
-        public int Id { get; set; }
+        public List<string> Ids { get; set; }
         public bool ShowHistoryStudies { get; set; }
         public bool ShowKeyImage { get; set; }
     }
@@ -35,4 +35,16 @@ namespace Csh.ImageSuite.Model.JsonWrapper
         public string DeletionReason { get; set; }
     }
 
+    public class RevCheckedStudiesForOffline
+    {
+        public List<string> studyInstanceUIDList { get; set; }
+        public string StudyOfflineMessage { get; set; }
+    }
+
+    public class SendCheckedStudiesForOffline
+    {
+        public bool IsOffline { get; set; }
+        public List<string> StudyOfflineUidUSBList { get; set; }
+        public string PopUpStudyOfflineMessage { get; set; }
+    }
 }

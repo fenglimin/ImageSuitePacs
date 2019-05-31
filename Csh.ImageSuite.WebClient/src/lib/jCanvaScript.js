@@ -17,6 +17,7 @@
  * 2. Support Polygon
  * 3. Use frame, and refresh canvas on demand. ( To improve performance )
  * 4. Draw the layer on demand. (Check need redraw for the layer)
+ * 5. Adjust the logic to check if the point is near line (To check whether a line is clicked)
  */
 (function (window, undefined) {
     var canvases = [],
@@ -653,7 +654,7 @@
 
             var dist0 = distance({ x: object._x0, y: object._y0 }, poorPoint);
             var dist1 = distance({ x: object._x1, y: object._y1 }, poorPoint);
-            const distInImage = 3 / layer._transform11;
+            const distInImage = 3 / layer.optns.scaleMatrix[0][0];
             if (dist <= distInImage && dist0 > distInImage && dist1 > distInImage) {
                 //log('in point, proto:' + object._proto);
                 return point;

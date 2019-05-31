@@ -155,6 +155,17 @@ export class AnnTool {
         return retPointList;
     }
 
+    static pointListFromEllipse(centerPoint: Point, width: number, height: number): Point[] {
+        const retPointList = [];
+
+        retPointList.push({ x: centerPoint.x, y: centerPoint.y - height });
+        retPointList.push({ x: centerPoint.x + width, y: centerPoint.y });
+        retPointList.push({ x: centerPoint.x, y: centerPoint.y + height });
+        retPointList.push({ x: centerPoint.x - width, y: centerPoint.y });
+
+        return retPointList;
+    }
+
     static pointListFrom(point: Point, posInRect: PositionInRectangle, width: number, height: number): Point[] {
         const retPointList = [];
 

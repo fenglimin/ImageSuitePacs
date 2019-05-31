@@ -69,11 +69,6 @@ export class AnnImageRuler {
         let canvasWidth = canvas.width;
         let canvasHeight = canvas.height;
 
-        this.linesVertical.forEach(function (line) { if(line) line.del(); });
-        this.linesHorizontal.forEach(function (line) { if(line) line.del(); });
-        this.linesVertical = [];
-        this.linesHorizontal = [];
-
         let strRulerInfo = '';
 
         this.reset(imageViewer);
@@ -255,12 +250,12 @@ export class AnnImageRuler {
         }
 
         if (annImageRuler.linesVertical) {
-            annImageRuler.linesVertical.forEach(function (line) { line.del(); });
+            annImageRuler.linesVertical.forEach(line => line.del());
             annImageRuler.linesVertical = [];
         }
 
         if (annImageRuler.linesHorizontal) {
-            annImageRuler.linesHorizontal.forEach(function (line) { line.del(); });
+            annImageRuler.linesHorizontal.forEach(line => line.del());
             annImageRuler.linesHorizontal = [];
         }
     }

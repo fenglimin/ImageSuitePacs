@@ -35,8 +35,19 @@ export class WorklistService {
 
     loadedStudyCount = 0;
     loadedStudy: Study[];
-    studyUSBOfflineList: number[];
-    checkedStudiesUid: string[];
+    studyUSBOfflineList: string[];
+    popUpStudyOfflineMessage: string;
+    isOffline = false;
+    checkedStudiesUids: number[];
+    checkedStudiesInstanceUids: string[];
+    checkedStudiesCount = 0;
+    getStudies: Study[];
+
+    studyOnlineReadyTicketCountMax = 0;
+    studyOnlineReadyTicketCount = 0;
+    maxStudyOnlineReadyTicketCount = 300;
+    checkStudyOnlineReadyStatusInterval = 500;
+    sumMaxCheckStudyOnlineReadyCount = 10;
 
     private _shortcut: Shortcut;
     set shortcut(value: Shortcut) {
@@ -146,7 +157,9 @@ export class WorklistService {
             viewerShellData.addStudy(study);
             this.shellNavigatorService.shellNavigate(viewerShellData);
         } else {
-            this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, false).subscribe(value => this.studyDetailsLoaded(1, value));
+            this.checkedStudiesUids = new Array<number>();
+            this.checkedStudiesUids.push(study.id);
+            this.databaseService.getStudiesForDcmViewer(this.checkedStudiesUids, this.showHistoryStudies, false).subscribe(value => this.checkOfflineBeforeLoadImage(1, value));
         }
     }
 
@@ -162,19 +175,15 @@ export class WorklistService {
 
             this.shellNavigatorService.shellNavigate(viewerShellData);
         } else {
-            let checkedCount = 0;
-            this.studies.forEach(study => {
-                if (study.checked) {
-                    checkedCount++;
-                }
-            });
-            
-            this.studies.forEach(study => {
-                if (study.checked) {
-                    this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, false)
-                        .subscribe(value => this.studyDetailsLoaded(checkedCount, value));
-                }
-            });
+            //this.studies.forEach(study => {
+            //    if (study.checked) {
+            //        this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, false)
+            //            .subscribe(value => this.checkOfflineBeforeLoadImage(this.checkedStudiesCount, value));
+            //    }
+            //});
+
+            this.databaseService.getStudiesForDcmViewer(this.checkedStudiesUids, this.showHistoryStudies, false)
+                        .subscribe(value => this.checkOfflineBeforeLoadImage(this.checkedStudiesCount, value));
         }
     }
 
@@ -188,7 +197,7 @@ export class WorklistService {
 
         this.studies.forEach(study => {
             if (study.checked) {
-                this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, true)
+                this.databaseService.getStudiesForDcmViewer(this.checkedStudiesUids, this.showHistoryStudies, true)
                     .subscribe(value => this.studyDetailsLoaded(checkedCount, value));
             }
         });
@@ -228,6 +237,8 @@ export class WorklistService {
         let deletePreventCount = 0;
         let deleteAllowCount = 0;
         let checkedStudyCount = 0;
+        let onlineStudiesCount = 0;
+        let offlineStudiesCount = 0;
         //studyUSBOfflineList = ;
 
         this.studies.forEach(study => {
@@ -247,6 +258,13 @@ export class WorklistService {
                 else if ((study.reserved == "Y")) {
                     deleteAllowCount++;
                 }
+
+                if (study.instanceAvailability == "ONLINE") {
+                    onlineStudiesCount++;
+                }
+                else if (study.instanceAvailability == "OFFLINE") {
+                    offlineStudiesCount++;
+                }
             }
         });
 
@@ -254,15 +272,19 @@ export class WorklistService {
             this.initAllButton();
         }
         else {
-            this.checkedStudiesUid = new Array<string>();
+            this.checkedStudiesUids = new Array<number>();
+            this.checkedStudiesInstanceUids = new Array<string>();
+            this.checkedStudiesCount = 0;
             // Check Offline Image
             this.studies.forEach(study => {
                 if (study.checked) {(
-                    this.checkedStudiesUid.push(study.studyInstanceUid));
+                    this.checkedStudiesUids.push(study.id));
+                    this.checkedStudiesInstanceUids.push(study.studyInstanceUid);
+                    this.checkedStudiesCount++;
                 }
             });
 
-            this.checkStudiesIncludeOffline(this.checkedStudiesUid);
+            this.checkStudiesIncludeOffline(this.checkedStudiesInstanceUids);
 
             this.bDisableLoadImageButton = false;
             this.bDisableLoadKeyImage = false;
@@ -307,6 +329,20 @@ export class WorklistService {
                 this.bDisableDeletePreventBtn = true;
                 this.bDisableDeleteAllowBtn = true;
             }
+
+            if (offlineStudiesCount != 0) {
+                this.bDisableDeleteAllowBtn = true;
+                this.bDisableDeletePreventBtn = true;
+                this.bDisableDeleteStudy = true;
+                this.bDisableLoadKeyImage = true;
+                this.bDisableReassign = true;
+                this.bDisableSetReadBtn = true;
+                this.bDisableSetUnreadBtn = true;
+                this.bDisableTagEdit = true;
+                this.bDisableTransfer = true;
+                this.bDisableChangeImageSeriesOrder = true;
+            }
+
         }
     }
 
@@ -315,20 +351,12 @@ export class WorklistService {
     }
 
     collectOfflineStudiesInfo(offlineStudiesInfo) {
-        var studyOfflineCollection = offlineStudiesInfo;
-
-        //if (studyOfflineCollection) {
-
-        //    var studyOfflineMsg = studyOfflineCollection.keys[0];
-        //    studyUSBOfflineList = studyOfflineCollection.values[0];
-
-        //    studyHasHistoryIsOffline = studyOfflineMsg.keys[0];
-
-        //    if (__studyHasHistoryIsOffline) {
-        //        __studyOfflineMsg = studyOfflineMsg.values[0];
-        //    }
-        //}
-        //return __studyHasHistoryIsOffline;
+        if (offlineStudiesInfo) {
+            this.studyUSBOfflineList = offlineStudiesInfo.studyUSBOfflineList;
+            this.popUpStudyOfflineMessage = offlineStudiesInfo.popUpStudyOfflineMessage;
+            this.isOffline = offlineStudiesInfo.isOffline;
+        }
+        return offlineStudiesInfo.isOffline;
     }
 
     onDeletePrevent() {
@@ -442,8 +470,8 @@ export class WorklistService {
             }
         });
 
-        this.loadedStudyCount++;
-        if (allCheckedStudyCount === this.loadedStudyCount) {
+        //this.loadedStudyCount++;
+        //if (allCheckedStudyCount === this.loadedStudyCount) {
             if (this.loadedStudy.length === 0)
             {
                 const content = new MessageBoxContent();
@@ -469,6 +497,32 @@ export class WorklistService {
 
             this.loadedStudy = new Array<Study>();
             this.loadedStudyCount = 0;
+
+            this.refreshShortcuts();
+
+        //}
+    }
+
+    private checkOfflineBeforeLoadImage(allCheckedStudyCount: number, getStudies: Study[]){
+        this.getStudies = getStudies;
+        this.checkedStudiesCount = this.checkedStudiesCount;
+        if (this.isOffline) {
+            const content = new MessageBoxContent();
+            content.title = "Restore Offline Image";
+            content.messageText = this.popUpStudyOfflineMessage;
+            content.messageType = MessageBoxType.InfoCancel;
+            content.callbackFunction = this.databaseService.studyOfflineInsertCDJobList;
+            content.callbackOwner = this.databaseService;
+            content.callbackArg = this.checkedStudiesInstanceUids;
+
+            this.dialogService.showMessageBox(content).subscribe(
+                val => {
+                    if (val.dialogResult === DialogResult.Ok) {
+                        this.studyDetailsLoaded(this.checkedStudiesCount, this.getStudies);
+                    }
+                });
+        } else {
+            this.studyDetailsLoaded(this.checkedStudiesCount, this.getStudies);
         }
     }
 
@@ -485,4 +539,5 @@ export class WorklistService {
         this.bDisableDeletePreventBtn = true;
         this.bDisableDeleteAllowBtn = true;
     }
+
 }

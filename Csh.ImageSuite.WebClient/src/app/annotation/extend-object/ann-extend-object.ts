@@ -6,6 +6,7 @@ import { AnnSerialize } from "../ann-serialize";
 export abstract class AnnExtendObject extends AnnObject {
 
     protected annObjList: Array<AnnObject> = [];
+    protected loadedFromTag = false;   // The annotation is created when loading image
     protected guideNeeded = false;
     protected annTypeName: string;
 
@@ -21,12 +22,20 @@ export abstract class AnnExtendObject extends AnnObject {
         return this.annTypeName;
     }
 
+    setTypeName(annTypeName: string) {
+        this.annTypeName = annTypeName;
+    }
+
     setGuideNeeded(guideNeeded: boolean) {
         this.guideNeeded = guideNeeded;
     }
 
     isGuideNeeded(): boolean {
         return this.guideNeeded;
+    }
+
+    isLoadedFromTag(): boolean {
+        return this.loadedFromTag;
     }
 
     selectChildByStepIndex(stepIndex: number) {
@@ -41,7 +50,7 @@ export abstract class AnnExtendObject extends AnnObject {
     }
 
     onMouseEvent(mouseEventType: MouseEventType, point: Point, mouseObj: any) {
-        alert("Error in AnnExtendObject.onMouseEvent, this function must be overrided.")
+        alert("Error in AnnExtendObject.onMouseEvent, this function must be overrode.");
     }
 
     onSwitchFocus() {
@@ -160,13 +169,22 @@ export abstract class AnnExtendObject extends AnnObject {
         this.annObjList.forEach(annObj => annObj.setVisible(visible));
     }
 
-    onLoad(annSerialize: AnnSerialize): any {
-        alert("Internal error : AnnExtendObject.onLoad() should never be called.");
-        return undefined;
+    onLoad(config: any) {
+        this.loadedFromTag = true;
+        this.onCreateFromConfig(config);
+        this.onSelect(config.selected, config.selected);
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
     }
 
     onSave(annSerialize: AnnSerialize) {
         alert("Internal error : AnnExtendObject.onSave() should never be called.");
+    }
+
+    onCreateFromConfig(config: any) {
+        alert("Internal error : AnnExtendObject.onCreateFromConfig() should never be called.");
+        return undefined;
     }
 
     private addChildObj(annObj: AnnObject) {

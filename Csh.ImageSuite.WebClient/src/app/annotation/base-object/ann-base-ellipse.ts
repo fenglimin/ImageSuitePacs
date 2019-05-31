@@ -42,11 +42,12 @@ export class AnnBaseEllipse extends AnnBaseObject {
 
         let areaString = "Size = ";
         if (this.pixelSpacing) {
-            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm2";
+            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm";
         } else {
-            areaString += area.toFixed(2) + "pt2";
+            areaString += area.toFixed(2) + "pt";
         }
 
+        areaString += "\xb2";
         return areaString;
     }
 

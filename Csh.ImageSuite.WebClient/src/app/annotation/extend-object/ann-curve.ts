@@ -5,6 +5,7 @@ import { AnnExtendObject } from "./ann-extend-object";
 import { AnnPoint } from "./ann-point";
 import { AnnBaseCurve } from "../base-object/ann-base-curve";
 import { AnnTextIndicator } from "./ann-text-indicator"
+import { AnnSerialize } from "../ann-serialize";
 
 export class AnnCurve extends AnnExtendObject {
 
@@ -14,9 +15,10 @@ export class AnnCurve extends AnnExtendObject {
     private annEndPoint: AnnPoint;
     private annTextIndicator: AnnTextIndicator;
 
+    protected radiusInImage: number;
+
     constructor(parent: AnnExtendObject, imageViewer: IImageViewer) {
         super(parent, imageViewer);
-        this.annTypeName = "Cervical Curve";
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,23 +35,24 @@ export class AnnCurve extends AnnExtendObject {
             }
 
             const stepIndex = this.imageViewer.getCurrentStepIndex();
+            let ret: boolean;
             switch (stepIndex) {
 
                 // Step 0: Draw the start point
                 case 0: {
-                    this.onStep1(imagePoint);
+                    ret = this.onStep1(imagePoint);
                     break;
                 }
 
                 // Draw curve
                 case 1: {
-                    this.onStep2(imagePoint);
+                    ret = this.onStep2(imagePoint);
                     break;
                 }
 
                 // Adjust curve direction
                 case 2: {
-                    this.onStep3(imagePoint);
+                    ret = this.onStep3(imagePoint);
                     break;
                 }
                     
@@ -60,8 +63,36 @@ export class AnnCurve extends AnnExtendObject {
             }
 
             // Step the guide
-            this.imageViewer.stepGuide();
+            if (ret) {
+                this.imageViewer.stepGuide();
+            }
         }
+    }
+
+    onCreate(pointList: any, arrowStartPoint: Point = undefined, arrowEndPoint: Point = undefined) {
+        if (pointList.length !== 3) {
+            alert("Error config of AnnCurve!");
+            return;
+        }
+
+        this.onStep1(pointList[0]);
+        this.redraw(pointList[0], pointList[1], pointList[2]);
+    }
+
+    onCreateFromConfig(config: any) {
+        this.onCreate(config.pointList, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        this.focusedObj = this.annStartPoint;
+    }
+
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeInteger(1, 4);     // created
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
+
+        annSerialize.writeDoublePoint(this.annStartPoint.getPosition());
+        annSerialize.writeDoublePoint(this.annEndPoint.getPosition());
+        annSerialize.writeDoublePoint(this.annMiddlePoint.getPosition());
+
+        this.annTextIndicator.onSave(annSerialize);
     }
 
     onDrag(deltaX: number, deltaY: number) {
@@ -99,25 +130,27 @@ export class AnnCurve extends AnnExtendObject {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 
-    private onStep1(imagePoint: Point) {
+    private onStep1(imagePoint: Point): boolean {
         this.annStartPoint = new AnnPoint(this, this.imageViewer);
         this.annStartPoint.onCreate(imagePoint);
+        this.annStartPoint.enableShowAlways(true);
         this.annStartPoint.setStepIndex(0);
+        return true;
     }
 
-    private onStep2(imagePoint: Point) {
+    private onStep2(imagePoint: Point): boolean {
         const startPoint = this.annStartPoint.getPosition();
-        if (AnnTool.equalPoint(imagePoint, startPoint)) return;
+        if (AnnTool.equalPoint(imagePoint, startPoint)) return false;
 
-        const radius = AnnTool.countDistance(startPoint, imagePoint);
-        const middlePoint = AnnTool.calcMiddlePointOfArc(startPoint, imagePoint, radius);
+        const length = AnnTool.countDistance(startPoint, imagePoint);
+        if (length > this.radiusInImage * 2) return false;
 
+        const middlePoint = AnnTool.calcMiddlePointOfArc(startPoint, imagePoint, this.radiusInImage);
         this.redraw(startPoint, imagePoint, middlePoint);
-
-        this.annEndPoint.setStepIndex(1);
+        return true;
     }
 
-    private onStep3(imagePoint: Point) {
+    private onStep3(imagePoint: Point): boolean {
         const startPoint = this.annStartPoint.getPosition();
         const endPoint = this.annEndPoint.getPosition();
         const middlePoint = this.annMiddlePoint.getPosition();
@@ -131,12 +164,13 @@ export class AnnCurve extends AnnExtendObject {
             this.redraw(startPoint, endPoint, newMiddlePoint);
         }
 
-        this.annMiddlePoint.setStepIndex(2);
         this.focusedObj = this.annMiddlePoint;
 
         if (!this.parentObj) {
             this.onDrawEnded();
         }
+
+        return true;
     }
 
     private onDragStartPoint(deltaX: number, deltaY: number) {
@@ -192,9 +226,13 @@ export class AnnCurve extends AnnExtendObject {
         } else {
             this.annEndPoint = new AnnPoint(this, this.imageViewer);
             this.annEndPoint.onCreate(endPoint);
+            this.annEndPoint.enableShowAlways(true);
+            this.annEndPoint.setStepIndex(1);
 
             this.annMiddlePoint = new AnnPoint(this, this.imageViewer);
             this.annMiddlePoint.onCreate(middlePoint);
+            this.annMiddlePoint.enableShowAlways(true);
+            this.annMiddlePoint.setStepIndex(2);
 
             this.annBaseCurve = new AnnBaseCurve(this, arcData.centerPoint, arcData.radius, arcData.startAngle, arcData.endAngle, arcData.anticlockwise, this.imageViewer);
 

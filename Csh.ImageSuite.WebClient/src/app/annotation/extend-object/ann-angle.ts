@@ -7,7 +7,6 @@ import { AnnBaseCurve } from "../base-object/ann-base-curve";
 import { AnnTextIndicator } from "./ann-text-indicator"
 import { AnnBaseLine } from "../base-object/ann-base-line";
 import { AnnSerialize } from "../ann-serialize";
-import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnAngle extends AnnExtendObject {
 
@@ -89,40 +88,35 @@ export class AnnAngle extends AnnExtendObject {
         this.annEndPoint1 = this.createPoint(lineList[0].endPoint);
         this.annEndPoint2 = this.createPoint(lineList[1].endPoint);
 
-        this.redrawAngle();
+        this.redrawAngle(arrowStartPoint);
     }
 
-    onLoad(annSerialize: AnnSerialize) {
-        const config = AnnConfigLoader.loadAngle(annSerialize);
+    onCreateFromConfig(config: any) {
         this.onCreate(config.lineList, config.textIndicator.startPoint, config.textIndicator.endPoint);
         this.focusedObj = this.annStartPoint;
-        this.onSelect(config.selected, config.selected);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
     }
 
     onSave(annSerialize: AnnSerialize) {
         annSerialize.writeString("CGXAnnProtractor");
-        annSerialize.writeNumber(8, 4);     // AnnType
-        annSerialize.writeNumber(1, 4);     // created
-        annSerialize.writeNumber(0, 4);     // moving
-        annSerialize.writeNumber(this.selected ? 1 : 0, 1);     // selected
-        annSerialize.writeNumber(0, 1);     // arcAndTextOnly
-        annSerialize.writeNumber(3, 4);     // createState
+        annSerialize.writeInteger(8, 4);     // AnnType
+        annSerialize.writeInteger(1, 4);     // created
+        annSerialize.writeInteger(0, 4);     // moving
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
+        annSerialize.writeInteger(0, 1);     // arcAndTextOnly
+        annSerialize.writeInteger(3, 4);     // createState
         const angle = this.annBaseCurve.getAngle();
-        annSerialize.writeNumber(angle, 8);     // angle
+        annSerialize.writeDouble(angle);     // angle
 
         const startPoint = this.annStartPoint.getPosition();
         const radius = this.annBaseCurve.getRadius();
         const arcStartPoint = AnnTool.pointInLineByDistance(startPoint, this.annBaseLine1.getEndPosition(), radius);
-        annSerialize.writePoint(arcStartPoint);
+        annSerialize.writeIntegerPoint(arcStartPoint);
         const arcEndPoint = AnnTool.pointInLineByDistance(startPoint, this.annBaseLine2.getEndPosition(), radius);
-        annSerialize.writePoint(arcEndPoint);
+        annSerialize.writeIntegerPoint(arcEndPoint);
 
         // TopLeft point of curve's rect
-        annSerialize.writePoint({ x: startPoint.x - radius, y: startPoint.y - radius });
-        annSerialize.writePoint({ x: startPoint.x + radius, y: startPoint.y + radius });
+        annSerialize.writeIntegerPoint({ x: startPoint.x - radius, y: startPoint.y - radius });
+        annSerialize.writeIntegerPoint({ x: startPoint.x + radius, y: startPoint.y + radius });
 
         this.annBaseLine1.onSave(annSerialize);
         this.annBaseLine2.onSave(annSerialize);
@@ -164,7 +158,7 @@ export class AnnAngle extends AnnExtendObject {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    private redrawAngle() {
+    private redrawAngle(arrowStartPoint: Point = undefined) {
         const radius = this.getAngelRadius();
         const arcStartPoint = AnnTool.pointInLineByDistance(this.annStartPoint.getPosition(), this.annBaseLine1.getEndPosition(), radius);
         const arcEndPoint = AnnTool.pointInLineByDistance(this.annStartPoint.getPosition(), this.annBaseLine2.getEndPosition(), radius);
@@ -176,7 +170,7 @@ export class AnnAngle extends AnnExtendObject {
         const newMiddlePoint = { x: lineCenter.x * 2 - arcMiddlePoint.x, y: lineCenter.y * 2 - arcMiddlePoint.y };
         const startPoint = this.annStartPoint.getPosition();
 
-        // The nearest is the wanted
+        // The far point is the wanted
         if (AnnTool.countDistance(startPoint, newMiddlePoint) > AnnTool.countDistance(startPoint, arcMiddlePoint)) {
             arcMiddlePoint = newMiddlePoint;
         }
@@ -193,7 +187,7 @@ export class AnnAngle extends AnnExtendObject {
         } else {
             this.annBaseCurve = new AnnBaseCurve(this, arcData.centerPoint, arcData.radius, arcData.startAngle, arcData.endAngle, arcData.anticlockwise, this.imageViewer);
             this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-            this.annTextIndicator.onCreate(this.annBaseCurve.getText(true), startPoint);
+            this.annTextIndicator.onCreate(this.annBaseCurve.getText(true), startPoint, arrowStartPoint);
         }
     }
 

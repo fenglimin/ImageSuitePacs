@@ -102,7 +102,16 @@
                 </ng-template>
             </td>
             <td *ngFor="let col of worklistService.worklistColumns" (click)="onStudyChecked(study)" nowrap>
-                <div class="patientIdCol" *ngIf="col.columnId == 'patientId'; else notPatientId" (click)="doShowStudy(study)">{{study.patient[col.columnId]}}</div>
+                <div class="patientIdCol" *ngIf="col.columnId == 'patientId'; else notPatientId" >
+                    <div *ngIf="study['instanceAvailability'] === 'ONLINE'; else offlineStudy" class="onlineStudy" (click)="doShowStudy(study)">
+                        {{study.patient[col.columnId]}}
+                    </div>
+                    <ng-template #offlineStudy>
+                        <div class="offlineStudy">
+                            {{study.patient[col.columnId]}}
+                        </div>
+                    </ng-template>
+                </div>
                 <ng-template #notPatientId>
                     <div *ngIf="study.patient[col.columnId]; else onlyStudy">{{study.patient[col.columnId]}}</div>
                     <ng-template #onlyStudy>

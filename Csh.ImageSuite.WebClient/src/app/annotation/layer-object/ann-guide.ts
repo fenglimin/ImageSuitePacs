@@ -90,6 +90,13 @@ export class AnnGuide {
             "Step 3. Move center point to change radius of curve"));
         this.annGuideDataList.push(annGuideCervicalCurve);
 
+        const annGuideLumbarCurve = new AnnGuideData("Lumbar Curve", "ann_cervicalcurve");
+        annGuideLumbarCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnLumbarCurve_01.png", "Step 1. Click to place a point on center of 12th thoracic vertebrae"));
+        annGuideLumbarCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnLumbarCurve_02.png", "Step 2. Click to place a point on top center of sacrum"));
+        annGuideLumbarCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnLumbarCurve_03.png", "Step 3. Click either side of line to flip curve.Move center point to change radius of curve",
+            "Step 3. Move center point to change radius of curve"));
+        this.annGuideDataList.push(annGuideLumbarCurve);
+
         const annCardiothoracicRatio = new AnnGuideData("Cardiothoracic Ratio", "ann_cervicalcurve");
         annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_01.png", "Step 1. Click to place a point on the highest point of the spine"));
         annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_02.png", "Step 2. Click to place a point on the lowest point of the spine"));
@@ -186,6 +193,11 @@ export class AnnGuide {
     // Set the target annotation object
     setGuideTargetObj(guideTarget: AnnExtendObject) {
         this.annGuideTarget = guideTarget;
+
+        if (!this.actionButtonLoaded) {
+            return;
+        }
+
         if (this.annGuideTarget && this.annGuideTarget.isCreated()) {
             // If the annotation is created, need to disable the Close and Reset button
             this.annGuideCloseButton.onDisabled();

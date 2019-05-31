@@ -10,7 +10,7 @@
 .mat-dialog-content {
     color: white;
     font-size: 16px;
-    height: 80px;
+    /*height: 80px;*/
     min-width: 400px;
     padding: 10px 10px;
 }
@@ -41,3 +41,10 @@
 }
 
 .mat-input-element { caret-color: #F90; }
+
+#span-message-text {
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    min-width: 400px;
+}

@@ -5,7 +5,6 @@ import { AnnBaseLine } from "../base-object/ann-base-line";
 import { AnnExtendObject } from "./ann-extend-object";
 import { AnnPoint } from "./ann-point";
 import { AnnSerialize } from "../ann-serialize";
-import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnLine extends AnnExtendObject {
     
@@ -69,21 +68,16 @@ export class AnnLine extends AnnExtendObject {
         this.focusedObj = this.annBaseLine;
     }
 
-    onLoad(annSerialize: AnnSerialize) {
-        const config = AnnConfigLoader.loadLine(annSerialize);
+    onCreateFromConfig(config: any) {
         this.onCreate(config.startPoint, config.endPoint);
         this.focusedObj = this.annBaseLine;
-        this.onSelect(config.selected, config.selected);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
     }
 
     onSave(annSerialize: AnnSerialize) {
         annSerialize.writeString("CGXAnnLineEx");
-        annSerialize.writeNumber(33, 4);
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(1, 1);
+        annSerialize.writeInteger(33, 4);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(1, 1);
 
         this.annBaseLine.onSave(annSerialize);
     }

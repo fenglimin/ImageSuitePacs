@@ -4,11 +4,13 @@ import { AnnExtendObject } from "./ann-extend-object";
 import { AnnRectangle } from "../extend-object/ann-rectangle";
 import { AnnBaseImage } from "../base-object/ann-base-image";
 import { AnnTool } from "../ann-tool";
+import { AnnSerialize } from "../ann-serialize";
 
 export class AnnImage extends AnnExtendObject {
 
     private annBaseImage: AnnBaseImage;
     private annRectangle: AnnRectangle;
+    private imageFileName: string;
 
     constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
         super(parentObj, imageViewer);
@@ -38,14 +40,67 @@ export class AnnImage extends AnnExtendObject {
         }
     }
 
-    onCreate(imageData: any, topLeftPoint: Point) {
-        this.annBaseImage = new AnnBaseImage(this, imageData, topLeftPoint, this.imageViewer);
+    onCreate(imageFileName: string, topLeftPoint: Point, bottomRightPoint: Point = undefined) {
 
-        const width = this.annBaseImage.getWidth();
-        const height = this.annBaseImage.getHeight();
-        this.annRectangle = new AnnRectangle(this, this.imageViewer);
-        this.annRectangle.onCreate(topLeftPoint, width, height, false);
-        this.annBaseImage.onLevelDown("bottom");
+        this.imageFileName = imageFileName;
+        const imageData = new Image();
+        imageData.onload = ev => {
+            this.annBaseImage = new AnnBaseImage(this, imageData, topLeftPoint, this.imageViewer);
+
+            let width: number, height: number;
+            if (bottomRightPoint) {
+                width = bottomRightPoint.x - topLeftPoint.x;
+                height = bottomRightPoint.y - topLeftPoint.y;
+            } else {
+                width = this.annBaseImage.getWidth();
+                height = this.annBaseImage.getHeight();
+            }
+
+            this.annRectangle = new AnnRectangle(this, this.imageViewer);
+            this.annRectangle.onCreate(topLeftPoint, width, height, false);
+            this.annBaseImage.onLevelDown("bottom");
+
+            if (bottomRightPoint) {
+                this.onRectangleChanged();
+            }
+
+            if (this.loadedFromTag) {
+                this.focusedObj = this.annBaseImage;
+                this.onSelect(this.selected, this.selected);
+                if (!this.parentObj) {
+                    this.onDrawEnded();
+                }
+                this.imageViewer.refresh();
+            }
+        };
+
+        imageData.src = this.imageViewer.getBaseUrl() + "assets/img/Stamp/" + imageFileName + ".PNG";
+    }
+
+    onLoad(config: any) {
+        this.loadedFromTag = true;
+        this.onCreateFromConfig(config);
+    }
+
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString("CGXAnnStamp");
+        annSerialize.writeString(this.imageFileName);
+        annSerialize.writeBytes([]);
+        annSerialize.writeInteger(10, 4);
+        annSerialize.writeInteger(1, 4);     // created
+        annSerialize.writeInteger(0, 4);     // moving
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
+
+        const rect = this.annRectangle.getRect();
+        annSerialize.writeIntegerPoint({ x: rect.x, y: rect.y });
+        annSerialize.writeIntegerPoint({ x: rect.x + rect.width, y: rect.y + rect.height });
+        annSerialize.writeInteger(1, 1);
+        annSerialize.writeInteger(0, 4);
+    }
+
+    onCreateFromConfig(config: any) {
+        this.selected = config.selected;
+        this.onCreate(config.imageFileName, config.topLeftPoint, config.bottomRightPoint);
     }
 
     onSelect(selected: boolean, focused: boolean) {
@@ -58,11 +113,7 @@ export class AnnImage extends AnnExtendObject {
     onDrag(deltaX: number, deltaY: number) {
         if (this.annRectangle === this.focusedObj) {
             this.annRectangle.onDrag(deltaX, deltaY);
-            let rect = this.annRectangle.getRect();
-            rect = AnnTool.formatRect(rect);
-            this.annBaseImage.onMove(new Point(rect.x, rect.y));
-            this.annBaseImage.setWidth(rect.width);
-            this.annBaseImage.setHeight(rect.height);
+            this.onRectangleChanged();
         } else {
             this.onTranslate(deltaX, deltaY);
         }
@@ -89,4 +140,11 @@ export class AnnImage extends AnnExtendObject {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
+    private onRectangleChanged() {
+        let rect = this.annRectangle.getRect();
+        rect = AnnTool.formatRect(rect);
+        this.annBaseImage.onMove(new Point(rect.x, rect.y));
+        this.annBaseImage.setWidth(rect.width);
+        this.annBaseImage.setHeight(rect.height);
+    }
 }

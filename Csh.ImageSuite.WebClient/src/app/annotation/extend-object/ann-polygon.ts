@@ -6,7 +6,6 @@ import { AnnPoint } from "./ann-point";
 import { AnnBasePolygon } from "../base-object/ann-base-polygon";
 import { AnnTextIndicator } from "./ann-text-indicator"
 import { AnnSerialize } from "../ann-serialize";
-import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnPolygon extends AnnExtendObject {
 
@@ -87,14 +86,9 @@ export class AnnPolygon extends AnnExtendObject {
         }
     }
 
-    onLoad(annSerialize: AnnSerialize) {
-        const config = AnnConfigLoader.loadPolygon(annSerialize);
+    onCreateFromConfig(config: any) {
         this.onCreate(config.pointList, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
         this.focusedObj = this.annBasePolygon;
-        this.onSelect(config.selected, config.selected);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
     }
 
     onSave(annSerialize: AnnSerialize) {

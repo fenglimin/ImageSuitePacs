@@ -4,7 +4,6 @@ import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
 import { AnnObject } from '../ann-object';
 import { AnnSerialize } from "../ann-serialize";
-import { AnnConfigLoader } from "../ann-config-loader";
 
 export class AnnBaseLine extends AnnBaseObject {
 
@@ -13,7 +12,7 @@ export class AnnBaseLine extends AnnBaseObject {
         super(parentObj, imageViewer);
 
         if (annSerialize) {
-            const config = AnnConfigLoader.loadBaseLine(annSerialize);
+            const config = annSerialize.loadBaseLine();
             startPoint = config.startPoint;
             endPoint = config.endPoint;
         } 
@@ -26,12 +25,12 @@ export class AnnBaseLine extends AnnBaseObject {
     // Override functions of base class
     onSave(annSerialize: AnnSerialize) {
         annSerialize.writeString("CGXAnnLine");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 4);
-        annSerialize.writeNumber(this.selected ? 1 : 0, 1);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 4);
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
 
-        annSerialize.writePoint(this.getStartPosition());
-        annSerialize.writePoint(this.getEndPosition());
+        annSerialize.writeIntegerPoint(this.getStartPosition());
+        annSerialize.writeIntegerPoint(this.getEndPosition());
     }
 
     onFlip(vertical: boolean) {

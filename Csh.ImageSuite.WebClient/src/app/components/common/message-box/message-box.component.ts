@@ -23,6 +23,19 @@ export class MessageBoxComponent implements OnInit {
 
         this.content = messageBoxContent;
 
+        //this.content.messageText = this.content.callbackFunction();
+        if (this.content.callbackFunction) {
+            this.content.callbackFunction.call(this.content.callbackOwner, this.content.callbackArg).subscribe(value => {
+                if (value === "") {
+                    this.form.value.dialogResult = DialogResult.Ok;
+                    this.dialogRef.close(this.form.value);
+                } else {
+                    this.content.messageText = value;
+                }
+
+            });
+        }
+        
         this.form = fb.group({
             dialogResult: [DialogResult.Yes],
             valueInput: [this.valueInput, Validators.required]
@@ -55,16 +68,20 @@ export class MessageBoxComponent implements OnInit {
         this.dialogRef.close(this.form.value);
     }
 
+    public closeDialog() {
+        this.dialogRef.close();
+    }
+
     needShowYesNoButton(): boolean {
         return this.content.messageType === MessageBoxType.Question;
     }
 
     needShowOkButton(): boolean {
-        return this.content.messageType !== MessageBoxType.Question;
+        return this.content.messageType !== MessageBoxType.Question && this.content.messageType !== MessageBoxType.InfoCancel;
     }
 
     needShowCancelButton(): boolean {
-        return this.content.messageType === MessageBoxType.Input;
+        return this.content.messageType === MessageBoxType.Input || this.content.messageType === MessageBoxType.InfoCancel;
     }
 
     onInput(event) {

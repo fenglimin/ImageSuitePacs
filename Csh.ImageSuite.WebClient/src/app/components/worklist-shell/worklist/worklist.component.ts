@@ -114,6 +114,7 @@ export class WorklistComponent implements OnInit {
 
     onStudyChecked(study: Study) {
         study.checked = !study.checked;
+        this.onCheckStudyChanged();
     }
 
     onAllStudyChecked(event) {

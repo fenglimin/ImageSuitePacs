@@ -165,8 +165,8 @@ select {
 }
 
 .patientIdCol {
-    cursor: pointer;
-    text-decoration: underline;
+    
+    
 }
 
 
@@ -208,4 +208,14 @@ select {
     height: 20px;
     width: 20px;
     overflow: hidden;
+}
+
+.onlineStudy {
+    color: #FFFFFF;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.offlineStudy {
+    color: #555555;
 }

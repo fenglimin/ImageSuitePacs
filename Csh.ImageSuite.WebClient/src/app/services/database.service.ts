@@ -153,7 +153,7 @@ export class DatabaseService {
             );
     }
 
-    /** Delete shortcut to the server */
+    /** Get Offline Studies in Checked Studies to the server */
     checkStudiesIncludeOffline(studyInstanceUIDList): Observable<RecOfflineImageInfo> {
         const url = `${this.pssiUrl}/checkstudiesincludeoffline/`;
         let data = { studyInstanceUIDList: studyInstanceUIDList, StudyOfflineMessage: ""};
@@ -161,6 +161,17 @@ export class DatabaseService {
             .pipe(
             tap(shortcut => this.log("check Studies Include Offline")),
             catchError(this.handleError<RecOfflineImageInfo>("setDeleteAllow"))
+            );
+    }
+
+    /** Get Offline Studies in Checked Studies to the server */
+    studyOfflineInsertCDJobList(studyInstanceUIDList): Observable<string> {
+        const url = `${this.pssiUrl}/studyOfflineInsertCDJobList/`;
+        let data = { studyInstanceUIDList: studyInstanceUIDList};
+        return this.http.post<string>(url, data, httpOptions)
+            .pipe(
+                tap(shortcut => this.log("check Studies Include Offline")),
+                catchError(this.handleError<string>("setDeleteAllow"))
             );
     }
 
@@ -187,9 +198,9 @@ export class DatabaseService {
     }
 
   /** GET study from the server */
-    getStudiesForDcmViewer(id: number, showHistoryStudies, showKeyImage): Observable<Study[]> {
+    getStudiesForDcmViewer(ids: number[], showHistoryStudies, showKeyImage): Observable<Study[]> {
         const url = `${this.pssiUrl}/GetStudiesForDcmViewer/`;
-        let data = { id: id, showHistoryStudies: showHistoryStudies, showKeyImage: showKeyImage};
+        let data = { ids: ids, showHistoryStudies: showHistoryStudies, showKeyImage: showKeyImage};
 
         return this.http.post<Study[]>(url, data, httpOptions)
             .pipe(

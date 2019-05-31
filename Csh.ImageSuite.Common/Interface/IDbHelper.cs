@@ -50,6 +50,14 @@ namespace Csh.ImageSuite.Common.Interface
 
         string GetStringStudyOffline(string studyGUIDs, string strWhere, out List<Study> studyInfoModelOfflineUIDList);
 
+        bool InsertCDJobList(List<string> studyUidList, ref List<string> logMsgList);
+
+        DataTable GetTableStudyOnline(string studyGUIDs, string strWhere);
+
+        void UpdateCDJobStatus(string studyUid);
+
+        void AddCDJob(List<string> studyUidList);
+
 
     }
 }
