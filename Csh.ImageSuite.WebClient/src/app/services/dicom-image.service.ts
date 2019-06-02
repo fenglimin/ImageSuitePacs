@@ -142,7 +142,11 @@ export class DicomImageService {
             tagValue = obj[overlay.fieldName];
         } else {
             const tagString = this.getTagString(overlay.groupNumber, overlay.elementNumber);
-            tagValue = image.cornerStoneImage.data.string(tagString);
+            if (tagString === "x0011101c") {
+                tagValue = "Measure at anatomy";
+            } else {
+                tagValue = image.cornerStoneImage.data.string(tagString);
+            }
         }
 
         return tagValue === undefined ? "" : tagValue;

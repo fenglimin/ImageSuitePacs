@@ -99,8 +99,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
 
     private curSelectObj: AnnExtendObject;
-    private annObjList = [];
-
+    
     private ctrlKeyPressed = false;
 
     private annGuide: AnnGuide;
@@ -255,14 +254,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         // The image is null, which means to clear the image viewer
         if (!this.image) {
             if (this.jcanvas) {
-                this.jcTextOverlayList.forEach(jcText => jcText.del());
-                this.jcTextOverlayList.length = 0;
-
-                this.annImageRuler.reset(this);
-                //this.jcanvas.clear();
-                if (this.jcImage) {
-                    this.jcImage.del();
-                }
+                this.deleteAll();
             }
             return;
         }
@@ -314,17 +306,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     this.annImageRuler.reDraw(this);
                 }
             } else {
-                if (this.jcanvas) {
-                    this.jcTextOverlayList.forEach(jcText => jcText.del());
-                    this.jcTextOverlayList.length = 0;
-
-                    this.annImageRuler.reset(this);
-                    //this.jcanvas.clear();
-                    if (this.jcImage) {
-                        this.jcImage.del();
-                    }
-                }
-                //this.jcanvas.clear();
+                this.deleteAll();
             }
 
             this.needResize = false;
@@ -429,17 +411,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     selectNextAnnotation(backward: boolean) {
-        const len = this.annObjList.length;
+        const len = this.image.annObjList.length;
         if (len === 0) return;
 
         if (!this.curSelectObj) {
-            this.selectAnnotation(this.annObjList[0]);
+            this.selectAnnotation(this.image.annObjList[0]);
             return;
         }
 
         let i = 0;
         for (; i < len; i++) {
-            if (this.curSelectObj === this.annObjList[i]) break;
+            if (this.curSelectObj === this.image.annObjList[i]) break;
         }
 
         let nextIndex = i;
@@ -449,7 +431,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             nextIndex = (i === len - 1) ? 0 : i + 1;
         }
         
-        this.selectAnnotation(this.annObjList[nextIndex]);
+        this.selectAnnotation(this.image.annObjList[nextIndex]);
     }
 
     onAnnotationCreated(annObj: AnnExtendObject) {
@@ -458,7 +440,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
         }
 
-        this.annObjList.push(annObj);
+        this.image.annObjList.push(annObj);
         if (!annObj.isLoadedFromTag()) {
             this.curSelectObj = annObj;
             this.viewContext.setContext(ViewContextEnum.SelectAnn);
@@ -999,7 +981,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.imgLayer.rotate(angle, "center");
         this.updateImageTransform();
 
-        this.annObjList.forEach(obj => obj.onRotate(angle));
+        this.image.annObjList.forEach(obj => obj.onRotate(angle));
     }
 
     flip(flipVertical: boolean) {
@@ -1019,7 +1001,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         cornerstone.setViewport(this.helpElement, viewPort);
 
-        this.annObjList.forEach(annObj => annObj.onFlip(flipVertical));
+        this.image.annObjList.forEach(annObj => annObj.onFlip(flipVertical));
     }
 
     invert() {
@@ -1035,7 +1017,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
             //var totalScale = this.getScale();
             ////adjust objects' size
-            //this.annObjList.forEach(function (obj) {
+            //this.image.annObjList.forEach(function (obj) {
             //    if (obj.onScale) {
             //        obj.onScale(totalScale);
             //    }
@@ -1053,7 +1035,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.imgLayer.translate(x, y);
         this.updateImageTransform();
 
-        //this.annObjList.forEach(function (obj) {
+        //this.image.annObjList.forEach(function (obj) {
         //    if (obj.onTranslate) {
         //        obj.onTranslate();
         //    }
@@ -1275,17 +1257,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 }
             },
             drag: function(arg) {
-                self.annObjList.forEach(function(obj) {
-                    //if (obj.onTranslate) {
-                    //    obj.onTranslate.call(obj);
-                    //}
-                });
             }
         });
     }
 
     saveImage() {
-        const annString = this.annSerialize.getAnnString(this.annObjList);
+        const annString = this.annSerialize.getAnnString(this.image.annObjList);
         this.ctImage.data.elements["x0011101d"] = this.annSerialize.annData;
         this.dicomImageService.saveImageAnn(this.image.id, annString).subscribe(ret => {
             const content = new MessageBoxContent();
@@ -1352,7 +1329,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private refreshUi() {
-        this.annObjList.forEach(annObject => annObject.onScale(this.getScale()));
+        this.image.annObjList.forEach(annObject => annObject.onScale(this.getScale()));
         this.annImageRuler.reDraw(this);
     }
 
@@ -1591,6 +1568,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
         }
 
+        if (this.canvas && this.canvas.on)
         this.canvas.onmouseup(evt); //cause jc to trigger mouseup event, which will stop the drag (imglayer)
         this.redraw(1);
         //log('canvas dblclick: ' + this.canvas.id);
@@ -1847,8 +1825,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     //}
 
     private deleteAllAnnotation() {
-        this.annObjList.forEach(annObj => annObj.onDeleteChildren());
-        this.annObjList.length = 0;
+        this.image.annObjList.forEach(annObj => annObj.onDeleteChildren());
+        this.image.annObjList.length = 0;
     }
 
     private deleteAnnotation(annObj: AnnExtendObject) {
@@ -1857,17 +1835,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         if (annObj.isCreated()) {
             // If this annotation is already created, need to remove it from the list
-            const len = this.annObjList.length;
+            const len = this.image.annObjList.length;
 
             let i = 0;
             for (; i < len; i++) {
-                if (this.annObjList[i] === annObj) {
+                if (this.image.annObjList[i] === annObj) {
                     break;
                 }
             }
 
             if (i !== len) {
-                this.annObjList.splice(i, 1);
+                this.image.annObjList.splice(i, 1);
             }
         }
 
@@ -1948,6 +1926,25 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private redraw(count: number) {
         for (let i = 0; i < count; i++) {
             this.jcanvas.frame();
+        }
+    }
+
+    private deleteAll() {
+        if (this.jcTextOverlayList) {
+            this.jcTextOverlayList.forEach(jcText => jcText.del());
+            this.jcTextOverlayList.length = 0;
+        }
+
+        if (this.annImageRuler) {
+            this.annImageRuler.reset(this);
+        }
+
+        if (this.image.annObjList) {
+            this.deleteAllAnnotation();
+        }
+
+        if (this.jcImage) {
+            this.jcImage.del();
         }
     }
 }

@@ -8,7 +8,7 @@ export class AnnCervicalCurve extends AnnCurve {
         super(parent, imageViewer);
         this.guideNeeded = true;
         this.annTypeName = "Cervical Curve";
-        this.radiusInImage = this.pixelSpacing.cx ? 170 / this.pixelSpacing.cx : 170;
+        this.radiusInImage = this.pixelSpacing ? 170 / this.pixelSpacing.cx : 170;
     }
 
     onSave(annSerialize: AnnSerialize) {

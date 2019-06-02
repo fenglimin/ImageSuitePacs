@@ -89,7 +89,8 @@ export class AnnSerialize {
 
     getAnnString(annList: AnnExtendObject[]): string {
         if (this.annData && this.annData.length !== 0) {
-            alert("Internal error in AnnSerialize.getAnnString() - ann data should be empty while all annotations are loaded.");
+            //alert("Internal error in AnnSerialize.getAnnString() - ann data should be empty while all annotations are loaded.");
+            this.annData.length = 0;
         }
 
         this.annData = new Uint8Array(0);

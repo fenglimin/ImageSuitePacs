@@ -203,7 +203,7 @@ export class Image extends Pssi {
     acquisitionDate: string;
     imageDate: string;
 
-
+    annObjList = [];
 
     cornerStoneImage: any;
     annData: Uint8Array;

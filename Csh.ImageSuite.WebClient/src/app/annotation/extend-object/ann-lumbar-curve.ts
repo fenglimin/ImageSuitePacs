@@ -8,7 +8,7 @@ export class AnnLumbarCurve extends AnnCurve {
         super(parent, imageViewer);
         this.guideNeeded = true;
         this.annTypeName = "Lumbar Curve";
-        this.radiusInImage = this.pixelSpacing.cx ? 220 / this.pixelSpacing.cx : 220;
+        this.radiusInImage = this.pixelSpacing ? 220 / this.pixelSpacing.cx : 220;
     }
 
     onSave(annSerialize: AnnSerialize) {
