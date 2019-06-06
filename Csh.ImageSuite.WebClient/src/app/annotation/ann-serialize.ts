@@ -10,6 +10,10 @@ import { AnnCervicalCurve } from "./extend-object/ann-cervical-curve";
 import { AnnLumbarCurve } from "./extend-object/ann-lumbar-curve";
 import { AnnImage } from "./extend-object/ann-image";
 import { AnnEllipse } from "./extend-object/ann-ellipse";
+import { AnnRuler } from "./extend-object/ann-ruler";
+import { AnnVerticalAxis } from "./extend-object/ann-vertical-axis";
+import { AnnMarkSpot } from "./extend-object/ann-mark-spot";
+import { AnnCardiothoracicRatio } from "./extend-object/ann-cardiothoracic-ratio";
 
 export class AnnSerialize {
     annData: Uint8Array;
@@ -75,6 +79,22 @@ export class AnnSerialize {
                     annObj = new AnnEllipse(undefined, this.imageViewer);
                     config = this.loadEllipse();
                     break;
+                case "CGXAnnRuler":
+                    annObj = new AnnRuler(undefined, this.imageViewer);
+                    config = this.loadRuler();
+                    break;
+                case "CGXAnnVAxis":
+                    annObj = new AnnVerticalAxis(undefined, this.imageViewer);
+                    config = this.loadVerticalAxis();
+                    break;
+                case "CGXAnnMarkSpot":
+                    annObj = new AnnMarkSpot(undefined, this.imageViewer);
+                    config = this.loadMarkSpot();
+                    break;
+                case "CGXAnnHCRatio":
+                    annObj = new AnnCardiothoracicRatio(undefined, this.imageViewer);
+                    config = this.loadCardiothoracicRatio();
+                    break;
                 default:
                     alert("Unknown annotation " + annName);
             }
@@ -88,11 +108,6 @@ export class AnnSerialize {
     }
 
     getAnnString(annList: AnnExtendObject[]): string {
-        if (this.annData && this.annData.length !== 0) {
-            //alert("Internal error in AnnSerialize.getAnnString() - ann data should be empty while all annotations are loaded.");
-            this.annData.length = 0;
-        }
-
         this.annData = new Uint8Array(0);
         this.annString = "";
         this.writeInteger(this.version, 4);
@@ -472,5 +487,59 @@ export class AnnSerialize {
         const rotateCreated = this.readDouble();
 
         return { centerPoint: centerPoint, width: width, height: height, textIndicator: textIndicator, selected: selected }
+    }
+
+    loadRuler() {
+        const annType = this.readInteger(4); // 7
+        const created = this.readInteger(4);
+        const selected = this.readInteger(1);
+
+        const line = this.loadBaseLine();
+        this.loadBaseLine();
+        this.loadBaseLine();
+
+        const textIndicator = this.loadTextIndicator();
+
+        return { startPoint: line.startPoint, endPoint: line.endPoint, textIndicator: textIndicator, selected: selected }
+    }
+
+    loadVerticalAxis() {
+        const annType = this.readInteger(4); // 27
+        const created = this.readInteger(4);
+        const selected = this.readInteger(1);
+
+        const initRotateCount = this.readInteger(4);
+        const line = this.loadBaseLine();
+
+        return { startPoint: line.startPoint, endPoint: line.endPoint, selected: selected }
+    }
+
+    loadMarkSpot() {
+        const annType = this.readInteger(4); // 36
+        const created = this.readInteger(4);
+        const selected = this.readInteger(1);
+
+        const count = this.readInteger(4);
+
+        const pointList = [];
+        for (let i = 0; i < count; i++) {
+            pointList.push(this.readIntegerPoint());
+        }
+
+        return { pointList: pointList, selected: selected }
+    }
+
+    loadCardiothoracicRatio() {
+        const annType = this.readInteger(4); // 12
+        const created = this.readInteger(4);
+        const selected = this.readInteger(1);
+
+        const lineList = [];
+        for (let i = 0; i < 5; i++) {
+            lineList.push(this.loadBaseLine());
+        }
+
+        const textIndicator = this.loadTextIndicator();
+        return { lineList: lineList, textIndicator: textIndicator, selected: selected }
     }
 }

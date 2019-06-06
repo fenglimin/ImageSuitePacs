@@ -6,6 +6,7 @@ import { AnnExtendObject } from "./ann-extend-object";
 import { AnnPoint } from "./ann-point";
 import { AnnTextIndicator } from "./ann-text-indicator"
 import { AnnLine } from "./ann-line";
+import { AnnSerialize } from "../ann-serialize";
 
 export class AnnRuler extends AnnExtendObject {
     private annLine: AnnLine;
@@ -33,14 +34,7 @@ export class AnnRuler extends AnnExtendObject {
                 this.annLine = new AnnLine(this, this.imageViewer);
                 this.annLine.onMouseEvent(mouseEventType, point, null);
             } else {
-                this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
-
-                this.annMiddlePoint = new AnnPoint(this, this.imageViewer);
-                this.annMiddlePoint.onCreate(AnnTool.centerPoint(this.annLine.getStartPosition(), imagePoint));
-
-                let text = this.getLength(this.annLine.getStartPosition(), this.annLine.getEndPosition());
-                this.annTextIndicator.onCreate(text, this.annMiddlePoint.getPosition());
-
+                this.redraw(this.annLine.getStartPosition(), imagePoint);
                 this.focusedObj = this.annLine;
 
                 if (!this.parentObj) {
@@ -50,16 +44,40 @@ export class AnnRuler extends AnnExtendObject {
         } else if (mouseEventType === MouseEventType.MouseMove) {
             if (this.annLine) {
                 this.annLine.onMouseEvent(mouseEventType, point, null);
-
-                this.CalNodePos(this.annLine.getStartPosition(), imagePoint);
+                this.redraw(this.annLine.getStartPosition(), imagePoint);
             }
         }
+    }
+
+    onCreate(startPoint: Point, endPoint: Point, textPoint: Point) {
+        this.onDeleteChildren();
+
+        this.annLine = new AnnLine(this, this.imageViewer);
+        this.annLine.onCreate(startPoint, endPoint);
+        this.redraw(startPoint, endPoint, textPoint);
+    }
+
+    onCreateFromConfig(config: any) {
+        this.onCreate(config.startPoint, config.endPoint, config.textIndicator.startPoint);
+        this.focusedObj = this.annLine;
+    }
+
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString("CGXAnnRuler");
+        annSerialize.writeInteger(7, 4);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
+
+        this.annLine.getBaseLine().onSave(annSerialize);
+        this.lineNodeA.onSave(annSerialize);
+        this.lineNodeB.onSave(annSerialize);
+        this.annTextIndicator.onSave(annSerialize);
     }
 
     onDrag(deltaX: number, deltaY: number) {
         if (this.focusedObj === this.annLine) {
             this.annLine.onDrag(deltaX, deltaY);
-            this.CalNodePos(this.annLine.getStartPosition(), this.annLine.getEndPosition());
+            this.redraw(this.annLine.getStartPosition(), this.annLine.getEndPosition());
             this.annMiddlePoint.onMove(AnnTool.centerPoint(this.annLine.getStartPosition(), this.annLine.getEndPosition()));
 
             const text = this.getLength(this.annLine.getStartPosition(), this.annLine.getEndPosition());
@@ -71,11 +89,16 @@ export class AnnRuler extends AnnExtendObject {
         }
     }
 
+    getSurroundPointList(): Point[] {
+        AnnTool.centerPoint(this.annLine.getStartPosition(), this.annLine.getEndPosition());
+        return [this.annMiddlePoint.getPosition()];
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    private CalNodePos(ptStart, ptEnd) {
-        let sineTheta = AnnTool.getSineTheta(ptEnd, ptStart);
-        let cosineTheta = AnnTool.getCosineTheta(ptEnd, ptStart);
+    private redraw(startPoint: Point, endPoint: Point, textPoint: Point = undefined) {
+        let sineTheta = AnnTool.getSineTheta(endPoint, startPoint);
+        let cosineTheta = AnnTool.getCosineTheta(endPoint, startPoint);
         let ptStartA: Point;
         let ptStartB: Point;
         let ptEndA: Point;
@@ -86,20 +109,20 @@ export class AnnRuler extends AnnExtendObject {
         ptEndA = new Point(0, 0);
         ptEndB = new Point(0, 0);
 
-        ptStartA.x = ptStart.x - this.rulerNode * sineTheta + 0.5;
-        ptStartB.x = ptStart.x + this.rulerNode * sineTheta + 0.5;
+        ptStartA.x = startPoint.x - this.rulerNode * sineTheta + 0.5;
+        ptStartB.x = startPoint.x + this.rulerNode * sineTheta + 0.5;
 
-        ptStartA.y = ptStart.y + this.rulerNode * cosineTheta + 0.5;
-        ptStartB.y = ptStart.y - this.rulerNode * cosineTheta + 0.5;
+        ptStartA.y = startPoint.y + this.rulerNode * cosineTheta + 0.5;
+        ptStartB.y = startPoint.y - this.rulerNode * cosineTheta + 0.5;
 
-        sineTheta = AnnTool.getSineTheta(ptStart, ptEnd);
-        cosineTheta = AnnTool.getCosineTheta(ptStart, ptEnd);
+        sineTheta = AnnTool.getSineTheta(startPoint, endPoint);
+        cosineTheta = AnnTool.getCosineTheta(startPoint, endPoint);
 
-        ptEndA.x = ptEnd.x - this.rulerNode * sineTheta + 0.5;
-        ptEndB.x = ptEnd.x + this.rulerNode * sineTheta + 0.5;
+        ptEndA.x = endPoint.x - this.rulerNode * sineTheta + 0.5;
+        ptEndB.x = endPoint.x + this.rulerNode * sineTheta + 0.5;
 
-        ptEndA.y = ptEnd.y + this.rulerNode * cosineTheta + 0.5;
-        ptEndB.y = ptEnd.y - this.rulerNode * cosineTheta + 0.5;
+        ptEndA.y = endPoint.y + this.rulerNode * cosineTheta + 0.5;
+        ptEndB.y = endPoint.y - this.rulerNode * cosineTheta + 0.5;
 
         if (!this.lineNodeA) {
             this.lineNodeA = new AnnBaseLine(this, ptStartA, ptStartB, this.imageViewer);
@@ -116,22 +139,33 @@ export class AnnRuler extends AnnExtendObject {
             this.lineNodeB.onMoveStartPoint(ptEndA);
             this.lineNodeB.onMoveEndPoint(ptEndB);
         }
+
+        const centerPoint = AnnTool.centerPoint(startPoint, endPoint);
+        if (!this.annMiddlePoint) {
+            this.annMiddlePoint = new AnnPoint(this, this.imageViewer);
+            this.annMiddlePoint.onCreate(centerPoint);
+        } else {
+            this.annMiddlePoint.onMove(centerPoint);
+        }
+
+        const text = this.getLength(startPoint, endPoint);
+        if (!this.annTextIndicator) {
+            this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
+            this.annTextIndicator.onCreate(text, this.annMiddlePoint.getPosition(), textPoint);
+        } else {
+            this.annTextIndicator.setText(text);
+        }
     }
 
-    getSurroundPointList(): Point[] {
-        AnnTool.centerPoint(this.annLine.getStartPosition(), this.annLine.getEndPosition());
-        return [this.annMiddlePoint.getPosition()];
-    }
-
-    private getLength(ptStart, ptEnd) {
+    private getLength(startPoint, endPoint) {
         let strDist;
 
         if (this.pixelSpacing) {
-            const dDistance = AnnTool.countPhysicalDistance(ptStart, ptEnd, this.pixelSpacing);
+            const dDistance = AnnTool.countPhysicalDistance(startPoint, endPoint, this.pixelSpacing);
             strDist = dDistance.toFixed(2) + "mm";
         }
         else {
-            const dDistance = AnnTool.countDistance(ptStart, ptEnd);
+            const dDistance = AnnTool.countDistance(startPoint, endPoint);
             strDist = dDistance.toFixed(2) + "pt";
         }
 

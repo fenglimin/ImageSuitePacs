@@ -20,6 +20,13 @@ export class Shortcut {
     patientBirthDateTo: Date;
     studyId: string;
     accessionNo: string;
+    instanceAvailability: string;
+    bodyPartExamined: string;
+    scanStatus: string;
+    studyDescription: string;
+    reserved: string;
+    readed: string;
+    printed: string;
 
     constructor() {
         this.id = -1;
@@ -51,6 +58,12 @@ export class Shortcut {
         this.studyDateTo = null;
         this.studyId = "";
         this.accessionNo = "";
+        this.instanceAvailability = "";
+        this.bodyPartExamined = "";
+        this.studyDescription = "";
+        this.reserved = "";
+        this.readed = "";
+        this.printed = "";
     }
 
     copyConditionFrom(shortcut: Shortcut) {
@@ -65,6 +78,12 @@ export class Shortcut {
         this.studyDateTo = shortcut.studyDateTo;
         this.studyId = shortcut.studyId;
         this.accessionNo = shortcut.accessionNo;
+        this.instanceAvailability = shortcut.instanceAvailability;
+        this.bodyPartExamined = shortcut.bodyPartExamined;
+        this.studyDescription = shortcut.studyDescription;
+        this.reserved = shortcut.reserved;
+        this.readed = shortcut.readed;
+        this.printed = shortcut.printed;
     }
 
     clone(theObj) {

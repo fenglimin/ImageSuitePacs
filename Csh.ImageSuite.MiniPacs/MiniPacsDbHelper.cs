@@ -25,7 +25,7 @@ namespace Csh.ImageSuite.MiniPacs
         private readonly string _connectionString;
         private static readonly Dictionary<string, string> DicStorageDirectory = new Dictionary<string, string>();
         private static readonly Dictionary<string, string> DicOldWebPacsTransform = new Dictionary<string, string>();
-
+        private Dictionary<string, string> DicBodyPartMapping;
 
         public MiniPacsDbHelper(IPssiObjectCreator pssiObjectCreator, ICommonTool commonTool)
         {
@@ -37,6 +37,8 @@ namespace Csh.ImageSuite.MiniPacs
             LoadStorageDirectory();
 
             AddOldWebPacsTranslate();
+
+            DicBodyPartMapping = GetBodyPartMapping();
         }
 
         private void LoadStorageDirectory()
@@ -64,6 +66,13 @@ namespace Csh.ImageSuite.MiniPacs
             DicOldWebPacsTransform.Add("PatientsBirthDate", "PatientBirthDate");
             DicOldWebPacsTransform.Add("NumberOfStudyRelatedSeries", "SeriesCount");
             DicOldWebPacsTransform.Add("NumberOfStudyRelatedInstances", "ImageCount");
+            DicOldWebPacsTransform.Add("BodyPartExamined", "BodyPartExamined");
+            DicOldWebPacsTransform.Add("Modality", "Modality");
+            DicOldWebPacsTransform.Add("StudyDescription", "StudyDescription");
+            DicOldWebPacsTransform.Add("Reserved", "Reserved");
+            DicOldWebPacsTransform.Add("Readed", "Reported");
+            DicOldWebPacsTransform.Add("Printed", "Printed");
+
         }
 
         public IList<QueryShortcut> LoadQueryShortcuts()
@@ -206,23 +215,19 @@ namespace Csh.ImageSuite.MiniPacs
                 var propertyName = info.Name;
 
                 if (string.IsNullOrEmpty(propertyValue)) continue;
-                if (info.PropertyType == typeof(DateTime))
-                {
-                    if (propertyName == "PatientBirthDateFrom")
-                    {
-                        writer.WriteStartElement("Tag" + "PatientsBirthDate");
-                        writer.WriteStartElement("From");
-                        writer.WriteValue(propertyValue);
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("To");
-                        writer.WriteValue(shortcut.PatientBirthDateTo.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteEndElement();
-                        continue;
-                    }
-                }
 
-                if (propertyName == "StudyDate" || propertyName == "StudyDateFrom")
+                if (propertyName == "PatientBirthDateFrom")
+                {
+                    writer.WriteStartElement("Tag" + "PatientsBirthDate");
+                    writer.WriteStartElement("From");
+                    writer.WriteValue(propertyValue);
+                    writer.WriteEndElement();
+                    writer.WriteStartElement("To");
+                    writer.WriteValue(shortcut.PatientBirthDateTo.ToString());
+                    writer.WriteEndElement();
+                    writer.WriteEndElement();
+                }
+                else if (propertyName == "StudyDate" || propertyName == "StudyDateFrom")
                 {
                     if (string.IsNullOrEmpty(shortcut.StudyDate) || shortcut.StudyDate == "7")
                     {
@@ -245,17 +250,21 @@ namespace Csh.ImageSuite.MiniPacs
                         }
                     }
                 }
-
-                foreach (var value in DicOldWebPacsTransform.Values)
+                else if (DicOldWebPacsTransform.ContainsValue(propertyName))
                 {
-                    if (propertyName != value) continue;
-
-                    propertyName = DicOldWebPacsTransform.FirstOrDefault(x => x.Value == value).Key;
+                    propertyName = DicOldWebPacsTransform.FirstOrDefault(x => x.Value == propertyName).Key;
 
                     writer.WriteStartElement("Tag" + propertyName);
-                    writer.WriteValue(propertyValue);
+                    writer.WriteValue(propertyValue.Trim());
                     writer.WriteEndElement();
                 }
+                //else
+                //{
+                //    writer.WriteStartElement("Tag" + propertyName);
+                //    writer.WriteValue(propertyValue.Trim());
+                //    writer.WriteEndElement();
+                //}
+
             }
 
             writer.WriteEndElement();
@@ -317,7 +326,7 @@ namespace Csh.ImageSuite.MiniPacs
                 var dsModality = GetAllModality();
                 foreach (DataRow row in dsModality.Tables[0].Rows)
                 {
-                    dicModality.Add(row["ModalityType"].ToString(), row["ModalityType"].ToString());
+                    dicModality.Add(row["ModalityType"].ToString().Trim(), row["ModalityType"].ToString().Trim());
                 }
 
                 //
@@ -412,6 +421,9 @@ namespace Csh.ImageSuite.MiniPacs
                         case "bodyPartExamined":
                             mdl.ControlType = "DropDownList";
                             mdl.ValueList = dicBodyPartLocalName;
+                            break;
+                        case "reported":
+                            mdl.ColumnId = "readed";
                             break;
                         default:
                             break;
@@ -509,6 +521,14 @@ namespace Csh.ImageSuite.MiniPacs
             {
                 var series = _pssiObjectCreator.CreateSeries(row);
 
+                if (!string.IsNullOrEmpty(series.LocalBodyPart))
+                {
+                    if (DicBodyPartMapping.ContainsKey(series.LocalBodyPart))
+                    {
+                        series.LocalBodyPart = DicBodyPartMapping.FirstOrDefault(x => x.Key == series.LocalBodyPart).Value;
+                    }
+                }
+
                 var studyId = _commonTool.GetSafeIntValue(row["ID_Study"]);
                 var study = studies.FirstOrDefault(s => s.Id == studyId);
                 if (study == null)
@@ -538,6 +558,11 @@ namespace Csh.ImageSuite.MiniPacs
                         study.Patient.PatientName = HandlePatientName(study.Patient.PatientName);
                     }
 
+                    if (!string.IsNullOrEmpty(study.InstanceAvailability))
+                    {
+                        study.InstanceAvailability = study.InstanceAvailability == "ONLINE" ? "Online" : "Offline";
+                    }
+
                     if (!string.IsNullOrEmpty(study.ScanStatus))
                     {
                         var iScanStatus = int.Parse(study.ScanStatus);
@@ -545,6 +570,7 @@ namespace Csh.ImageSuite.MiniPacs
 
                         study.ScanStatus = scanStatus.ToString();
                     }
+
 
                     studies.Add(study);
                 }
@@ -824,6 +850,11 @@ namespace Csh.ImageSuite.MiniPacs
 
             strCondition += " ) a , Series R WHERE a.row > " + rowFrom.ToString() + " and a.row <= " + rowTo.ToString() + " AND R.StudyInstanceUID = a.StudyInstanceUID";
 
+            if (!string.IsNullOrEmpty(queryShortcut.BodyPartExamined))
+            {
+                strCondition += $" AND R.BodyPart='{queryShortcut.BodyPartExamined}'";
+            }
+
             return strCondition;
         }
 
@@ -908,6 +939,36 @@ namespace Csh.ImageSuite.MiniPacs
             if (!string.IsNullOrEmpty(queryShortcut.AccessionNo))
             {
                 strCondition += $" AND S.AccessionNo LIKE '%{queryShortcut.AccessionNo}%'";
+            }
+
+            if (!string.IsNullOrEmpty(queryShortcut.Printed))
+            {
+                strCondition += $" AND S.Printed LIKE '%{queryShortcut.Printed}%'";
+            }
+
+            if (!string.IsNullOrEmpty(queryShortcut.InstanceAvailability))
+            {
+                strCondition += $" AND S.InstanceAvailability LIKE '%{queryShortcut.InstanceAvailability}%'";
+            }
+
+            if (!string.IsNullOrEmpty(queryShortcut.ScanStatus))
+            {
+                strCondition += $" AND S.ScanStatus LIKE '%{queryShortcut.ScanStatus}%'";
+            }
+
+            if (!string.IsNullOrEmpty(queryShortcut.StudyDescription))
+            {
+                strCondition += $" AND S.StudyDescription LIKE '%{queryShortcut.StudyDescription}%'";
+            }
+
+            if (!string.IsNullOrEmpty(queryShortcut.Reserved))
+            {
+                strCondition += $" AND S.Reserved LIKE '%{queryShortcut.Reserved}%'";
+            }
+
+            if (!string.IsNullOrEmpty(queryShortcut.Readed))
+            {
+                strCondition += $" AND S.Readed LIKE '%{queryShortcut.Readed}%'";
             }
 
             if (!string.IsNullOrEmpty(queryShortcut.Printed))
@@ -1459,6 +1520,29 @@ namespace Csh.ImageSuite.MiniPacs
                 }
             }
 
+        }
+
+        public Dictionary<string, string> GetBodyPartMapping()
+        {
+            string strSQL = "SELECT BodyPartName,LocalName FROM BodyPartList";
+            try
+            {
+                DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+                DataTable table = ds.Tables.Count > 0 ? ds.Tables[0] : new DataTable();
+                Dictionary<string, string> bodyPartMapping = new Dictionary<string, string>();
+
+                foreach (DataRow pRow in table.Rows)
+                {
+                    string bodyPartName = pRow["BodyPartName"].ToString().Trim();
+                    string localName = pRow["LocalName"].ToString().Trim();
+                    bodyPartMapping[bodyPartName] = localName;
+                }
+                return bodyPartMapping;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
     }

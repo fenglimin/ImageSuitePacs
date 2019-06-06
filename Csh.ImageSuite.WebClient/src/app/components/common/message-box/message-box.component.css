@@ -10,7 +10,7 @@
 .mat-dialog-content {
     color: white;
     font-size: 16px;
-    /*height: 80px;*/
+    min-height: 80px;
     min-width: 400px;
     padding: 10px 10px;
 }

@@ -175,15 +175,9 @@ export class WorklistService {
 
             this.shellNavigatorService.shellNavigate(viewerShellData);
         } else {
-            //this.studies.forEach(study => {
-            //    if (study.checked) {
-            //        this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, false)
-            //            .subscribe(value => this.checkOfflineBeforeLoadImage(this.checkedStudiesCount, value));
-            //    }
-            //});
 
             this.databaseService.getStudiesForDcmViewer(this.checkedStudiesUids, this.showHistoryStudies, false)
-                        .subscribe(value => this.checkOfflineBeforeLoadImage(this.checkedStudiesCount, value));
+                .subscribe(value => this.checkOfflineBeforeLoadImage(this.checkedStudiesCount, value));
         }
     }
 
@@ -259,10 +253,10 @@ export class WorklistService {
                     deleteAllowCount++;
                 }
 
-                if (study.instanceAvailability == "ONLINE") {
+                if (study.instanceAvailability == "Online") {
                     onlineStudiesCount++;
                 }
-                else if (study.instanceAvailability == "OFFLINE") {
+                else if (study.instanceAvailability == "Offline") {
                     offlineStudiesCount++;
                 }
             }
@@ -277,8 +271,9 @@ export class WorklistService {
             this.checkedStudiesCount = 0;
             // Check Offline Image
             this.studies.forEach(study => {
-                if (study.checked) {(
-                    this.checkedStudiesUids.push(study.id));
+                if (study.checked) {
+                    (
+                        this.checkedStudiesUids.push(study.id));
                     this.checkedStudiesInstanceUids.push(study.studyInstanceUid);
                     this.checkedStudiesCount++;
                 }
@@ -437,7 +432,7 @@ export class WorklistService {
         this.studies = studiesList;
         this.pageCount = recWorklistData.pageCount;
         this.worklistColumns = recWorklistData.worklistColumns;
-        
+
 
         for (let worklistColumn of recWorklistData.worklistColumns) {
             worklistColumn.shortcutType = this.shortcut;
@@ -470,40 +465,37 @@ export class WorklistService {
             }
         });
 
-        //this.loadedStudyCount++;
-        //if (allCheckedStudyCount === this.loadedStudyCount) {
-            if (this.loadedStudy.length === 0)
-            {
-                const content = new MessageBoxContent();
-                content.title = "No Key Image";
-                content.messageText = "There is no key image!";
-                content.messageType = MessageBoxType.Error;
+        if (this.loadedStudy.length === 0) {
+            const content = new MessageBoxContent();
+            content.title = "No Key Image";
+            content.messageText = "There is no key image!";
+            content.messageType = MessageBoxType.Error;
 
-                this.dialogService.showMessageBox(content).subscribe();
-                this.loadedStudyCount = 0;
-
-                return;
-            }
-
-            const viewerShellData = new ViewerShellData(this.hangingProtocolService.getDefaultGroupHangingProtocol(),
-                this.hangingProtocolService.getDefaultImageHangingPrococal());
-            this.loadedStudy.forEach(value => {
-                value.detailsLoaded = true;
-                value.checked = true;
-                viewerShellData.addStudy(value);
-            });
-
-            this.shellNavigatorService.shellNavigate(viewerShellData);
-
-            this.loadedStudy = new Array<Study>();
+            this.dialogService.showMessageBox(content).subscribe();
             this.loadedStudyCount = 0;
 
-            this.refreshShortcuts();
+            return;
+        }
+
+        const viewerShellData = new ViewerShellData(this.hangingProtocolService.getDefaultGroupHangingProtocol(),
+            this.hangingProtocolService.getDefaultImageHangingPrococal());
+        this.loadedStudy.forEach(value => {
+            value.detailsLoaded = true;
+            value.checked = true;
+            viewerShellData.addStudy(value);
+        });
+
+        this.shellNavigatorService.shellNavigate(viewerShellData);
+
+        this.loadedStudy = new Array<Study>();
+        this.loadedStudyCount = 0;
+
+        this.refreshShortcuts();
 
         //}
     }
 
-    private checkOfflineBeforeLoadImage(allCheckedStudyCount: number, getStudies: Study[]){
+    private checkOfflineBeforeLoadImage(allCheckedStudyCount: number, getStudies: Study[]) {
         this.getStudies = getStudies;
         this.checkedStudiesCount = this.checkedStudiesCount;
         if (this.isOffline) {

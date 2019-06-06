@@ -26,6 +26,7 @@ export abstract class AnnObject {
     protected image: Image;
     protected layerId: string; 
     protected labelLayerId: string;
+    protected graphicOlLayerLayerId: string;
 
     protected minLineWidth = 0.3;
     protected minPointRadius = 2;
@@ -52,6 +53,7 @@ export abstract class AnnObject {
         this.image = imageViewer.getImage();
         this.layerId = imageViewer.getAnnotationLayerId();
         this.labelLayerId = imageViewer.getAnnLabelLayerId();
+        this.graphicOlLayerLayerId = imageViewer.getGraphicOlLayerLayerId();
 
         this.created = false;
         this.selected = false;

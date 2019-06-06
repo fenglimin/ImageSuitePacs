@@ -3,13 +3,15 @@ import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnExtendObject } from "./ann-extend-object";
 import { AnnPoint } from "./ann-point";
-import { AnnBaseCurve } from "../base-object/ann-base-curve";
-import { AnnTextIndicator } from "./ann-text-indicator"
+import { AnnSerialize } from "../ann-serialize";
 
 export class AnnMarkSpot extends AnnExtendObject {
 
     constructor(parent: AnnExtendObject, imageViewer: IImageViewer) {
         super(parent, imageViewer);
+
+        this.guideNeeded = true;
+        this.annTypeName = "Mark Spot";
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,6 +43,33 @@ export class AnnMarkSpot extends AnnExtendObject {
             if (!this.parentObj) {
                 this.onDrawEnded();
             }
+        }
+    }
+
+    onCreate(pointList: Point[]) {
+        this.onDeleteChildren();
+
+        for (let i = 0; i < pointList.length; i ++) {
+            this.createNewPoint(pointList[i]);
+        }
+    }
+
+    onCreateFromConfig(config: any) {
+        this.onCreate(config.pointList);
+        this.focusedObj = this.annObjList[0];
+    }
+
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString("CGXAnnMarkSpot");
+        annSerialize.writeInteger(36, 4);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
+
+        const count = this.annObjList.length;
+        annSerialize.writeInteger(count, 4);
+
+        for (let i = 0; i < count; i++) {
+            annSerialize.writeIntegerPoint(this.annObjList[i].getPosition());
         }
     }
 

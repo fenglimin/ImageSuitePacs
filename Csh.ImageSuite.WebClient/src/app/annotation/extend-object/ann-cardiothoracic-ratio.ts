@@ -6,6 +6,7 @@ import { AnnBaseLine } from "../base-object/ann-base-line";
 import { AnnPoint } from "./ann-point";
 import { AnnTextIndicator } from "./ann-text-indicator"
 import { AnnLine } from "./ann-line";
+import { AnnSerialize } from "../ann-serialize";
 
 export class AnnCardiothoracicRatio extends AnnExtendObject {
 
@@ -39,6 +40,9 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
 
     constructor(parent: AnnExtendObject, imageViewer: IImageViewer) {
         super(parent, imageViewer);
+
+        this.guideNeeded = true;
+        this.annTypeName = "Cardiothoracic Ratio";
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +127,50 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
                 }
             }
         }
+    }
+
+    onCreate(lineList: any, arrowStartPoint: Point = undefined, arrowEndPoint: Point = undefined) {
+        if (lineList.length !== 5) {
+            alert("Error config of AnnCardiothoracicRatio!");
+            return;
+        }
+
+        const pointA = lineList[0].startPoint;
+        const pointB = lineList[0].endPoint;
+
+        this.createPoint(pointA, 0);
+        this.createPoint(pointB, 1);
+
+        this.annBaseLineAb = new AnnBaseLine(this, pointA, pointB, this.imageViewer);
+        this.annLineList.push(new AnnBaseLine(this, pointA, pointA, this.imageViewer)); //BaseLineAa 
+        this.annLineList.push(new AnnBaseLine(this, pointB, pointB, this.imageViewer)); //BaseLineBb
+        for (let i = 1; i < 5; i ++) {
+            this.annLineList.push(new AnnBaseLine(this, lineList[i].startPoint, lineList[i].endPoint, this.imageViewer));
+            this.createPoint(lineList[i].startPoint, i + 1);
+            this.handleFootPoint(lineList[i].startPoint);
+        }
+
+        this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
+        this.annTextIndicator.onCreate(this.getText(), arrowEndPoint, arrowStartPoint);
+    }
+
+    onCreateFromConfig(config: any) {
+        this.onCreate(config.lineList, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        this.focusedObj = this.annPointList[0];
+    }
+
+    onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString("CGXAnnHCRatio");
+        annSerialize.writeInteger(12, 4);     // AnnType
+        annSerialize.writeInteger(1, 4);     // created
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
+
+        this.annBaseLineAb.onSave(annSerialize);
+        for (let i = 2; i < this.annLineList.length; i ++) {
+            this.annLineList[i].onSave(annSerialize);
+        }
+
+        this.annTextIndicator.onSave(annSerialize);
     }
 
     onDrag(deltaX: number, deltaY: number) {
@@ -310,5 +358,12 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
         }
 
         this.annTextIndicator.setText(this.getText());
+    }
+
+    private createPoint(point: Point, stepIndex: number) {
+        const annPoint = new AnnPoint(this, this.imageViewer);
+        annPoint.onCreate(point);
+        annPoint.setStepIndex(stepIndex);
+        this.annPointList.push(annPoint);
     }
 }

@@ -18,7 +18,7 @@ import { FontData } from "../../../../models/misc-data"
 import { MessageBoxType, MessageBoxContent } from "../../../../models/messageBox";
 
 import { IImageViewer } from "../../../../interfaces/image-viewer-interface";
-import { Point, MouseEventType } from '../../../../models/annotation';
+import { Point, MouseEventType, Rectangle } from '../../../../models/annotation';
 import { AnnObject } from "../../../../annotation/ann-object";
 import { AnnTool } from "../../../../annotation/ann-tool";
 import { AnnExtendObject } from "../../../../annotation/extend-object/ann-extend-object";
@@ -26,6 +26,7 @@ import { AnnGuide } from "../../../../annotation/layer-object/ann-guide";
 import { AnnImageRuler } from "../../../../annotation/layer-object/ann-image-ruler";
 import { AnnImage } from "../../../../annotation/extend-object/ann-image";
 import { AnnSerialize } from "../../../../annotation/ann-serialize";
+import { AnnBaseImageData } from "../../../../annotation/base-object/ann-base-image-data";
 
 @Component({
     selector: "app-image-viewer",
@@ -75,6 +76,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private imgRulerLayerId: string;
     private tooltipLayer: any;
     private tooltipLayerId: string;
+    private graphicOlLayer: any;
+    private graphicOlLayerId: string;
 
     private jcImage: any;
     private jcanvas: any;
@@ -346,6 +349,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.imgRulerLayerId;
     }
 
+    getGraphicOlLayerLayerId(): string {
+        return this.graphicOlLayerId;
+    }
+
     getImageLayer(): any {
         return this.imgLayer;
     }
@@ -386,7 +393,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 }
 
                 this.curSelectObj = annObj;
-                this.curSelectObj.onSelect(true, true);
+                if (!this.curSelectObj.isSelected()) {
+                    this.curSelectObj.onSelect(true, true);
+                }
             }
         } else {
             if (this.curSelectObj) {
@@ -640,6 +649,20 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.setContext(this.viewContext.curContext);
         }
 
+        this.graphicOlLayer.visible(true);
+
+        let graphicData = undefined;
+
+        const element = this.ctImage.data.elements["x60003000"];
+        if (element) {
+            graphicData = new Uint8Array(element.length);
+            for (let i = 0; i < element.length; i++) {
+                graphicData[i] = this.ctImage.data.byteArray[element.dataOffset + i];
+            }
+        }
+
+        const annImageData = new AnnBaseImageData(undefined, graphicData, new Rectangle(0, 0, this.image.width(), this.image.height()), this);
+
         this.redraw(2);
     }
 
@@ -650,16 +673,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
             .color(font.color).font(font.getCanvasFontString()).align('center');
         this.redraw(1);
-        //jc.arc(60, 100, 60, 90, 180, 1, 'rgb(25,99,253)', 0).draggable();
 
-        //var imgData = jc.imageData(100, 100); //设置渐变区域的大小
+        //var imgData = jc.imageData(100, 100).layer(this.imgLayerId); //设置渐变区域的大小
         //for (var i = 0; i < 100; i++) {
         //    for (var j = 0; j < 100; j++) {
         //        imgData.setPixel(i, j, 'rgba(' + i + ',' + j + ',' + (i + j) + ',' + (i / 100) + ')');
         //        //绘制像素点i,j为像素点坐标
         //    }
         //}
-        //imgData.putData(0, 0).draggable(); //设置渐变区域的位置
+        //imgData.putData(100, 100).draggable(); //设置渐变区域的位置
     }
 
     private hideWaitingText() {
@@ -742,6 +764,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annLabelLayer.id = this.annLabelLayerId;
         this.annLabelLayer.needRedraw = true;
 
+        this.graphicOlLayerId = canvasId + "_graphicOlLayer"; // layer to show graphic overlay
+        this.graphicOlLayer = jCanvaScript.layer(this.graphicOlLayerId).level(3);
+        this.graphicOlLayer.id = this.graphicOlLayerId;
+        this.graphicOlLayer.needRedraw = true;
+
         this.mgLayerId = canvasId + "_mgLayer";
         this.mgLayer = jCanvaScript.layer(this.mgLayerId).level(4); //layer to show magnified image
         this.mgLayer.visible(false);
@@ -770,11 +797,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         //apply transform
         this.annLayer.transform(1, 0, 0, 1, 0, 0, true);
-
         this.annLayer.optns.scaleMatrix = this.imgLayer.optns.scaleMatrix;
         this.annLayer.optns.rotateMatrix = this.imgLayer.optns.rotateMatrix;
         this.annLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
         this.annLayer.scale(1);
+
+        this.graphicOlLayer.transform(1, 0, 0, 1, 0, 0, true);
+        this.graphicOlLayer.optns.scaleMatrix = this.imgLayer.optns.scaleMatrix;
+        this.graphicOlLayer.optns.rotateMatrix = this.imgLayer.optns.rotateMatrix;
+        this.graphicOlLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
+        this.graphicOlLayer.scale(1);
+
 
         this.syncAnnLabelLayerTransform();
     }

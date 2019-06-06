@@ -10,6 +10,7 @@ export interface IImageViewer {
     getAnnLabelLayerId(): string;
     getAnnGuideLayerId(): string;
     getAnnImageRulerLayerId(): string;
+    getGraphicOlLayerLayerId(): string;
     getImageLayer(): any;
     getAnnLabelLayer(): any;
     getAnnGuideLayer(): any;

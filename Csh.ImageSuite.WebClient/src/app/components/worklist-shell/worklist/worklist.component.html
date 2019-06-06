@@ -8,163 +8,165 @@
                 </th>
                 <th *ngFor="let col of worklistService.worklistColumns " nowrap>
                     <div id="headContent" class="worklistHeader">
-            <tr>
+                        <table>
+                            <tr>
+                                <td>
+                                    <div (click)="onWorklistHeaderClicked(col.columnId)">{{col.columnText}}</div>
+                                </td>
+                                <td>
+                                    <i id="orderIcon" *ngIf="col.columnId == orderHeader" [className]="isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'"></i>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </th>
+            </tr>
+            <tr id="trStudiesQuery">
                 <td>
-                    <div (click)="onWorklistHeaderClicked(col.columnId)">{{col.columnText}}</div>
+                    <input type="checkbox" (click)="onAllStudyChecked($event)" (change)="onCheckStudyChanged()" />
                 </td>
-                <td>
-                    <i id="orderIcon" *ngIf="col.columnId == orderHeader" [className]="isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'"></i>
+                <td></td>
+                <td *ngFor="let col of worklistService.worklistColumns">
+                    <div *ngIf="col.controlType == 'TextBox'">
+                        <input type="text" [(ngModel)]="col.shortcutType[col.columnId]" />
+                    </div>
+                    <div *ngIf="col.controlType == 'DropDownList'">
+                        <div *ngIf="col.columnId == 'studyDate'; else notStudyDate">
+                            <div>
+                                <select *ngIf="!initStudyDate; else showStudyDateRange" [(ngModel)]="col.shortcutType[col.columnId]" (change)="onStudyDateChangeSelect($event.target.selectedIndex)">
+                                    <option *ngFor="let value of col.valueList | keyvalue" [ngValue]="value.key">{{value.value}}</option>
+                                </select>
+                                <ng-template #showStudyDateRange>
+                                    <table (click)="onStudyDateRangeTableClicked()">
+                                        <tr>
+                                            <td>
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" [(ngModel)]="worklistService.shortcut.studyDateFrom" />
+                                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                                    <mat-datepicker #picker1></mat-datepicker>
+                                                </mat-form-field>
+                                            </td>
+                                            <td id="tdStudyDateFrom">
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="picker2" [min]="fromMinDate" [max]="fromMaxDate" placeholder="To" [(ngModel)]="worklistService.shortcut.studyDateTo" />
+                                                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                                    <mat-datepicker #picker2></mat-datepicker>
+                                                </mat-form-field>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <ng-template #notStudyDate>
+                            <select [(ngModel)]="col.shortcutType[col.columnId]">
+                                <option value="">All</option>
+                                <option *ngFor="let value of col.valueList | keyvalue" [ngValue]="value.key">{{value.value}}</option>
+                            </select>
+                        </ng-template>
+                    </div>
+                    <div *ngIf="col.controlType == 'Calendar'">
+                        <table>
+                            <tr>
+                                <td>
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" (dateChange)="fromDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.patientBirthDateFrom" />
+                                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker1></mat-datepicker>
+                                    </mat-form-field>
+                                </td>
+                                <td>
+                                    <mat-form-field>
+                                        <input matInput [matDatepicker]="picker2" [min]="toMinDate" [max]="toMaxDate" placeholder="To" (dateChange)="toDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.patientBirthDateTo" />
+                                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker2></mat-datepicker>
+                                    </mat-form-field>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </td>
             </tr>
-</div>
-            </th>
-        </tr>
-<tr id="trStudiesQuery">
-    <td>
-        <input type="checkbox" (click)="onAllStudyChecked($event)" (change)="onCheckStudyChanged()"/>
-    </td>
-    <td>
-
-    </td>
-    <td *ngFor="let col of worklistService.worklistColumns">
-        <div *ngIf="col.controlType == 'TextBox'">
-            <input type="text" [(ngModel)]="col.shortcutType[col.columnId]" />
-        </div>
-        <div *ngIf="col.controlType == 'DropDownList'">
-            <div *ngIf="col.columnId == 'studyDate'; else notStudyDate">
-            <div>
-                <select *ngIf="!initStudyDate; else showStudyDateRange" [(ngModel)]="col.shortcutType[col.columnId]" (change)="onStudyDateChangeSelect($event.target.selectedIndex)">
-                    <option *ngFor="let value of col.valueList | keyvalue" [ngValue]="value.key" >{{value.value}}</option>
-                </select>
-                <ng-template #showStudyDateRange>
-                    <table (click)="onStudyDateRangeTableClicked()">
-                        <tr>
-                            <td>
-                                <mat-form-field>
-                                    <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" [(ngModel)]="worklistService.shortcut.studyDateFrom">
-                                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker1></mat-datepicker>
-                                </mat-form-field>
-                            </td>
-                            <td id="tdStudyDateFrom">
-                                <mat-form-field>
-                                    <input matInput [matDatepicker]="picker2" [min]="fromMinDate" [max]="fromMaxDate" placeholder="To" [(ngModel)]="worklistService.shortcut.studyDateTo">
-                                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                                    <mat-datepicker #picker2></mat-datepicker>
-                                </mat-form-field>
-                            </td>
-                        </tr>
-                    </table>
-                </ng-template>
-</div>
-        </div>
-        <ng-template #notStudyDate>
-            <select [(ngModel)]="col.shortcutType[col.columnId]">
-                <option value="">All</option>
-                <option *ngFor="let value of col.valueList | keyvalue" [ngValue]="value.key">{{value.value}}</option>
-            </select>
-        </ng-template>
-    </div>
-        <div *ngIf="col.controlType == 'Calendar'">
-            <tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let study of worklistService.studies">
                 <td>
-                    <mat-form-field>
-                        <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" (dateChange)="fromDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.patientBirthDateFrom">
-                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                        <mat-datepicker #picker1></mat-datepicker>
-                    </mat-form-field>
+                    <input type="checkbox" [(ngModel)]="study.checked" (change)="onCheckStudyChanged()" />
                 </td>
                 <td>
-                    <mat-form-field>
-                        <input matInput [matDatepicker]="picker2" [min]="toMinDate" [max]="toMaxDate" placeholder="To" (dateChange)="toDateChanged('change', $event)" [(ngModel)]="worklistService.shortcut.patientBirthDateTo">
-                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                        <mat-datepicker #picker2></mat-datepicker>
-                    </mat-form-field>
-                </td>
-            </tr>
-            </div>
-<td>
-    </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let study of worklistService.studies" >
-            <td>
-                <input type="checkbox" [(ngModel)]="study.checked" (change)="onCheckStudyChanged()"/>
-            </td>
-            <td>
-                <div *ngIf="study.scanStatus == 'Ended'; else scanStatusCompleted" class="setReadCover">
-                    <button class="setRead" role="button" title="Set Read" (click)="onSetRead(study)"></button>
-                </div>
-                <ng-template #scanStatusCompleted>
-                    <div class="setUnreadCover">
-                        <button class="setUnread" role="button" title="Set Unread" (click)="onSetUnread(study)"></button>
+                    <div *ngIf="study.scanStatus == 'Ended'; else scanStatusCompleted" class="setReadCover">
+                        <button class="setRead" role="button" title="Set Read" (click)="onSetRead(study)"></button>
                     </div>
-                </ng-template>
-            </td>
-            <td *ngFor="let col of worklistService.worklistColumns" (click)="onStudyChecked(study)" nowrap>
-                <div class="patientIdCol" *ngIf="col.columnId == 'patientId'; else notPatientId" >
-                    <div *ngIf="study['instanceAvailability'] === 'ONLINE'; else offlineStudy" class="onlineStudy" (click)="doShowStudy(study)">
-                        {{study.patient[col.columnId]}}
-                    </div>
-                    <ng-template #offlineStudy>
-                        <div class="offlineStudy">
-                            {{study.patient[col.columnId]}}
+                    <ng-template #scanStatusCompleted>
+                        <div class="setUnreadCover">
+                            <button class="setUnread" role="button" title="Set Unread" (click)="onSetUnread(study)"></button>
                         </div>
                     </ng-template>
-                </div>
-                <ng-template #notPatientId>
-                    <div *ngIf="study.patient[col.columnId]; else onlyStudy">{{study.patient[col.columnId]}}</div>
-                    <ng-template #onlyStudy>
-                        <div *ngIf="col.columnId != 'bodyPartExamined'; else bodyPart">{{study[col.columnId]}}</div>
-                        <ng-template #bodyPart>
-                            <span *ngFor="let bodyPart of study.bodyPartList; let i = index">
-                                <span *ngIf="i != 0">
-                                    ,
+                </td>
+                <td *ngFor="let col of worklistService.worklistColumns" (click)="onStudyChecked(study)" nowrap>
+                    <div class="patientIdCol" *ngIf="col.columnId == 'patientId'; else notPatientId">
+                        <div *ngIf="study['instanceAvailability'] === 'Online'; else offlineStudy" class="onlineStudy" (click)="doShowStudy(study)">
+                            {{study.patient[col.columnId]}}
+                        </div>
+                        <ng-template #offlineStudy>
+                            <div class="offlineStudy">
+                                {{study.patient[col.columnId]}}
+                            </div>
+                        </ng-template>
+                    </div>
+                    <ng-template #notPatientId>
+                        <div *ngIf="study.patient[col.columnId]; else onlyStudy">{{study.patient[col.columnId]}}</div>
+                        <ng-template #onlyStudy>
+                            <div *ngIf="col.columnId != 'bodyPartExamined'; else bodyPart">{{study[col.columnId]}}</div>
+                            <ng-template #bodyPart>
+                                <span *ngFor="let bodyPart of study.bodyPartList; let i = index">
+                                    <span *ngIf="i != 0">
+                                        ,
+                                    </span>
+                                    {{bodyPart}}
                                 </span>
-                                {{bodyPart}}
-                            </span>
+                            </ng-template>
                         </ng-template>
                     </ng-template>
-                </ng-template>
-            </td>
-        </tr>
-    </tbody>
-    <tfoot>
-        <tr id="trFoot">
-            <td colspan="5">
-                <ul>
-                    <li>
-                        <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>
-                    </li>
-                    <li>
-                        <button class="shortcut-name-button" (click)="onCurrentPageClicked(1)" [disabled]="worklistService.pageCount == 1 || currentPage == 1">First</button>
-                    </li>
-                    <li>
-                        <button class="shortcut-name-button" (click)="onPrevPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == 1">Prev</button>
-                    </li>
-                    <li>
-                        <button class="shortcut-name-button" (click)="onNextPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Next</button>
-                    </li>
-                    <li>
-                        <button class="shortcut-name-button" (click)="onCurrentPageClicked(worklistService.pageCount)" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Last</button>
-                    </li>
-                    <li>
-                        <select id="ddlPageIndex" [(ngModel)]="currentPage">
-                            <option *ngFor="let page of worklistService.pages;">{{page+1}}</option>
-                        </select>
-                    </li>
-                    <li>
-                        <button class="shortcut-name-button" (click)="onCurrentPageClicked(currentPage)" [disabled]="worklistService.pageCount == 1">Goto</button>
-                    </li>
-                </ul>
-            </td>
-        </tr>
-    </tfoot>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr id="trFoot">
+                <td colspan="5">
+                    <ul>
+                        <li>
+                            <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onCurrentPageClicked(1)" [disabled]="worklistService.pageCount == 1 || currentPage == 1">First</button>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onPrevPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == 1">Prev</button>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onNextPageClicked()" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Next</button>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onCurrentPageClicked(worklistService.pageCount)" [disabled]="worklistService.pageCount == 1 || currentPage == worklistService.pageCount">Last</button>
+                        </li>
+                        <li>
+                            <select id="ddlPageIndex" [(ngModel)]="currentPage">
+                                <option *ngFor="let page of worklistService.pages;">{{page+1}}</option>
+                            </select>
+                        </li>
+                        <li>
+                            <button class="shortcut-name-button" (click)="onCurrentPageClicked(currentPage)" [disabled]="worklistService.pageCount == 1">Goto</button>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tfoot>
     </table>
-    </div>
+</div>
 
-    <mat-progress-spinner [style.visibility]="worklistService.querying? 'visible' : 'hidden'" class="loading-shade"
-                          [color]="color"
-                          [mode]="mode"
-                          [value]="value">
-    </mat-progress-spinner>
+<mat-progress-spinner [style.visibility]="worklistService.querying? 'visible' : 'hidden'" class="loading-shade"
+                      [color]="color"
+                      [mode]="mode"
+                      [value]="value">
+</mat-progress-spinner>

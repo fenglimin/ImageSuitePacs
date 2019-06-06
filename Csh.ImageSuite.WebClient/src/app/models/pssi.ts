@@ -338,7 +338,7 @@ export class WorklistColumn {
     sortDirection: string;
     controlType: string;
     valueList: Array<string>;
-    columnSequece: number;
+    columnSequence: number;
     visible: boolean;
     shortcutType: Shortcut;
     studyCol: Study;
