@@ -5,7 +5,7 @@ import { catchError, tap } from "rxjs/operators";
 
 import { Shortcut } from '../models/shortcut';
 import { Patient, Study, Series, Image, RecWorklistData, RecOfflineImageInfo } from '../models/pssi';
-import { Overlay } from '../models/overlay';
+import { TextOverlayData } from '../models/overlay';
 import { FontData, MarkerGroupData } from '../models/misc-data';
 
 const httpOptions = {
@@ -55,9 +55,9 @@ export class DatabaseService {
         return this.http.get<FontData>(url);
     }
 
-    getOverlays(): Observable<Overlay[]> {
+    getTextOverlays(): Observable<TextOverlayData[]> {
         const url = `${this.overlayUrl}/`;
-        return this.http.get<Overlay[]>(url)
+        return this.http.get<TextOverlayData[]>(url)
             .pipe(
                 tap(Overlay => this.log("fetched Overlay")),
                 catchError(this.handleError("getOverlays", []))

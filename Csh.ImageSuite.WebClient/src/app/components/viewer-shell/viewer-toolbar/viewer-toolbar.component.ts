@@ -54,21 +54,9 @@ export class ViewerToolbarComponent implements OnInit {
     ];
 
     magnifyButtonMenuList: SelectedButtonData[] = [
-        {
-            name: "magnify2",
-            tip: "Magnify X 2",
-            operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.MagnifyX2 }
-        },
-        {
-            name: "magnify4",
-            tip: "Magnify X 4",
-            operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.MagnifyX4 }
-        },
-        {
-            name: "magnify8",
-            tip: "Magnify X 8",
-            operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.MagnifyX8 }
-        },
+        { name: "magnify2", tip: "Magnify X 2", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.Magnify, 2) } },
+        { name: "magnify4", tip: "Magnify X 4", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.Magnify, 4) } },
+        { name: "magnify8", tip: "Magnify X 8", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.Magnify, 8) } }
     ];
 
     fitButtonMenuList: SelectedButtonData[] = [

@@ -4,8 +4,9 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 import { Image } from "../models/pssi";
 import { ConfigurationService } from "../services/configuration.service";
-import { Overlay, OverlayDisplayGroup, OverlayDisplayItem } from '../models/overlay';
+import { TextOverlayData, TextOverlayDisplayGroup, TextOverlayDisplayItem, GraphicOverlayData } from '../models/overlay';
 import { LogService } from "../services/log.service";
+import { FontData } from "../models/misc-data";
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': "application/json" })
@@ -15,19 +16,15 @@ const httpOptions = {
     providedIn: "root"
 })
 export class DicomImageService {
-
     private logPrefix = "DicomImageService: ";
     private dicomImageUrl = "dicomImage";
     private baseUrl;
-    private overlayDisplayGroupList: OverlayDisplayGroup[] = [];
+    private textOverlayDisplayGroupList: TextOverlayDisplayGroup[] = [];
 
 
     constructor(private http: HttpClient, private configurationService: ConfigurationService,
         private logService: LogService) {
-
         this.baseUrl = this.configurationService.getBaseUrl();
-
-        
     }
 
     /** Save Image annotation */
@@ -55,33 +52,51 @@ export class DicomImageService {
         return cornerstone.loadImage(imageUri);
     }
 
-    getOverlayDisplayList(image: Image, canvasWidth: number, canvasHeight: number, canvasContext: any): OverlayDisplayItem[] {
-        if (this.overlayDisplayGroupList.length === 0) {
-            const overlayList = this.configurationService.getOverlayConfigList();
+    getOverlayDisplayList(image: Image, canvas: any, font: FontData): TextOverlayDisplayItem[] {
+        if (this.textOverlayDisplayGroupList.length === 0) {
+            const overlayList = this.configurationService.getTextOverlayConfigList();
             this.formatOverlayList(overlayList);
         }
 
-        var overlayDisplayList: OverlayDisplayItem[] = [];
+        const canvasContext = canvas.getContext("2d");
+        canvasContext.font = font.getCanvasFontString();
+
+        var overlayDisplayList: TextOverlayDisplayItem[] = [];
 
         const groupList = this.getOverlayDisplayGroup(image.series.modality);
         groupList.forEach(group => {
 
-            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignLeft, true, image, canvasWidth, canvasHeight, canvasContext);
-            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignRight, false, image, canvasWidth, canvasHeight, canvasContext);
+            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignLeft, true, image, canvas.width, canvas.height, canvasContext, font.size);
+            this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignRight, false, image, canvas.width, canvas.height, canvasContext, font.size);
         });
 
         return overlayDisplayList;
     }
 
+    getGraphicOverlayList(image: Image): GraphicOverlayData[] {
+        const graphicOverlayList = [];
+
+        // There are max 16 graphic overlays in a image
+        const groupNumber = 24576; // Hex 0x6000
+        for (let i = 0; i < 16; i++) {
+            const groupString = this.decimalToHexString(groupNumber + i * 2, 2);
+            const graphicOverlayData = this.getGraphicOverlayData(image, "x" + groupString);
+            if (graphicOverlayData) {
+                graphicOverlayList.push(graphicOverlayData);
+            }
+        }
+
+        return graphicOverlayList;
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Text overlay functions
-    private formatOverlayList(overlayList: Overlay[]) {
+    private formatOverlayList(overlayList: TextOverlayData[]) {
 
         overlayList.forEach(overlay => {
             this.addOverlayToGroup(overlay);
         });
 
-        this.overlayDisplayGroupList.forEach(group => {
+        this.textOverlayDisplayGroupList.forEach(group => {
 
             group.itemListAlignLeft = group.itemListAlignLeft.sort((n1, n2) => {
                 return (n1.offsetX < n2.offsetX) ? -1 : 1;
@@ -93,13 +108,13 @@ export class DicomImageService {
         });
     }
 
-    private addOverlayToGroup(overlay: Overlay) {
-        const filtered = this.overlayDisplayGroupList.filter(value => value.match(overlay));
+    private addOverlayToGroup(overlay: TextOverlayData) {
+        const filtered = this.textOverlayDisplayGroupList.filter(value => value.match(overlay));
 
         let overlayGroup = null;
         if (filtered.length === 0) {
-            overlayGroup = new OverlayDisplayGroup(overlay);
-            this.overlayDisplayGroupList.push(overlayGroup);
+            overlayGroup = new TextOverlayDisplayGroup(overlay);
+            this.textOverlayDisplayGroupList.push(overlayGroup);
         } else {
             overlayGroup = filtered[0];
         }
@@ -107,11 +122,11 @@ export class DicomImageService {
         overlayGroup.add(overlay);
     }
 
-    private getOverlayDisplayGroup(modality: string): OverlayDisplayGroup[] {
-        return this.overlayDisplayGroupList.filter(group => group.modality === modality);
+    private getOverlayDisplayGroup(modality: string): TextOverlayDisplayGroup[] {
+        return this.textOverlayDisplayGroupList.filter(group => group.modality === modality);
     }
 
-    private getTextOverlayValue(image: Image, overlay: Overlay): string {
+    private getTextOverlayValue(image: Image, overlay: TextOverlayData): string {
 
         let tagValue: string;
         if (overlay.overlayId === "9003") {
@@ -153,7 +168,7 @@ export class DicomImageService {
     }
 
     private decimalToHexString(decimal: number, padding: number): string {
-        var hex = Number(decimal).toString(16);
+        let hex = Number(decimal).toString(16);
         padding = typeof (padding) === "undefined" || padding === null ? 2 : padding;
 
         while (hex.length < padding) {
@@ -167,13 +182,13 @@ export class DicomImageService {
         return 'x' + this.decimalToHexString(group, 4) + this.decimalToHexString(element, 4);
     }
 
-    private addOverlayDisplayList(overlayDisplayList: OverlayDisplayItem[], overlayList: Overlay[],
-        alignLeft: boolean, image: Image, canvasWidth: number, canvasHeight: number, canvasContext: any) {
+    private addOverlayDisplayList(overlayDisplayList: TextOverlayDisplayItem[], overlayList: TextOverlayData[],
+        alignLeft: boolean, image: Image, canvasWidth: number, canvasHeight: number, canvasContext: any, fontHeight: number) {
 
         const lineWidth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         overlayList.forEach(overlayConfig => {
-            const displayItem = new OverlayDisplayItem();
+            const displayItem = new TextOverlayDisplayItem();
             displayItem.align = alignLeft ? "left" : "right";
 
             let posX = overlayConfig.gridX / 2 * canvasWidth;
@@ -187,16 +202,16 @@ export class DicomImageService {
 
             let posY = overlayConfig.gridY / 2 * canvasHeight;
             if (overlayConfig.gridY === 0) {
-                posY += 18;
+                posY += fontHeight + 3;
             } else if (overlayConfig.gridY === 2) {
-                posY += 15; // ? why
+                posY += fontHeight; // ? why
             }
 
-            const fontHeight = 20;
+            const height = fontHeight + 4;
             if (overlayConfig.offsetY > 0) {
-                posY += fontHeight * (overlayConfig.offsetY - 1);
+                posY += height * (overlayConfig.offsetY - 1);
             } else {
-                posY += fontHeight * overlayConfig.offsetY;
+                posY += height * overlayConfig.offsetY;
             }
 
             displayItem.id = overlayConfig.overlayId;
@@ -212,6 +227,55 @@ export class DicomImageService {
 
             overlayDisplayList.push(displayItem);
         });
+    }
 
+    private getGraphicOverlayData(image: Image, groupString: string): GraphicOverlayData {
+
+        const element = image.cornerStoneImage.data.elements[groupString + "3000"];
+        const rows = image.cornerStoneImage.data.uint16(groupString + "0010");
+        const cols = image.cornerStoneImage.data.uint16(groupString + "0011");
+        const type = image.cornerStoneImage.data.string(groupString + "0040");
+        const startX = image.cornerStoneImage.data.uint16(groupString + "0050", 0);
+        const startY = image.cornerStoneImage.data.uint16(groupString + "0050", 1);
+
+        if (!element || !rows || !cols || !type || !startX || !startY) {
+            return undefined;
+        }
+
+        const graphicOverlayData = new GraphicOverlayData;
+        graphicOverlayData.rows = rows;
+        graphicOverlayData.cols = cols;
+        graphicOverlayData.type = type;
+        graphicOverlayData.startX = startX;
+        graphicOverlayData.startY = startY;
+
+        const imageWidth = image.width();
+        const imageHeight = image.height();
+
+        for (let i = 0; i < element.length; i++) {
+            const byte = image.cornerStoneImage.data.byteArray[element.dataOffset + i];
+            if (byte === 0) {
+                continue;
+            }
+
+            const y = Math.floor(i * 8 / cols);
+            const x = i * 8 % cols;
+            let flag = 128;
+            for (let j = 0; j < 8; j++) {
+                if (byte & flag) {
+                    const px = x - j + startX - 1;
+                    const py = y + startY - 1;
+                    if (px >= 0 && px < imageWidth && py >= 0 && py < imageHeight) {
+                        graphicOverlayData.dataList.push({ x: px, y: py });
+                    }
+                }
+                flag = flag >> 1;
+            }
+        }
+
+        graphicOverlayData.desc = image.cornerStoneImage.data.string(groupString + "0022");
+        graphicOverlayData.label = image.cornerStoneImage.data.string(groupString + "1500");
+
+        return graphicOverlayData;
     }
 }

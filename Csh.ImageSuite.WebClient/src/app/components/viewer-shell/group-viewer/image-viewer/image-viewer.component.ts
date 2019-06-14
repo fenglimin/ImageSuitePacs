@@ -2,8 +2,7 @@ import { Component, OnInit, Input, AfterContentInit, ViewChild, ElementRef, NgZo
 import { Location, LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { ImageSelectorService } from "../../../../services/image-selector.service";
 import { DicomImageService } from "../../../../services/dicom-image.service";
-import { ViewContextEnum, ViewContext, OperationEnum, OperationData, ViewContextService } from
-    "../../../../services/view-context.service"
+import { ViewContextEnum, ViewContext, OperationEnum, OperationData, ViewContextService } from "../../../../services/view-context.service"
 import { Subscription } from "rxjs";
 import { Image as DicomImage } from "../../../../models/pssi";
 import { ViewerImageData } from "../../../../models/viewer-image-data";
@@ -16,9 +15,9 @@ import { ManualWlDialogComponent } from "../../../dialog/manual-wl-dialog/manual
 import { SelectMarkerDialogComponent } from "../../../dialog/select-marker-dialog/select-marker-dialog.component";
 import { FontData } from "../../../../models/misc-data"
 import { MessageBoxType, MessageBoxContent } from "../../../../models/messageBox";
-
 import { IImageViewer } from "../../../../interfaces/image-viewer-interface";
-import { Point, MouseEventType, Rectangle } from '../../../../models/annotation';
+import { Point, MouseEventType } from "../../../../models/annotation";
+import { GraphicOverlayData } from "../../../../models/overlay";
 import { AnnObject } from "../../../../annotation/ann-object";
 import { AnnTool } from "../../../../annotation/ann-tool";
 import { AnnExtendObject } from "../../../../annotation/extend-object/ann-extend-object";
@@ -26,7 +25,9 @@ import { AnnGuide } from "../../../../annotation/layer-object/ann-guide";
 import { AnnImageRuler } from "../../../../annotation/layer-object/ann-image-ruler";
 import { AnnImage } from "../../../../annotation/extend-object/ann-image";
 import { AnnSerialize } from "../../../../annotation/ann-serialize";
-import { AnnBaseImageData } from "../../../../annotation/base-object/ann-base-image-data";
+import { AnnGraphicOverlay } from "../../../../annotation/layer-object/ann-graphic-overlay";
+import { AnnTextOverlay } from "../../../../annotation/layer-object/ann-text-overlay";
+import { AnnMagnify } from "../../../../annotation/layer-object/ann-magnify";
 
 @Component({
     selector: "app-image-viewer",
@@ -37,7 +38,6 @@ import { AnnBaseImageData } from "../../../../annotation/base-object/ann-base-im
 export class ImageViewerComponent implements OnInit, AfterContentInit, IImageViewer {
     private _imageData: ViewerImageData;
     private image: DicomImage;
-    private ctImage: any; //cornerstone image
     private isImageLoaded: boolean;
     private needResize = false;
     selected = false;
@@ -76,8 +76,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private imgRulerLayerId: string;
     private tooltipLayer: any;
     private tooltipLayerId: string;
-    private graphicOlLayer: any;
-    private graphicOlLayerId: string;
 
     private jcImage: any;
     private jcanvas: any;
@@ -90,27 +88,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private originalWindowCenter: number;
 
     private waitingLabel: any;
-
-    private wlLabel: any;
-    private wlLabelFormat: string;
-
-    private zoomRatioLabel: any;
-    private zoomRatioFormat: string;
-
-    private label: any;
     private logPrefix: string;
-
-
     private curSelectObj: AnnExtendObject;
-    
     private ctrlKeyPressed = false;
 
+    private annGraphicOverlay: AnnGraphicOverlay;
+    private annTextOverlay: AnnTextOverlay
     private annGuide: AnnGuide;
-
     private annImageRuler: AnnImageRuler;
-
-    private jcTextOverlayList = [];
-
     private annSerialize: AnnSerialize;
 
     @Input()
@@ -214,8 +199,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private showImage() {
 
-        this.ctImage = this.image.cornerStoneImage;
-        if (this.ctImage) {
+        if (this.image.cornerStoneImage) {
             this.initHelpElement();
             this.canvas = this.canvasRef.nativeElement;
 
@@ -233,7 +217,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.logService.debug(this.logPrefix + 'showImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
 
             this.isImageLoaded = false;
-            cornerstone.displayImage(this.helpElement, this.ctImage);
+            cornerstone.displayImage(this.helpElement, this.image.cornerStoneImage);
 
             this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
         } else {
@@ -276,6 +260,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private onImageDownloaded(ctImage: any) {
         this.logService.info(this.logPrefix + "Image is downloaded from server. Start to show it by cornerstone.");
         this.image.setCornerStoneImage(ctImage);
+        this.image.graphicOverlayDataList = this.dicomImageService.getGraphicOverlayList(this.image);
         this.showImage();
     }
 
@@ -333,6 +318,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.ctrlKeyPressed;
     }
 
+    getImageLayerId(): string {
+        return this.imgLayerId;
+    }
+
     getAnnotationLayerId(): string {
         return this.annLayerId;
     }
@@ -349,12 +338,16 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.imgRulerLayerId;
     }
 
-    getGraphicOlLayerLayerId(): string {
-        return this.graphicOlLayerId;
+    getTextOverlayLayerId(): string {
+        return this.olLayerId;
     }
 
     getImageLayer(): any {
         return this.imgLayer;
+    }
+
+    getMgLayer(): any {
+        return this.mgLayer;
     }
 
     getAnnLabelLayer(): any {
@@ -373,6 +366,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.canvas;
     }
 
+    getCtCanvas(): any {
+        return cornerstone.getEnabledElement(this.helpElement).canvas;
+    }
+
     getContext(): ViewContext {
         return this.viewContext.curContext;
     }
@@ -382,7 +379,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     getTextFont(): FontData {
-        return this.configurationService.getOverlayFont();
+        return this.configurationService.getTextOverlayFont();
     }
 
     selectAnnotation(annObj: AnnExtendObject) {
@@ -627,16 +624,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private onImageLoaded(e, data) {
         this.logService.debug(this.logPrefix + 'onImageLoaded() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
-
+        
         const ctCanvas = cornerstone.getEnabledElement(this.helpElement).canvas;
         this.jcImage = jCanvaScript.image(ctCanvas).layer(this.imgLayerId);
+        this.toggleGraphicOverlay(true);
 
         //fit window
         this.fitWindow();
 
         // Save the original window center/width for later reset.
-        this.originalWindowCenter = this.ctImage.windowCenter;
-        this.originalWindowWidth = this.ctImage.windowWidth;
+        this.originalWindowCenter = this.image.cornerStoneImage.windowCenter;
+        this.originalWindowWidth = this.image.cornerStoneImage.windowWidth;
 
         this.hideWaitingText();
         this.showTextOverlay();
@@ -645,23 +643,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.syncAnnLabelLayerTransform();
         this.viewContext.setContext(ViewContextEnum.SelectAnn);
         this.annSerialize = new AnnSerialize(this.image.annData, this);
+        this.deleteAllAnnotation();
         if (!this.annSerialize.createAnn()) {
             this.setContext(this.viewContext.curContext);
         }
-
-        this.graphicOlLayer.visible(true);
-
-        let graphicData = undefined;
-
-        const element = this.ctImage.data.elements["x60003000"];
-        if (element) {
-            graphicData = new Uint8Array(element.length);
-            for (let i = 0; i < element.length; i++) {
-                graphicData[i] = this.ctImage.data.byteArray[element.dataOffset + i];
-            }
-        }
-
-        const annImageData = new AnnBaseImageData(undefined, graphicData, new Rectangle(0, 0, this.image.width(), this.image.height()), this);
 
         this.redraw(2);
     }
@@ -669,19 +654,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private showWaitingText() {
         this.olLayer.visible(true);
 
-        const font = this.configurationService.getOverlayFont();
+        const font = this.configurationService.getTextOverlayFont();
         this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
-            .color(font.color).font(font.getCanvasFontString()).align('center');
+            .color(font.color).font(font.getCanvasFontString()).align("center");
         this.redraw(1);
-
-        //var imgData = jc.imageData(100, 100).layer(this.imgLayerId); //设置渐变区域的大小
-        //for (var i = 0; i < 100; i++) {
-        //    for (var j = 0; j < 100; j++) {
-        //        imgData.setPixel(i, j, 'rgba(' + i + ',' + j + ',' + (i + j) + ',' + (i / 100) + ')');
-        //        //绘制像素点i,j为像素点坐标
-        //    }
-        //}
-        //imgData.putData(100, 100).draggable(); //设置渐变区域的位置
     }
 
     private hideWaitingText() {
@@ -691,58 +667,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
     }
 
-
     private showTextOverlay() {
-
         this.olLayer.visible(true);
-
-        const font = this.configurationService.getOverlayFont();
-
-        const canvasContext = this.canvas.getContext("2d");
-        canvasContext.font = font.getCanvasFontString();
-
-        const overlayList = this.dicomImageService.getOverlayDisplayList(this.image, this.canvas.width, this.canvas.height, canvasContext);
-
-        this.jcTextOverlayList.forEach(jcText => jcText.del());
-        this.jcTextOverlayList.length = 0;
-
-        overlayList.forEach(overlay => {
-            const label = jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).layer(this.olLayerId)
-                .color(font.color).font(font.getCanvasFontString()).align(overlay.align);
-
-            if (overlay.id === "9003") {
-                this.wlLabel = label;
-                this.wlLabelFormat = overlay.text;
-                this.updateWlTextOverlay(this.image.cornerStoneImage.windowWidth, this.image.cornerStoneImage.windowCenter);
-            } else if (overlay.id === "9004") {
-                this.zoomRatioLabel = label;
-                this.zoomRatioFormat = overlay.text;
-                this.updateZoomRatioTextOverlay(this.getScale());
-            }
-
-            this.jcTextOverlayList.push(label);
-        });
-
+        
+        if (!this.annTextOverlay) {
+            const font = this.configurationService.getTextOverlayFont();
+            this.annTextOverlay = new AnnTextOverlay(font, this, this.dicomImageService);
+        }
+        this.annTextOverlay.redraw();
         this.redraw(1);
-
-        //this.configurationService.overlayList.forEach(overlay => {
-        //    var overlayValue = this.dicomImageService.getTextOverlayValue(this.image, overlay);
-        //    var displayText = overlay.prefix + overlayValue + overlay.suffix;
-        //    jCanvaScript.text(displayText, 5, 15+line*20).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
-        //    line++;
-        //});
-
-
-        //jCanvaScript.text("Test", 5, 15).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
-
-        //this.label = jCanvaScript(`#${idLbl}`);
-
-
-        //this.label._x = 5;
-        //this.label._y = 34;
-
-        //this.label.align('left');
-        //this.label.string('aaaaa');
     }
 
     private createLayers(canvasId) {
@@ -763,11 +696,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annLabelLayer = jCanvaScript.layer(this.annLabelLayerId).level(2); //layer to draw annotations label.
         this.annLabelLayer.id = this.annLabelLayerId;
         this.annLabelLayer.needRedraw = true;
-
-        this.graphicOlLayerId = canvasId + "_graphicOlLayer"; // layer to show graphic overlay
-        this.graphicOlLayer = jCanvaScript.layer(this.graphicOlLayerId).level(3);
-        this.graphicOlLayer.id = this.graphicOlLayerId;
-        this.graphicOlLayer.needRedraw = true;
 
         this.mgLayerId = canvasId + "_mgLayer";
         this.mgLayer = jCanvaScript.layer(this.mgLayerId).level(4); //layer to show magnified image
@@ -801,13 +729,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annLayer.optns.rotateMatrix = this.imgLayer.optns.rotateMatrix;
         this.annLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
         this.annLayer.scale(1);
-
-        this.graphicOlLayer.transform(1, 0, 0, 1, 0, 0, true);
-        this.graphicOlLayer.optns.scaleMatrix = this.imgLayer.optns.scaleMatrix;
-        this.graphicOlLayer.optns.rotateMatrix = this.imgLayer.optns.rotateMatrix;
-        this.graphicOlLayer.optns.translateMatrix = this.imgLayer.optns.translateMatrix;
-        this.graphicOlLayer.scale(1);
-
 
         this.syncAnnLabelLayerTransform();
     }
@@ -895,62 +816,55 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
 
         switch (operation.type) {
-            case OperationEnum.Rotate:
-            {
+            case OperationEnum.Rotate:{
                 this.rotate(operation.data.angle);
                 break;
             }
-            case OperationEnum.Flip:
-            {
+
+            case OperationEnum.Flip:{
                 this.flip(operation.data);
                 break;
             }
-            case OperationEnum.Invert:
-            {
+
+            case OperationEnum.Invert:{
                 this.invert();
                 break;
             }
-        case OperationEnum.FitWidth:
-        case OperationEnum.FitHeight:
-        case OperationEnum.FitOriginal:
-        case OperationEnum.FitWindow:
-        {
-            this.doFit(operation.type);
-            break;
-        }
-        case OperationEnum.Reset:
-        {
-            this.doReset();
-            break;
-        }
-        case OperationEnum.ShowOverlay:
-        {
-            this.olLayer.visible(operation.data.show);
-            break;
-            }
-        case OperationEnum.ShowRuler:
-                {
-                    this.imgRulerLayer.visible(operation.data.show);
+
+            case OperationEnum.FitWidth:
+            case OperationEnum.FitHeight:
+            case OperationEnum.FitOriginal:
+            case OperationEnum.FitWindow:{
+                this.doFit(operation.type);
                 break;
             }
-            case OperationEnum.Reset:
-            {
-                this.doReset();
+
+            case OperationEnum.ShowOverlay:{
+                this.olLayer.visible(operation.data.show);
                 break;
             }
-            case OperationEnum.ShowAnnotation:
-            {
+
+            case OperationEnum.ShowRuler:{
+                this.imgRulerLayer.visible(operation.data.show);
+                break;
+            }
+
+            case OperationEnum.ShowAnnotation:{
                 this.annLayer.visible(operation.data.show);
                 break;
             }
-            case OperationEnum.ManualWL:
-            {
+
+            case OperationEnum.ShowGraphicOverlay: {
+                this.toggleGraphicOverlay(operation.data.show);
+                break;
+            }
+
+            case OperationEnum.ManualWL:{
                 this.doManualWl();
                 break;
-                }
-            case OperationEnum.ToggleKeyImage:
-                {
+            }
 
+            case OperationEnum.ToggleKeyImage:{
                 if (this.image.keyImage === 'Y') {
                     this.image.keyImage = 'N';
                     this.setKeyImage(false);
@@ -958,6 +872,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     this.image.keyImage = 'Y';
                     this.setKeyImage(true);
                 }
+                break;
+            }
+
+            case OperationEnum.Reset: {
+                this.doReset();
                 break;
             }
         }
@@ -971,22 +890,31 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         let cursor = "default";
 
-        if (curContext.action === ViewContextEnum.WL) {
-            cursor = cursorUrl.format("adjustwl");
-        } else if (curContext.action === ViewContextEnum.Pan) {
-            cursor = cursorUrl.format("hand");
-        } else if (curContext.action === ViewContextEnum.Select) {
-            cursor = "default";
-        } else if (curContext.action === ViewContextEnum.Zoom) {
-            cursor = cursorUrl.format("zoom");
-        } else if (curContext.action === ViewContextEnum.Magnifier) {
-            cursor = cursorUrl.format("zoom");
-        } else if (curContext.action === ViewContextEnum.ROIZoom) {
-            cursor = cursorUrl.format("rectzoom");
-        } else if (curContext.action === ViewContextEnum.SelectAnn) {
-            cursor = cursorUrl.format("select");
-        } else if (curContext.action === ViewContextEnum.CreateAnn) {
-            cursor = cursorUrl.format(curContext.data.cursorName);
+        switch (curContext.action) {
+            case ViewContextEnum.WL:
+                cursor = cursorUrl.format("adjustwl");
+                break;
+
+            case ViewContextEnum.Pan:
+                cursor = cursorUrl.format("hand");
+                break;
+
+            case ViewContextEnum.Zoom:
+            case ViewContextEnum.Magnify:
+                cursor = cursorUrl.format("zoom");
+                break;
+
+            case ViewContextEnum.ROIZoom:
+                cursor = cursorUrl.format("rectzoom");
+                break;
+
+            case ViewContextEnum.SelectAnn:
+                cursor = cursorUrl.format("select");
+                break;
+
+            case ViewContextEnum.CreateAnn:
+                cursor = cursorUrl.format(curContext.data.cursorName);
+                break;
         }
 
         return cursor;
@@ -1035,6 +963,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         cornerstone.setViewport(this.helpElement, viewPort);
 
         this.image.annObjList.forEach(annObj => annObj.onFlip(flipVertical));
+        if (this.annGraphicOverlay) {
+            this.annGraphicOverlay.onFlip(flipVertical);
+        }
     }
 
     invert() {
@@ -1163,8 +1094,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
 
         // Reset W/L
-        this.ctImage.windowWidth = this.originalWindowWidth;
-        this.ctImage.windowCenter = this.originalWindowCenter;
+        this.image.cornerStoneImage.windowWidth = this.originalWindowWidth;
+        this.image.cornerStoneImage.windowCenter = this.originalWindowCenter;
 
         const viewPort = cornerstone.getViewport(this.helpElement);
         viewPort.voi.windowCenter = this.originalWindowCenter;
@@ -1182,6 +1113,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.deleteAllAnnotation();
         this.curSelectObj = undefined;
 
+        if (this.annGraphicOverlay) {
+            this.annGraphicOverlay.onReset();
+        }
         this.refreshUi();
     }
 
@@ -1296,7 +1230,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     saveImage() {
         const annString = this.annSerialize.getAnnString(this.image.annObjList);
-        this.ctImage.data.elements["x0011101d"] = this.annSerialize.annData;
+        this.image.cornerStoneImage.data.elements["x0011101d"] = this.annSerialize.annData;
         this.dicomImageService.saveImageAnn(this.image.id, annString).subscribe(ret => {
             const content = new MessageBoxContent();
             content.title = "Save Image";
@@ -1317,7 +1251,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
 
         const self = this;
-        const dcmImg = self.ctImage;
+        const dcmImg = self.image.cornerStoneImage;
 
         if (deltaX != 0 || deltaY != 0) {
             const maxVOI = dcmImg.maxPixelValue * dcmImg.slope + dcmImg.intercept;
@@ -1646,11 +1580,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
             
         } else if (this.mouseEventHelper._mouseWhich === 1) {
-            if (this.viewContext.curContext.action === ViewContextEnum.Magnifier) {
-                //this._startMagnifier(evt);
+            if (this.viewContext.curContext.action === ViewContextEnum.Magnify) {
+                const annMagnify = new AnnMagnify(this);
+                annMagnify.start(point, this.viewContext.curContext.data);
             } else if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
-
-                
                 if (this.curSelectObj) {
                     // There is annotation selected
                     if (!this.curSelectObj.isCreated()) {
@@ -1704,7 +1637,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 }
             } else if (self.mouseEventHelper._mouseWhich === 1) {
 
-                if (curContext.action == ViewContextEnum.Magnifier) {
+                if (curContext.action == ViewContextEnum.Magnify) {
                     //if (self._magnifying) {
                     //    self._loadMagnifierData(evt);
                     //}
@@ -1887,8 +1820,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private doManualWl() {
         const windowLevelData = new WindowLevelData();
-        windowLevelData.windowCenter = this.ctImage.windowCenter;
-        windowLevelData.windowWidth = this.ctImage.windowWidth;
+        windowLevelData.windowCenter = this.image.cornerStoneImage.windowCenter;
+        windowLevelData.windowWidth = this.image.cornerStoneImage.windowWidth;
         this.dialogService.showDialog(ManualWlDialogComponent, windowLevelData).subscribe(
             val => {
                 this.doWlByValue(val.windowCenter, val.windowWidth);
@@ -1903,21 +1836,21 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         viewPort.voi.windowWidth = width;
         cornerstone.setViewport(this.helpElement, viewPort);
 
-        this.ctImage.windowWidth = width;
-        this.ctImage.windowCenter = center;
+        this.image.cornerStoneImage.windowWidth = width;
+        this.image.cornerStoneImage.windowCenter = center;
 
         this.updateWlTextOverlay(width, center);
     }
 
     private updateWlTextOverlay(width: number, center: number) {
-        if (this.wlLabel) {
-            this.wlLabel.string(this.wlLabelFormat.format(width, center));
+        if (this.annTextOverlay) {
+            this.annTextOverlay.updateWindowCenter(width, center);
         }
     }
 
     private updateZoomRatioTextOverlay(roomRatio: number) {
-        if (this.zoomRatioLabel) {
-            this.zoomRatioLabel.string(this.zoomRatioFormat.format(roomRatio.toFixed(2)));
+        if (this.annTextOverlay) {
+            this.annTextOverlay.updateZoomRatioTextOverlay(roomRatio);
         }
     }
 
@@ -1963,21 +1896,41 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private deleteAll() {
-        if (this.jcTextOverlayList) {
-            this.jcTextOverlayList.forEach(jcText => jcText.del());
-            this.jcTextOverlayList.length = 0;
+        if (this.annTextOverlay) {
+            this.annTextOverlay.del();
+        }
+
+        if (this.annGraphicOverlay) {
+            this.annGraphicOverlay.del();
         }
 
         if (this.annImageRuler) {
             this.annImageRuler.reset(this);
         }
 
-        if (this.image.annObjList) {
+        if (this.image && this.image.annObjList) {
             this.deleteAllAnnotation();
         }
 
         if (this.jcImage) {
             this.jcImage.del();
+        }
+    }
+
+    private toggleGraphicOverlay(show: boolean) {
+        if (!this.image || this.image.graphicOverlayDataList.length === 0) {
+            return;
+        }
+
+        if (show) {
+            if (!this.annGraphicOverlay) {
+                this.annGraphicOverlay = new AnnGraphicOverlay(this.image.graphicOverlayDataList, this);
+            }
+            this.annGraphicOverlay.setVisible(true);
+        } else {
+            if (this.annGraphicOverlay) {
+                this.annGraphicOverlay.setVisible(false);
+            }
         }
     }
 }

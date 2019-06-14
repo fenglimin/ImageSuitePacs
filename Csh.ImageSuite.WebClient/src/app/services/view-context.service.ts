@@ -7,13 +7,10 @@ export enum ViewContextEnum {
     Pan = 2,
     WL = 3,
     Zoom = 4,
-    Magnifier = 5,
+    Magnify = 5,
     ROIZoom = 6,
     CreateAnn = 7,
     ROIWL = 8,
-    MagnifyX2,
-    MagnifyX4,
-    MagnifyX8,
     SelectAnn
 }
 
@@ -77,7 +74,7 @@ export class ViewContextService {
     private _showAnnotation = true;
     private _showOverlay = true;
     private _showRuler = true;
-    private _showGraphicOverlay = false;
+    private _showGraphicOverlay = true;
     public _keyImage = false;
 
     private viewContextChangedSource = new Subject<ViewContext>();

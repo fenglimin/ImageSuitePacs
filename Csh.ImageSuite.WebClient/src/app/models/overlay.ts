@@ -1,4 +1,4 @@
-﻿export class  Overlay {
+﻿export class TextOverlayData {
     gridX: number;
     gridY: number;
     offsetX: number;
@@ -17,15 +17,15 @@
     elementNumber: number;
 }
 
-export class OverlayDisplayGroup {
+export class TextOverlayDisplayGroup {
     gridX: number;
     gridY: number;
     modality: string;
 
-    itemListAlignLeft: Overlay[];
-    itemListAlignRight: Overlay[];
+    itemListAlignLeft: TextOverlayData[];
+    itemListAlignRight: TextOverlayData[];
 
-    constructor(overlay: Overlay) {
+    constructor(overlay: TextOverlayData) {
         this.gridX = overlay.gridX;
         this.gridY = overlay.gridY;
         this.modality = overlay.modality;
@@ -33,19 +33,31 @@ export class OverlayDisplayGroup {
         this.itemListAlignRight = [];
     }
 
-    match(overlay: Overlay):boolean {
+    match(overlay: TextOverlayData): boolean {
         return this.gridX === overlay.gridX && this.gridY === overlay.gridY && this.modality === overlay.modality;
     }
 
-    add(overlay: Overlay) {
+    add(overlay: TextOverlayData) {
         overlay.offsetX > 0 ? this.itemListAlignLeft.push(overlay) : this.itemListAlignRight.push(overlay);
     }
 }
 
-export class OverlayDisplayItem {
+export class TextOverlayDisplayItem {
     id: string;
     posX: number;
     posY: number;
     text: string;
     align: string;
+}
+
+export class GraphicOverlayData {
+    rows: number;
+    cols: number;
+    startX: number;
+    startY: number;
+
+    type: string;
+    label: string;
+    desc: string;
+    dataList = [];
 }

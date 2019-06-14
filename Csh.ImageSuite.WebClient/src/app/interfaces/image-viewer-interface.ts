@@ -6,16 +6,20 @@ import { FontData } from '../models/misc-data';
 
 export interface IImageViewer {
 
+    getImageLayerId(): string;
     getAnnotationLayerId(): string;
     getAnnLabelLayerId(): string;
     getAnnGuideLayerId(): string;
     getAnnImageRulerLayerId(): string;
-    getGraphicOlLayerLayerId(): string;
+    getTextOverlayLayerId(): string;
+
     getImageLayer(): any;
+    getMgLayer(): any;
     getAnnLabelLayer(): any;
     getAnnGuideLayer(): any;
     getImage(): Image;
     getCanvas(): any;
+    getCtCanvas(): any;
     getContext(): ViewContext;
     getBaseUrl(): string;
     getTextFont(): FontData;

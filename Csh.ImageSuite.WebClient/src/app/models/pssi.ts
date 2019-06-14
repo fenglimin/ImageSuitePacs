@@ -204,6 +204,7 @@ export class Image extends Pssi {
     imageDate: string;
 
     annObjList = [];
+    graphicOverlayDataList = [];
 
     cornerStoneImage: any;
     annData: Uint8Array;
