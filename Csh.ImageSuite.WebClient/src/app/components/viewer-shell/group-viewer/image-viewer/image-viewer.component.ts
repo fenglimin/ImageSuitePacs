@@ -92,6 +92,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private curSelectObj: AnnExtendObject;
     private ctrlKeyPressed = false;
 
+    private annMagnify: AnnMagnify;
     private annGraphicOverlay: AnnGraphicOverlay;
     private annTextOverlay: AnnTextOverlay
     private annGuide: AnnGuide;
@@ -671,8 +672,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.olLayer.visible(true);
         
         if (!this.annTextOverlay) {
-            const font = this.configurationService.getTextOverlayFont();
-            this.annTextOverlay = new AnnTextOverlay(font, this, this.dicomImageService);
+            this.annTextOverlay = new AnnTextOverlay(this, this.dicomImageService);
         }
         this.annTextOverlay.redraw();
         this.redraw(1);
@@ -900,8 +900,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 break;
 
             case ViewContextEnum.Zoom:
-            case ViewContextEnum.Magnify:
                 cursor = cursorUrl.format("zoom");
+                break;
+
+            case ViewContextEnum.Magnify:
+                cursor = cursorUrl.format("magnify");
                 break;
 
             case ViewContextEnum.ROIZoom:
@@ -1581,9 +1584,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             
         } else if (this.mouseEventHelper._mouseWhich === 1) {
             if (this.viewContext.curContext.action === ViewContextEnum.Magnify) {
-                const annMagnify = new AnnMagnify(this);
-                annMagnify.start(point, this.viewContext.curContext.data);
-            } else if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
+                this.startMagnify(point);
+                } else if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
                 if (this.curSelectObj) {
                     // There is annotation selected
                     if (!this.curSelectObj.isCreated()) {
@@ -1614,6 +1616,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
         }
 
+        const point = { x: evt.offsetX, y: evt.offsetY };
         //console.log(evt.offsetX + "," + evt.offsetY);
         const curContext = this.viewContext.curContext;
 
@@ -1637,10 +1640,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 }
             } else if (self.mouseEventHelper._mouseWhich === 1) {
 
-                if (curContext.action == ViewContextEnum.Magnify) {
-                    //if (self._magnifying) {
-                    //    self._loadMagnifierData(evt);
-                    //}
+                if (curContext.action === ViewContextEnum.Magnify) {
+                    this.magnifyAtPoint(point);
                 } else if (curContext.action === ViewContextEnum.WL) {
                     self.doWL(deltaX, deltaY);
                 } else if (curContext.action === ViewContextEnum.Zoom) {
@@ -1682,10 +1683,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.dragging = false;
         const curContext = this.viewContext.curContext;
 
-        if (self.mouseEventHelper._mouseWhich == 3) {
+        if (self.mouseEventHelper._mouseWhich === 3) {
 
-            if (curContext.action == ViewContextEnum.WL) {
-                if (self.mouseEventHelper._lastContext.action == ViewContextEnum.CreateAnn) { //cancel create
+            if (curContext.action === ViewContextEnum.WL) {
+                if (self.mouseEventHelper._lastContext.action === ViewContextEnum.CreateAnn) { //cancel create
                     this.viewContext.setContext(ViewContextEnum.Select);
                 } else {
                     this.viewContext.setContext(self.mouseEventHelper._lastContext.action,
@@ -1694,9 +1695,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             }
         } else if (self.mouseEventHelper._mouseWhich === 1) {
 
-            //if (curContext.action == contextEnum.magnifier && self._magnifying) {
-            //    self._endMagnifier();
-            //} else if (curContext.action == contextEnum.roizoom) {
+            if (curContext.action === ViewContextEnum.Magnify) {
+                this.endMagnify();
+            }
+            //else if (curContext.action == contextEnum.roizoom) {
             //    var endPosCvs = {
             //        x: evt.offsetX,
             //        y: evt.offsetY
@@ -1896,6 +1898,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private deleteAll() {
+        if (this.annMagnify) {
+            this.annMagnify.del();
+        }
+
         if (this.annTextOverlay) {
             this.annTextOverlay.del();
         }
@@ -1932,5 +1938,35 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 this.annGraphicOverlay.setVisible(false);
             }
         }
+    }
+
+    startMagnify(point: Point) {
+        if (!this.annMagnify) {
+            this.annMagnify = new AnnMagnify(this);
+        }
+
+        this.annMagnify.start(point, this.viewContext.curContext.data);
+        this.canvas.style.cursor = "none";
+
+        if (this.annGraphicOverlay) {
+            this.annGraphicOverlay.drawToMgLayer();
+        }
+    }
+
+    magnifyAtPoint(point: Point) {
+        if (!this.annMagnify || !this.annMagnify.isStarted()) {
+            return;
+        }
+
+        this.annMagnify.moveTo(point);
+    }
+
+    endMagnify() {
+        if (!this.annMagnify || !this.annMagnify.isStarted()) {
+            return;
+        }
+
+        this.annMagnify.end();
+        this.setCursorFromContext();
     }
 }

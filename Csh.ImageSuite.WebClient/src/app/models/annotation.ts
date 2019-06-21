@@ -9,10 +9,56 @@
     BottomRight
 }
 
+
+// Annotation type, copied from ImageSuite Acq.
+// The annotation type in Web and Acq is different. Not sure why.
 export enum AnnType {
-    Line = 1,
-    Circle = 2,
-    Rectangle = 3
+    None = 0,
+    Select,
+    Rect,
+    RectEx,
+    Ellipse,
+    Pointer,
+    FreeArea,
+    Text,
+    Ruler,
+    Protractor,
+    Arrow,
+    Stamp,
+    Multiline,
+    HeartChestRatio,
+    CobbAngle,
+    LipmanCobbAngle,
+    Coxometry,
+    Goniometry,
+    Gd,
+    Vd,
+    Vhs,
+    Tta,
+    Tplo,
+    Laminitis,
+    Polygon,
+    Blade,
+    Chiro,
+    Gonstead,
+    Vaxis,
+    VlineDistance,
+    LineExt,
+    CervicalCurve,
+    LumbarCurve,
+    GeorgeLine,
+    LineEx1,
+    OffsetCobbAngle,
+    ExtendedCobbAngle,
+    MarkSpot,
+    LineRatio,
+    VerticalDeflection,
+    HorizontalDeflection,
+    GeorgesLineNew,
+    Ara,
+    VertebralCompression,
+    Cmap,
+    LoganBasicMarking
 }
 
 export enum MouseEventType {
@@ -72,6 +118,26 @@ export class Annotation {
         this.className = className;
         this.cursorName = cursorName;
         this.needGuide = needGuide;
+    }
+}
+
+export class AnnotationData {
+    classType: any;
+    cursorName: string;
+    needGuide: boolean;
+    imageSuiteClassName: string;
+    imageSuiteAnnType: AnnType;
+
+    className: string;
+
+    constructor(classType: any, cursorName: string, needGuide: boolean, imageSuiteClassName: string, imageSuiteAnnType: AnnType) {
+        this.classType = classType;
+        this.cursorName = cursorName;
+        this.needGuide = needGuide;
+        this.imageSuiteClassName = imageSuiteClassName;
+        this.imageSuiteAnnType = imageSuiteAnnType;
+
+        this.className = classType.name;
     }
 }
 
@@ -219,14 +285,12 @@ export class AnnGuideActionButton {
 
 export class AnnGuideData {
     annName: string;
-    cursor: string;
 
     guideStepConfigList: Array<AnnGuideStepConfig> = [];
     guideStepImageList = [];
 
-    constructor(annName: string, cursor: string) {
+    constructor(annName: string) {
         this.annName = annName;
-        this.cursor = cursor;
     }
 
     addStepConfig(annGuideStepConfig: AnnGuideStepConfig) {

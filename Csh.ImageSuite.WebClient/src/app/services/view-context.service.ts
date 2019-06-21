@@ -141,29 +141,27 @@ export class ViewContextService {
 
     onOperation(data: OperationData) {
         switch (data.type) {
-        case OperationEnum.ShowAnnotation:
-        {
-            this.showAnnotation = !this.showAnnotation;
-            break;
-        }
-        case OperationEnum.ShowOverlay:
-        {
-            this.showOverlay = !this.showOverlay;
-            break;
-        }
-        case OperationEnum.ShowRuler:
-        {
-            this.showRuler = !this.showRuler;
-            break;
-        }
-        case OperationEnum.ShowGraphicOverlay:
-        {
-            this.showGraphicOverlay = !this.showGraphicOverlay;
-            break;
-        }
+            case OperationEnum.ShowAnnotation:{
+                this.showAnnotation = !this.showAnnotation;
+                break;
+            }
+            case OperationEnum.ShowOverlay:{
+                this.showOverlay = !this.showOverlay;
+                break;
+            }
 
-        default:
-            this.operationSource.next(data);
+            case OperationEnum.ShowRuler:{
+                this.showRuler = !this.showRuler;
+                break;
+            }
+
+            case OperationEnum.ShowGraphicOverlay:{
+                this.showGraphicOverlay = !this.showGraphicOverlay;
+                break;
+            }
+
+            default:
+                this.operationSource.next(data);
         }
 
     }
@@ -175,7 +173,7 @@ export class ViewContextService {
 
         if (this._curContext.action !== this._previousContext.action) {
             this.viewContextChangedSource.next(this._curContext);
-        } else if (this._curContext.action == ViewContextEnum.CreateAnn) {
+        } else if (this._curContext.action === ViewContextEnum.CreateAnn) {
             //if want to create the same object even if current object is not finished yet, we still change context to delete it. 
             this.viewContextChangedSource.next(this._curContext);
         }
@@ -183,33 +181,33 @@ export class ViewContextService {
 
     isImageToolBarButtonChecked(buttonData: SelectedButtonData): boolean {
         switch (buttonData.operationData.type) {
-        case OperationEnum.ShowAnnotation:
-            return this._showAnnotation;
-        case OperationEnum.ShowOverlay:
-            return this._showOverlay;
-        case OperationEnum.ShowRuler:
-            return this._showRuler;
-        case OperationEnum.ShowGraphicOverlay:
-            return this._showGraphicOverlay;
-        case OperationEnum.ToggleKeyImage:
-            return this._keyImage;
+            case OperationEnum.ShowAnnotation:
+                return this._showAnnotation;
+            case OperationEnum.ShowOverlay:
+                return this._showOverlay;
+            case OperationEnum.ShowRuler:
+                return this._showRuler;
+            case OperationEnum.ShowGraphicOverlay:
+                return this._showGraphicOverlay;
+            case OperationEnum.ToggleKeyImage:
+                return this._keyImage;
 
-        default:
-            return buttonData.operationData.data == this._curContext.action;
+            default:
+                return buttonData.operationData.data === this._curContext.action;
         }
     }
 
     isImageToolBarButtonCheckStyle(buttonData: SelectedButtonData): boolean {
         switch (buttonData.operationData.type) {
-        case OperationEnum.ShowAnnotation:
-        case OperationEnum.ShowOverlay:
-        case OperationEnum.ShowRuler:
-        case OperationEnum.ShowGraphicOverlay:
-        case OperationEnum.SetContext:
-        case OperationEnum.ToggleKeyImage:
-            return true;
-        default:
-            return false;
+            case OperationEnum.ShowAnnotation:
+            case OperationEnum.ShowOverlay:
+            case OperationEnum.ShowRuler:
+            case OperationEnum.ShowGraphicOverlay:
+            case OperationEnum.SetContext:
+            case OperationEnum.ToggleKeyImage:
+                return true;
+            default:
+                return false;
         }
     }
 

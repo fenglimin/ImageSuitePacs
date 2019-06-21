@@ -19,6 +19,7 @@ import { AnnPolygon } from "../../../annotation/extend-object/ann-polygon";
 import { AnnAngle } from "../../../annotation/extend-object/ann-angle";
 import { AnnCervicalCurve } from "../../../annotation/extend-object/ann-cervical-curve";
 import { AnnLumbarCurve } from "../../../annotation/extend-object/ann-lumbar-curve";
+import { AnnFreeArea } from "../../../annotation/extend-object/ann-free-area";
 
 @Component({
     selector: "app-viewer-toolbar",
@@ -29,11 +30,7 @@ export class ViewerToolbarComponent implements OnInit {
     buttonDivideSrc: string;
 
     selectPanButtonMenuList: SelectedButtonData[] = [
-        {
-            name: "selection",
-            tip: "Select",
-            operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.Select }
-        },
+        { name: "selection", tip: "Select", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.Select } },
         { name: "Pan", tip: "Pan", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.Pan } }
     ];
 
@@ -46,11 +43,7 @@ export class ViewerToolbarComponent implements OnInit {
 
     zoomButtonMenuList: SelectedButtonData[] = [
         { name: "Zoom", tip: "Zoom", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.Zoom } },
-        {
-            name: "rectzoom",
-            tip: "ROI Zoom",
-            operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.ROIZoom }
-        }
+        { name: "rectzoom", tip: "ROI Zoom", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.ROIZoom } }
     ];
 
     magnifyButtonMenuList: SelectedButtonData[] = [
@@ -74,9 +67,7 @@ export class ViewerToolbarComponent implements OnInit {
     ];
 
     keyImageButtonMenu: SelectedButtonData = {
-        name: "SetKeyImage",
-        tip: "Key Image",
-        operationData: { type: OperationEnum.ToggleKeyImage, data: null }
+        name: "SetKeyImage", tip: "Key Image", operationData: { type: OperationEnum.ToggleKeyImage, data: null }
     };
 
     resetButtonMenu: SelectedButtonData = {
@@ -84,33 +75,23 @@ export class ViewerToolbarComponent implements OnInit {
     };
 
     showAnnotationButtonMenu: SelectedButtonData = {
-        name: "showannotation",
-        tip: "Show Annotation",
-        operationData: { type: OperationEnum.ShowAnnotation, data: null }
+        name: "showannotation", tip: "Show Annotation", operationData: { type: OperationEnum.ShowAnnotation, data: null }
     };
 
     showOverlayButtonMenu: SelectedButtonData = {
-        name: "showoverlay",
-        tip: "Show Overlay",
-        operationData: { type: OperationEnum.ShowOverlay, data: null }
+        name: "showoverlay", tip: "Show Overlay", operationData: { type: OperationEnum.ShowOverlay, data: null }
     };
 
     showRulerButtonMenu: SelectedButtonData = {
-        name: "showruler",
-        tip: "Show Ruler",
-        operationData: { type: OperationEnum.ShowRuler, data: null }
+        name: "showruler", tip: "Show Ruler", operationData: { type: OperationEnum.ShowRuler, data: null }
     };
 
     showGraphicOverlayButtonMenu: SelectedButtonData = {
-        name: "showgraphicoverlay",
-        tip: "Show Graphic Overlay",
-        operationData: { type: OperationEnum.ShowGraphicOverlay, data: null }
+        name: "showgraphicoverlay", tip: "Show Graphic Overlay", operationData: { type: OperationEnum.ShowGraphicOverlay, data: null }
     };
 
     selectAnnotationButtonMenu: SelectedButtonData = {
-        name: "ann_selection",
-        tip: "Select Annotation",
-        operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.SelectAnn }
+        name: "ann_selection", tip: "Select Annotation", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.SelectAnn }
     };
 
     simpleAnnotation1ButtonMenu: SelectedButtonData[] = [
@@ -123,7 +104,9 @@ export class ViewerToolbarComponent implements OnInit {
         { name: "ann_vaxis", tip: "Vertical Axis", operationData: { type: OperationEnum.SetContext, data:
             new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnVerticalAxis, "Vertical Axis", "ann_cervicalcurve", false))}},
         { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnMarkSpot, "Mark Spot", "ann_line", true))}}
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnMarkSpot, "Mark Spot", "ann_line", true))}},
+        { name: "ann_freearea", tip: "Free Area", operationData: { type: OperationEnum.SetContext, data:
+            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnFreeArea, "Free Area", "ann_freearea", false))}}
     ];
 
     simpleAnnotation2ButtonMenu: SelectedButtonData[] = [

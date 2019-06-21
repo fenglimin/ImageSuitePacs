@@ -3194,7 +3194,7 @@
                         var mouseDownObjects = [mouseDown.objects[i], objectLayer(mouseDown.objects[i])], mdObject;
                         for (var j = 0; j < 2; j++) {
                             mdObject = mouseDownObjects[j];
-                            if (mdObject.optns.drag.val == true && mdObject.optns.drag.disabled == false && i == mdObjectsLength) {
+                            if (mdObject.optns.drag.val == true && mdObject.optns.drag.disabled == false) {
                                 drag = optns.drag;
                                 dobject = drag.object = mdObject.optns.drag.object.visible(true);
                                 drag.drag = mdObject.optns.drag.drag;

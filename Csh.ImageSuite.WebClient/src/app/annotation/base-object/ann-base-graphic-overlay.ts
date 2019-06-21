@@ -11,7 +11,7 @@ export class AnnBaseGraphicOverlay extends AnnBaseObject {
     private hFlipped = false;
     private vFlipped = false;
 
-    constructor(parentObj: AnnObject, graphicOverlayData: GraphicOverlayData, imageViewer: IImageViewer) {
+    constructor(parentObj: AnnObject, graphicOverlayData: GraphicOverlayData, imageViewer: IImageViewer, layerId: string) {
         super(parentObj, imageViewer);
         this.graphicOverlayData = graphicOverlayData;
 
@@ -21,7 +21,7 @@ export class AnnBaseGraphicOverlay extends AnnBaseObject {
         this.ctx = this.graphicOverlayCanvas.getContext("2d");
 
         this.draw();
-        this.jcObj = jCanvaScript.image(this.graphicOverlayCanvas).layer(imageViewer.getImageLayerId());
+        this.jcObj = jCanvaScript.image(this.graphicOverlayCanvas).layer(layerId);
         super.setJcObj();
     }
 

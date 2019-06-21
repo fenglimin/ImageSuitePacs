@@ -7,8 +7,10 @@ import { AnnSerialize } from "../ann-serialize";
 
 export class AnnBasePolygon extends AnnBaseObject {
 
-    constructor(parentObj: AnnObject, pointList: any, imageViewer: IImageViewer, annSerialize: AnnSerialize = undefined) {
+    private freeArea: boolean;
+    constructor(parentObj: AnnObject, pointList: any, imageViewer: IImageViewer, freeArea: boolean = false) {
         super(parentObj, imageViewer);
+        this.freeArea = freeArea;
         this.jcObj = jCanvaScript.lines(pointList, this.selectedColor).layer(this.layerId);
         super.setJcObj();
     }
@@ -16,8 +18,8 @@ export class AnnBasePolygon extends AnnBaseObject {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString("CGXAnnPolygon");
-        annSerialize.writeInteger(3, 4);
+        annSerialize.writeString(this.freeArea ? "CGXAnnFreeArea" : "CGXAnnPolygon");
+        annSerialize.writeInteger(this.freeArea ? 23 : 3, 4);
         annSerialize.writeInteger(1, 4);
         annSerialize.writeInteger(this.selected ? 1 : 0, 1);
 

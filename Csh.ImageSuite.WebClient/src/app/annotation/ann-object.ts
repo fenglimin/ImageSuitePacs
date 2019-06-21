@@ -288,7 +288,7 @@ export abstract class AnnObject {
             //arg.event.preventDefault();
 
             // return false to make sure no other jc object's mouse event will be called
-            return false;
+            return true;
         };
     }
 

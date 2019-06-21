@@ -5,11 +5,12 @@ import { GraphicOverlayData } from '../../models/overlay';
 export class AnnGraphicOverlay {
 
     private annGraphicOverlayList = new Array<AnnBaseGraphicOverlay>();
+    private mgLayerDrawn = false;
 
-    constructor(graphicOverlayDataList: GraphicOverlayData[], imageViewer: IImageViewer) {
-        graphicOverlayDataList.forEach(
+    constructor(private graphicOverlayDataList: GraphicOverlayData[], private imageViewer: IImageViewer) {
+        this.graphicOverlayDataList.forEach(
             graphicOverlayData => this.annGraphicOverlayList.push(
-                new AnnBaseGraphicOverlay(undefined, graphicOverlayData, imageViewer)));
+                new AnnBaseGraphicOverlay(undefined, graphicOverlayData, imageViewer, imageViewer.getImageLayerId())));
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,6 +29,16 @@ export class AnnGraphicOverlay {
 
     del() {
         this.annGraphicOverlayList.forEach(annObj => annObj.onDeleteChildren());
+    }
+
+    drawToMgLayer() {
+        if (!this.mgLayerDrawn) {
+            this.graphicOverlayDataList.forEach(
+                graphicOverlayData => this.annGraphicOverlayList.push(
+                    new AnnBaseGraphicOverlay(undefined, graphicOverlayData, this.imageViewer, this.imageViewer.getMgLayer().id)));
+        }
+
+        this.mgLayerDrawn = true;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions

@@ -14,6 +14,7 @@ import { AnnRuler } from "./extend-object/ann-ruler";
 import { AnnVerticalAxis } from "./extend-object/ann-vertical-axis";
 import { AnnMarkSpot } from "./extend-object/ann-mark-spot";
 import { AnnCardiothoracicRatio } from "./extend-object/ann-cardiothoracic-ratio";
+import { AnnFreeArea } from "./extend-object/ann-free-area";
 
 export class AnnSerialize {
     annData: Uint8Array;
@@ -94,6 +95,10 @@ export class AnnSerialize {
                 case "CGXAnnHCRatio":
                     annObj = new AnnCardiothoracicRatio(undefined, this.imageViewer);
                     config = this.loadCardiothoracicRatio();
+                    break;
+                case "CGXAnnFreeArea":
+                    annObj = new AnnFreeArea(undefined, this.imageViewer);
+                    config = this.loadFreeArea();
                     break;
                 default:
                     alert("Unknown annotation " + annName);
@@ -541,5 +546,25 @@ export class AnnSerialize {
 
         const textIndicator = this.loadTextIndicator();
         return { lineList: lineList, textIndicator: textIndicator, selected: selected }
+    }
+
+    loadFreeArea() {
+        const annType = this.readInteger(4); // 23
+        const created = this.readInteger(4);
+        const selected = this.readInteger(1);
+
+        const pointCount = this.readInteger(4);
+        const lineCount = this.readInteger(4);
+
+        const pointList = [];
+        for (let i = 0; i < pointCount; i++) {
+            pointList.push(this.readIntegerPoint());
+        }
+
+        for (let i = 0; i < lineCount; i++) {
+            this.loadBaseLine();
+        }
+
+        return { pointList: pointList }
     }
 }

@@ -14,11 +14,13 @@ export class AnnTextOverlay {
     private image: Image;
     private windowCenterIndex: number;
     private zoomRatioIndex: number;
+    private font: FontData;
 
-    constructor(private font: FontData, private imageViewer: IImageViewer, private dicomImageService: DicomImageService) {
+    constructor(private imageViewer: IImageViewer, private dicomImageService: DicomImageService) {
         this.canvas = this.imageViewer.getCanvas();
         this.image = this.imageViewer.getImage();
         this.layerId = this.imageViewer.getTextOverlayLayerId();
+        this.font = this.imageViewer.getTextFont();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
