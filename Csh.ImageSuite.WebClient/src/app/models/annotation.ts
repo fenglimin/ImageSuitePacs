@@ -107,34 +107,20 @@ export class Rectangle {
     }
 }
 
-export class Annotation {
-    classType: any;
-    className: string;
-    cursorName: string;
-    needGuide: boolean;
-
-    constructor(classType: any, className: string, cursorName: string, needGuide: boolean) {
-        this.classType = classType;
-        this.className = className;
-        this.cursorName = cursorName;
-        this.needGuide = needGuide;
-    }
-}
-
-export class AnnotationData {
+export class AnnotationDefinitionData {
     classType: any;
     cursorName: string;
     needGuide: boolean;
-    imageSuiteClassName: string;
+    imageSuiteAnnName: string;
     imageSuiteAnnType: AnnType;
 
     className: string;
 
-    constructor(classType: any, cursorName: string, needGuide: boolean, imageSuiteClassName: string, imageSuiteAnnType: AnnType) {
+    constructor(classType: any, cursorName: string, needGuide: boolean, imageSuiteAnnName: string, imageSuiteAnnType: AnnType) {
         this.classType = classType;
         this.cursorName = cursorName;
         this.needGuide = needGuide;
-        this.imageSuiteClassName = imageSuiteClassName;
+        this.imageSuiteAnnName = imageSuiteAnnName;
         this.imageSuiteAnnType = imageSuiteAnnType;
 
         this.className = classType.name;

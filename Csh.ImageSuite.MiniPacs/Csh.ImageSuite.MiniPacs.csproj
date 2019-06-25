@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonDal.cs" />
     <Compile Include="Installer\MiniPacsDbHelperInstaller.cs" />
     <Compile Include="Installer\MiniPacsDicomHelperInstaller.cs" />
     <Compile Include="Interface\IMiniPacsDicomHelper.cs" />

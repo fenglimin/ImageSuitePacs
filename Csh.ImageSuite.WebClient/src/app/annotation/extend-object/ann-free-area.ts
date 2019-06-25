@@ -27,7 +27,7 @@ export class AnnFreeArea extends AnnExtendObject {
             }
 
             if (!this.annBasePolygon) {
-                this.annBasePolygon = new AnnBasePolygon(this, [[imagePoint.x, imagePoint.y]], this.imageViewer);
+                this.annBasePolygon = new AnnBasePolygon(this, [[imagePoint.x, imagePoint.y]], this.imageViewer, true);
             }
         } else if (mouseEventType === MouseEventType.DblClick) {
 
@@ -44,8 +44,8 @@ export class AnnFreeArea extends AnnExtendObject {
         }
     }
 
-    onCreate(pointList: any, freeArea: boolean = false) {
-        this.annBasePolygon = new AnnBasePolygon(this, [], this.imageViewer, freeArea);
+    onCreate(pointList: any) {
+        this.annBasePolygon = new AnnBasePolygon(this, [], this.imageViewer, true);
 
         const dataList = [];
         const length = pointList.length;
@@ -56,8 +56,12 @@ export class AnnFreeArea extends AnnExtendObject {
         this.annBasePolygon.setClosed(true);
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadFreeArea();
+    }
+
     onCreateFromConfig(config: any) {
-        this.onCreate(config.pointList, true);
+        this.onCreate(config.pointList);
         this.focusedObj = this.annBasePolygon;
     }
 

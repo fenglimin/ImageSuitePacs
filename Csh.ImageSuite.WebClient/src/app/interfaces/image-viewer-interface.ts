@@ -1,6 +1,7 @@
 ﻿import { IAnnotationObject } from "./annotation-object-interface";
 import { Image } from "../models/pssi";
 import { ViewContext } from "../services/view-context.service"
+import { AnnotationService } from "../services/annotation.service"
 import { AnnExtendObject } from "../annotation/extend-object/ann-extend-object";
 import { FontData } from '../models/misc-data';
 
@@ -21,6 +22,7 @@ export interface IImageViewer {
     getCanvas(): any;
     getCtCanvas(): any;
     getContext(): ViewContext;
+    getAnnotationService(): AnnotationService;
     getBaseUrl(): string;
     getTextFont(): FontData;
 

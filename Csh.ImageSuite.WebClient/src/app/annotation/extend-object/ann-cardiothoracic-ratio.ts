@@ -40,9 +40,6 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
 
     constructor(parent: AnnExtendObject, imageViewer: IImageViewer) {
         super(parent, imageViewer);
-
-        this.guideNeeded = true;
-        this.annTypeName = "Cardiothoracic Ratio";
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,6 +149,10 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
 
         this.annTextIndicator = new AnnTextIndicator(this, this.imageViewer);
         this.annTextIndicator.onCreate(this.getText(), arrowEndPoint, arrowStartPoint);
+    }
+
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadCardiothoracicRatio();
     }
 
     onCreateFromConfig(config: any) {

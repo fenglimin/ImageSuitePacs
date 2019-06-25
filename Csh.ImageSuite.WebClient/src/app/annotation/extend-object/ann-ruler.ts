@@ -57,6 +57,10 @@ export class AnnRuler extends AnnExtendObject {
         this.redraw(startPoint, endPoint, textPoint);
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadRuler();
+    }
+
     onCreateFromConfig(config: any) {
         this.onCreate(config.startPoint, config.endPoint, config.textIndicator.startPoint);
         this.focusedObj = this.annLine;

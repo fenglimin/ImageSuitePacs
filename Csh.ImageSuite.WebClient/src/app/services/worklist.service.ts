@@ -5,7 +5,7 @@ import { DatabaseService } from "./database.service"
 import { ViewerShellData } from "../models/viewer-shell-data";
 import { HangingProtocolService } from "./hanging-protocol.service";
 import { ShellNavigatorService } from "./shell-navigator.service";
-import { Study, RecWorklistData, WorklistColumn } from "../models/pssi";
+import { Study, RecWorklistData, WorklistColumn, StudyTemp } from "../models/pssi";
 import { DataSource } from "../models/shortcut";
 import { MessageBoxType, MessageBoxContent, DialogResult } from "../models/messageBox";
 import { DialogService } from "./dialog.service";
@@ -38,6 +38,7 @@ export class WorklistService {
     studyUSBOfflineList: string[];
     popUpStudyOfflineMessage: string;
     isOffline = false;
+    checkedSingleStudy : Study;
     checkedStudiesUids: number[];
     checkedStudiesInstanceUids: string[];
     checkedStudiesCount = 0;
@@ -168,7 +169,7 @@ export class WorklistService {
             const viewerShellData = new ViewerShellData(this.hangingProtocolService.getDefaultGroupHangingProtocol(),
                 this.hangingProtocolService.getDefaultImageHangingPrococal());
             this.studies.forEach(study => {
-                if (study.checked) {
+                if (study.studyChecked) {
                     viewerShellData.addStudy(study);
                 }
             });
@@ -184,13 +185,13 @@ export class WorklistService {
     onLoadKeyImage() {
         let checkedCount = 0;
         this.studies.forEach(study => {
-            if (study.checked) {
+            if (study.studyChecked) {
                 checkedCount++;
             }
         });
 
         this.studies.forEach(study => {
-            if (study.checked) {
+            if (study.studyChecked) {
                 this.databaseService.getStudiesForDcmViewer(this.checkedStudiesUids, this.showHistoryStudies, true)
                     .subscribe(value => this.studyDetailsLoaded(checkedCount, value));
             }
@@ -200,7 +201,7 @@ export class WorklistService {
     onSetRead(study: Study = null) {
         if (study == null) {
             this.studies.forEach(study => {
-                if (study.checked) {
+                if (study.studyChecked) {
                     this.databaseService.setRead(study.studyInstanceUid)
                         .subscribe(() => this.refreshShortcuts());
                 }
@@ -214,7 +215,7 @@ export class WorklistService {
     onSetUnread(study: Study = null) {
         if (study == null) {
             this.studies.forEach(study => {
-                if (study.checked) {
+                if (study.studyChecked) {
                     this.databaseService.setUnread(study.studyInstanceUid)
                         .subscribe(() => this.refreshShortcuts());
                 }
@@ -236,7 +237,9 @@ export class WorklistService {
         //studyUSBOfflineList = ;
 
         this.studies.forEach(study => {
-            if (study.checked) {
+            if (study.studyChecked) {
+                this.checkedSingleStudy = study;
+
                 checkedStudyCount++;
 
                 if (study.scanStatus == "Completed") {
@@ -271,7 +274,7 @@ export class WorklistService {
             this.checkedStudiesCount = 0;
             // Check Offline Image
             this.studies.forEach(study => {
-                if (study.checked) {
+                if (study.studyChecked) {
                     (
                         this.checkedStudiesUids.push(study.id));
                     this.checkedStudiesInstanceUids.push(study.studyInstanceUid);
@@ -356,7 +359,7 @@ export class WorklistService {
 
     onDeletePrevent() {
         this.studies.forEach(study => {
-            if (study.checked) {
+            if (study.studyChecked) {
                 this.databaseService.setDeletePrevent(study.studyInstanceUid)
                     .subscribe(() => this.refreshShortcuts());
             }
@@ -365,7 +368,7 @@ export class WorklistService {
 
     onDeleteAllow() {
         this.studies.forEach(study => {
-            if (study.checked) {
+            if (study.studyChecked) {
                 this.databaseService.setDeleteAllow(study.studyInstanceUid)
                     .subscribe(() => this.refreshShortcuts());
             }
@@ -374,7 +377,7 @@ export class WorklistService {
 
     onDeleteStudy(deletionReason) {
         this.studies.forEach(study => {
-            if (study.checked) {
+            if (study.studyChecked) {
                 this.databaseService.deleteStudy(study.studyInstanceUid, deletionReason)
                     .subscribe(() => this.refreshShortcuts());
             }
@@ -411,6 +414,30 @@ export class WorklistService {
         this.shortcut = shortcut;
     }
 
+    onUpdateStudy(study: Study) {
+        this.databaseService.updateStudy(study).subscribe(
+            value => {
+                if (value) {
+                    const content = new MessageBoxContent();
+                    content.title = "Successful";
+                    content.messageText = "Update Patient Information Successfully.";
+                    content.messageType = MessageBoxType.Info;
+
+                    this.dialogService.showMessageBox(content).subscribe();
+                    this.refreshShortcuts();
+                } else {
+                    const content = new MessageBoxContent();
+                    content.title = "Failed";
+                    content.messageText = "Update Patient Information failed.";
+                    content.messageType = MessageBoxType.Error;
+
+                    this.dialogService.showMessageBox(content).subscribe();
+                }
+
+            }
+        );
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
     private formatStudies(recWorklistData) {
@@ -418,7 +445,7 @@ export class WorklistService {
         var studiesList = recWorklistData.studyList;
 
         for (let i = 0; i < studiesList.length; i++) {
-            studiesList[i].checked = false;
+            studiesList[i].studyChecked = false;
             studiesList[i].detailsLoaded = false;
             studiesList[i].bodyPartList = new Array<string>();
             for (let j = 0; j < studiesList[i].seriesList.length; j++) {
@@ -481,7 +508,7 @@ export class WorklistService {
             this.hangingProtocolService.getDefaultImageHangingPrococal());
         this.loadedStudy.forEach(value => {
             value.detailsLoaded = true;
-            value.checked = true;
+            value.studyChecked = true;
             viewerShellData.addStudy(value);
         });
 

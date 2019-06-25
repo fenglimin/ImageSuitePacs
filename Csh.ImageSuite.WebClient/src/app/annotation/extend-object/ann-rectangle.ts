@@ -99,6 +99,10 @@ export class AnnRectangle extends AnnExtendObject {
         this.focusedObj = this.annBaseRectangle;
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadRectangle();
+    }
+
     onCreateFromConfig(config: any) {
         this.onCreate(config.baseRect.topLeftPoint, config.baseRect.width, config.baseRect.height, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
         this.focusedObj = this.annBaseRectangle;

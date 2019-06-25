@@ -258,13 +258,6 @@ namespace Csh.ImageSuite.MiniPacs
                     writer.WriteValue(propertyValue.Trim());
                     writer.WriteEndElement();
                 }
-                //else
-                //{
-                //    writer.WriteStartElement("Tag" + propertyName);
-                //    writer.WriteValue(propertyValue.Trim());
-                //    writer.WriteEndElement();
-                //}
-
             }
 
             writer.WriteEndElement();
@@ -483,7 +476,8 @@ namespace Csh.ImageSuite.MiniPacs
 
         public List<Study> GetStudies(QueryShortcut queryShortcut, string sortPara, int pageIndex, out int pageCount)
         {
-            var dateFormat = GetDateFormat();
+            string seperateFormat;
+            var dateFormat = GetDateFormat(out seperateFormat);
             var studiesCount = GetStudiesCount(queryShortcut);
             var pageSize = GetWorklistPageSize();
             pageCount = studiesCount / pageSize + 1;
@@ -506,7 +500,8 @@ namespace Csh.ImageSuite.MiniPacs
             var sqlStr = " SELECT *, R.SerialNo ID_Series, R.SeriesInstanceUID, R.SeriesNo, R.SeriesDate, R.SeriesTime, R.BodyPart, R.ViewPosition, R.Modality, R.ImageCount IC_Series FROM ( ";
 
             sqlStr += string.Format("SELECT " +
-                                       "P.SerialNo ID_Patient, P.PatientID PatientID, P.PatientName, P.PatientBirthDate, P.PatientSex, " +
+                                       "P.SerialNo ID_Patient, P.PatientID PatientID, P.PatientName, P.PatientBirthDate, P.PatientSex, " + 
+                                       "P.FirstName FirstName, P.LastName LastName, P.MiddleName MiddleName, P.Comments PatientComments, " + 
                                        "S.SerialNo ID_Study, S.StudyInstanceUID, S.AccessionNo, S.StudyID, S.StudyDate, S.StudyTime, " +
                                        "S.SeriesCount, S.ImageCount IC_Study, S.StudyDescription, S.Printed, S.Reserved, S.Readed, S.ReferPhysician, " +
                                        "S.InstanceAvailability, S.AdditionalPatientHistory, S.ScanStatus, S.Send, " +
@@ -983,10 +978,12 @@ namespace Csh.ImageSuite.MiniPacs
         /// Get DateFormat from DB
         /// </summary>
         /// <returns></returns>
-        public string GetDateFormat()
+        public string GetDateFormat(out string strDateSeparator)
         {
             var strRet = GetSystemProfileProperty("DateFormat");
             strRet = strRet.Length == 0 ? "yyyy/MM/dd" : strRet.Replace("Y", "y").Replace("D", "d");
+            strDateSeparator = strRet.ToUpper().Replace("Y", "").Replace("M", "").Replace("D", "").Substring(0, 1);
+
             return strRet;
         }
 
@@ -1350,7 +1347,10 @@ namespace Csh.ImageSuite.MiniPacs
                         string patientID = dr["PatientID"].ToString().Trim();
                         string studyUID = dr["StudyInstanceUID"].ToString().Trim();
 
-                        Study studyInfoModel = new Study(studyUID);
+                        //Study studyInfoModel = new Study(studyUID);
+                        Study studyInfoModel = new Study();
+                        studyInfoModel.StudyInstanceUid = studyUID;
+                        studyInfoModel.SeriesList = new List<Series>();
 
                         string offlineStorageName = "";
                         string diskName = "";
@@ -1414,6 +1414,148 @@ namespace Csh.ImageSuite.MiniPacs
             }
             return strOfflineMessage;
         }
+
+        public int UpdatePatientEdit(Dictionary<string, string> dict)
+        {
+            SqlWrapper sqlWrapper = new SqlWrapper();
+            sqlWrapper.SqlString = "[WGGC_QC_UpdatePatient]";
+            sqlWrapper.Parameter = new SqlParameter[] {
+                new SqlParameter("@strPatientName", dict["PatientName"]),
+                new SqlParameter("@strNewPatientID", dict["PatientID"]),
+                new SqlParameter("@strBirthDate", dict["PatientBirthDate"]),
+                new SqlParameter("@strPatientSex", dict["PatientSex"]),
+                new SqlParameter("@strPatientComment", dict["Comments"]),
+                new SqlParameter("@strOldPatientID", dict["OldPatientID"]),
+                new SqlParameter("@strPatientAge", dict["PatientAge"]),
+                new SqlParameter("@strFirstName", dict["FirstName"]),
+                new SqlParameter("@strMiddleName", dict["MiddleName"]),
+                new SqlParameter("@strLastName", dict["LastName"]),
+                new SqlParameter("@strSpecies", dict["Species"]),
+                new SqlParameter("@strBreed", dict["Breed"]),
+                new SqlParameter("@strOpUser", dict["OpUser"]),
+                new SqlParameter("@strPatientChipID", "")};
+            sqlWrapper.CommandType = CommandType.StoredProcedure;
+
+            return SqlHelper.ExecuteNonQuery(sqlWrapper, _connectionString);
+        }
+
+        public int SyncACQPatient(Dictionary<string, string> dict)
+        {
+            SqlWrapper sqlWrapper = new SqlWrapper();
+            sqlWrapper.SqlString = "[WGGC_SP_ACQ_UpdatePatient]";
+            sqlWrapper.Parameter = new SqlParameter[] {
+                new SqlParameter("@strNewPatientID", dict["PatientID"]),
+                new SqlParameter("@strOldPatientID", dict["OldPatientID"]),
+                new SqlParameter("@strLastName", dict["LastName"]),
+                new SqlParameter("@strOpUser", dict["OpUser"])};
+            sqlWrapper.CommandType = CommandType.StoredProcedure;
+
+            return SqlHelper.ExecuteNonQuery(sqlWrapper, _connectionString);
+        }
+
+        public int UpdateStudyEdit(Dictionary<string, string> dict)
+        {
+            SqlWrapper sqlWrapper = new SqlWrapper();
+            sqlWrapper.SqlString = "[WGGC_QC_UpdateStudy]";
+            sqlWrapper.Parameter = new SqlParameter[] {
+                new SqlParameter("@strStudyInstanceUID", dict["StudyInstanceUID"]),
+                new SqlParameter("@strAccessionNo", dict["AccessionNo"]),
+                new SqlParameter("@strStudyID", dict["StudyID"]),
+                new SqlParameter("@strStudyDate", dict["StudyDate"]),
+                new SqlParameter("@strStudyTime", dict["StudyTime"]),
+                new SqlParameter("@strReferPhysician", dict["ReferPhysician"]),
+                new SqlParameter("@strPhysicianOfRecord", dict["PhysicianOfRecord"]),
+                new SqlParameter("@strStudyDescription", dict["StudyDescription"]),
+                new SqlParameter("@strRequestedProcPriority", dict["StudyPriority"]),
+                new SqlParameter("@strAdditionalPatientHistory", dict["AdditionalPatientHistory"]),
+                new SqlParameter("@strNeutered", dict["Neutered"]),
+                new SqlParameter("@strSeriesInstanceUID", dict["SeriesInstanceUID"]),
+                new SqlParameter("@strModality", dict["Modality"]),
+                new SqlParameter("@strBodyPart", dict["BodyPart"]),
+                new SqlParameter("@strViewPos", dict["ViewPos"]),
+                new SqlParameter("@strSeriesDescription", dict["SeriesDescription"]),
+                new SqlParameter("@strOpUser", dict["OpUser"])
+                };
+            sqlWrapper.CommandType = CommandType.StoredProcedure;
+
+            UpdateSeriesTransferStatusByStudy(new List<string> { dict["StudyInstanceUID"] });
+
+            return SqlHelper.ExecuteNonQuery(sqlWrapper, _connectionString);
+        }
+
+        public int UpdateSeriesTransferStatusByStudy(List<string> lstStudyUIDs)
+        {
+            // SEND_STAT_NOTSEND		= 0;
+            // SEND_STAT_SENDING		= 1;
+            // SEND_STAT_SENT			= 2;
+            // SEND_STAT_COMMIT		    = 3;
+            // SEND_STAT_MANUALSEND	    = 4;
+            // SEND_STAT_PARTSEND		= 5;
+            // SEND_STAT_SENDERROR		= 6;
+            if (lstStudyUIDs.Count == 0)
+            {
+                return 0;
+            }
+            SqlWrapper sql = new SqlWrapper();
+            string strSQL = @"UPDATE Series SET ForwardStatus='4' 
+                              WHERE  ForwardStatus IN ('1', '2', '3')
+                              AND    StudyInstanceUID IN ({0})";
+            string strUIDs = string.Format("'{0}'", string.Join("','", lstStudyUIDs.ToArray()));
+            sql.SqlString = string.Format(strSQL, strUIDs);
+            int ret = SqlHelper.ExecuteNonQuery(sql, _connectionString);
+            return ret;
+        }
+
+        public int UpdateSerieEdit(Dictionary<string, string> dict)
+        {
+            SqlWrapper sqlWrapper = new SqlWrapper();
+            sqlWrapper.SqlString = "[WGGC_QC_UpdateSeries]";
+            sqlWrapper.Parameter = new SqlParameter[] {
+                    new SqlParameter("@strSeriesInstanceUID", dict["SeriesInstanceUID"]),
+                    new SqlParameter("@strModality", dict["Modality"]),
+                    new SqlParameter("@strCategory", dict["SeriesCategory"]),
+                    new SqlParameter("@strBodyPart", dict["SeriesBodyPart"]),
+                    new SqlParameter("@strLocalBodypart", dict["SeriesLocalBodypart"]),
+                    new SqlParameter("@strViewPos", dict["SeriesViewPos"]),
+                    new SqlParameter("@strLocalViewPos", dict["SeriesLocalViewPos"]),
+                    new SqlParameter("@strSeriesDescription", dict["SeriesDescription"]),
+                    new SqlParameter("@strOpUser", dict["SeriesOpUser"])
+                };
+            sqlWrapper.CommandType = CommandType.StoredProcedure;
+
+            //Series serDAL = new Series();
+            //UpdateSeriesTransferStatusByStudy(new List<string> { serDAL.GetStudyInstanceUID(dict["SeriesInstanceUID"]) });
+
+            return SqlHelper.ExecuteNonQuery(sqlWrapper, _connectionString);
+        }
+
+        //public string GetStudyInstanceUID(string seriesInstanceUID)
+        //{
+        //    if (String.IsNullOrEmpty(seriesInstanceUID))
+        //        return String.Empty;
+
+        //    string studyInstanceUID = String.Empty;
+        //    string strSQL = "SELECT StudyInstanceUID FROM Series WHERE SeriesInstanceUID='" + QueryFormater.ReplaceSingleQuotes(seriesInstanceUID) + "'";
+        //    try
+        //    {
+        //        DataSet dataset = SqlHelper.ExecuteAdapter(strSQL, "Series", _connectionString);
+        //        DataTable table = dataset.Tables["Series"];
+        //        if (table.Rows.Count > 0)
+        //        {
+        //            studyInstanceUID = table.Rows[0]["StudyInstanceUID"].ToString().Trim();
+        //        }
+        //        else
+        //        {
+        //            //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_SeriesDAL, GXLogLevel.Warn, GXLogCode.DEFAULT, "series \"" + seriesInstanceUID + "\" does not exist in database.");
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_SeriesDAL, GXLogLevel.Error, GXLogCode.DEFAULT, "at Carestream.GXWeb.Server.SQLServerDAL.SeriesDAL.GetStudyInstanceUID");
+        //    }
+
+        //    return studyInstanceUID;
+        //}
 
         public bool InsertCDJobList(List<string> studyUidList, ref List<string> logMsgList)
         {

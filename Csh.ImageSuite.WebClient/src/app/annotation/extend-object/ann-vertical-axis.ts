@@ -47,6 +47,10 @@ export class AnnVerticalAxis extends AnnExtendObject {
         this.createCenterPoint();
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadVerticalAxis();
+    }
+
     onCreateFromConfig(config: any) {
         const centerPoint = AnnTool.centerPoint(config.startPoint, config.endPoint);
         this.onCreate(centerPoint);

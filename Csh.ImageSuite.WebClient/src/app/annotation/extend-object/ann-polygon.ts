@@ -86,6 +86,10 @@ export class AnnPolygon extends AnnExtendObject {
         }
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadPolygon();
+    }
+
     onCreateFromConfig(config: any) {
         this.onCreate(config.pointList, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
         this.focusedObj = this.annBasePolygon;

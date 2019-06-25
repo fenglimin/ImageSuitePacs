@@ -184,6 +184,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Common\PatientAgeParser.cs" />
     <Compile Include="Controllers\ConfigController.cs" />
     <Compile Include="Controllers\DicomImageController.cs" />
     <Compile Include="Controllers\OverlayController.cs" />

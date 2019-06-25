@@ -91,6 +91,10 @@ export class AnnAngle extends AnnExtendObject {
         this.redrawAngle(arrowStartPoint);
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadAngle();
+    }
+
     onCreateFromConfig(config: any) {
         this.onCreate(config.lineList, config.textIndicator.startPoint, config.textIndicator.endPoint);
         this.focusedObj = this.annStartPoint;

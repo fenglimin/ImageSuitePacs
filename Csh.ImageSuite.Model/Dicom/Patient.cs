@@ -4,10 +4,10 @@ namespace Csh.ImageSuite.Model.Dicom
 {
     public class Patient
     {
-        public Patient(string patientId)
-        {
-            PatientId = patientId;
-        }
+        //public Patient(string patientId)
+        //{
+        //    PatientId = patientId;
+        //}
 
         public int Id { get; set; }
 
@@ -34,5 +34,7 @@ namespace Csh.ImageSuite.Model.Dicom
         public string Breed { get; set; }
 
         public string Species { get; set; }
+
+        public string PatientComments { get; set; }
     }
 }

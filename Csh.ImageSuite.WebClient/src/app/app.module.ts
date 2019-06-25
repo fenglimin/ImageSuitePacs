@@ -53,6 +53,7 @@ import { MatMomentDateModule } from "@angular/material-moment-adapter";
 import { SelectStudydateDialogComponent } from './components/dialog/select-studydate-dialog/select-studydate-dialog.component';
 import { SelectMarkerDialogComponent } from './components/dialog/select-marker-dialog/select-marker-dialog.component';
 import { ViewerBottombarComponent } from './components/viewer-shell/viewer-bottombar/viewer-bottombar.component';
+import { PatientEditComponent } from './components/worklist-shell/worklist/patient-edit/patient-edit.component';
 
 
 @NgModule({
@@ -76,7 +77,8 @@ import { ViewerBottombarComponent } from './components/viewer-shell/viewer-botto
         ManualWlDialogComponent,
         SelectStudydateDialogComponent,
         SelectMarkerDialogComponent,
-        ViewerBottombarComponent
+        ViewerBottombarComponent,
+        PatientEditComponent
     ],
     imports: [
         BrowserModule,
@@ -105,7 +107,7 @@ import { ViewerBottombarComponent } from './components/viewer-shell/viewer-botto
     ],
     providers: [],
     bootstrap: [AppComponent],
-    entryComponents: [MessageBoxComponent, ManualWlDialogComponent, SelectStudydateDialogComponent, SelectMarkerDialogComponent]
+    entryComponents: [MessageBoxComponent, ManualWlDialogComponent, SelectStudydateDialogComponent, SelectMarkerDialogComponent, PatientEditComponent]
 })
 export class AppModule {
 }

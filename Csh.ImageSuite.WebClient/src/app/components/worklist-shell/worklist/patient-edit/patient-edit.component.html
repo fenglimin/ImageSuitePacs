@@ -1,0 +1,173 @@
+﻿<h1 mat-dialog-title
+    cdkDrag
+    cdkDragRootElement=".cdk-overlay-pane"
+    cdkDragHandle>
+    Patient Edit
+</h1>
+<mat-dialog-content>
+    <mat-list>
+        <table>
+            <tr>
+                <td>Family Name</td>
+                <td>Given Name</td>
+                <td>Middle Name</td>
+            </tr>
+            <tr>
+                <td style="width: 200px">
+                    <input [(ngModel)]="study.patient.lastName"/>
+                </td>
+                <td style="width: 200px">
+                    <input [(ngModel)]="study.patient.firstName" />
+                </td>
+                <td style="width: 200px">
+                    <input [(ngModel)]="study.patient.middleName" />
+                </td>
+            </tr>
+            <tr>
+                <td>Patient ID</td>
+                <td>Date of Birth</td>
+                <td>Gender</td>
+            </tr>
+            <tr>
+                <td style="width: 200px">
+                    <input [(ngModel)]="patientId"/>
+                </td>
+                <td style="width: 200px">
+                    <mat-form-field>
+                        <input matInput [matDatepicker]="picker1" [(ngModel)]="patientBirthDate"/>
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                    </mat-form-field>
+                </td>
+                <td style="width: 200px">
+                    <select [(ngModel)]="study.patient.patientSex">
+                        <option *ngFor="let val of patientSexColumn.valueList | keyvalue" [ngValue]="val.key.toUpperCase()">{{val.value}}</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">Patient Comments</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="width: 600px">
+                    <input [(ngModel)]="study.patient.patientComments" />
+                </td>
+            </tr>
+        </table>
+        <br>
+        <mat-divider style="border-color:orange"></mat-divider><br>
+        <table>
+            <tr>
+                <td>Accession Number</td>
+                <td>Referring Physician</td>
+            </tr>
+            <tr>
+                <td style="width: 300px">
+                    <input [(ngModel)]="study.accessionNo"/>
+                </td>
+                <td style="width: 300px">
+                    <input [(ngModel)]="study.referPhysician" />
+                </td>
+            </tr>
+            <tr>
+                <td>Study Description</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="width: 600px">
+                    <input [(ngModel)]="study.studyDescription" />
+                </td>
+            </tr>
+            <tr>
+                <td>Symptoms/Notes</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="width: 600px">
+                    <input [(ngModel)]="study.additionalPatientHistory" />
+                </td>
+            </tr>
+            <tr>
+                <td>Study Date</td>
+                <td>Study Time</td>
+            </tr>
+            <tr>
+                <td style="width: 300px">
+                    <input [(ngModel)]="study.studyDate" [disabled]="true"/>
+                </td>
+                <td style="width: 300px">
+                    <input [(ngModel)]="study.studyTime" [disabled]="true"/>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <mat-divider style="border-color:orange"></mat-divider><br>
+        <table>
+            <tr>
+                <td>Series</td>
+                <td>Body Part Examined</td>
+            </tr>
+            <tr>
+                <td style="width: 300px">
+                    <select (change)="onSeriesChanged($event.target.selectedIndex)">
+                        <option *ngFor="let val of study.seriesList" [ngValue]="val.seriesNo">Series {{val.seriesNo}}</option>
+                    </select>
+                </td>
+                <td style="width: 300px">
+                    <input [(ngModel)]="series.bodyPart" [disabled]="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Modality</td>
+                <td>View Position</td>
+            </tr>
+            <tr>
+                <td style="width: 300px">
+                    <input [(ngModel)]="series.modality" />
+                </td>
+                <td style="width: 300px">
+                    <input [(ngModel)]="series.viewPosition" [disabled]="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Series Description</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="width: 600px">
+                    <input [(ngModel)]="series.seriesDescription" />
+                </td>
+            </tr>
+            <tr>
+                <td>Series Date</td>
+                <td>Series Time</td>
+            </tr>
+            <tr>
+                <td style="width: 300px">
+                    <input [(ngModel)]="series.seriesDateString" [disabled]="true"/>
+                </td>
+                <td style="width: 300px">
+                    <input [(ngModel)]="series.seriesTimeString" [disabled]="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Patient Position</td>
+                <td>Series Number</td>
+            </tr>
+            <tr>
+                <td style="width: 300px">
+                    <input [(ngModel)]="series.patientPosition" />
+                </td>
+                <td style="width: 300px">
+                    <input [(ngModel)]="series.seriesNumber" [disabled]="true"/>
+                </td>
+            </tr>
+        </table>
+    </mat-list>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="onCancelClick()">
+        <i class="glyphicon glyphicon-remove-circle" style="padding-right: 8px"></i>Cancel
+    </button>
+    <button class="mat-raised-button" (click)="onOkClick()">
+        <i class="glyphicon glyphicon-ok-circle" style="padding-right: 8px"></i>Ok
+    </button>
+</mat-dialog-actions>

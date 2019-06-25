@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Linq;
 using System.Web;
@@ -9,6 +10,8 @@ using Csh.ImageSuite.Model.Dicom;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Data;
+using System.Drawing;
+using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -18,6 +21,7 @@ using System.Web.Http;
 using Csh.ImageSuite.Model.Config;
 using Csh.ImageSuite.Model.Enum;
 using Csh.ImageSuite.Model.JsonWrapper;
+using Csh.ImageSuite.WebHost.Common;
 
 namespace Csh.ImageSuite.WebHost.Controllers
 {
@@ -216,14 +220,439 @@ namespace Csh.ImageSuite.WebHost.Controllers
         }
 
         [System.Web.Mvc.HttpPost]
+        public string UpdateStudy(Study study)
+        {
+            try
+            {
+                #region ************************************************************************
+                string strDateSeparatorValue = "";
+                string strDateFormatValue = _dbHelper.GetDateFormat(out strDateSeparatorValue);
+                string strLogMessage = "";
+                bool IsVetApplication = false;
+
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+
+                #region ///// Update Patient
+                string patlNameValue = study.Patient.LastName;
+                string patfNameValue = study.Patient.FirstName;
+                string patmNameValue = study.Patient.MiddleName;
+
+                //string patNameValue = patlNameValue + "^" + patfNameValue + "^" + patmNameValue;
+                string strPatientNameValue = GetPatientName(patlNameValue, patfNameValue, patmNameValue);
+
+                string strPatientIdValue = study.Patient.PatientId;
+                //string strVetOwnerNameValue = IsVetApplication == true ? patlNameValue : "";
+                string strVetOwnerNameValue = "";
+
+                string patDataBirthValue = study.Patient.PatientBirthDate;
+                //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("en-US");
+                //string format = "ddd MMM dd yyyy HH:mm:ss zz00";
+                //string stringValue = DateTime.Now.ToString(format, cultureInfo); // 得到日期字符串
+                //DateTime dtPatientBirthday = DateTime.ParseExact(patDataBirthValue, format, cultureInfo); // 将字符串转换成日期
+                DateTime dtPatientBirthday = GetDate(patDataBirthValue, strDateFormatValue, strDateSeparatorValue);
+                string strPatientBirthDay = dtPatientBirthday.ToString("yyyyMMdd");
+
+                // Get patient age
+                DateTime datBirthday = GetDate(patDataBirthValue, strDateFormatValue, strDateSeparatorValue);
+                string strPatientAge = GetPatientAge(datBirthday);
+
+                //string strPatientSexValueFromDll = study.Patient.PatientSex;
+                //string strPatientSpecies = study.Patient.Species;
+                //string strPatientBreed = study.Patient.Breed;
+                //string strPatientChip = study.Patient;
+                string strPatientCommentValue = study.Patient.PatientComments ?? "";
+
+                Study oldStudy = _dbHelper.GetStudy(study.Id, false);
+                //string oldPatIdValue = StudyBLL.GetPatientIdByStudyUID(studyGUID);
+
+                //MWLPatientMdl patMdl = MWLPatientBiz.GetPatientInfoByStudyUID(studyGUID);
+                //if (patMdl == null) return false;
+                Patient patientMdl = oldStudy.Patient;
+                string oldPatIdValue = patientMdl.PatientId;
+
+                var strPatientSex = study.Patient.PatientSex;
+                //var strNeuteredValue = "";
+                //var iNeutered = "";
+
+                //if (strPatientSexValueFromDll.Length == 2)
+                //{
+                //    strPatientSex = strPatientSexValueFromDll.Substring(0, 1);
+                //    iNeutered = strPatientSexValueFromDll.Substring(1, 1);
+                //    if (iNeutered == "1")
+                //    {
+                //        strNeuteredValue = "ALTERED";
+                //    }
+                //    else if (iNeutered == "0")
+                //    {
+                //        strNeuteredValue = "UNALTERED";
+                //    }
+                //}
+                //else
+                //{
+                //    strPatientSex = strPatientSexValueFromDll;
+                //}
+
+                bool isPatientUpdate = false;
+
+                if (IsVetApplication)
+                {
+                    //if (!(patMdl.PatientName.Trim() == strPatientNameValue.Trim() &&
+                    //    patMdl.PatientID.Trim() == strPatientIdValue.Trim() &&
+                    //    patMdl.PatientBirthDate.Trim() == strPatientBirthDay.Trim() &&
+                    //    patMdl.PatientSex.Trim() == strPatientSex.Trim() &&
+                    //    patMdl.PatientComments.Trim() == strPatientCommentValue.Trim() &&
+                    //    patMdl.Breed.Trim() == strPatientBreed.Trim() &&
+                    //    patMdl.ChipId.Trim() == strPatientChip.Trim() &&
+                    //    patMdl.Species.Trim() == strPatientSpecies.Trim()))
+                    //{
+                    //    isPatientUpdate = true;
+                    //}
+                }
+                else
+                {
+                    if (!(patientMdl.PatientName.Trim() == strPatientNameValue.Trim() &&
+                          patientMdl.PatientId.Trim() == strPatientIdValue.Trim() &&
+                          patientMdl.PatientBirthDate.Trim() == strPatientBirthDay.Trim() &&
+                          patientMdl.PatientSex.Trim() == strPatientSex.Trim() &&
+                          patientMdl.PatientComments.Trim() == strPatientCommentValue.Trim()))
+                    {
+                        isPatientUpdate = true;
+                    }
+                }
+
+
+                if (isPatientUpdate)
+                {
+                    dict.Clear();
+                    // Update Patient
+                    dict.Add("PatientName", strPatientNameValue);
+                    dict.Add("PatientID", strPatientIdValue);
+                    dict.Add("PatientBirthDate", strPatientBirthDay);
+                    dict.Add("PatientSex", strPatientSex);
+                    dict.Add("Comments", strPatientCommentValue);
+                    dict.Add("OldPatientID", oldPatIdValue);
+                    dict.Add("PatientAge", strPatientAge);
+                    // Old Values
+                    dict.Add("FirstName", patfNameValue);
+                    dict.Add("MiddleName", patmNameValue);
+                    dict.Add("LastName", patlNameValue);
+
+                    if (IsVetApplication)
+                    {
+                        //dict.Add("Species", strPatientSpecies);
+                        //dict.Add("Breed", strPatientBreed);
+                        //dict.Add("ChipId", strPatientChip);
+                    }
+                    else
+                    {
+                        dict.Add("Species", patientMdl.Species);
+                        dict.Add("Breed", patientMdl.Breed);
+                        //dict.Add("ChipId", patientMdl.ChipId);
+                    }
+
+
+                    //dict.Add("OpUser", SessionLevelVariable.CurrentUser.UserId);
+                    dict.Add("OpUser", "admin");
+                    _dbHelper.UpdatePatientEdit(dict);
+                    _dbHelper.SyncACQPatient(dict);
+
+                    //strLogMessage = string.Format(" Update Patient Information-> "
+                    //               + " Original Data:PatientName={0},PatientID={1},Gender={2},BirthDate={3},PatientAge={4},PatientComment={5},"
+                    //               + " New Data:PatientName={6},PatientID={7},Gender={8},BirthDate={9},PatientAge={10},PatientComment={11}"
+                    //               , patMdl.PatientName.Trim(), patMdl.PatientID.Trim(), patMdl.PatientSex.Trim(), patMdl.PatientBirthDate.Trim(), patMdl.PatientAge.Trim(), patMdl.PatientComments.Trim()
+                    //               , strPatientNameValue, strPatientIdValue, strPatientSex, strPatientBirthDay, strPatientAge, strPatientCommentValue.Trim());
+
+                    //GXLogManager.WriteLog(GXLogModule.Web_PAGE_PatientEdit, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                }
+                #endregion
+
+                #region ///// Update Study
+                string studyAccNumValue = study.AccessionNo ?? "";
+                string studyVeterinarian = study.Veterinarian ?? "";
+                string studyRefPhyValue = study.ReferPhysician ?? "";
+                string studyDesValue = study.StudyDescription ?? "";
+                string studySymptonValue = study.AdditionalPatientHistory ?? "";
+                string studyPriorityValue = study.RequestedProcPriority ?? "";
+
+                //DataTable studyDt = StudyBLL.GetTableStudy(StringWrapper.GetSplitSingleQuotesUIDs(studyGUID));
+                //if (studyDt.Rows.Count <= 0) return false;
+
+                bool isStudyUpdate = false;
+                if (IsVetApplication)
+                {
+                    //if (!(studyAccNumValue.Trim() == studyDt.Rows[0]["AccessionNo"].ToString().Trim() &&
+                    //    studyRefPhyValue.Trim() == studyDt.Rows[0]["ReferPhysician"].ToString().Trim() &&
+                    //    studyVeterinarian.Trim() == studyDt.Rows[0]["Veterinarian"].ToString().Trim() &&
+                    //    strNeuteredValue.Trim() == studyDt.Rows[0]["Neutered"].ToString().Trim() &&
+                    //    studyDesValue.Trim() == studyDt.Rows[0]["StudyDescription"].ToString().Trim() &&
+                    //    studyPriorityValue.Trim() == studyDt.Rows[0]["RequestedProcPriority"].ToString().Trim() &&
+                    //    studySymptonValue.Trim() == studyDt.Rows[0]["AdditionalPatientHistory"].ToString().Trim()))
+                    //{
+                    //    isStudyUpdate = true;
+                    //}
+                }
+                else
+                {
+                    if (!(studyAccNumValue.Trim() == oldStudy.AccessionNo.Trim() &&
+                        studyRefPhyValue.Trim() == oldStudy.ReferPhysician.Trim() &&
+                        //strNeuteredValue.Trim() == oldStudy.ReferPhysician.Trim() &&
+                        studyDesValue.Trim() == oldStudy.StudyDescription.Trim() &&
+                        //studyPriorityValue.Trim() == oldStudy.RequestedProcPriority.Trim() &&
+                        studySymptonValue.Trim() == oldStudy.AdditionalPatientHistory.Trim()))
+                    {
+                        isStudyUpdate = true;
+                    }
+                }
+
+
+                if (isStudyUpdate)
+                {
+                    // Update Study
+                    dict.Clear();
+
+                    dict.Add("StudyInstanceUID", study.StudyInstanceUid);
+                    dict.Add("AccessionNo", studyAccNumValue);
+                    dict.Add("StudyID", study.StudyId.Trim());
+                    dict.Add("StudyDate", study.StudyDate.Trim());
+                    dict.Add("StudyTime", study.StudyTime.Trim());
+                    dict.Add("ReferPhysician", studyRefPhyValue);
+                    if (IsVetApplication)
+                    {
+                        //dict.Add("PhysicianOfRecord", studyVeterinarian);
+                    }
+                    else
+                    {
+                        dict.Add("PhysicianOfRecord", study.Veterinarian.Trim());
+                    }
+
+                    dict.Add("StudyDescription", studyDesValue);
+                    dict.Add("StudyPriority", studyPriorityValue);
+                    dict.Add("AdditionalPatientHistory", studySymptonValue);
+                    // Old Values
+                    //dict.Add("Neutered", studyDt.Rows[0]["Neutered"].ToString().Trim());
+                    dict.Add("Neutered", "UNALTERED");
+                    dict.Add("SeriesInstanceUID", "");
+                    dict.Add("Modality", "");
+                    dict.Add("BodyPart", "");
+                    dict.Add("ViewPos", "");
+                    dict.Add("SeriesDescription", "");
+                    dict.Add("OpUser", "admin");
+                    _dbHelper.UpdateStudyEdit(dict);
+
+                    //strLogMessage = string.Format(" Update Study Information For PatientName={0},PatientID={1}->"
+                    //                 + " Original Data:AcessionNo={2},StudyID={3},StudyDate={4},ReferPhysician={5},StudyDescription={6},AdditionalPatientHistory={7},"
+                    //                 + " New Data:AcessionNo={8},StudyID={9},StudyDate={10},ReferPhysician={11},StudyDescription={12},AdditionalPatientHistory={13}"
+                    //                 , strPatientNameValue.Trim(), strPatientIdValue.Trim()
+                    //                 , studyDt.Rows[0]["AccessionNo"].ToString().Trim(), studyGUID.Trim(), studyDt.Rows[0]["StudyDate"].ToString().Trim(), studyDt.Rows[0]["ReferPhysician"].ToString().Trim(), studyDt.Rows[0]["StudyDescription"].ToString().Trim(), studyDt.Rows[0]["AdditionalPatientHistory"].ToString().Trim()
+                    //                 , studyAccNumValue, studyGUID.Trim(), studyDt.Rows[0]["StudyDate"].ToString().Trim(), studyRefPhyValue.Trim(), studyDesValue.Trim(), studySymptonValue.Trim());
+
+                    //GXLogManager.WriteLog(GXLogModule.Web_PAGE_PatientEdit, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                }
+                #endregion
+
+                #region ///// Update Series
+
+                foreach (Series series in study.SeriesList)
+                {
+                    foreach (Series oldSeries in oldStudy.SeriesList)
+                    {
+                        if (oldSeries.SeriesNo == series.SeriesNo)
+                        {
+                            string strSeriesModalityValue = series.Modality ?? "";
+                            string strSeriesDescriptionValue = series.SeriesDescription ?? "";
+                            //string strSeriesKeyValue = series;
+
+                            string strSeriesUID = series.InstanceUid ?? "";
+
+                            string strBodyPart = series.BodyPart ?? "";
+                            string strViewPosition = series.ViewPosition ?? "";
+                            string strLocalBodyPart = series.LocalBodyPart ?? "";
+                            string strLocalViewPosition = series.LocalViewPosition ?? "";
+
+                            //if (strIsVetSpeciesChanged == "1")
+                            //{
+                            //    strBodyPart = strDefaultBodyPart;
+                            //    strLocalBodyPart = strDefaultLocalBodyPart;
+                            //    strViewPosition = strDefaultViewPosition;
+                            //    strLocalViewPosition = strDefaultLocalViewPosition;
+                            //}
+
+                            //DataTable dtSeries = SeriesBLL.GetTableSeries(StringWrapper.GetSplitSingleQuotesUIDs(studyGUID), StringWrapper.GetSplitSingleQuotesUIDs(strSeriesUID));
+                            //if (dtSeries.Rows.Count <= 0) return false;
+
+                            bool isSeriesUpdate = false;
+
+                            if (!(strSeriesModalityValue.Trim() == oldSeries.Modality.Trim() &&
+                                  strSeriesDescriptionValue.Trim() == oldSeries.SeriesDescription.Trim() &&
+                                  strBodyPart.Trim() == oldSeries.BodyPart.Trim() &&
+                                  strViewPosition.Trim() == oldSeries.ViewPosition.Trim() &&
+                                  strLocalBodyPart.Trim() == oldSeries.LocalBodyPart.Trim() &&
+                                  strLocalViewPosition.Trim() == oldSeries.LocalViewPosition.Trim()))
+                            {
+                                isSeriesUpdate = true;
+                            }
+
+                            if (isSeriesUpdate)
+                            {
+                                // Update Series
+                                dict.Clear();
+                                dict.Add("SeriesInstanceUID", strSeriesUID);
+                                dict.Add("Modality", strSeriesModalityValue);
+                                // Old Values
+                                dict.Add("SeriesCategory", "");
+
+                                dict.Add("SeriesBodyPart", strBodyPart);
+                                dict.Add("SeriesLocalBodypart", strLocalBodyPart);
+                                dict.Add("SeriesViewPos", strViewPosition);
+                                dict.Add("SeriesLocalViewPos", strLocalViewPosition);
+                                dict.Add("SeriesDescription", strSeriesDescriptionValue);
+                                dict.Add("SeriesOpUser", "admin");
+                                _dbHelper.UpdateSerieEdit(dict);
+                            }
+                        }
+                    }
+
+                    
+
+                    //    //strLogMessage = string.Format(" Update Series  Information For PatientName={0} ,PatientID={1},StudyInstanceUID={2}-->"
+                    //    //                 + " Original Data:Modality={3},Category={4},BodyPart={5},ViewPosition={6},SeriesDescription = {7}, "
+                    //    //                 + " New Data:Modality={8},Category={9},BodyPart={10},ViewPosition={11},SeriesDescription = {12} "
+                    //    //                 , strPatientNameValue.Trim(), strPatientIdValue.Trim(), studyGUID.Trim()
+                    //    //                 , dtSeries.Rows[0]["Modality"].ToString().Trim(), dtSeries.Rows[0]["Category"].ToString().Trim(), dtSeries.Rows[0]["LocalBodypart"].ToString().Trim(), dtSeries.Rows[0]["LocalViewPosition"].ToString().Trim(), dtSeries.Rows[0]["SeriesDescription"].ToString().Trim()
+                    //    //                 , strSeriesModalityValue.Trim(), dtSeries.Rows[0]["Category"].ToString().Trim(), strLocalBodyPart.Trim(), strLocalViewPosition.Trim(), strSeriesDescriptionValue.Trim());
+
+                    //    //GXLogManager.WriteLog(GXLogModule.Web_PAGE_PatientEdit, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //}
+                }
+                #endregion
+                /////
+                //if (strIsVetSpeciesChanged == "1" && IsVetApplication)
+                //{
+                //    DataTable dtVetSeries = SeriesBLL.GetTableSeries(StringWrapper.GetSplitSingleQuotesUIDs(studyGUID), "");
+                //    if (dtVetSeries.Rows.Count <= 0) return false;
+
+                //    foreach (DataRow dr in dtVetSeries.Rows)
+                //    {
+                //        // Update Series
+                //        dict.Clear();
+
+                //        strSeriesUID = dr["SeriesInstanceUID"].ToString().Trim();
+                //        strSeriesModalityValue = dr["Modality"].ToString().Trim();
+                //        strSeriesDescriptionValue = dr["SeriesDescription"].ToString().Trim();
+                //        string strSeriesCategory = dr["Category"].ToString().Trim();
+
+                //        dict.Add("SeriesInstanceUID", strSeriesUID);
+                //        dict.Add("Modality", strSeriesModalityValue);
+                //        dict.Add("SeriesCategory", strSeriesCategory);
+                //        dict.Add("SeriesBodyPart", strDefaultBodyPart);
+                //        dict.Add("SeriesLocalBodypart", strDefaultLocalBodyPart);
+                //        dict.Add("SeriesViewPos", strDefaultViewPosition);
+                //        dict.Add("SeriesLocalViewPos", strDefaultLocalViewPosition);
+                //        dict.Add("SeriesDescription", strSeriesDescriptionValue);
+                //        dict.Add("SeriesOpUser", SessionLevelVariable.CurrentUser.UserId);
+                //        MWLPatientDAL.UpdateSerieEdit(dict);
+
+                //        strLogMessage = string.Format(" Update Series  Information For PatientName={0} ,PatientID={1},StudyInstanceUID={2}-->"
+                //                     + " Original Data:Modality={3},Category={4},BodyPart={5},ViewPosition={6},SeriesDescription = {7}, "
+                //                     + " New Data:Modality={8},Category={9},BodyPart={10},ViewPosition={11} ,SeriesDescription = {12}"
+                //                     , strPatientNameValue.Trim(), strPatientIdValue.Trim(), studyGUID.Trim()
+                //                     , dr["Modality"].ToString().Trim(), dr["Category"].ToString().Trim(), dr["LocalBodypart"].ToString().Trim(), dr["LocalViewPosition"].ToString().Trim(), dr["SeriesDescription"].ToString().Trim()
+                //                     , strSeriesModalityValue.Trim(), strSeriesCategory.Trim(), strDefaultLocalBodyPart.Trim(), strDefaultLocalViewPosition.Trim(), strSeriesDescriptionValue.Trim());
+
+                //        //GXLogManager.WriteLog(GXLogModule.Web_PAGE_PatientEdit, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                //    }
+                //}
+
+                #endregion
+                return _commonTool.GetJsonStringFromObject("true");
+            }
+            catch (Exception e)
+            {
+                return _commonTool.GetJsonStringFromObject("false");
+
+            }
+
+
+        }
+
+
+        public static string GetPatientName(string LastName, string FirstName, string MiddleName)
+        {
+            // PatientName in DB storage format is: L^F^M
+            string PatientName = string.Join("^", new string[] { LastName, FirstName, MiddleName });
+            // Trim ^
+            PatientName = PatientName.TrimEnd(new char[] { '^' });
+
+            return PatientName;
+        }
+
+        public static DateTime GetDate(string DateString, string DateFormat, string DateSeparator)
+        {
+            try
+            {
+                string NewDateString = "";
+                foreach (string var in DateString.Split(DateSeparator.ToCharArray()))
+                {
+                    if (var.Length == 1)
+                    {
+                        NewDateString += "0" + var;
+                    }
+                    else
+                    {
+                        NewDateString += var;
+                    }
+                }
+
+                DateFormat = DateFormat.Replace(DateSeparator, "");
+                return GXWebUtilGetDate(NewDateString, DateFormat);
+            }
+            catch
+            {
+                return DateTime.MinValue;
+            }
+        }
+
+        public static DateTime GXWebUtilGetDate(string DateString, string DateFormat)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(DateString.Trim()))
+                {
+                    return DateTime.MinValue;
+                }
+
+                DateFormat = DateFormat.ToLower();
+                string year = DateString.Substring(DateFormat.IndexOf("y"), DateFormat.LastIndexOf("y") - DateFormat.IndexOf("y") + 1);
+                string month = DateString.Substring(DateFormat.IndexOf("m"), DateFormat.LastIndexOf("m") - DateFormat.IndexOf("m") + 1);
+                string day = DateString.Substring(DateFormat.IndexOf("d"), DateFormat.LastIndexOf("d") - DateFormat.IndexOf("d") + 1);
+
+                DateTime dat = new DateTime(Convert.ToInt16(year), Convert.ToInt16(month), Convert.ToInt16(day));
+                return dat;
+            }
+            catch (Exception)
+            {
+                return DateTime.MinValue;
+            }
+        }
+
+        public static string GetPatientAge(DateTime datBirthday)
+        {
+            try
+            {
+                string strTotalAge = PatientAgeParser.getPatientAge(datBirthday.ToString("yyyyMMdd"));
+                return strTotalAge;
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        [System.Web.Mvc.HttpPost]
         public string CheckStudiesIncludeOffline(RevCheckedStudiesForOffline revCheckedStudiesForOffline)
         {
-            //Dictionary<Dictionary<bool, string>, List<string>> dictResult = new Dictionary<Dictionary<bool, string>, List<string>>();
             revCheckedStudiesForOffline.StudyOfflineMessage = "";
-            // This dictionary is include study is offline and popup study offline message.
-            // If study offline on USB, should pop div loading and send socket to sms to online study.
-            //Dictionary<bool, string> dictOfflineFlag = new Dictionary<bool, string>();
-            //List<string> studyOfflineUidCDList = new List<string>();
+
             List<string> studyOfflineUidUSBList = new List<string>();
             bool isOffline = false;
 
@@ -242,13 +671,11 @@ namespace Csh.ImageSuite.WebHost.Controllers
 
                 strOfflineMessage = _dbHelper.GetStringStudyOffline(studyUIDs, "", out studyInfoModelOfflineUIDList);
 
-                    // 1.PopUp Message for study offline
+                // 1.PopUp Message for study offline
                 if (strOfflineMessage.Trim().Length > 0)
                 {
                     strPopUpStudyOfflineMessage += "\n" + strOfflineMessage;
                 }
-
-                //dictOfflineFlag.Add(true, strPopUpStudyOfflineMessage);
 
                 foreach (Study model in studyInfoModelOfflineUIDList)
                 {
@@ -263,10 +690,8 @@ namespace Csh.ImageSuite.WebHost.Controllers
             }
             else
             {
-                //dictOfflineFlag.Add(false, "");
                 isOffline = false;
             }
-            //dictResult.Add(dictOfflineFlag, studyOfflineUidUSBList);
 
             var sendCheckedStudiesForOffline = new SendCheckedStudiesForOffline
             {
@@ -624,40 +1049,6 @@ namespace Csh.ImageSuite.WebHost.Controllers
             };
         }
 
-        //public static int ReadConfigurationInt(string key)
-        //{
-        //    int result = -1;
-
-        //    try
-        //    {
-        //        string configurationValue = ReadConfiguration(key);
-        //        if (isNumberic(configurationValue))
-        //        {
-        //            result = Convert.ToInt32(configurationValue);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-
-        //    return result;
-        //}
-
-        //public static string ReadConfiguration(string key)
-        //{
-        //    string configurationValue = "";
-        //    object objConfigurationValue = ConfigurationManager.AppSettings[key];
-        //    if (objConfigurationValue != null && objConfigurationValue.ToString() != "")
-        //    {
-        //        configurationValue = objConfigurationValue.ToString();
-        //    }
-        //    return configurationValue;
-        //}
-
-        //public static bool isNumberic(string strValue)
-        //{
-        //    return Regex.IsMatch(strValue, @"^[-]?\d+[.]?\d*$");
-        //}
+ 
     }
 }

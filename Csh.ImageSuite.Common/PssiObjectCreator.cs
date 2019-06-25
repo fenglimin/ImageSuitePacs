@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using Csh.ImageSuite.Common.Interface;
 using Csh.ImageSuite.Model.Dicom;
@@ -16,7 +17,7 @@ namespace Csh.ImageSuite.Common
 
         public Patient CreatPatient(DataRow row)
         {
-            var patient = new Patient(_commonTool.GetSafeStringDbValue(row, "PatientID"))
+            var patient = new Patient()
             {
                 Id = _commonTool.GetSafeIntDbValue(row, "ID_Patient"),
                 PatientName = _commonTool.GetSafeStringDbValue(row, "PatientName"),
@@ -25,6 +26,11 @@ namespace Csh.ImageSuite.Common
                 PatientAge = _commonTool.GetSafeStringDbValue(row, "PatientAge"),
                 Breed = _commonTool.GetSafeStringDbValue(row, "Breed"),
                 Species = _commonTool.GetSafeStringDbValue(row, "Species"),
+                FirstName = _commonTool.GetSafeStringDbValue(row, "FirstName"),
+                LastName = _commonTool.GetSafeStringDbValue(row, "LastName"),
+                MiddleName = _commonTool.GetSafeStringDbValue(row, "MiddleName"),
+                PatientComments = _commonTool.GetSafeStringDbValue(row, "PatientComments"),
+                PatientId = _commonTool.GetSafeStringDbValue(row, "PatientID")
             };
 
             return patient;
@@ -32,7 +38,8 @@ namespace Csh.ImageSuite.Common
 
         public Study CreateStudy(DataRow row)
         {
-            var study = new Study(_commonTool.GetSafeStringDbValue(row, "StudyInstanceUID"))
+            //var study = new Study(_commonTool.GetSafeStringDbValue(row, "StudyInstanceUID"))
+            var study = new Study()
             {
                 Id = _commonTool.GetSafeIntDbValue(row, "ID_Study"),
                 AccessionNo = _commonTool.GetSafeStringDbValue(row, "AccessionNo"),
@@ -52,7 +59,9 @@ namespace Csh.ImageSuite.Common
                 Readed = _commonTool.GetSafeStringDbValue(row, "Readed"),
                 InstanceAvailability = _commonTool.GetSafeStringDbValue(row, "InstanceAvailability"),
                 ScanStatus = _commonTool.GetSafeStringDbValue(row, "ScanStatus"),
-                Send = _commonTool.GetSafeIntDbValue(row, "Send")
+                Send = _commonTool.GetSafeIntDbValue(row, "Send"),
+                SeriesList = new List<Series>(),
+                StudyInstanceUid = _commonTool.GetSafeStringDbValue(row, "StudyInstanceUID")
             };
 
             return study;
@@ -60,7 +69,7 @@ namespace Csh.ImageSuite.Common
 
         public Series CreateSeries(DataRow row)
         {
-            var series = new Series(_commonTool.GetSafeStringDbValue(row, "SeriesInstanceUID"))
+            var series = new Series()
             {
                 Id = _commonTool.GetSafeIntDbValue(row, "ID_Series"),
                 BodyPart = _commonTool.GetSafeStringDbValue(row, "BodyPart"),
@@ -76,8 +85,10 @@ namespace Csh.ImageSuite.Common
                 OperatorName = _commonTool.GetSafeStringDbValue(row, "OperatorName"),
                 ReferHospital = _commonTool.GetSafeStringDbValue(row, "ReferHospital"),
                 PatientPosition = _commonTool.GetSafeStringDbValue(row, "PatientPosition"),
-                LocalViewPosition = _commonTool.GetSafeStringDbValue(row, "LocalViewPosition")
-            };
+                LocalViewPosition = _commonTool.GetSafeStringDbValue(row, "LocalViewPosition"),
+                InstanceUid = _commonTool.GetSafeStringDbValue(row, "SeriesInstanceUID"),
+                ImageList = new List<Image>()
+        };
 
             return series;
         }

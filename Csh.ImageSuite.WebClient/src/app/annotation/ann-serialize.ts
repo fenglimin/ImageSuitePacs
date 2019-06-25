@@ -1,30 +1,19 @@
-﻿import { Point, Size, Rectangle, PositionInRectangle } from '../models/annotation';
+﻿import { Point } from '../models/annotation';
 import { IImageViewer } from "../interfaces/image-viewer-interface";
-import { AnnLine } from "./extend-object/ann-line";
-import { AnnArrow } from "./extend-object/ann-arrow";
-import { AnnRectangle } from "./extend-object/ann-rectangle";
-import { AnnPolygon } from "./extend-object/ann-polygon";
-import { AnnAngle } from "./extend-object/ann-angle";
 import { AnnExtendObject } from "./extend-object/ann-extend-object";
-import { AnnCervicalCurve } from "./extend-object/ann-cervical-curve";
-import { AnnLumbarCurve } from "./extend-object/ann-lumbar-curve";
-import { AnnImage } from "./extend-object/ann-image";
-import { AnnEllipse } from "./extend-object/ann-ellipse";
-import { AnnRuler } from "./extend-object/ann-ruler";
-import { AnnVerticalAxis } from "./extend-object/ann-vertical-axis";
-import { AnnMarkSpot } from "./extend-object/ann-mark-spot";
-import { AnnCardiothoracicRatio } from "./extend-object/ann-cardiothoracic-ratio";
-import { AnnFreeArea } from "./extend-object/ann-free-area";
+import { AnnotationService } from "../services/annotation.service";
 
 export class AnnSerialize {
     annData: Uint8Array;
     imageViewer: IImageViewer;
     annString = "";
     version = 1023;
+    annotationService: AnnotationService;
 
     constructor(annData: Uint8Array, imageViewer: IImageViewer) {
         this.annData = annData;
         this.imageViewer = imageViewer;
+        this.annotationService = imageViewer.getAnnotationService();
     }
 
     createAnn(): boolean {
@@ -38,75 +27,15 @@ export class AnnSerialize {
         this.version = this.readInteger(4);
         const annCount = this.readInteger(4);
 
-        
         for (let i = 0; i < annCount; i++) {
-            let annObj = undefined;
-            let config = undefined;
-            const annName = this.readString();
-            switch (annName) {
-                case "CGXAnnLineEx":
-                    annObj = new AnnLine(undefined, this.imageViewer);
-                    config = this.loadLine();
-                    break;
-                case "CGXAnnArrowMark":
-                    annObj = new AnnArrow(undefined, this.imageViewer);
-                    config = this.loadArrow();
-                    break;
-                case "CGXAnnSquare":
-                    annObj = new AnnRectangle(undefined, this.imageViewer);
-                    config = this.loadRectangle();
-                    break;
-                case "CGXAnnPolygon":
-                    annObj = new AnnPolygon(undefined, this.imageViewer);
-                    config = this.loadPolygon();
-                    break;
-                case "CGXAnnProtractor":
-                    annObj = new AnnAngle(undefined, this.imageViewer);
-                    config = this.loadAngle();
-                    break;
-                case "CGXAnnCervicalCurve":
-                    annObj = new AnnCervicalCurve(undefined, this.imageViewer);
-                    config = this.loadCurve();
-                    break;
-                case "CGXAnnLumbarCurve":
-                    annObj = new AnnLumbarCurve(undefined, this.imageViewer);
-                    config = this.loadCurve();
-                    break;
-                case "CGXAnnStamp":
-                    annObj = new AnnImage(undefined, this.imageViewer);
-                    config = this.loadImage();
-                    break;
-                case "CGXAnnEllipse":
-                    annObj = new AnnEllipse(undefined, this.imageViewer);
-                    config = this.loadEllipse();
-                    break;
-                case "CGXAnnRuler":
-                    annObj = new AnnRuler(undefined, this.imageViewer);
-                    config = this.loadRuler();
-                    break;
-                case "CGXAnnVAxis":
-                    annObj = new AnnVerticalAxis(undefined, this.imageViewer);
-                    config = this.loadVerticalAxis();
-                    break;
-                case "CGXAnnMarkSpot":
-                    annObj = new AnnMarkSpot(undefined, this.imageViewer);
-                    config = this.loadMarkSpot();
-                    break;
-                case "CGXAnnHCRatio":
-                    annObj = new AnnCardiothoracicRatio(undefined, this.imageViewer);
-                    config = this.loadCardiothoracicRatio();
-                    break;
-                case "CGXAnnFreeArea":
-                    annObj = new AnnFreeArea(undefined, this.imageViewer);
-                    config = this.loadFreeArea();
-                    break;
-                default:
-                    alert("Unknown annotation " + annName);
+            const annIsName = this.readString();
+            const annDefData = this.annotationService.getAnnDefDataByIsName(annIsName);
+            if (!annDefData) {
+                return false;
             }
 
-            if (annObj) {
-                annObj.onLoad(config);
-            }
+            const annObj = new annDefData.classType(undefined, this.imageViewer);
+            annObj.onLoad(this);
         }
 
         return annCount > 0;
@@ -565,6 +494,6 @@ export class AnnSerialize {
             this.loadBaseLine();
         }
 
-        return { pointList: pointList }
+        return { pointList: pointList, selected: selected }
     }
 }

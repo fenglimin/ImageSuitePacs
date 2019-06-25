@@ -58,6 +58,15 @@ namespace Csh.ImageSuite.Common.Interface
 
         void AddCDJob(List<string> studyUidList);
 
+        string GetDateFormat(out string strDateSeparator);
+
+        int UpdatePatientEdit(Dictionary<string, string> dict);
+
+        int SyncACQPatient(Dictionary<string, string> dict);
+
+        int UpdateStudyEdit(Dictionary<string, string> dict);
+
+        int UpdateSerieEdit(Dictionary<string, string> dict);
 
     }
 }

@@ -9,9 +9,6 @@ export class AnnMarkSpot extends AnnExtendObject {
 
     constructor(parent: AnnExtendObject, imageViewer: IImageViewer) {
         super(parent, imageViewer);
-
-        this.guideNeeded = true;
-        this.annTypeName = "Mark Spot";
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +49,10 @@ export class AnnMarkSpot extends AnnExtendObject {
         for (let i = 0; i < pointList.length; i ++) {
             this.createNewPoint(pointList[i]);
         }
+    }
+
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadMarkSpot();
     }
 
     onCreateFromConfig(config: any) {

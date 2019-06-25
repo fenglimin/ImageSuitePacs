@@ -6,11 +6,11 @@ namespace Csh.ImageSuite.Model.Dicom
 {
     public class Series
     {
-        public Series(string uid)
-        {
-            InstanceUid = uid;
-            ImageList = new List<Image>();
-        }
+        //public Series(string uid)
+        //{
+        //    InstanceUid = uid;
+        //    ImageList = new List<Image>();
+        //}
 
         public int Id { get; set; }
 
@@ -35,7 +35,7 @@ namespace Csh.ImageSuite.Model.Dicom
         [Display(Name = "Image Count")]
         public int ImageCount { get; set; }
 
-        public List<Image> ImageList { get; private set; }
+        public List<Image> ImageList { get; set; }
 
         public string ContrastBolus { get; set; }
 

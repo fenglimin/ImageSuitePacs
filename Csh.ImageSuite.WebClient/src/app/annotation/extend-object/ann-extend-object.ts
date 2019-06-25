@@ -1,4 +1,4 @@
-﻿import { Point, MouseEventType, Rectangle } from '../../models/annotation';
+﻿import { Point, MouseEventType, Rectangle, AnnotationDefinitionData } from '../../models/annotation';
 import { AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnSerialize } from "../ann-serialize";
@@ -7,31 +7,22 @@ export abstract class AnnExtendObject extends AnnObject {
 
     protected annObjList: Array<AnnObject> = [];
     protected loadedFromTag = false;   // The annotation is created when loading image
-    protected guideNeeded = false;
-    protected annTypeName: string;
+    protected annDefData: AnnotationDefinitionData;
 
     constructor(parentObj: AnnExtendObject, imageViewer: IImageViewer) {
-
         super(parentObj, imageViewer);
+        this.annDefData = imageViewer.getAnnotationService().getAnnDefDataByClassName(this.constructor.name);
         if (parentObj) {
             parentObj.onChildCreated(this);
         }
     }
 
     getTypeName() {
-        return this.annTypeName;
-    }
-
-    setTypeName(annTypeName: string) {
-        this.annTypeName = annTypeName;
-    }
-
-    setGuideNeeded(guideNeeded: boolean) {
-        this.guideNeeded = guideNeeded;
+        return this.annDefData.className;
     }
 
     isGuideNeeded(): boolean {
-        return this.guideNeeded;
+        return this.annDefData.needGuide;
     }
 
     isLoadedFromTag(): boolean {
@@ -169,8 +160,9 @@ export abstract class AnnExtendObject extends AnnObject {
         this.annObjList.forEach(annObj => annObj.setVisible(visible));
     }
 
-    onLoad(config: any) {
+    onLoad(annSerialize: AnnSerialize) {
         this.loadedFromTag = true;
+        const config = this.onLoadConfig(annSerialize);
         this.onCreateFromConfig(config);
         this.onSelect(config.selected, config.selected);
         if (!this.parentObj) {
@@ -179,11 +171,19 @@ export abstract class AnnExtendObject extends AnnObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        alert("Internal error : AnnExtendObject.onSave() should never be called.");
+        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
+        annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4);     // AnnType
+        annSerialize.writeInteger(1, 4);     // created
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
     }
 
     onCreateFromConfig(config: any) {
         alert("Internal error : AnnExtendObject.onCreateFromConfig() should never be called.");
+        return undefined;
+    }
+
+    onLoadConfig(annSerialize: AnnSerialize) {
+        alert("Internal error : AnnExtendObject.onLoadConfig() should never be called.");
         return undefined;
     }
 

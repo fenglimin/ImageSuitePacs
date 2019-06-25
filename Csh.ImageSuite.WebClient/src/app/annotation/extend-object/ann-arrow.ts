@@ -56,6 +56,10 @@ export class AnnArrow extends AnnExtendObject {
         this.redrawArrow(arrowStartPoint, arrowEndPoint);
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadArrow();
+    }
+
     onCreateFromConfig(config: any) {
         this.onCreate(config.startPoint, config.endPoint);
         this.focusedObj = this.annLine;

@@ -98,6 +98,10 @@ export class AnnImage extends AnnExtendObject {
         annSerialize.writeInteger(0, 4);
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadImage();
+    }
+
     onCreateFromConfig(config: any) {
         this.selected = config.selected;
         this.onCreate(config.imageFileName, config.topLeftPoint, config.bottomRightPoint);

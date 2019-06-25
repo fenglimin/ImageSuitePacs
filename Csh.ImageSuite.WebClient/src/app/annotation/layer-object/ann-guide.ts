@@ -83,21 +83,21 @@ export class AnnGuide {
     }
 
     static createAnnGuideDataList() {
-        const annGuideCervicalCurve = new AnnGuideData("Cervical Curve");
+        const annGuideCervicalCurve = new AnnGuideData("AnnCervicalCurve");
         annGuideCervicalCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnCervicalCurve_01.png", "Step 1. Click to place a point on the center of the anterior tubercle of the anterior arch"));
         annGuideCervicalCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnCervicalCurve_02.png", "Step 2. Click to place a point on the top center of the first thoracic vertebrae"));
         annGuideCervicalCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnCervicalCurve_03.png", "Step 3. Click on either side of the line to flip the curve. Move center point to change radius of curve",
             "Step 3. Move center point to change radius of curve"));
         this.annGuideDataList.push(annGuideCervicalCurve);
 
-        const annGuideLumbarCurve = new AnnGuideData("Lumbar Curve");
+        const annGuideLumbarCurve = new AnnGuideData("AnnLumbarCurve");
         annGuideLumbarCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnLumbarCurve_01.png", "Step 1. Click to place a point on center of 12th thoracic vertebrae"));
         annGuideLumbarCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnLumbarCurve_02.png", "Step 2. Click to place a point on top center of sacrum"));
         annGuideLumbarCurve.addStepConfig(new AnnGuideStepConfig("CGXAnnLumbarCurve_03.png", "Step 3. Click either side of line to flip curve.Move center point to change radius of curve",
             "Step 3. Move center point to change radius of curve"));
         this.annGuideDataList.push(annGuideLumbarCurve);
 
-        const annCardiothoracicRatio = new AnnGuideData("Cardiothoracic Ratio");
+        const annCardiothoracicRatio = new AnnGuideData("AnnCardiothoracicRatio");
         annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_01.png", "Step 1. Click to place a point on the highest point of the spine"));
         annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_02.png", "Step 2. Click to place a point on the lowest point of the spine"));
         annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_03.png", "Step 3. Click to place a point on the right side of the heart at its widest point"));
@@ -106,7 +106,7 @@ export class AnnGuide {
         annCardiothoracicRatio.addStepConfig(new AnnGuideStepConfig("CGXAnnHCRatio_06.png", "Step 6. Click to place a point on the left side of the chest at its widest point"));
         this.annGuideDataList.push(annCardiothoracicRatio);
 
-        const annGuideMarkSpot = new AnnGuideData("Mark Spot");
+        const annGuideMarkSpot = new AnnGuideData("AnnMarkSpot");
         annGuideMarkSpot.addStepConfig(new AnnGuideStepConfig("CGXAnnMarkSpot_01.png", "Step 1.Click to place point(s) on the anatomy. Double Click when complete"));
         this.annGuideDataList.push(annGuideMarkSpot);
     }

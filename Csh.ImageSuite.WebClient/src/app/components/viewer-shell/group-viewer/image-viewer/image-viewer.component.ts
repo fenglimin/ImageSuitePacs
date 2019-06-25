@@ -2,6 +2,7 @@ import { Component, OnInit, Input, AfterContentInit, ViewChild, ElementRef, NgZo
 import { Location, LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { ImageSelectorService } from "../../../../services/image-selector.service";
 import { DicomImageService } from "../../../../services/dicom-image.service";
+import { AnnotationService } from "../../../../services/annotation.service";
 import { ViewContextEnum, ViewContext, OperationEnum, OperationData, ViewContextService } from "../../../../services/view-context.service"
 import { Subscription } from "rxjs";
 import { Image as DicomImage } from "../../../../models/pssi";
@@ -128,7 +129,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         public worklistService: WorklistService,
         private dialogService: DialogService,
         private logService: LogService,
-        private ngZone: NgZone) {
+        private ngZone: NgZone,
+        private annotationService: AnnotationService) {
 
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
             viewerImageData => {
@@ -497,6 +499,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     refresh() {
         this.redraw(1);
+    }
+
+    getAnnotationService(): AnnotationService {
+        return this.annotationService;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
 
@@ -916,7 +922,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 break;
 
             case ViewContextEnum.CreateAnn:
-                cursor = cursorUrl.format(curContext.data.cursorName);
+                const cursorName = this.annotationService.getCursorNameByType(curContext.data);
+                cursor = cursorUrl.format(cursorName);
                 break;
         }
 
@@ -929,10 +936,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         const curContext = this.viewContext.curContext;
         if (curContext.action === ViewContextEnum.CreateAnn) {
-            if (curContext.data.needGuide) {
-                this.annGuide.show(curContext.data.className);
+            const annDefData = this.annotationService.getAnnDefDataByType(curContext.data);
+            if (!annDefData) return;
+
+            if (annDefData.needGuide) {
+                this.annGuide.show(annDefData.className);
                 this.redraw(1);
-            } else if (curContext.data.cursorName === "ann_stamp") {
+            } else if (annDefData.cursorName === "ann_stamp") {
                 this.selectMarker();
             }
         }
@@ -1858,11 +1868,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private startCreateAnnAtPoint(point: Point) {
         this.updateImageTransform();
-        const annType = this.viewContext.curContext.data.classType;
-        this.curSelectObj = new annType(undefined, this);
-        if (this.viewContext.curContext.data.needGuide) {
-            this.curSelectObj.setTypeName(this.viewContext.curContext.data.className);
-            this.curSelectObj.setGuideNeeded(true);
+
+        const annDefData = this.annotationService.getAnnDefDataByType(this.viewContext.curContext.data);
+        if (!annDefData) return;
+
+        this.curSelectObj = new annDefData.classType(undefined, this);
+        if (annDefData.needGuide) {
             this.annGuide.setGuideTargetObj(this.curSelectObj);
         }
         this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point, null);

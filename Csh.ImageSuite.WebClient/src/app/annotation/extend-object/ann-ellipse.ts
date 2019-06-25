@@ -65,6 +65,10 @@ export class AnnEllipse extends AnnExtendObject {
         this.createFromPointList(pointList);
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadEllipse();
+    }
+
     onCreateFromConfig(config: any) {
         this.onCreate(config.centerPoint, config.width, config.height, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
         this.focusedObj = this.annBaseEllipse;

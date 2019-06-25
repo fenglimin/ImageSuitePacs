@@ -65,7 +65,8 @@ export class WorklistComponent implements OnInit {
     orderHeader = ""; 
 
     initStudyDate: DateRange;
-    
+
+    myplaceHolder: string = 'Enter Name';
 
 
     fromDateChanged(type: string, event: MatDatepickerInputEvent<Date>) {
@@ -113,16 +114,16 @@ export class WorklistComponent implements OnInit {
     }
 
     onStudyChecked(study: Study) {
-        study.checked = !study.checked;
+        study.studyChecked = !study.studyChecked;
         this.onCheckStudyChanged();
     }
 
     onAllStudyChecked(event) {
-        this.worklistService.studies.forEach(study => study.checked = event.target.checked);
+        this.worklistService.studies.forEach(study => study.studyChecked = event.target.studyChecked);
     }
 
     doShowStudy(study: Study) {
-        study.checked = true;
+        study.studyChecked = true;
         this.worklistService.onShowSingleStudy(study);
     }
 
@@ -185,5 +186,15 @@ export class WorklistComponent implements OnInit {
 
     onCheckStudyChanged() {
         this.worklistService.onCheckStudyChanged();
+    }
+
+    checkPlaceHolder() {
+        if (this.myplaceHolder) {
+            this.myplaceHolder = null;
+            return;
+        } else {
+            this.myplaceHolder = 'Enter Name';
+            return;
+        }
     }
 }

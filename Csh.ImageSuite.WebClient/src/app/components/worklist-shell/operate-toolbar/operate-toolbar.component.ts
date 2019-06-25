@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { WorklistService } from "../../../services/worklist.service";
 import { DialogService } from "../../../services/dialog.service";
 import { MessageBoxType, MessageBoxContent, DialogResult } from "../../../models/messageBox";
+import { PatientEditComponent } from "../worklist/patient-edit/patient-edit.component";
 
 @Component({
     selector: "app-operate-toolbar",
@@ -48,7 +49,11 @@ export class OperateToolbarComponent implements OnInit {
     }
 
     onTagEdit() {
-
+        this.dialogService.showDialog(PatientEditComponent, this.worklistService.checkedSingleStudy).subscribe(
+            val => {
+                //this.getStudyDate(val);
+            }
+        );
     }
 
     onDeletePrevent() {
@@ -60,11 +65,6 @@ export class OperateToolbarComponent implements OnInit {
     }
 
     onDeleteStudy() {
-        //this.dialogService.showDialog(DeleteStudyDialogComponent, 0).subscribe(
-        //    deletionReason => {
-        //        this.worklistService.onDeleteStudy(deletionReason);
-        //    }
-        //);
 
         const content = new MessageBoxContent();
         content.title = "Deletion Reason";

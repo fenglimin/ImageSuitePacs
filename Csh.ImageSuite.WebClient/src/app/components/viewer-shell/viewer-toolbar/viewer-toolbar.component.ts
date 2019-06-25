@@ -1,25 +1,10 @@
 import { Component, OnInit, EventEmitter, Output } from "@angular/core";
-
 import { ImageSelectorService } from "../../../services/image-selector.service";
 import { OperationEnum, ViewContextEnum, ViewContext, ViewContextService } from "../../../services/view-context.service";
 import { SelectedButtonData } from "../../../models/dropdown-button-menu-data";
 import { ConfigurationService } from "../../../services/configuration.service";
+import { AnnType } from "../../../models/annotation";
 
-import { Annotation } from "../../../models/annotation";
-import { AnnLine } from "../../../annotation/extend-object/ann-line";
-import { AnnEllipse } from "../../../annotation/extend-object/ann-ellipse";
-import { AnnRectangle } from "../../../annotation/extend-object/ann-rectangle";
-import { AnnArrow } from "../../../annotation/extend-object/ann-arrow";
-import { AnnRuler } from "../../../annotation/extend-object/ann-ruler";
-import { AnnCardiothoracicRatio } from "../../../annotation/extend-object/ann-cardiothoracic-ratio";
-import { AnnVerticalAxis } from "../../../annotation/extend-object/ann-vertical-axis";
-import { AnnMarkSpot } from "../../../annotation/extend-object/ann-mark-spot";
-import { AnnImage } from "../../../annotation/extend-object/ann-image";
-import { AnnPolygon } from "../../../annotation/extend-object/ann-polygon";
-import { AnnAngle } from "../../../annotation/extend-object/ann-angle";
-import { AnnCervicalCurve } from "../../../annotation/extend-object/ann-cervical-curve";
-import { AnnLumbarCurve } from "../../../annotation/extend-object/ann-lumbar-curve";
-import { AnnFreeArea } from "../../../annotation/extend-object/ann-free-area";
 
 @Component({
     selector: "app-viewer-toolbar",
@@ -95,47 +80,32 @@ export class ViewerToolbarComponent implements OnInit {
     };
 
     simpleAnnotation1ButtonMenu: SelectedButtonData[] = [
-        { name: "ann_line", tip: "Line", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnLine, "Line", "ann_line", false))}},
-        { name: "ann_angle", tip: "Angle", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnAngle, "Angle", "ann_angle", false))}},
-        { name: "ann_arrow", tip: "Arrow", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnArrow, "Arrow", "ann_line", false))}},
-        { name: "ann_vaxis", tip: "Vertical Axis", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnVerticalAxis, "Vertical Axis", "ann_cervicalcurve", false))}},
-        { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnMarkSpot, "Mark Spot", "ann_line", true))}},
-        { name: "ann_freearea", tip: "Free Area", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnFreeArea, "Free Area", "ann_freearea", false))}}
+        { name: "ann_line", tip: "Line", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.LineExt)}},
+        { name: "ann_angle", tip: "Angle", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Protractor)}},
+        { name: "ann_arrow", tip: "Arrow", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Arrow)}},
+        { name: "ann_vaxis", tip: "Vertical Axis", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Vaxis)}},
+        { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.MarkSpot)}},
+        { name: "ann_freearea", tip: "Free Area", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.FreeArea)}}
     ];
 
     simpleAnnotation2ButtonMenu: SelectedButtonData[] = [
-        { name: "ann_ellipse", tip: "Eclipse", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnEllipse, "Ellipse", "ellipse", false))}},
-        { name: "ann_polygon", tip: "Polygon", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnPolygon, "Polygon", "polygon", false))}},
-        { name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnRectangle, "Rectangle", "rect", false))}},
-        { name: "ann_ruler", tip: "Ruler", operationData: {type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnRuler, "Ruler", "ann_line", false))}}
+        { name: "ann_ellipse", tip: "Eclipse", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Ellipse)}},
+        { name: "ann_polygon", tip: "Polygon", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Polygon)}},
+        { name: "ann_rectangle", tip: "Rectangle", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Rect)}},
+        { name: "ann_ruler", tip: "Ruler", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Ruler)}}
     ];
 
     extendAnnotation1ButtonMenu: SelectedButtonData[] = [
-        { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnCervicalCurve, "Cervical Curve", "ann_cervicalcurve", true))}},
-        { name: "ann_lumbarcurve", tip: "Lumbar Curve", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnLumbarCurve, "Lumbar Curve", "ann_cervicalcurve", true))}}
+        { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.CervicalCurve)}},
+        { name: "ann_lumbarcurve", tip: "Lumbar Curve", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.LumbarCurve)}}
     ];
 
     extendAnnotation2ButtonMenu: SelectedButtonData[] = [
-        { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnCardiothoracicRatio, "Cardiothoracic Ratio", "ann_cervicalcurve", true))}}
+        { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.HeartChestRatio)}}
     ];
 
     markerButtonMenu: SelectedButtonData = {
-        name: "ann_stamp", tip: "Markers", operationData: { type: OperationEnum.SetContext, data:
-            new ViewContext(ViewContextEnum.CreateAnn, new Annotation(AnnImage, "Marker", "ann_stamp", false))
-        }
+        name: "ann_stamp", tip: "Markers", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Stamp) }
     };
 
     private baseUrl: string;

@@ -20,6 +20,7 @@ export class Patient extends Pssi {
     patientAge: string;
     breed: string;
     species: string;
+    patientComments: string;
 
     studyList: Array<Study>;
 
@@ -42,6 +43,7 @@ export class Patient extends Pssi {
         clonedPatient.patientAge = patient.patientAge;
         clonedPatient.breed = patient.breed;
         clonedPatient.species = patient.species;
+        clonedPatient.patientComments = patient.patientComments;
 
         clonedPatient.studyList = new Array<Study>();
         if (cloneChild) {
@@ -58,7 +60,7 @@ export class Patient extends Pssi {
 
 export class Study extends Pssi {
 
-    checked: boolean;
+    studyChecked: boolean;
     detailsLoaded: boolean;
 
     studyInstanceUid: string;
@@ -97,7 +99,7 @@ export class Study extends Pssi {
     static clone(study: Study, cloneChild: boolean): Study {
         const clonedStudy = new Study();
 
-        clonedStudy.checked = study.checked;
+        clonedStudy.studyChecked = study.studyChecked;
         clonedStudy.detailsLoaded = study.detailsLoaded;
 
         clonedStudy.id = study.id;
@@ -138,7 +140,7 @@ export class Series extends Pssi {
     seriesTimeString: string;
     bodyPart: string;
     viewPosition: string;
-    seriesNumber: number;
+    seriesNo: number;
     imageCount: number;
     contrastBolus: string;
     localBodyPart: string;
@@ -166,7 +168,7 @@ export class Series extends Pssi {
         clonedSeries.seriesTimeString = series.seriesTimeString;
         clonedSeries.bodyPart = series.bodyPart;
         clonedSeries.viewPosition = series.viewPosition;
-        clonedSeries.seriesNumber = series.seriesNumber;
+        clonedSeries.seriesNo = series.seriesNo;
         clonedSeries.imageCount = series.imageCount;
         clonedSeries.contrastBolus = series.contrastBolus;
         clonedSeries.localBodyPart = series.localBodyPart;
@@ -355,5 +357,82 @@ export class RecOfflineImageInfo {
     public isOffline: boolean;
     public studyOfflineUidUSBList: string[];
     public popUpStudyOfflineMessage: string;
+
+}
+
+export class StudyTemp extends Pssi {
+
+    studyChecked: boolean;
+    detailsLoaded: boolean;
+
+    studyInstanceUid: string;
+    studyId: string;
+    studyDate: string;
+    studyTime: string;
+    accessionNo: string;
+    seriesCount: number;
+    imageCount: number;
+    modality: string;
+    studyDescription: string;
+    referPhysician: string;
+    tokenId: string;
+    additionalPatientHistory: string;
+    veterinarian: string;
+    requestedProcPriority: string;
+
+    instanceAvailability: string;
+    printed: string;
+    reserved: string;
+    readed: string;
+    scanStatus: string;
+
+    accessGroups: string;
+    send: number;
+
+    patient: PatientTemp;
+    seriesList: Array<Series>;
+    bodyPartList: Array<string>;
+
+    setHide(hide: boolean) {
+        this.hide = hide;
+        this.seriesList.forEach(series => series.setHide(hide));
+    }
+
+    static clone(study: Study, cloneChild: boolean): Study {
+        const clonedStudy = new Study();
+
+        clonedStudy.studyChecked = study.studyChecked;
+        clonedStudy.detailsLoaded = study.detailsLoaded;
+
+        clonedStudy.id = study.id;
+        clonedStudy.studyId = study.studyId;
+        clonedStudy.studyInstanceUid = study.studyInstanceUid;
+        clonedStudy.studyDate = study.studyDate;
+        clonedStudy.studyTime = study.studyTime;
+        clonedStudy.accessionNo = study.accessionNo;
+        clonedStudy.seriesCount = study.seriesCount;
+        clonedStudy.imageCount = study.imageCount;
+        clonedStudy.modality = study.modality;
+        clonedStudy.studyDescription = study.studyDescription;
+        clonedStudy.referPhysician = study.referPhysician;
+        clonedStudy.tokenId = study.tokenId;
+        clonedStudy.additionalPatientHistory = study.additionalPatientHistory;
+        clonedStudy.veterinarian = study.veterinarian;
+        clonedStudy.requestedProcPriority = study.requestedProcPriority;
+
+        clonedStudy.seriesList = new Array<Series>();
+        if (cloneChild) {
+            study.seriesList.forEach(series => {
+                const clonedSeries = Series.clone(series, cloneChild);
+                clonedSeries.study = clonedStudy;
+                clonedStudy.seriesList.push(clonedSeries);
+            });
+        }
+
+        return clonedStudy;
+    }
+}
+
+class PatientTemp {
 
 }

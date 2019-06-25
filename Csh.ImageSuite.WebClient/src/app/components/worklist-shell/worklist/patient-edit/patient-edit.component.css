@@ -10,14 +10,20 @@
 .mat-dialog-content {
     color: white;
     font-size: 15px;
-    height: 100px;
-    min-width: 200px;
+    height: 800px;
+    min-width: 650px;
     padding: 10px 10px;
 }
 
 .mat-dialog-actions { margin-right: -12px; }
 
-.mat-form-field { }
+.mat-form-field {
+    width: 100%;
+}
+
+/*div.mat-form-field-infix {
+    width: 100%;
+}*/
 
 .mat-raised-button {
     background-color: #444;
@@ -41,5 +47,40 @@
     color: green;
 }
 
-.mat-input-element { caret-color: #F90; }
+.mat-input-element {
+    width: 100%;
+    caret-color: #F90;
+}
 
+/*.mat-list-item-content {
+    color: white;
+}*/
+
+td {
+    padding: 3px;
+}
+
+input {
+    background: #000000;
+    caret-color:orange;
+    border: 1px solid #000000;
+    width: 100%;
+}
+
+input:focus{
+    /*border: 1px solid orange;*/
+    outline: none !important;
+    border-bottom:1px solid orange;
+}
+
+input:disabled{
+    color:#ACA899;
+}
+
+::-webkit-inner-spin-button { display: none; }
+
+select {
+    background-color: black;
+    border: 1px solid #444;
+    width: 100%;
+}

@@ -68,6 +68,10 @@ export class AnnLine extends AnnExtendObject {
         this.focusedObj = this.annBaseLine;
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadLine();
+    }
+
     onCreateFromConfig(config: any) {
         this.onCreate(config.startPoint, config.endPoint);
         this.focusedObj = this.annBaseLine;

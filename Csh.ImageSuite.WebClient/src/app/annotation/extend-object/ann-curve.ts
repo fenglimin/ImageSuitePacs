@@ -79,12 +79,18 @@ export class AnnCurve extends AnnExtendObject {
         this.redraw(pointList[0], pointList[1], pointList[2]);
     }
 
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadCurve();
+    }
+
     onCreateFromConfig(config: any) {
         this.onCreate(config.pointList, config.textIndicator.startPoint, config.textIndicator.endPoint);
         this.focusedObj = this.annStartPoint;
     }
 
     onSave(annSerialize: AnnSerialize) {
+        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
+        annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4);     // AnnType
         annSerialize.writeInteger(1, 4);     // created
         annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
 

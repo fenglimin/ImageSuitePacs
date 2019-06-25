@@ -6,11 +6,11 @@ namespace Csh.ImageSuite.Model.Dicom
 {
     public class Study
     {
-        public Study(string uid)
-        {
-            StudyInstanceUid = uid;
-            SeriesList = new List<Series>();
-        }
+        //public Study(string uid)
+        //{
+        //    StudyInstanceUid = uid;
+        //    SeriesList = new List<Series>();
+        //}
 
         public int Id { get; set; }
 
@@ -37,7 +37,7 @@ namespace Csh.ImageSuite.Model.Dicom
 
         //public DateTime AcceptTime { get; }
 
-        public List<Series> SeriesList { get; private set; }
+        public List<Series> SeriesList { get; set; }
 
         public List<string> BodyPartList { get; set; }
 
@@ -97,6 +97,8 @@ namespace Csh.ImageSuite.Model.Dicom
         public bool IsCDOffline { get; set; }
 
         public string OfflinePopupMessage { get; set; }
+
+        public bool StudyChecked { get; set; }
 
 
     }

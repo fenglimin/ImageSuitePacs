@@ -28,7 +28,7 @@ body {
 input,
 select,
 textarea {
-  max-width: 280px;
+  max-width: 1000px;
 }
 
 #bodyLayout .navbar-fixed-top{

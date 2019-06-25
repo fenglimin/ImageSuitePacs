@@ -41,7 +41,7 @@
                                         <tr>
                                             <td>
                                                 <mat-form-field>
-                                                    <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" placeholder="From" [(ngModel)]="worklistService.shortcut.studyDateFrom" />
+                                                    <input matInput [matDatepicker]="picker1" [min]="fromMinDate" [max]="fromMaxDate" [(ngModel)]="worklistService.shortcut.studyDateFrom"/>
                                                     <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
                                                     <mat-datepicker #picker1></mat-datepicker>
                                                 </mat-form-field>
@@ -91,7 +91,7 @@
         <tbody>
             <tr *ngFor="let study of worklistService.studies">
                 <td>
-                    <input type="checkbox" [(ngModel)]="study.checked" (change)="onCheckStudyChanged()" />
+                    <input type="checkbox" [(ngModel)]="study.studyChecked" (change)="onCheckStudyChanged()" />
                 </td>
                 <td>
                     <div *ngIf="study.scanStatus == 'Ended'; else scanStatusCompleted" class="setReadCover">

@@ -4,7 +4,7 @@ import { Observable, of } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 
 import { Shortcut } from '../models/shortcut';
-import { Patient, Study, Series, Image, RecWorklistData, RecOfflineImageInfo } from '../models/pssi';
+import { Patient, Study, Series, Image, RecWorklistData, RecOfflineImageInfo, StudyTemp } from '../models/pssi';
 import { TextOverlayData } from '../models/overlay';
 import { FontData, MarkerGroupData } from '../models/misc-data';
 
@@ -90,6 +90,17 @@ export class DatabaseService {
             .pipe(
                 tap(shortcut => this.log("save shortcut")),
                 catchError(this.handleError("saveShortcut", []))
+            );
+    }
+
+    /** Save study to the server */
+    updateStudy(study: Study): Observable<boolean> {
+        const url = `${this.pssiUrl}/updateStudy/`;
+        //let jsonId = { study: study };
+        return this.http.post<boolean>(url, study, httpOptions)
+            .pipe(
+                tap(study => this.log("udpate study")),
+                catchError(this.handleError<boolean>("updateStudy"))
             );
     }
 
@@ -271,7 +282,7 @@ export class DatabaseService {
         study.studyDate = "2018-11-11";
         study.studyTime = "12:11:12";
         study.modality = "DX";
-        study.checked = false;
+        study.studyChecked = false;
         study.studyDescription = "Study Desc";
 
         study.seriesList = new Array<Series>();
