@@ -75,7 +75,7 @@ export class AnnEllipse extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString("CGXAnnEllipse");
+        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
         annSerialize.writeInteger(this.annBaseEllipse.getWidth(), 4);
         annSerialize.writeInteger(this.annBaseEllipse.getHeight(), 4);
         annSerialize.writeInteger(this.selected ? 1 : 0, 1);

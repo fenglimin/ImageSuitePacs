@@ -1,4 +1,4 @@
-﻿import { Point, MouseEventType, Rectangle } from '../../models/annotation';
+﻿import { Point, MouseEventType, Rectangle, AnnotationDefinitionData } from '../../models/annotation';
 import { AnnObject } from '../ann-object';
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnSerialize } from "../ann-serialize";
@@ -166,4 +166,13 @@ export abstract class AnnBaseObject extends AnnObject {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
+    saveBasicInfo(annSerialize: AnnSerialize, annotationDefinitionData: AnnotationDefinitionData) {
+        annSerialize.writeString(annotationDefinitionData.imageSuiteAnnName);
+        annSerialize.writeInteger(annotationDefinitionData.imageSuiteAnnType, 4);     // AnnType
+        annSerialize.writeInteger(1, 4);     // created
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Protected functions
 }

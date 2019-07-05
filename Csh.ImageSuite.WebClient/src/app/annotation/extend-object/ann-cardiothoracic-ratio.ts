@@ -161,10 +161,7 @@ export class AnnCardiothoracicRatio extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString("CGXAnnHCRatio");
-        annSerialize.writeInteger(12, 4);     // AnnType
-        annSerialize.writeInteger(1, 4);     // created
-        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
+        this.saveBasicInfo(annSerialize);
 
         this.annBaseLineAb.onSave(annSerialize);
         for (let i = 2; i < this.annLineList.length; i ++) {

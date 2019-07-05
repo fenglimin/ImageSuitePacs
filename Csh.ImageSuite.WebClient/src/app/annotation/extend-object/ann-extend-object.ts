@@ -103,7 +103,7 @@ export abstract class AnnExtendObject extends AnnObject {
     onRotate(angle: number) {
         this.annObjList.forEach(annObj => {
             // The text indicator is drawn in the separated layer, need to rotate it.
-            if (annObj.constructor.name === "AnnTextIndicator") {
+            if (annObj.constructor.name === "AnnTextIndicator" || annObj.constructor.name === "AnnText") {
                 annObj.onRotate(angle);
             }
         });
@@ -171,10 +171,7 @@ export abstract class AnnExtendObject extends AnnObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
-        annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4);     // AnnType
-        annSerialize.writeInteger(1, 4);     // created
-        annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
+        alert("Internal error : AnnExtendObject.onSave() should never be called.");
     }
 
     onCreateFromConfig(config: any) {
@@ -191,4 +188,13 @@ export abstract class AnnExtendObject extends AnnObject {
         this.annObjList.push(annObj);
     }
 
+    protected saveBasicInfo(annSerialize: AnnSerialize, saveMoving: boolean = false) {
+        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
+        annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4);     // AnnType
+        annSerialize.writeInteger(1, 4);     // created
+        if (saveMoving) {
+            annSerialize.writeInteger(0, 4);     // moving
+        }
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
+    }
 }

@@ -67,10 +67,7 @@ export class AnnArrow extends AnnExtendObject {
 
     onSave(annSerialize: AnnSerialize, saveArrowMark: boolean = true) {
         if (saveArrowMark) {
-            annSerialize.writeString("CGXAnnArrowMark");
-            annSerialize.writeInteger(10, 4);
-            annSerialize.writeInteger(1, 4);
-            annSerialize.writeInteger(0, 1);
+           this.saveBasicInfo(annSerialize);
         }
         
         annSerialize.writeString("CGXAnnArrow");

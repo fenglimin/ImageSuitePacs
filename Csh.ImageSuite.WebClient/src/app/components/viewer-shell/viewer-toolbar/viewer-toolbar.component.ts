@@ -85,7 +85,8 @@ export class ViewerToolbarComponent implements OnInit {
         { name: "ann_arrow", tip: "Arrow", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Arrow)}},
         { name: "ann_vaxis", tip: "Vertical Axis", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Vaxis)}},
         { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.MarkSpot)}},
-        { name: "ann_freearea", tip: "Free Area", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.FreeArea)}}
+        { name: "ann_freearea", tip: "Free Area", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.FreeArea) } },
+        { name: "ann_text", tip: "Text", operationData: { type: OperationEnum.SetContext, data: new ViewContext(ViewContextEnum.CreateAnn, AnnType.Text) } }
     ];
 
     simpleAnnotation2ButtonMenu: SelectedButtonData[] = [

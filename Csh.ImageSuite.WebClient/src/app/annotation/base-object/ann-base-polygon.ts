@@ -1,4 +1,4 @@
-﻿import { Point, MouseEventType } from '../../models/annotation';
+﻿import { Point, AnnotationDefinitionData } from '../../models/annotation';
 import { AnnTool } from "../ann-tool";
 import { IImageViewer } from "../../interfaces/image-viewer-interface";
 import { AnnBaseObject } from "./ann-base-object";
@@ -18,11 +18,6 @@ export class AnnBasePolygon extends AnnBaseObject {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString(this.freeArea ? "CGXAnnFreeArea" : "CGXAnnPolygon");
-        annSerialize.writeInteger(this.freeArea ? 23 : 3, 4);
-        annSerialize.writeInteger(1, 4);
-        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
-
         const points = this.jcObj.points();
         const length = points.length;
         annSerialize.writeInteger(length, 4);

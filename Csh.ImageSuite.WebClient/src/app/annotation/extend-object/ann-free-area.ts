@@ -66,6 +66,7 @@ export class AnnFreeArea extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
+        this.annBasePolygon.saveBasicInfo(annSerialize, this.annDefData);
         this.annBasePolygon.onSave(annSerialize);
     }
 

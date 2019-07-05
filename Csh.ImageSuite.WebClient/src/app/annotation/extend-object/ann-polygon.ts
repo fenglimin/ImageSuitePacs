@@ -96,6 +96,7 @@ export class AnnPolygon extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
+        this.annBasePolygon.saveBasicInfo(annSerialize, this.annDefData);
         this.annBasePolygon.onSave(annSerialize);
         this.annTextIndicator.onSave(annSerialize);
     }

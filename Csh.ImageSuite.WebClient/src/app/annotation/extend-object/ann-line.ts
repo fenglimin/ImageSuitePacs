@@ -78,10 +78,7 @@ export class AnnLine extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString("CGXAnnLineEx");
-        annSerialize.writeInteger(33, 4);
-        annSerialize.writeInteger(1, 4);
-        annSerialize.writeInteger(1, 1);
+        this.saveBasicInfo(annSerialize);
 
         this.annBaseLine.onSave(annSerialize);
     }

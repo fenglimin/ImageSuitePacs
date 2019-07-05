@@ -67,10 +67,7 @@ export class AnnRuler extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString("CGXAnnRuler");
-        annSerialize.writeInteger(7, 4);
-        annSerialize.writeInteger(1, 4);
-        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
+        this.saveBasicInfo(annSerialize);
 
         this.annLine.getBaseLine().onSave(annSerialize);
         this.lineNodeA.onSave(annSerialize);

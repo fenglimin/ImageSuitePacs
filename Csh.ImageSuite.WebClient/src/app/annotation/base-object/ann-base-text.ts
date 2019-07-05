@@ -8,16 +8,22 @@ import { AnnSerialize } from "../ann-serialize";
 
 export class AnnBaseText extends AnnBaseObject {
 
+    private fontSizeFixed = false;
+    private createdFontSize: number;
+
     constructor(parentObj: AnnObject, text: string, startPoint: Point, imageViewer: IImageViewer) {
 
         super(parentObj, imageViewer);
-
         
         // The coordinate of input point is for annotation layer, since text will always be drawn in label layer, need to convert the coordinate
         startPoint = AnnTool.annLayerToAnnLabelLayer(startPoint, imageViewer);
 
-        const font = new FontData("Times New Roman", "#FFF", this.parentObj.getFontSize());
+        this.createdFontSize = this.parentObj.getFontSize();
+        const font = new FontData("Times New Roman", "#FFF", this.createdFontSize);
         this.jcObj = jCanvaScript.text(text, startPoint.x, startPoint.y).color(this.selectedColor).font(font.getCanvasFontString()).layer(this.labelLayerId).align("left");
+        //this.jcObj._shadowX = 1;
+        //this.jcObj._shadowY = 1;
+        //this.jcObj._shadowColor = "#000";
         super.setJcObj();
     }
 
@@ -41,7 +47,8 @@ export class AnnBaseText extends AnnBaseObject {
 
     onScale() {
         // When scale value changed, the font size need to be changed as well to make sure it look unchanged in the screen
-        const font = new FontData("Times New Roman", "#FFF", this.parentObj.getFontSize());
+        const font = this.fontSizeFixed ? new FontData("Times New Roman", "#FFF", this.createdFontSize) :
+            new FontData("Times New Roman", "#FFF", this.parentObj.getFontSize());
         this.jcObj.font(font.getCanvasFontString());
     }
 
@@ -55,7 +62,7 @@ export class AnnBaseText extends AnnBaseObject {
         // Not sure why JCanvas returns the wrong rect, adjust it
         const rect = this.jcObj.getRect("poor");
 
-        const newHeight = this.parentObj.getFontSize();
+        const newHeight = this.fontSizeFixed? this.createdFontSize : this.parentObj.getFontSize();
         rect.y -= newHeight - rect.height - 2;
         rect.height = newHeight + 4;
         rect.x -= 2;
@@ -80,7 +87,9 @@ export class AnnBaseText extends AnnBaseObject {
         this.jcObj.string(text);
     }
 
-
+    setFontSizeFixed(fontSizeFixed: boolean) {
+        this.fontSizeFixed = fontSizeFixed;
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
 }

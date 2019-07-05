@@ -101,12 +101,8 @@ export class AnnAngle extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString("CGXAnnProtractor");
-        annSerialize.writeInteger(8, 4);     // AnnType
-        annSerialize.writeInteger(1, 4);     // created
-        annSerialize.writeInteger(0, 4);     // moving
-        annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
-        annSerialize.writeInteger(0, 1);     // arcAndTextOnly
+        this.saveBasicInfo(annSerialize, true);
+        annSerialize.writeInteger(0, 1);     // arcAndTextOnly        
         annSerialize.writeInteger(3, 4);     // createState
         const angle = this.annBaseCurve.getAngle();
         annSerialize.writeDouble(angle);     // angle

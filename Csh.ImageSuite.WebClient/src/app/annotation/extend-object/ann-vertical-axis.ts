@@ -58,10 +58,7 @@ export class AnnVerticalAxis extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString("CGXAnnVAxis");
-        annSerialize.writeInteger(27, 4);
-        annSerialize.writeInteger(1, 4);
-        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
+        this.saveBasicInfo(annSerialize);
 
         annSerialize.writeInteger(0, 4);  //initRotateCount
 

@@ -61,10 +61,7 @@ export class AnnMarkSpot extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString("CGXAnnMarkSpot");
-        annSerialize.writeInteger(36, 4);
-        annSerialize.writeInteger(1, 4);
-        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
+        this.saveBasicInfo(annSerialize);
 
         const count = this.annObjList.length;
         annSerialize.writeInteger(count, 4);

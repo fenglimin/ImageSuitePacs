@@ -89,10 +89,7 @@ export class AnnCurve extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
-        annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4);     // AnnType
-        annSerialize.writeInteger(1, 4);     // created
-        annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
+       this.saveBasicInfo(annSerialize);
 
         annSerialize.writeDoublePoint(this.annStartPoint.getPosition());
         annSerialize.writeDoublePoint(this.annEndPoint.getPosition());

@@ -83,10 +83,10 @@ export class AnnImage extends AnnExtendObject {
     }
 
     onSave(annSerialize: AnnSerialize) {
-        annSerialize.writeString("CGXAnnStamp");
+        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
         annSerialize.writeString(this.imageFileName);
         annSerialize.writeBytes([]);
-        annSerialize.writeInteger(10, 4);
+        annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4);
         annSerialize.writeInteger(1, 4);     // created
         annSerialize.writeInteger(0, 4);     // moving
         annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected

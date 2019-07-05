@@ -15,12 +15,13 @@ import { WindowLevelData } from "../../../../models/dailog-data/image-process";
 import { ManualWlDialogComponent } from "../../../dialog/manual-wl-dialog/manual-wl-dialog.component";
 import { SelectMarkerDialogComponent } from "../../../dialog/select-marker-dialog/select-marker-dialog.component";
 import { FontData } from "../../../../models/misc-data"
-import { MessageBoxType, MessageBoxContent } from "../../../../models/messageBox";
+import { MessageBoxType, MessageBoxContent, DialogResult } from "../../../../models/messageBox";
 import { IImageViewer } from "../../../../interfaces/image-viewer-interface";
-import { Point, MouseEventType } from "../../../../models/annotation";
+import { Point, MouseEventType, AnnType } from "../../../../models/annotation";
 import { GraphicOverlayData } from "../../../../models/overlay";
 import { AnnObject } from "../../../../annotation/ann-object";
 import { AnnTool } from "../../../../annotation/ann-tool";
+import { AnnText } from "../../../../annotation/extend-object/ann-text";
 import { AnnExtendObject } from "../../../../annotation/extend-object/ann-extend-object";
 import { AnnGuide } from "../../../../annotation/layer-object/ann-guide";
 import { AnnImageRuler } from "../../../../annotation/layer-object/ann-image-ruler";
@@ -1872,11 +1873,16 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         const annDefData = this.annotationService.getAnnDefDataByType(this.viewContext.curContext.data);
         if (!annDefData) return;
 
-        this.curSelectObj = new annDefData.classType(undefined, this);
-        if (annDefData.needGuide) {
-            this.annGuide.setGuideTargetObj(this.curSelectObj);
+        if (annDefData.imageSuiteAnnType === AnnType.Text) {
+            this.createFreeText(point);
+        } else {
+            this.curSelectObj = new annDefData.classType(undefined, this);
+            if (annDefData.needGuide) {
+                this.annGuide.setGuideTargetObj(this.curSelectObj);
+            }
+            this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point, null);
         }
-        this.curSelectObj.onMouseEvent(MouseEventType.MouseDown, point, null);
+        
     }
 
     private deleteSelectedAnnotation() {
@@ -1979,5 +1985,24 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.annMagnify.end();
         this.setCursorFromContext();
+    }
+
+    private createFreeText(point: Point) {
+        const content = new MessageBoxContent();
+        content.title = "Text";
+        content.messageText = "Please input the text:";
+        content.messageType = MessageBoxType.Input;
+
+        this.dialogService.showMessageBox(content).subscribe(
+            val => {
+                if (val.dialogResult === DialogResult.Ok) {
+                    const imagePoint = AnnTool.screenToImage(point, this.image.transformMatrix);
+                    const annObj = new AnnText(undefined, this);
+                    annObj.onCreate(imagePoint, val.valueInput, false);
+                    this.curSelectObj = annObj;
+                    this.redraw(1);
+                }
+            }
+        );
     }
 }
