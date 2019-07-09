@@ -54,6 +54,7 @@ import { SelectStudydateDialogComponent } from './components/dialog/select-study
 import { SelectMarkerDialogComponent } from './components/dialog/select-marker-dialog/select-marker-dialog.component';
 import { ViewerBottombarComponent } from './components/viewer-shell/viewer-bottombar/viewer-bottombar.component';
 import { PatientEditComponent } from './components/worklist-shell/worklist/patient-edit/patient-edit.component';
+import { ExportStudyComponent } from './components/worklist-shell/worklist/export-study/export-study.component';
 
 
 @NgModule({
@@ -78,7 +79,8 @@ import { PatientEditComponent } from './components/worklist-shell/worklist/patie
         SelectStudydateDialogComponent,
         SelectMarkerDialogComponent,
         ViewerBottombarComponent,
-        PatientEditComponent
+        PatientEditComponent,
+        ExportStudyComponent
     ],
     imports: [
         BrowserModule,
@@ -107,7 +109,7 @@ import { PatientEditComponent } from './components/worklist-shell/worklist/patie
     ],
     providers: [],
     bootstrap: [AppComponent],
-    entryComponents: [MessageBoxComponent, ManualWlDialogComponent, SelectStudydateDialogComponent, SelectMarkerDialogComponent, PatientEditComponent]
+    entryComponents: [MessageBoxComponent, ManualWlDialogComponent, SelectStudydateDialogComponent, SelectMarkerDialogComponent, PatientEditComponent, ExportStudyComponent]
 })
 export class AppModule {
 }

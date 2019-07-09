@@ -1,0 +1,82 @@
+<h1 mat-dialog-title
+    cdkDrag
+    cdkDragRootElement=".cdk-overlay-pane"
+    cdkDragHandle>
+    Export Study
+</h1>
+<mat-dialog-content>
+    <div id="body-content">
+
+        <div id="multi-study-instance" [hidden]="studyNumber==1">
+            <div>
+                <table>
+                    <tr>
+                        <th id="checkbox-row">
+                            <input type="checkbox" (click)="onAllStudyChecked($event)" />
+                        </th>
+                        <th>
+                            Patient ID
+                        </th>
+                        <th>
+                            Patient Name
+                        </th>
+                        <th>
+                            Exam Type
+                        </th>
+                        <th>
+                            Accession No
+                        </th>
+                        <th>
+                            Study Date Time
+                        </th>
+                        <th>
+                            Image Count
+                        </th>
+
+                    </tr>
+                    <tr *ngFor="let study of studies">
+                        <td>
+                            <input type="checkbox"/>
+                        </td>
+                        <td>{{study.patient.patientId}}</td>
+
+                        <td>{{study.patient.patientName}}</td>
+
+                        <td></td>
+
+                        <td>{{study.accessionNo}}</td>
+
+                        <td>{{study.studyDate}}</td>
+                        
+                        <td>{{study.studyTime}}</td>
+
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div id="single-study-instance" [hidden]="studyNumber!=1">
+
+        </div>
+
+        <!--<div id="multi-study-instance" [style.visibility]="studyNumber!=1 ? 'visible' : 'hidden'">
+
+        </div>
+        <div id="single-study-instance" [style.visibility]="studyNumber==1 ? 'visible' : 'hidden'">
+
+        </div>-->
+    </div>
+    <div>
+
+    </div>
+
+
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="onCancelClick()">
+        <i class="glyphicon glyphicon-remove-circle" style="padding-right: 8px"></i>Cancel
+    </button>
+    <button class="mat-raised-button" (click)="onOkClick()">
+        <i class="glyphicon glyphicon-ok-circle" style="padding-right: 8px"></i>Ok
+    </button>
+</mat-dialog-actions>

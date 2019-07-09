@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
+﻿import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
 
 import { WorklistShellComponent } from "./components/worklist-shell/worklist-shell.component"
 import { ViewerShellComponent } from "./components/viewer-shell/viewer-shell.component"
@@ -13,10 +13,12 @@ import { DicomImageService } from "./services/dicom-image.service";
 import { WorklistService } from "./services/worklist.service";
 import { LogService } from "./services/log.service";
 
+import * as less from 'less';
+
 @Component({
     selector: "app-root",
     templateUrl: "./app.component.html",
-    styleUrls: ["./app.component.css"]
+    styleUrls: ["./app.component.less"]
 })
 export class AppComponent implements OnInit {
     title = "AngularPacsDemo";
@@ -53,12 +55,13 @@ export class AppComponent implements OnInit {
         ViewerShellData.logService = this.logService;
         ViewerGroupData.logService = this.logService;
         ViewerImageData.logService = this.logService;
-
     }
 
     ngOnInit() {
         this.createWorklistShell();
         this.initConerstone();
+
+        document.body.className = 'theme-' + 'light';
     }
 
     createWorklistShell() {

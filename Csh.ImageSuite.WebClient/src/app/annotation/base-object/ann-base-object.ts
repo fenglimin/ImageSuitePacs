@@ -164,6 +164,13 @@ export abstract class AnnBaseObject extends AnnObject {
         alert("Internal error : AnnBaseObject.onSave() should never be called.");
     }
 
+    onDragStarted(pos: Point) {
+
+    }
+
+    onDragEnded(pos: Point) {
+
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
     saveBasicInfo(annSerialize: AnnSerialize, annotationDefinitionData: AnnotationDefinitionData) {

@@ -47,9 +47,12 @@ export class AnnBaseText extends AnnBaseObject {
 
     onScale() {
         // When scale value changed, the font size need to be changed as well to make sure it look unchanged in the screen
-        const font = this.fontSizeFixed ? new FontData("Times New Roman", "#FFF", this.createdFontSize) :
-            new FontData("Times New Roman", "#FFF", this.parentObj.getFontSize());
-        this.jcObj.font(font.getCanvasFontString());
+        const fontSize = this.fontSizeFixed ? this.createdFontSize : this.parentObj.getFontSize();
+        this.setFontSize(fontSize);
+
+        //const font = this.fontSizeFixed ? new FontData("Times New Roman", "#FFF", this.createdFontSize) :
+        //    new FontData("Times New Roman", "#FFF", this.parentObj.getFontSize());
+        //this.jcObj.font(font.getCanvasFontString());
     }
 
     onMove(point: Point) {
@@ -63,7 +66,8 @@ export class AnnBaseText extends AnnBaseObject {
         const rect = this.jcObj.getRect("poor");
 
         const newHeight = this.fontSizeFixed? this.createdFontSize : this.parentObj.getFontSize();
-        rect.y -= newHeight - rect.height - 2;
+        //rect.y -= newHeight - rect.height - 2;
+        rect.y = this.getPosition().y - newHeight * 0.85;
         rect.height = newHeight + 4;
         rect.x -= 2;
         rect.width += 4;
@@ -76,7 +80,15 @@ export class AnnBaseText extends AnnBaseObject {
         // Text is always in label layer
         return this.imageViewer.getAnnLabelLayer().transform();
     }
-    
+
+    onDragStarted(pos: Point) {
+
+    }
+
+    onDragEnded(pos: Point) {
+
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
     getText(): string {
@@ -89,6 +101,16 @@ export class AnnBaseText extends AnnBaseObject {
 
     setFontSizeFixed(fontSizeFixed: boolean) {
         this.fontSizeFixed = fontSizeFixed;
+    }
+
+    setFontSize(fontSize: number) {
+        this.createdFontSize = fontSize
+        const font = new FontData("Times New Roman", "#FFF", fontSize);
+        this.jcObj.font(font.getCanvasFontString());
+    }
+
+    getCreateFontSize(): number {
+        return this.createdFontSize;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions

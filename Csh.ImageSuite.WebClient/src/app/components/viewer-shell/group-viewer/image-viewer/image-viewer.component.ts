@@ -1999,6 +1999,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     const imagePoint = AnnTool.screenToImage(point, this.image.transformMatrix);
                     const annObj = new AnnText(undefined, this);
                     annObj.onCreate(imagePoint, val.valueInput, false);
+                    annObj.onDrawEnded();
                     this.curSelectObj = annObj;
                     this.redraw(1);
                 }

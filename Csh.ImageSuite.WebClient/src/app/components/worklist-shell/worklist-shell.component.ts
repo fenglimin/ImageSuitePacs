@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 @Component({
     selector: "app-worklist-shell",
     templateUrl: "./worklist-shell.component.html",
-    styleUrls: ["./worklist-shell.component.css"]
+    styleUrls: ["./worklist-shell.component.less"]
 })
 export class WorklistShellComponent implements OnInit {
     subscriptionShellNavigated: Subscription;

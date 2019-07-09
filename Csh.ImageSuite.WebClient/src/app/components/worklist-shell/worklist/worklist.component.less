@@ -1,0 +1,198 @@
+﻿@import '../../../../themes.less';
+
+#tblStudies a {
+    color: @font-color;
+}
+
+ul {
+    list-style: none;
+    padding-inline-start: 0px;
+}
+
+li {
+    float: left;
+    padding: 2px;
+}
+
+    li button {
+        cursor: pointer;
+    }
+
+thead {
+    background: @container-background-color;
+}
+
+thead tr {
+    background-color: @container-background-color;
+}
+
+thead td {
+    background-color: @container-background-color;
+}
+
+thead div {
+    font-weight: normal;
+}
+
+.worklistHeader {
+    cursor:pointer;
+    min-width:50px;
+}
+
+#headContent td tr{
+    border: 0px;
+}
+
+#tblStudies td {
+    border: 1px solid @border-color;
+    color: @font-second-color;
+}
+
+#tblStudies td td {
+    border : none;
+}
+
+
+#tblStudies th {
+    border: 1px solid @border-color;
+}
+
+#tblStudies tr.cust-info td {
+    background-color: @background-color;
+}
+
+#trStudiesHeader a {
+    color: @font-second-color;
+}
+
+#trSeriesHeader a {
+    color: @font-color;
+}
+
+#trStudiesHeader tr td {
+    border:hidden;
+    padding-right:5px;
+}
+
+#trStudiesQuery input[type=text] {
+    background-color: @background-color;
+    border: 1px solid @border-color;
+    vertical-align: middle;
+    width: 100%;
+}
+
+#trStudiesQuery input[type=checkbox] {
+    background-color: @background-color;
+    border: 1px solid @border-color;
+    vertical-align: middle;
+    width: 100%;
+}
+
+select {
+    background-color: @background-color;
+    border: 1px solid @border-color;
+    width: 100%;
+}
+
+#trStudiesQuery td:nth-child(n) {
+    margin: 0px;
+    padding: 1px;
+    vertical-align: middle;
+}
+
+#tblStudies tbody tr:nth-child(2n) {
+    background-color: @odd-tr-color;
+}
+
+#tblStudies tbody tr:hover {
+    background-color: @container-background-color;
+    color: @underline-color;
+}
+
+
+#trStudiesQuery .dropdown {
+    background-color: @container-background-color;
+    color: @error-color;
+}
+
+    #trStudiesQuery .dropdown .btn {
+        background-color: @container-background-color;
+        min-width: 70px;
+        padding: 1px 6px;
+    }
+
+.loading-shade {
+    align-items: center;
+    background: @background-color;
+    bottom: 0px;
+    display: flex;
+    justify-content: center;
+    left: 0px;
+    margin: auto;
+    position: fixed;
+    right: 0px;
+    top: 0px;
+    z-index: 1;
+}
+
+.shortcut-name-button {
+    background-color: transparent;
+    border: none;
+    border-width: 0px;
+    color: inherit;
+    outline: none;
+}
+
+.shortcut-name-button:disabled {
+    color: @disable-color;
+}
+
+.setRead, .setUnread {
+    border: none;
+    height: 40px;
+    outline: none;
+    width: 40px;
+}
+
+.setRead { 
+    background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat left top ;
+    background-size: cover;
+}
+
+
+.setRead:hover { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat right top; background-size: cover;}
+
+.setRead:active { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat left bottom; background-size: cover;}
+
+.setRead:disabled { background: url(../../../../assets/img/button/setRead_40_40_All.png) no-repeat right bottom; background-size: cover;}
+
+.setReadCover {
+    height: 20px;
+    width: 20px;
+    overflow: hidden;
+}
+
+.setUnread { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat left top; background-size: cover;}
+
+.setUnread:hover { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat right top; background-size: cover;}
+
+.setUnread:active { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat left bottom; background-size: cover;}
+
+.setUnread:disabled { background: url(../../../../assets/img/button/setUnread_40_40_All.png) no-repeat right bottom; background-size: cover;}
+
+.setUnreadCover {
+    height: 20px;
+    width: 20px;
+    overflow: hidden;
+}
+
+.onlineStudy {
+    color: @font-color;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.offlineStudy {
+    color:@container-background-color;
+}
+

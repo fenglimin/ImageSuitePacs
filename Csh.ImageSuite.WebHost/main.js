@@ -310,134 +310,6 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 
 /***/ }),
 
-/***/ "./src/app/annotation/ann-config-loader.ts":
-/*!*************************************************!*\
-  !*** ./src/app/annotation/ann-config-loader.ts ***!
-  \*************************************************/
-/*! exports provided: AnnConfigLoader */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnConfigLoader", function() { return AnnConfigLoader; });
-var AnnConfigLoader = /** @class */ (function () {
-    function AnnConfigLoader() {
-    }
-    AnnConfigLoader.loadBaseLine = function (annSerialize) {
-        var annName = annSerialize.readString(); // CGXAnnLine
-        var created = annSerialize.readNumber(4);
-        var moving = annSerialize.readNumber(4);
-        var selected = annSerialize.readNumber(1);
-        var startPoint = annSerialize.readPoint();
-        var endPoint = annSerialize.readPoint();
-        return { startPoint: startPoint, endPoint: endPoint };
-    };
-    AnnConfigLoader.loadLine = function (annSerialize) {
-        var annType = annSerialize.readNumber(4); // 33
-        var created = annSerialize.readNumber(4);
-        var selected = annSerialize.readNumber(1);
-        var config = AnnConfigLoader.loadBaseLine(annSerialize);
-        return config;
-    };
-    AnnConfigLoader.loadArrow = function (annSerialize, loadArrowMark) {
-        if (loadArrowMark === void 0) { loadArrowMark = true; }
-        // CGXAnnArrowMark
-        if (loadArrowMark) {
-            var annType = annSerialize.readNumber(4); // 10
-            var created = annSerialize.readNumber(4);
-            var selected = annSerialize.readNumber(1);
-        }
-        // CGXAnnArrow
-        var annName1 = annSerialize.readString();
-        var created1 = annSerialize.readNumber(4);
-        var selected1 = annSerialize.readNumber(1);
-        var config = AnnConfigLoader.loadBaseLine(annSerialize);
-        // The two small lines of the arrow will be created dynamically, read but ignore it
-        AnnConfigLoader.loadBaseLine(annSerialize);
-        AnnConfigLoader.loadBaseLine(annSerialize);
-        return config;
-    };
-    AnnConfigLoader.loadBaseText = function (annSerialize) {
-        var annName = annSerialize.readString(); // CGXAnnText
-        var created = annSerialize.readNumber(4);
-        var moving = annSerialize.readNumber(4);
-        var selected = annSerialize.readNumber(1);
-        var bottomRightPoint = annSerialize.readPoint();
-        var topLeftPoint = annSerialize.readPoint();
-        var text = annSerialize.readString();
-        var isRotateCreated = annSerialize.readNumber(4);
-        var rotateCreated = annSerialize.readNumber(4);
-        var fontHeight = annSerialize.readNumber(4);
-        return { topLeftPoint: topLeftPoint, bottomRightPoint: bottomRightPoint, text: text };
-    };
-    AnnConfigLoader.loadTextIndicator = function (annSerialize) {
-        var annName = annSerialize.readString(); // CGXAnnLabel
-        var created = annSerialize.readNumber(4);
-        var selected = annSerialize.readNumber(1);
-        var arrow = AnnConfigLoader.loadArrow(annSerialize, false);
-        var baseText = AnnConfigLoader.loadBaseText(annSerialize);
-        return arrow;
-    };
-    AnnConfigLoader.loadBaseRectangle = function (annSerialize) {
-        var annName = annSerialize.readString(); // CGXAnnRectangle
-        var created = annSerialize.readNumber(4);
-        var moving = annSerialize.readNumber(4);
-        var selected = annSerialize.readNumber(1);
-        var topLeftPoint = annSerialize.readPoint();
-        var bottomRightPoint = annSerialize.readPoint();
-        var topRightPoint = annSerialize.readPoint();
-        var bottomLeftPoint = annSerialize.readPoint();
-        return { topLeftPoint: topLeftPoint, width: bottomRightPoint.x - topLeftPoint.x, height: bottomRightPoint.y - topLeftPoint.y };
-    };
-    AnnConfigLoader.loadRectangle = function (annSerialize) {
-        var annType = annSerialize.readNumber(4); // 2
-        var created = annSerialize.readNumber(4);
-        var selected = annSerialize.readNumber(1);
-        var baseRect = AnnConfigLoader.loadBaseRectangle(annSerialize);
-        var textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
-        return { baseRect: baseRect, textIndicator: textIndicator };
-    };
-    AnnConfigLoader.loadPolygon = function (annSerialize) {
-        var annType = annSerialize.readNumber(4); // 24
-        var created = annSerialize.readNumber(4);
-        var selected = annSerialize.readNumber(1);
-        var pointCount = annSerialize.readNumber(4);
-        var lineCount = annSerialize.readNumber(4);
-        var pointList = [];
-        for (var i = 0; i < pointCount; i++) {
-            pointList.push(annSerialize.readPoint());
-        }
-        for (var i = 0; i < lineCount; i++) {
-            AnnConfigLoader.loadBaseLine(annSerialize);
-        }
-        var textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
-        return { pointList: pointList, textIndicator: textIndicator };
-    };
-    AnnConfigLoader.loadAngle = function (annSerialize) {
-        var annType = annSerialize.readNumber(4); // 8
-        var created = annSerialize.readNumber(4);
-        var moving = annSerialize.readNumber(4);
-        var selected = annSerialize.readNumber(1);
-        var arcAndTextOnly = annSerialize.readNumber(1);
-        var createState = annSerialize.readNumber(4);
-        var angle = annSerialize.readNumber(8);
-        for (var i = 0; i < 4; i++) {
-            annSerialize.readPoint();
-        }
-        var lineList = [];
-        for (var i = 0; i < 2; i++) {
-            lineList.push(AnnConfigLoader.loadBaseLine(annSerialize));
-        }
-        var textIndicator = AnnConfigLoader.loadTextIndicator(annSerialize);
-        return { lineList: lineList, textIndicator: textIndicator };
-    };
-    return AnnConfigLoader;
-}());
-
-
-
-/***/ }),
-
 /***/ "./src/app/annotation/ann-object.ts":
 /*!******************************************!*\
   !*** ./src/app/annotation/ann-object.ts ***!
@@ -518,6 +390,26 @@ var AnnObject = /** @class */ (function () {
         }
         else {
             this.onSelect(true, true);
+        }
+    };
+    AnnObject.prototype.onChildDragStarted = function (draggedObj, pos) {
+        this.focusedObj = draggedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragStarted(this, pos);
+        }
+        else {
+            this.onDragStarted(pos);
+        }
+    };
+    AnnObject.prototype.onChildDragEnded = function (draggedObj, pos) {
+        this.focusedObj = draggedObj;
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragEnded(this, pos);
+        }
+        else {
+            this.onDragEnded(pos);
         }
     };
     AnnObject.prototype.onChildDragged = function (draggedObj, deltaX, deltaY) {
@@ -608,12 +500,20 @@ var AnnObject = /** @class */ (function () {
             start: function (arg) {
                 console.log(parentObj.constructor.name + " on drag start");
                 child._lastPos = {};
+                var point = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
+                if (parentObj.onChildDragStarted) {
+                    parentObj.onChildDragStarted(child, point);
+                }
             },
             stop: function (arg) {
                 console.log(parentObj.constructor.name + " on drag stop");
                 child._lastPos = {};
-                if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn) {
+                if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn && parentObj.dragging) {
                     parentObj.dragging = false;
+                    var point = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
+                    if (parentObj.onChildDragEnded) {
+                        parentObj.onChildDragEnded(child, point);
+                    }
                 }
             },
             drag: function (arg) {
@@ -672,7 +572,7 @@ var AnnObject = /** @class */ (function () {
             //arg.event.stopImmediatePropagation();
             //arg.event.preventDefault();
             // return false to make sure no other jc object's mouse event will be called
-            return false;
+            return true;
         };
     };
     AnnObject.prototype.needResponseToChildMouseEvent = function () {
@@ -695,68 +595,44 @@ var AnnObject = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnSerialize", function() { return AnnSerialize; });
-/* harmony import */ var _extend_object_ann_line__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./extend-object/ann-line */ "./src/app/annotation/extend-object/ann-line.ts");
-/* harmony import */ var _extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./extend-object/ann-arrow */ "./src/app/annotation/extend-object/ann-arrow.ts");
-/* harmony import */ var _extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./extend-object/ann-rectangle */ "./src/app/annotation/extend-object/ann-rectangle.ts");
-/* harmony import */ var _extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./extend-object/ann-polygon */ "./src/app/annotation/extend-object/ann-polygon.ts");
-/* harmony import */ var _extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./extend-object/ann-angle */ "./src/app/annotation/extend-object/ann-angle.ts");
-
-
-
-
-
 var AnnSerialize = /** @class */ (function () {
     function AnnSerialize(annData, imageViewer) {
         this.annString = "";
         this.version = 1023;
         this.annData = annData;
         this.imageViewer = imageViewer;
+        this.annotationService = imageViewer.getAnnotationService();
     }
     AnnSerialize.prototype.createAnn = function () {
         if (!this.annData)
-            return;
+            return false;
         if (this.annData[this.annData.length - 1] === 0X20) {
             // Remove the last 0X20
-            this.readNumber(1);
+            this.readInteger(1);
         }
-        this.version = this.readNumber(4);
-        var annCount = this.readNumber(4);
+        this.version = this.readInteger(4);
+        var annCount = this.readInteger(4);
         for (var i = 0; i < annCount; i++) {
-            var annObj = undefined;
-            var annName = this.readString();
-            switch (annName) {
-                case "CGXAnnLineEx":
-                    annObj = new _extend_object_ann_line__WEBPACK_IMPORTED_MODULE_0__["AnnLine"](undefined, this.imageViewer);
-                    break;
-                case "CGXAnnArrowMark":
-                    annObj = new _extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_1__["AnnArrow"](undefined, this.imageViewer);
-                    break;
-                case "CGXAnnSquare":
-                    annObj = new _extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_2__["AnnRectangle"](undefined, this.imageViewer);
-                    break;
-                case "CGXAnnPolygon":
-                    annObj = new _extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_3__["AnnPolygon"](undefined, this.imageViewer);
-                    break;
-                case "CGXAnnProtractor":
-                    annObj = new _extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_4__["AnnAngle"](undefined, this.imageViewer);
-                    break;
-                default:
-                    alert("Unknown annotation " + annName);
+            var annIsName = this.readString();
+            var annDefData = this.annotationService.getAnnDefDataByIsName(annIsName);
+            if (!annDefData) {
+                return false;
             }
-            if (annObj) {
-                annObj.onLoad(this);
-            }
+            var annObj = new annDefData.classType(undefined, this.imageViewer);
+            annObj.onLoad(this);
         }
+        return annCount > 0;
     };
     AnnSerialize.prototype.getAnnString = function (annList) {
         var _this = this;
+        this.annData = new Uint8Array(0);
         this.annString = "";
-        this.writeNumber(this.version, 4);
-        this.writeNumber(annList.length, 4);
+        this.writeInteger(this.version, 4);
+        this.writeInteger(annList.length, 4);
         annList.forEach(function (annObj) { return annObj.onSave(_this); });
         return this.annString;
     };
-    AnnSerialize.prototype.readNumber = function (bytes) {
+    AnnSerialize.prototype.readInteger = function (bytes) {
         var length = this.annData.length;
         var value = 0;
         for (var i = 0; i < bytes; i++) {
@@ -766,22 +642,138 @@ var AnnSerialize = /** @class */ (function () {
         return value;
     };
     AnnSerialize.prototype.readString = function () {
-        var strLen = this.readNumber(4) / 2;
+        var strLen = this.readInteger(4) / 2;
         var str = "";
         for (var index = 0; index < strLen; index++) {
-            var ch = this.readNumber(2);
+            var ch = this.readInteger(2);
             str += String.fromCharCode(ch);
         }
         return str;
     };
-    AnnSerialize.prototype.readPoint = function () {
-        return { x: this.readNumber(4), y: this.readNumber(4) };
+    AnnSerialize.prototype.readIntegerPoint = function () {
+        return { x: this.readInteger(4), y: this.readInteger(4) };
     };
-    AnnSerialize.prototype.writePoint = function (point) {
-        this.writeNumber(point.x, 4);
-        this.writeNumber(point.y, 4);
+    AnnSerialize.prototype.readDouble = function () {
+        var ebits = 11;
+        var fbits = 52;
+        var bytes = this.readBytes(8);
+        // Bytes to bits
+        var bits = [];
+        for (var i = bytes.length; i; i -= 1) {
+            var byte = bytes[i - 1];
+            for (var j = 8; j; j -= 1) {
+                bits.push(byte % 2 ? 1 : 0);
+                byte = byte >> 1;
+            }
+        }
+        bits.reverse();
+        var str = bits.join('');
+        // Unpack sign, exponent, fraction
+        var bias = (1 << (ebits - 1)) - 1;
+        var s = parseInt(str.substring(0, 1), 2) ? -1 : 1;
+        var e = parseInt(str.substring(1, 1 + ebits), 2);
+        var f = parseInt(str.substring(1 + ebits), 2);
+        // Produce number
+        if (e === (1 << ebits) - 1) {
+            return f !== 0 ? NaN : s * Infinity;
+        }
+        else if (e > 0) {
+            return s * Math.pow(2, e - bias) * (1 + f / Math.pow(2, fbits));
+        }
+        else if (f !== 0) {
+            return s * Math.pow(2, -(bias - 1)) * (f / Math.pow(2, fbits));
+        }
+        else {
+            return s * 0;
+        }
     };
-    AnnSerialize.prototype.writeNumber = function (value, bytes) {
+    AnnSerialize.prototype.readDoublePoint = function () {
+        return { x: this.readDouble(), y: this.readDouble() };
+    };
+    AnnSerialize.prototype.readBytes = function (count) {
+        if (count === void 0) { count = -1; }
+        if (count === -1) {
+            count = this.readInteger(4);
+        }
+        var bytes = [];
+        var length = this.annData.length;
+        for (var j = 0; j < count; j++) {
+            bytes.push(this.annData[length + j - count]);
+        }
+        this.annData = this.annData.slice(0, length - count);
+        return bytes;
+    };
+    AnnSerialize.prototype.writeBytes = function (bytes) {
+        var length = bytes.length;
+        this.writeInteger(length, 4);
+        this.addToAnnDataHead(bytes);
+        this.annString = this.byteArrayToHexString(bytes) + this.annString;
+    };
+    AnnSerialize.prototype.writeDouble = function (value) {
+        var ebits = 11;
+        var fbits = 52;
+        var bias = (1 << (ebits - 1)) - 1;
+        // Compute sign, exponent, fraction
+        var s, e, f;
+        if (isNaN(value)) {
+            e = (1 << bias) - 1;
+            f = 1;
+            s = 0;
+        }
+        else if (value === Infinity || value === -Infinity) {
+            e = (1 << bias) - 1;
+            f = 0;
+            s = (value < 0) ? 1 : 0;
+        }
+        else if (value === 0) {
+            e = 0;
+            f = 0;
+            s = (1 / value === -Infinity) ? 1 : 0;
+        }
+        else {
+            s = value < 0;
+            value = Math.abs(value);
+            if (value >= Math.pow(2, 1 - bias)) {
+                var ln = Math.min(Math.floor(Math.log(value) / Math.LN2), bias);
+                e = ln + bias;
+                f = value * Math.pow(2, fbits - ln) - Math.pow(2, fbits);
+            }
+            else {
+                e = 0;
+                f = value / Math.pow(2, 1 - bias - fbits);
+            }
+        }
+        // Pack sign, exponent, fraction
+        var i, bits = [];
+        for (i = fbits; i; i -= 1) {
+            bits.push(f % 2 ? 1 : 0);
+            f = Math.floor(f / 2);
+        }
+        for (i = ebits; i; i -= 1) {
+            bits.push(e % 2 ? 1 : 0);
+            e = Math.floor(e / 2);
+        }
+        bits.push(s ? 1 : 0);
+        bits.reverse();
+        var str = bits.join('');
+        // Bits to bytes
+        var bytes = [];
+        while (str.length) {
+            bytes.push(parseInt(str.substring(0, 8), 2));
+            str = str.substring(8);
+        }
+        this.addToAnnDataHead(bytes);
+        this.annString = this.byteArrayToHexString(bytes) + this.annString;
+    };
+    AnnSerialize.prototype.writeIntegerPoint = function (point) {
+        this.writeInteger(point.x, 4);
+        this.writeInteger(point.y, 4);
+    };
+    AnnSerialize.prototype.writeDoublePoint = function (point) {
+        this.writeDouble(point.x);
+        this.writeDouble(point.y);
+    };
+    AnnSerialize.prototype.writeInteger = function (value, bytes) {
         // Old image suite annotation save the number in integer. Need to round it.
         value = Math.round(value);
         var byteArray = [];
@@ -790,13 +782,14 @@ var AnnSerialize = /** @class */ (function () {
             byteArray.unshift(byte);
             value = (value - byte) / 256;
         }
+        this.addToAnnDataHead(byteArray);
         this.annString = this.byteArrayToHexString(byteArray) + this.annString;
     };
     AnnSerialize.prototype.writeString = function (str) {
         var length = str.length;
-        this.writeNumber(length * 2, 4);
+        this.writeInteger(length * 2, 4);
         for (var index = 0; index < length; index++) {
-            this.writeNumber(str.charCodeAt(index), 2);
+            this.writeInteger(str.charCodeAt(index), 2);
         }
     };
     AnnSerialize.prototype.byteArrayToHexString = function (byteArray) {
@@ -805,6 +798,221 @@ var AnnSerialize = /** @class */ (function () {
             s += ("0" + (byte & 0xFF).toString(16)).slice(-2);
         });
         return s;
+    };
+    AnnSerialize.prototype.addToAnnDataHead = function (byteArray) {
+        var annData = new Uint8Array(this.annData.length + byteArray.length);
+        annData.set(byteArray);
+        annData.set(this.annData, byteArray.length);
+        this.annData = annData;
+    };
+    AnnSerialize.prototype.loadBaseLine = function () {
+        var annName = this.readString(); // CGXAnnLine
+        var created = this.readInteger(4);
+        var moving = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var startPoint = this.readIntegerPoint();
+        var endPoint = this.readIntegerPoint();
+        return { startPoint: startPoint, endPoint: endPoint, selected: selected };
+    };
+    AnnSerialize.prototype.loadLine = function () {
+        var annType = this.readInteger(4); // 33
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var config = this.loadBaseLine();
+        return config;
+    };
+    AnnSerialize.prototype.loadArrow = function (loadArrowMark) {
+        if (loadArrowMark === void 0) { loadArrowMark = true; }
+        // CGXAnnArrowMark
+        if (loadArrowMark) {
+            var annType = this.readInteger(4); // 10
+            var created = this.readInteger(4);
+            var selected = this.readInteger(1);
+        }
+        // CGXAnnArrow
+        var annName1 = this.readString();
+        var created1 = this.readInteger(4);
+        var selected1 = this.readInteger(1);
+        var config = this.loadBaseLine();
+        // The two small lines of the arrow will be created dynamically, read but ignore it
+        this.loadBaseLine();
+        this.loadBaseLine();
+        return config;
+    };
+    AnnSerialize.prototype.loadBaseText = function () {
+        var annName = this.readString(); // CGXAnnText
+        var created = this.readInteger(4);
+        var moving = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var bottomRightPoint = this.readIntegerPoint();
+        var topLeftPoint = this.readIntegerPoint();
+        var text = this.readString();
+        var isRotateCreated = this.readInteger(4);
+        var rotateCreated = this.readInteger(4);
+        var fontHeight = this.readInteger(4);
+        return { topLeftPoint: topLeftPoint, bottomRightPoint: bottomRightPoint, text: text };
+    };
+    AnnSerialize.prototype.loadTextIndicator = function () {
+        var annName = this.readString(); // CGXAnnLabel
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var arrow = this.loadArrow(false);
+        var baseText = this.loadBaseText();
+        return arrow;
+    };
+    AnnSerialize.prototype.loadBaseRectangle = function () {
+        var annName = this.readString(); // CGXAnnRectangle
+        var created = this.readInteger(4);
+        var moving = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var topLeftPoint = this.readIntegerPoint();
+        var bottomRightPoint = this.readIntegerPoint();
+        var topRightPoint = this.readIntegerPoint();
+        var bottomLeftPoint = this.readIntegerPoint();
+        return { topLeftPoint: topLeftPoint, width: bottomRightPoint.x - topLeftPoint.x, height: bottomRightPoint.y - topLeftPoint.y };
+    };
+    AnnSerialize.prototype.loadRectangle = function () {
+        var annType = this.readInteger(4); // 2
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var baseRect = this.loadBaseRectangle();
+        var textIndicator = this.loadTextIndicator();
+        return { baseRect: baseRect, textIndicator: textIndicator, selected: selected };
+    };
+    AnnSerialize.prototype.loadPolygon = function () {
+        var annType = this.readInteger(4); // 24
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var pointCount = this.readInteger(4);
+        var lineCount = this.readInteger(4);
+        var pointList = [];
+        for (var i = 0; i < pointCount; i++) {
+            pointList.push(this.readIntegerPoint());
+        }
+        for (var i = 0; i < lineCount; i++) {
+            this.loadBaseLine();
+        }
+        var textIndicator = this.loadTextIndicator();
+        return { pointList: pointList, textIndicator: textIndicator, selected: selected };
+    };
+    AnnSerialize.prototype.loadAngle = function () {
+        var annType = this.readInteger(4); // 8
+        var created = this.readInteger(4);
+        var moving = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var arcAndTextOnly = this.readInteger(1);
+        var createState = this.readInteger(4);
+        var angle = this.readDouble();
+        for (var i = 0; i < 4; i++) {
+            this.readIntegerPoint();
+        }
+        var lineList = [];
+        for (var i = 0; i < 2; i++) {
+            lineList.push(this.loadBaseLine());
+        }
+        var textIndicator = this.loadTextIndicator();
+        return { lineList: lineList, textIndicator: textIndicator, selected: selected };
+    };
+    AnnSerialize.prototype.loadCurve = function () {
+        var annType = this.readInteger(4); // 30
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var pointList = [];
+        for (var i = 0; i < 3; i++) {
+            pointList.push(this.readDoublePoint());
+        }
+        var textIndicator = this.loadTextIndicator();
+        return { pointList: pointList, textIndicator: textIndicator, selected: selected };
+    };
+    AnnSerialize.prototype.loadImage = function () {
+        var imageFileName = this.readString();
+        var bytes = this.readBytes();
+        var annType = this.readInteger(4); // 10
+        var created = this.readInteger(4);
+        var moving = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var topLeftPoint = this.readIntegerPoint();
+        var bottomRightPoint = this.readIntegerPoint();
+        var isRotateCreated = this.readInteger(1);
+        var rotateCreated = this.readInteger(4);
+        return { imageFileName: imageFileName, topLeftPoint: topLeftPoint, bottomRightPoint: bottomRightPoint, selected: selected };
+    };
+    AnnSerialize.prototype.loadEllipse = function () {
+        var width = this.readInteger(4);
+        var height = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var centerPoint = this.readIntegerPoint();
+        var textIndicator = this.loadTextIndicator();
+        var isRotateCreated = this.readInteger(1);
+        var rotateCreated = this.readDouble();
+        return { centerPoint: centerPoint, width: width, height: height, textIndicator: textIndicator, selected: selected };
+    };
+    AnnSerialize.prototype.loadRuler = function () {
+        var annType = this.readInteger(4); // 7
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var line = this.loadBaseLine();
+        this.loadBaseLine();
+        this.loadBaseLine();
+        var textIndicator = this.loadTextIndicator();
+        return { startPoint: line.startPoint, endPoint: line.endPoint, textIndicator: textIndicator, selected: selected };
+    };
+    AnnSerialize.prototype.loadVerticalAxis = function () {
+        var annType = this.readInteger(4); // 27
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var initRotateCount = this.readInteger(4);
+        var line = this.loadBaseLine();
+        return { startPoint: line.startPoint, endPoint: line.endPoint, selected: selected };
+    };
+    AnnSerialize.prototype.loadMarkSpot = function () {
+        var annType = this.readInteger(4); // 36
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var count = this.readInteger(4);
+        var pointList = [];
+        for (var i = 0; i < count; i++) {
+            pointList.push(this.readIntegerPoint());
+        }
+        return { pointList: pointList, selected: selected };
+    };
+    AnnSerialize.prototype.loadCardiothoracicRatio = function () {
+        var annType = this.readInteger(4); // 12
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var lineList = [];
+        for (var i = 0; i < 5; i++) {
+            lineList.push(this.loadBaseLine());
+        }
+        var textIndicator = this.loadTextIndicator();
+        return { lineList: lineList, textIndicator: textIndicator, selected: selected };
+    };
+    AnnSerialize.prototype.loadFreeArea = function () {
+        var annType = this.readInteger(4); // 23
+        var created = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var pointCount = this.readInteger(4);
+        var lineCount = this.readInteger(4);
+        var pointList = [];
+        for (var i = 0; i < pointCount; i++) {
+            pointList.push(this.readIntegerPoint());
+        }
+        for (var i = 0; i < lineCount; i++) {
+            this.loadBaseLine();
+        }
+        return { pointList: pointList, selected: selected };
+    };
+    AnnSerialize.prototype.loadTextMark = function () {
+        var annType = this.readInteger(4); // 6
+        var created = this.readInteger(4);
+        var isActive = this.readInteger(4);
+        var editCreated = this.readInteger(4);
+        var state = this.readInteger(4);
+        var selected = this.readInteger(1);
+        var fontSize = this.readInteger(4);
+        var basicText = this.loadBaseText();
+        var position = { x: basicText.topLeftPoint.x, y: basicText.bottomRightPoint.y };
+        return { position: position, text: basicText.text, fontSize: fontSize, selected: selected };
     };
     return AnnSerialize;
 }());
@@ -946,6 +1154,14 @@ var AnnTool = /** @class */ (function () {
         retPointList.push({ x: rect.x + rect.width, y: rect.y });
         retPointList.push({ x: rect.x + rect.width, y: rect.y + rect.height });
         retPointList.push({ x: rect.x, y: rect.y + rect.height });
+        return retPointList;
+    };
+    AnnTool.pointListFromEllipse = function (centerPoint, width, height) {
+        var retPointList = [];
+        retPointList.push({ x: centerPoint.x, y: centerPoint.y - height });
+        retPointList.push({ x: centerPoint.x + width, y: centerPoint.y });
+        retPointList.push({ x: centerPoint.x, y: centerPoint.y + height });
+        retPointList.push({ x: centerPoint.x - width, y: centerPoint.y });
         return retPointList;
     };
     AnnTool.pointListFrom = function (point, posInRect, width, height) {
@@ -1351,14 +1567,95 @@ var AnnBaseEllipse = /** @class */ (function (_super) {
         var area = Math.abs(width * height) * Math.PI;
         var areaString = "Size = ";
         if (this.pixelSpacing) {
-            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm2";
+            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm";
         }
         else {
-            areaString += area.toFixed(2) + "pt2";
+            areaString += area.toFixed(2) + "pt";
         }
+        areaString += "\xb2";
         return areaString;
     };
     return AnnBaseEllipse;
+}(_ann_base_object__WEBPACK_IMPORTED_MODULE_0__["AnnBaseObject"]));
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/base-object/ann-base-graphic-overlay.ts":
+/*!********************************************************************!*\
+  !*** ./src/app/annotation/base-object/ann-base-graphic-overlay.ts ***!
+  \********************************************************************/
+/*! exports provided: AnnBaseGraphicOverlay */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnBaseGraphicOverlay", function() { return AnnBaseGraphicOverlay; });
+/* harmony import */ var _ann_base_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ann-base-object */ "./src/app/annotation/base-object/ann-base-object.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+var AnnBaseGraphicOverlay = /** @class */ (function (_super) {
+    __extends(AnnBaseGraphicOverlay, _super);
+    function AnnBaseGraphicOverlay(parentObj, graphicOverlayData, imageViewer, layerId) {
+        var _this = _super.call(this, parentObj, imageViewer) || this;
+        _this.hFlipped = false;
+        _this.vFlipped = false;
+        _this.graphicOverlayData = graphicOverlayData;
+        _this.graphicOverlayCanvas = document.createElement("canvas");
+        _this.graphicOverlayCanvas.width = _this.image.width();
+        _this.graphicOverlayCanvas.height = _this.image.height();
+        _this.ctx = _this.graphicOverlayCanvas.getContext("2d");
+        _this.draw();
+        _this.jcObj = jCanvaScript.image(_this.graphicOverlayCanvas).layer(layerId);
+        _super.prototype.setJcObj.call(_this);
+        return _this;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////s
+    // Override functions of base class
+    AnnBaseGraphicOverlay.prototype.onFlip = function (vertical) {
+        if (vertical) {
+            this.vFlipped = !this.vFlipped;
+        }
+        else {
+            this.hFlipped = !this.hFlipped;
+        }
+        this.draw();
+    };
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    AnnBaseGraphicOverlay.prototype.onReset = function () {
+        this.vFlipped = false;
+        this.hFlipped = false;
+        this.draw();
+    };
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    AnnBaseGraphicOverlay.prototype.draw = function () {
+        var _this = this;
+        var imageWidth = this.image.width();
+        var imageHeight = this.image.height();
+        this.ctx.clearRect(0, 0, imageWidth, imageHeight);
+        this.ctx.beginPath();
+        this.graphicOverlayData.dataList.forEach(function (data) {
+            _this.ctx.rect(_this.hFlipped ? imageWidth - data.x : data.x, _this.vFlipped ? imageHeight - data.y : data.y, 1, 1);
+        });
+        this.ctx.strokeStyle = this.selectedColor;
+        this.ctx.stroke();
+    };
+    return AnnBaseGraphicOverlay;
 }(_ann_base_object__WEBPACK_IMPORTED_MODULE_0__["AnnBaseObject"]));
 
 
@@ -1438,7 +1735,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnBaseLine", function() { return AnnBaseLine; });
 /* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
 /* harmony import */ var _ann_base_object__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ann-base-object */ "./src/app/annotation/base-object/ann-base-object.ts");
-/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -1454,14 +1750,13 @@ var __extends = (undefined && undefined.__extends) || (function () {
 })();
 
 
-
 var AnnBaseLine = /** @class */ (function (_super) {
     __extends(AnnBaseLine, _super);
     function AnnBaseLine(parentObj, startPoint, endPoint, imageViewer, annSerialize) {
         if (annSerialize === void 0) { annSerialize = undefined; }
         var _this = _super.call(this, parentObj, imageViewer) || this;
         if (annSerialize) {
-            var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_2__["AnnConfigLoader"].loadBaseLine(annSerialize);
+            var config = annSerialize.loadBaseLine();
             startPoint = config.startPoint;
             endPoint = config.endPoint;
         }
@@ -1473,11 +1768,11 @@ var AnnBaseLine = /** @class */ (function (_super) {
     // Override functions of base class
     AnnBaseLine.prototype.onSave = function (annSerialize) {
         annSerialize.writeString("CGXAnnLine");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 4);
-        annSerialize.writeNumber(0, 1);
-        annSerialize.writePoint(this.getStartPosition());
-        annSerialize.writePoint(this.getEndPosition());
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 4);
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
+        annSerialize.writeIntegerPoint(this.getStartPosition());
+        annSerialize.writeIntegerPoint(this.getEndPosition());
     };
     AnnBaseLine.prototype.onFlip = function (vertical) {
         if (vertical) {
@@ -1675,6 +1970,18 @@ var AnnBaseObject = /** @class */ (function (_super) {
     AnnBaseObject.prototype.onSave = function (annSerialize) {
         alert("Internal error : AnnBaseObject.onSave() should never be called.");
     };
+    AnnBaseObject.prototype.onDragStarted = function (pos) {
+    };
+    AnnBaseObject.prototype.onDragEnded = function (pos) {
+    };
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    AnnBaseObject.prototype.saveBasicInfo = function (annSerialize, annotationDefinitionData) {
+        annSerialize.writeString(annotationDefinitionData.imageSuiteAnnName);
+        annSerialize.writeInteger(annotationDefinitionData.imageSuiteAnnType, 4); // AnnType
+        annSerialize.writeInteger(1, 4); // created
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1); // selected
+    };
     return AnnBaseObject;
 }(_ann_object__WEBPACK_IMPORTED_MODULE_1__["AnnObject"]));
 
@@ -1713,9 +2020,10 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var AnnBasePolygon = /** @class */ (function (_super) {
     __extends(AnnBasePolygon, _super);
-    function AnnBasePolygon(parentObj, pointList, imageViewer, annSerialize) {
-        if (annSerialize === void 0) { annSerialize = undefined; }
+    function AnnBasePolygon(parentObj, pointList, imageViewer, freeArea) {
+        if (freeArea === void 0) { freeArea = false; }
         var _this = _super.call(this, parentObj, imageViewer) || this;
+        _this.freeArea = freeArea;
         _this.jcObj = jCanvaScript.lines(pointList, _this.selectedColor).layer(_this.layerId);
         _super.prototype.setJcObj.call(_this);
         return _this;
@@ -1723,34 +2031,30 @@ var AnnBasePolygon = /** @class */ (function (_super) {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
     AnnBasePolygon.prototype.onSave = function (annSerialize) {
-        annSerialize.writeString("CGXAnnPolygon");
-        annSerialize.writeNumber(3, 4);
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 1);
         var points = this.jcObj.points();
         var length = points.length;
-        annSerialize.writeNumber(length, 4);
-        annSerialize.writeNumber(length, 4);
+        annSerialize.writeInteger(length, 4);
+        annSerialize.writeInteger(length, 4);
         for (var i = 0; i < length; i++) {
-            annSerialize.writeNumber(points[i][0], 4);
-            annSerialize.writeNumber(points[i][1], 4);
+            annSerialize.writeInteger(points[i][0], 4);
+            annSerialize.writeInteger(points[i][1], 4);
         }
         for (var i = 0; i < length; i++) {
             annSerialize.writeString("CGXAnnLine"); // CGXAnnLine
-            annSerialize.writeNumber(1, 4);
-            annSerialize.writeNumber(0, 4);
-            annSerialize.writeNumber(0, 1);
+            annSerialize.writeInteger(1, 4);
+            annSerialize.writeInteger(0, 4);
+            annSerialize.writeInteger(0, 1);
             if (i !== length - 1) {
-                annSerialize.writeNumber(points[i][0], 4);
-                annSerialize.writeNumber(points[i][1], 4);
-                annSerialize.writeNumber(points[i + 1][0], 4);
-                annSerialize.writeNumber(points[i + 1][1], 4);
+                annSerialize.writeInteger(points[i][0], 4);
+                annSerialize.writeInteger(points[i][1], 4);
+                annSerialize.writeInteger(points[i + 1][0], 4);
+                annSerialize.writeInteger(points[i + 1][1], 4);
             }
             else {
-                annSerialize.writeNumber(points[0][0], 4);
-                annSerialize.writeNumber(points[0][1], 4);
-                annSerialize.writeNumber(points[length - 1][0], 4);
-                annSerialize.writeNumber(points[length - 1][1], 4);
+                annSerialize.writeInteger(points[0][0], 4);
+                annSerialize.writeInteger(points[0][1], 4);
+                annSerialize.writeInteger(points[length - 1][0], 4);
+                annSerialize.writeInteger(points[length - 1][1], 4);
             }
         }
     };
@@ -1813,11 +2117,12 @@ var AnnBasePolygon = /** @class */ (function (_super) {
         }
         area = Math.abs(area);
         if (this.pixelSpacing) {
-            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm2";
+            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm";
         }
         else {
-            areaString += area.toFixed(2) + "pt2";
+            areaString += area.toFixed(2) + "pt";
         }
+        areaString += "\xb2";
         return areaString;
     };
     AnnBasePolygon.prototype.setPointList = function (pointList) {
@@ -1877,16 +2182,16 @@ var AnnBaseRectangle = /** @class */ (function (_super) {
     // Override functions of base class
     AnnBaseRectangle.prototype.onSave = function (annSerialize) {
         annSerialize.writeString("CGXAnnRectangle");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 4);
+        annSerialize.writeInteger(0, 1);
         var topLeftPoint = this.getPosition();
         var rect = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Rectangle"](topLeftPoint.x, topLeftPoint.y, this.getWidth(), this.getHeight());
         var pointList = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointListFromRect(rect);
-        annSerialize.writePoint(pointList[0]); // top left
-        annSerialize.writePoint(pointList[2]); // bottom right
-        annSerialize.writePoint(pointList[1]); // top right
-        annSerialize.writePoint(pointList[3]); // bottom left
+        annSerialize.writeIntegerPoint(pointList[0]); // top left
+        annSerialize.writeIntegerPoint(pointList[2]); // bottom right
+        annSerialize.writeIntegerPoint(pointList[1]); // top right
+        annSerialize.writeIntegerPoint(pointList[3]); // bottom left
     };
     AnnBaseRectangle.prototype.onFlip = function (vertical) {
         if (vertical) {
@@ -1918,11 +2223,12 @@ var AnnBaseRectangle = /** @class */ (function (_super) {
         var area = Math.abs(width * height);
         var areaString = "Size = ";
         if (this.pixelSpacing) {
-            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm2";
+            areaString += (area * this.pixelSpacing.cx * this.pixelSpacing.cy).toFixed(2) + "mm";
         }
         else {
-            areaString += area.toFixed(2) + "pt2";
+            areaString += area.toFixed(2) + "pt";
         }
+        areaString += "\xb2";
         return areaString;
     };
     AnnBaseRectangle.prototype.getTransformMatrix = function () {
@@ -1971,10 +2277,15 @@ var AnnBaseText = /** @class */ (function (_super) {
     __extends(AnnBaseText, _super);
     function AnnBaseText(parentObj, text, startPoint, imageViewer) {
         var _this = _super.call(this, parentObj, imageViewer) || this;
+        _this.fontSizeFixed = false;
         // The coordinate of input point is for annotation layer, since text will always be drawn in label layer, need to convert the coordinate
         startPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_2__["AnnTool"].annLayerToAnnLabelLayer(startPoint, imageViewer);
-        var font = new _models_misc_data__WEBPACK_IMPORTED_MODULE_1__["FontData"]("Times New Roman", "#FFF", _this.parentObj.getFontSize());
+        _this.createdFontSize = _this.parentObj.getFontSize();
+        var font = new _models_misc_data__WEBPACK_IMPORTED_MODULE_1__["FontData"]("Times New Roman", "#FFF", _this.createdFontSize);
         _this.jcObj = jCanvaScript.text(text, startPoint.x, startPoint.y).color(_this.selectedColor).font(font.getCanvasFontString()).layer(_this.labelLayerId).align("left");
+        //this.jcObj._shadowX = 1;
+        //this.jcObj._shadowY = 1;
+        //this.jcObj._shadowColor = "#000";
         _super.prototype.setJcObj.call(_this);
         return _this;
     }
@@ -1982,21 +2293,24 @@ var AnnBaseText = /** @class */ (function (_super) {
     // Override functions of base class
     AnnBaseText.prototype.onSave = function (annSerialize) {
         annSerialize.writeString("CGXAnnLabel");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 4);
+        annSerialize.writeInteger(0, 1);
         var topLeftPoint = this.getPosition();
         var rect = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Rectangle"](topLeftPoint.x, topLeftPoint.y, this.getWidth(), this.getHeight());
         var pointList = _ann_tool__WEBPACK_IMPORTED_MODULE_2__["AnnTool"].pointListFromRect(rect);
-        annSerialize.writePoint(pointList[0]); // top left
-        annSerialize.writePoint(pointList[2]); // bottom right
-        annSerialize.writePoint(pointList[1]); // top right
-        annSerialize.writePoint(pointList[3]); // bottom left
+        annSerialize.writeIntegerPoint(pointList[0]); // top left
+        annSerialize.writeIntegerPoint(pointList[2]); // bottom right
+        annSerialize.writeIntegerPoint(pointList[1]); // top right
+        annSerialize.writeIntegerPoint(pointList[3]); // bottom left
     };
     AnnBaseText.prototype.onScale = function () {
         // When scale value changed, the font size need to be changed as well to make sure it look unchanged in the screen
-        var font = new _models_misc_data__WEBPACK_IMPORTED_MODULE_1__["FontData"]("Times New Roman", "#FFF", this.parentObj.getFontSize());
-        this.jcObj.font(font.getCanvasFontString());
+        var fontSize = this.fontSizeFixed ? this.createdFontSize : this.parentObj.getFontSize();
+        this.setFontSize(fontSize);
+        //const font = this.fontSizeFixed ? new FontData("Times New Roman", "#FFF", this.createdFontSize) :
+        //    new FontData("Times New Roman", "#FFF", this.parentObj.getFontSize());
+        //this.jcObj.font(font.getCanvasFontString());
     };
     AnnBaseText.prototype.onMove = function (point) {
         // The coordinate of input point is for annotation layer, since text will always be drawn in label layer, need to convert the coordinate
@@ -2006,8 +2320,9 @@ var AnnBaseText = /** @class */ (function (_super) {
     AnnBaseText.prototype.getRect = function () {
         // Not sure why JCanvas returns the wrong rect, adjust it
         var rect = this.jcObj.getRect("poor");
-        var newHeight = this.parentObj.getFontSize();
-        rect.y -= newHeight - rect.height - 2;
+        var newHeight = this.fontSizeFixed ? this.createdFontSize : this.parentObj.getFontSize();
+        //rect.y -= newHeight - rect.height - 2;
+        rect.y = this.getPosition().y - newHeight * 0.85;
         rect.height = newHeight + 4;
         rect.x -= 2;
         rect.width += 4;
@@ -2018,6 +2333,10 @@ var AnnBaseText = /** @class */ (function (_super) {
         // Text is always in label layer
         return this.imageViewer.getAnnLabelLayer().transform();
     };
+    AnnBaseText.prototype.onDragStarted = function (pos) {
+    };
+    AnnBaseText.prototype.onDragEnded = function (pos) {
+    };
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
     AnnBaseText.prototype.getText = function () {
@@ -2025,6 +2344,17 @@ var AnnBaseText = /** @class */ (function (_super) {
     };
     AnnBaseText.prototype.setText = function (text) {
         this.jcObj.string(text);
+    };
+    AnnBaseText.prototype.setFontSizeFixed = function (fontSizeFixed) {
+        this.fontSizeFixed = fontSizeFixed;
+    };
+    AnnBaseText.prototype.setFontSize = function (fontSize) {
+        this.createdFontSize = fontSize;
+        var font = new _models_misc_data__WEBPACK_IMPORTED_MODULE_1__["FontData"]("Times New Roman", "#FFF", fontSize);
+        this.jcObj.font(font.getCanvasFontString());
+    };
+    AnnBaseText.prototype.getCreateFontSize = function () {
+        return this.createdFontSize;
     };
     return AnnBaseText;
 }(_ann_base_object__WEBPACK_IMPORTED_MODULE_3__["AnnBaseObject"]));
@@ -2050,7 +2380,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _base_object_ann_base_curve__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../base-object/ann-base-curve */ "./src/app/annotation/base-object/ann-base-curve.ts");
 /* harmony import */ var _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ann-text-indicator */ "./src/app/annotation/extend-object/ann-text-indicator.ts");
 /* harmony import */ var _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../base-object/ann-base-line */ "./src/app/annotation/base-object/ann-base-line.ts");
-/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -2064,7 +2393,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
 
 
 
@@ -2140,34 +2468,30 @@ var AnnAngle = /** @class */ (function (_super) {
         this.annStartPoint = this.createPoint(lineList[0].startPoint);
         this.annEndPoint1 = this.createPoint(lineList[0].endPoint);
         this.annEndPoint2 = this.createPoint(lineList[1].endPoint);
-        this.redrawAngle();
+        this.redrawAngle(arrowStartPoint);
     };
-    AnnAngle.prototype.onLoad = function (annSerialize) {
-        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_7__["AnnConfigLoader"].loadAngle(annSerialize);
+    AnnAngle.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadAngle();
+    };
+    AnnAngle.prototype.onCreateFromConfig = function (config) {
         this.onCreate(config.lineList, config.textIndicator.startPoint, config.textIndicator.endPoint);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
+        this.focusedObj = this.annStartPoint;
     };
     AnnAngle.prototype.onSave = function (annSerialize) {
-        annSerialize.writeString("CGXAnnProtractor");
-        annSerialize.writeNumber(8, 4); // AnnType
-        annSerialize.writeNumber(1, 4); // created
-        annSerialize.writeNumber(0, 4); // moving
-        annSerialize.writeNumber(0, 1); // selected
-        annSerialize.writeNumber(0, 1); // arcAndTextOnly
-        annSerialize.writeNumber(3, 4); // createState
+        this.saveBasicInfo(annSerialize, true);
+        annSerialize.writeInteger(0, 1); // arcAndTextOnly        
+        annSerialize.writeInteger(3, 4); // createState
         var angle = this.annBaseCurve.getAngle();
-        annSerialize.writeNumber(angle, 8); // angle
+        annSerialize.writeDouble(angle); // angle
         var startPoint = this.annStartPoint.getPosition();
         var radius = this.annBaseCurve.getRadius();
         var arcStartPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointInLineByDistance(startPoint, this.annBaseLine1.getEndPosition(), radius);
-        annSerialize.writePoint(arcStartPoint);
+        annSerialize.writeIntegerPoint(arcStartPoint);
         var arcEndPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointInLineByDistance(startPoint, this.annBaseLine2.getEndPosition(), radius);
-        annSerialize.writePoint(arcEndPoint);
+        annSerialize.writeIntegerPoint(arcEndPoint);
         // TopLeft point of curve's rect
-        annSerialize.writePoint({ x: startPoint.x - radius, y: startPoint.y - radius });
-        annSerialize.writePoint({ x: startPoint.x + radius, y: startPoint.y + radius });
+        annSerialize.writeIntegerPoint({ x: startPoint.x - radius, y: startPoint.y - radius });
+        annSerialize.writeIntegerPoint({ x: startPoint.x + radius, y: startPoint.y + radius });
         this.annBaseLine1.onSave(annSerialize);
         this.annBaseLine2.onSave(annSerialize);
         this.annTextIndicator.onSave(annSerialize);
@@ -2207,7 +2531,8 @@ var AnnAngle = /** @class */ (function (_super) {
     };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    AnnAngle.prototype.redrawAngle = function () {
+    AnnAngle.prototype.redrawAngle = function (arrowStartPoint) {
+        if (arrowStartPoint === void 0) { arrowStartPoint = undefined; }
         var radius = this.getAngelRadius();
         var arcStartPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointInLineByDistance(this.annStartPoint.getPosition(), this.annBaseLine1.getEndPosition(), radius);
         var arcEndPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointInLineByDistance(this.annStartPoint.getPosition(), this.annBaseLine2.getEndPosition(), radius);
@@ -2216,7 +2541,7 @@ var AnnAngle = /** @class */ (function (_super) {
         // another middle point
         var newMiddlePoint = { x: lineCenter.x * 2 - arcMiddlePoint.x, y: lineCenter.y * 2 - arcMiddlePoint.y };
         var startPoint = this.annStartPoint.getPosition();
-        // The nearest is the wanted
+        // The far point is the wanted
         if (_ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(startPoint, newMiddlePoint) > _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(startPoint, arcMiddlePoint)) {
             arcMiddlePoint = newMiddlePoint;
         }
@@ -2231,7 +2556,7 @@ var AnnAngle = /** @class */ (function (_super) {
         else {
             this.annBaseCurve = new _base_object_ann_base_curve__WEBPACK_IMPORTED_MODULE_4__["AnnBaseCurve"](this, arcData.centerPoint, arcData.radius, arcData.startAngle, arcData.endAngle, arcData.anticlockwise, this.imageViewer);
             this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
-            this.annTextIndicator.onCreate(this.annBaseCurve.getText(true), startPoint);
+            this.annTextIndicator.onCreate(this.annBaseCurve.getText(true), startPoint, arrowStartPoint);
         }
     };
     AnnAngle.prototype.getAngelRadius = function () {
@@ -2269,7 +2594,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../base-object/ann-base-line */ "./src/app/annotation/base-object/ann-base-line.ts");
 /* harmony import */ var _ann_extend_object__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-extend-object */ "./src/app/annotation/extend-object/ann-extend-object.ts");
 /* harmony import */ var _ann_line__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ann-line */ "./src/app/annotation/extend-object/ann-line.ts");
-/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -2283,7 +2607,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
 
 
 
@@ -2327,24 +2650,21 @@ var AnnArrow = /** @class */ (function (_super) {
         this.annLine.onCreate(arrowStartPoint, arrowEndPoint);
         this.redrawArrow(arrowStartPoint, arrowEndPoint);
     };
-    AnnArrow.prototype.onLoad = function (annSerialize) {
-        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_5__["AnnConfigLoader"].loadArrow(annSerialize);
+    AnnArrow.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadArrow();
+    };
+    AnnArrow.prototype.onCreateFromConfig = function (config) {
         this.onCreate(config.startPoint, config.endPoint);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
+        this.focusedObj = this.annLine;
     };
     AnnArrow.prototype.onSave = function (annSerialize, saveArrowMark) {
         if (saveArrowMark === void 0) { saveArrowMark = true; }
         if (saveArrowMark) {
-            annSerialize.writeString("CGXAnnArrowMark");
-            annSerialize.writeNumber(10, 4);
-            annSerialize.writeNumber(1, 4);
-            annSerialize.writeNumber(1, 1);
+            this.saveBasicInfo(annSerialize);
         }
         annSerialize.writeString("CGXAnnArrow");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 1);
         this.annLine.getBaseLine().onSave(annSerialize);
         this.annArrowLineA.onSave(annSerialize);
         this.annArrowLineB.onSave(annSerialize);
@@ -2453,7 +2773,6 @@ var AnnCardiothoracicRatio = /** @class */ (function (_super) {
         var _this = _super.call(this, parent, imageViewer) || this;
         _this.annPointList = [];
         _this.annLineList = [];
-        _this.annTypeName = "Cardiothoracic Ratio";
         return _this;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2524,6 +2843,43 @@ var AnnCardiothoracicRatio = /** @class */ (function (_super) {
                 }
             }
         }
+    };
+    AnnCardiothoracicRatio.prototype.onCreate = function (lineList, arrowStartPoint, arrowEndPoint) {
+        if (arrowStartPoint === void 0) { arrowStartPoint = undefined; }
+        if (arrowEndPoint === void 0) { arrowEndPoint = undefined; }
+        if (lineList.length !== 5) {
+            alert("Error config of AnnCardiothoracicRatio!");
+            return;
+        }
+        var pointA = lineList[0].startPoint;
+        var pointB = lineList[0].endPoint;
+        this.createPoint(pointA, 0);
+        this.createPoint(pointB, 1);
+        this.annBaseLineAb = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_3__["AnnBaseLine"](this, pointA, pointB, this.imageViewer);
+        this.annLineList.push(new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_3__["AnnBaseLine"](this, pointA, pointA, this.imageViewer)); //BaseLineAa 
+        this.annLineList.push(new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_3__["AnnBaseLine"](this, pointB, pointB, this.imageViewer)); //BaseLineBb
+        for (var i = 1; i < 5; i++) {
+            this.annLineList.push(new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_3__["AnnBaseLine"](this, lineList[i].startPoint, lineList[i].endPoint, this.imageViewer));
+            this.createPoint(lineList[i].startPoint, i + 1);
+            this.handleFootPoint(lineList[i].startPoint);
+        }
+        this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
+        this.annTextIndicator.onCreate(this.getText(), arrowEndPoint, arrowStartPoint);
+    };
+    AnnCardiothoracicRatio.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadCardiothoracicRatio();
+    };
+    AnnCardiothoracicRatio.prototype.onCreateFromConfig = function (config) {
+        this.onCreate(config.lineList, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        this.focusedObj = this.annPointList[0];
+    };
+    AnnCardiothoracicRatio.prototype.onSave = function (annSerialize) {
+        this.saveBasicInfo(annSerialize);
+        this.annBaseLineAb.onSave(annSerialize);
+        for (var i = 2; i < this.annLineList.length; i++) {
+            this.annLineList[i].onSave(annSerialize);
+        }
+        this.annTextIndicator.onSave(annSerialize);
     };
     AnnCardiothoracicRatio.prototype.onDrag = function (deltaX, deltaY) {
         if (this.focusedObj.getStepIndex() !== -1) {
@@ -2677,8 +3033,53 @@ var AnnCardiothoracicRatio = /** @class */ (function (_super) {
         }
         this.annTextIndicator.setText(this.getText());
     };
+    AnnCardiothoracicRatio.prototype.createPoint = function (point, stepIndex) {
+        var annPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_4__["AnnPoint"](this, this.imageViewer);
+        annPoint.onCreate(point);
+        annPoint.setStepIndex(stepIndex);
+        this.annPointList.push(annPoint);
+    };
     return AnnCardiothoracicRatio;
 }(_ann_extend_object__WEBPACK_IMPORTED_MODULE_2__["AnnExtendObject"]));
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/extend-object/ann-cervical-curve.ts":
+/*!****************************************************************!*\
+  !*** ./src/app/annotation/extend-object/ann-cervical-curve.ts ***!
+  \****************************************************************/
+/*! exports provided: AnnCervicalCurve */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnCervicalCurve", function() { return AnnCervicalCurve; });
+/* harmony import */ var _ann_curve__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ann-curve */ "./src/app/annotation/extend-object/ann-curve.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+var AnnCervicalCurve = /** @class */ (function (_super) {
+    __extends(AnnCervicalCurve, _super);
+    function AnnCervicalCurve(parent, imageViewer) {
+        var _this = _super.call(this, parent, imageViewer) || this;
+        _this.radiusInImage = _this.pixelSpacing ? 170 / _this.pixelSpacing.cx : 170;
+        return _this;
+    }
+    return AnnCervicalCurve;
+}(_ann_curve__WEBPACK_IMPORTED_MODULE_0__["AnnCurve"]));
 
 
 
@@ -2722,9 +3123,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 var AnnCurve = /** @class */ (function (_super) {
     __extends(AnnCurve, _super);
     function AnnCurve(parent, imageViewer) {
-        var _this = _super.call(this, parent, imageViewer) || this;
-        _this.annTypeName = "Cervical Curve";
-        return _this;
+        return _super.call(this, parent, imageViewer) || this;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
@@ -2736,20 +3135,21 @@ var AnnCurve = /** @class */ (function (_super) {
                 return;
             }
             var stepIndex = this.imageViewer.getCurrentStepIndex();
+            var ret = void 0;
             switch (stepIndex) {
                 // Step 0: Draw the start point
                 case 0: {
-                    this.onStep1(imagePoint);
+                    ret = this.onStep1(imagePoint);
                     break;
                 }
                 // Draw curve
                 case 1: {
-                    this.onStep2(imagePoint);
+                    ret = this.onStep2(imagePoint);
                     break;
                 }
                 // Adjust curve direction
                 case 2: {
-                    this.onStep3(imagePoint);
+                    ret = this.onStep3(imagePoint);
                     break;
                 }
                 default: {
@@ -2758,8 +3158,34 @@ var AnnCurve = /** @class */ (function (_super) {
                 }
             }
             // Step the guide
-            this.imageViewer.stepGuide();
+            if (ret) {
+                this.imageViewer.stepGuide();
+            }
         }
+    };
+    AnnCurve.prototype.onCreate = function (pointList, arrowStartPoint, arrowEndPoint) {
+        if (arrowStartPoint === void 0) { arrowStartPoint = undefined; }
+        if (arrowEndPoint === void 0) { arrowEndPoint = undefined; }
+        if (pointList.length !== 3) {
+            alert("Error config of AnnCurve!");
+            return;
+        }
+        this.onStep1(pointList[0]);
+        this.redraw(pointList[0], pointList[1], pointList[2]);
+    };
+    AnnCurve.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadCurve();
+    };
+    AnnCurve.prototype.onCreateFromConfig = function (config) {
+        this.onCreate(config.pointList, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        this.focusedObj = this.annStartPoint;
+    };
+    AnnCurve.prototype.onSave = function (annSerialize) {
+        this.saveBasicInfo(annSerialize);
+        annSerialize.writeDoublePoint(this.annStartPoint.getPosition());
+        annSerialize.writeDoublePoint(this.annEndPoint.getPosition());
+        annSerialize.writeDoublePoint(this.annMiddlePoint.getPosition());
+        this.annTextIndicator.onSave(annSerialize);
     };
     AnnCurve.prototype.onDrag = function (deltaX, deltaY) {
         if (this.focusedObj === this.annStartPoint) {
@@ -2797,16 +3223,20 @@ var AnnCurve = /** @class */ (function (_super) {
     AnnCurve.prototype.onStep1 = function (imagePoint) {
         this.annStartPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_3__["AnnPoint"](this, this.imageViewer);
         this.annStartPoint.onCreate(imagePoint);
+        this.annStartPoint.enableShowAlways(true);
         this.annStartPoint.setStepIndex(0);
+        return true;
     };
     AnnCurve.prototype.onStep2 = function (imagePoint) {
         var startPoint = this.annStartPoint.getPosition();
         if (_ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].equalPoint(imagePoint, startPoint))
-            return;
-        var radius = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(startPoint, imagePoint);
-        var middlePoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].calcMiddlePointOfArc(startPoint, imagePoint, radius);
+            return false;
+        var length = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(startPoint, imagePoint);
+        if (length > this.radiusInImage * 2)
+            return false;
+        var middlePoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].calcMiddlePointOfArc(startPoint, imagePoint, this.radiusInImage);
         this.redraw(startPoint, imagePoint, middlePoint);
-        this.annEndPoint.setStepIndex(1);
+        return true;
     };
     AnnCurve.prototype.onStep3 = function (imagePoint) {
         var startPoint = this.annStartPoint.getPosition();
@@ -2819,11 +3249,11 @@ var AnnCurve = /** @class */ (function (_super) {
         if (_ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(imagePoint, newMiddlePoint) < _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(imagePoint, middlePoint)) {
             this.redraw(startPoint, endPoint, newMiddlePoint);
         }
-        this.annMiddlePoint.setStepIndex(2);
         this.focusedObj = this.annMiddlePoint;
         if (!this.parentObj) {
             this.onDrawEnded();
         }
+        return true;
     };
     AnnCurve.prototype.onDragStartPoint = function (deltaX, deltaY) {
         var startPoint = this.annStartPoint.getPosition();
@@ -2867,8 +3297,12 @@ var AnnCurve = /** @class */ (function (_super) {
         else {
             this.annEndPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_3__["AnnPoint"](this, this.imageViewer);
             this.annEndPoint.onCreate(endPoint);
+            this.annEndPoint.enableShowAlways(true);
+            this.annEndPoint.setStepIndex(1);
             this.annMiddlePoint = new _ann_point__WEBPACK_IMPORTED_MODULE_3__["AnnPoint"](this, this.imageViewer);
             this.annMiddlePoint.onCreate(middlePoint);
+            this.annMiddlePoint.enableShowAlways(true);
+            this.annMiddlePoint.setStepIndex(2);
             this.annBaseCurve = new _base_object_ann_base_curve__WEBPACK_IMPORTED_MODULE_4__["AnnBaseCurve"](this, arcData.centerPoint, arcData.radius, arcData.startAngle, arcData.endAngle, arcData.anticlockwise, this.imageViewer);
             this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
             this.annTextIndicator.onCreate(this.annBaseCurve.getText(), middlePoint);
@@ -2922,7 +3356,6 @@ var AnnEllipse = /** @class */ (function (_super) {
     function AnnEllipse(parentObj, imageViewer) {
         var _this = _super.call(this, parentObj, imageViewer) || this;
         _this.annPointList = new Array();
-        _this.widthSet = false;
         return _this;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2939,11 +3372,7 @@ var AnnEllipse = /** @class */ (function (_super) {
                 this.annCenterPoint.onCreate(imagePoint);
             }
             else {
-                if (!this.widthSet) {
-                    this.widthSet = true;
-                    return;
-                }
-                this.focusedObj = this.annEllipse;
+                this.focusedObj = this.annBaseEllipse;
                 if (!this.parentObj) {
                     this.onDrawEnded();
                 }
@@ -2952,49 +3381,55 @@ var AnnEllipse = /** @class */ (function (_super) {
         else if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
             if (this.annCenterPoint) {
                 var centerPoint = this.annCenterPoint.getPosition();
-                var topPoint = { x: centerPoint.x, y: centerPoint.y * 2 - imagePoint.y };
-                var bottomPoint = { x: centerPoint.x, y: imagePoint.y };
-                var leftPoint = { x: centerPoint.x * 2 - imagePoint.x, y: centerPoint.y };
-                var rightPoint = { x: imagePoint.x, y: centerPoint.y };
-                if (this.annEllipse) {
-                    if (this.widthSet) {
-                        var width = this.annEllipse.getWidth();
-                        leftPoint.x = centerPoint.x - width;
-                        rightPoint.x = centerPoint.x + width;
-                    }
-                    this.redraw(topPoint, bottomPoint, leftPoint, rightPoint);
+                var pointList = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointListFromEllipse(centerPoint, imagePoint.x - centerPoint.x, imagePoint.y - centerPoint.y);
+                if (this.annBaseEllipse) {
+                    this.redraw(pointList);
                 }
                 else {
-                    this.annEllipse = new _base_object_ann_base_ellipse__WEBPACK_IMPORTED_MODULE_3__["AnnBaseEllipse"](this, centerPoint, imagePoint.x - centerPoint.x, imagePoint.y - centerPoint.y, this.imageViewer);
-                    var annTopPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_2__["AnnPoint"](this, this.imageViewer);
-                    annTopPoint.onCreate(topPoint);
-                    this.annPointList.push(annTopPoint);
-                    var annRightPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_2__["AnnPoint"](this, this.imageViewer);
-                    annRightPoint.onCreate(rightPoint);
-                    this.annPointList.push(annRightPoint);
-                    var annBottomPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_2__["AnnPoint"](this, this.imageViewer);
-                    annBottomPoint.onCreate(bottomPoint);
-                    this.annPointList.push(annBottomPoint);
-                    var annLeftPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_2__["AnnPoint"](this, this.imageViewer);
-                    annLeftPoint.onCreate(leftPoint);
-                    this.annPointList.push(annLeftPoint);
-                    this.annCenterPoint.onLevelUp();
-                    this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
-                    this.annTextIndicator.onCreate(this.annEllipse.getAreaString(), topPoint);
+                    pointList.push(undefined); // Arrow start
+                    pointList.push(pointList[0]); // Arrow end
+                    this.createFromPointList(pointList);
                 }
             }
         }
     };
+    AnnEllipse.prototype.onCreate = function (centerPoint, width, height, showIndicator, arrowStartPoint, arrowEndPoint) {
+        if (arrowStartPoint === void 0) { arrowStartPoint = undefined; }
+        if (arrowEndPoint === void 0) { arrowEndPoint = undefined; }
+        this.annCenterPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_2__["AnnPoint"](this, this.imageViewer);
+        this.annCenterPoint.onCreate(centerPoint);
+        var pointList = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].pointListFromEllipse(centerPoint, width, height);
+        pointList.push(arrowStartPoint);
+        pointList.push(arrowEndPoint);
+        this.createFromPointList(pointList);
+    };
+    AnnEllipse.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadEllipse();
+    };
+    AnnEllipse.prototype.onCreateFromConfig = function (config) {
+        this.onCreate(config.centerPoint, config.width, config.height, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
+        this.focusedObj = this.annBaseEllipse;
+    };
+    AnnEllipse.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
+        annSerialize.writeInteger(this.annBaseEllipse.getWidth(), 4);
+        annSerialize.writeInteger(this.annBaseEllipse.getHeight(), 4);
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1);
+        annSerialize.writeIntegerPoint(this.annCenterPoint.getPosition());
+        this.annTextIndicator.onSave(annSerialize);
+        annSerialize.writeInteger(1, 1);
+        annSerialize.writeDouble(0);
+    };
     AnnEllipse.prototype.onDrag = function (deltaX, deltaY) {
         var _this = this;
-        if (this.focusedObj === this.annCenterPoint || this.focusedObj === this.annEllipse) {
+        if (this.focusedObj === this.annCenterPoint || this.focusedObj === this.annBaseEllipse) {
             this.onTranslate(deltaX, deltaY);
         }
         else if (this.annPointList.some(function (annObj) { return annObj === _this.focusedObj; })) {
-            this.onPointDragged(this.focusedObj, deltaX, deltaY);
+            this.onDragPoint(this.focusedObj, deltaX, deltaY);
         }
         else if (this.annTextIndicator === this.focusedObj) {
-            this.onTextDragged(deltaX, deltaY);
+            this.annTextIndicator.onDrag(deltaX, deltaY);
         }
     };
     AnnEllipse.prototype.getSurroundPointList = function () {
@@ -3006,41 +3441,58 @@ var AnnEllipse = /** @class */ (function (_super) {
     };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    AnnEllipse.prototype.redraw = function (topPoint, bottomPoint, leftPoint, rightPoint) {
-        this.annEllipse.setWidth(rightPoint.x - topPoint.x);
-        this.annEllipse.setHeight(topPoint.y - rightPoint.y);
-        this.annPointList[0].onMove(topPoint);
-        this.annPointList[1].onMove(rightPoint);
-        this.annPointList[2].onMove(bottomPoint);
-        this.annPointList[3].onMove(leftPoint);
-        this.annTextIndicator.redrawArrow();
-        this.annTextIndicator.setText(this.annEllipse.getAreaString());
-    };
-    AnnEllipse.prototype.onTextDragged = function (deltaX, deltaY) {
-        this.annTextIndicator.onDrag(deltaX, deltaY);
-    };
-    AnnEllipse.prototype.onPointDragged = function (draggedObj, deltaX, deltaY) {
-        var topPoint = this.annPointList[0].getPosition();
-        var leftPoint = this.annPointList[3].getPosition();
-        var rightPoint = this.annPointList[1].getPosition();
-        var bottomPoint = this.annPointList[2].getPosition();
-        if (draggedObj === this.annPointList[0]) {
-            topPoint.y += deltaY;
-            bottomPoint.y -= deltaY;
+    AnnEllipse.prototype.redraw = function (pointList) {
+        if (pointList.length !== 4 || this.annPointList.length !== 4) {
+            alert("Internal error in AnnEllipse.redraw()");
+            return;
         }
-        else if (draggedObj === this.annPointList[3]) {
-            leftPoint.x += deltaX;
-            rightPoint.x -= deltaX;
+        this.annBaseEllipse.setWidth(pointList[1].x - pointList[0].x);
+        this.annBaseEllipse.setHeight(pointList[1].y - pointList[0].y);
+        for (var i = 0; i < 4; i++) {
+            this.annPointList[i].onMove(pointList[i]);
+        }
+        this.annTextIndicator.redrawArrow();
+        this.annTextIndicator.setText(this.annBaseEllipse.getAreaString());
+    };
+    AnnEllipse.prototype.createFromPointList = function (pointList) {
+        if (pointList.length !== 6 || !this.annCenterPoint) {
+            alert("Internal error in AnnEllipse.createFromPointList()");
+            return;
+        }
+        for (var i = 0; i < 4; i++) {
+            var annPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_2__["AnnPoint"](this, this.imageViewer);
+            annPoint.onCreate(pointList[i]);
+            this.annPointList.push(annPoint);
+        }
+        var centerPoint = this.annCenterPoint.getPosition();
+        this.annBaseEllipse = new _base_object_ann_base_ellipse__WEBPACK_IMPORTED_MODULE_3__["AnnBaseEllipse"](this, centerPoint, pointList[1].x - centerPoint.x, pointList[2].y - centerPoint.y, this.imageViewer);
+        this.annBaseEllipse.onLevelDown();
+        this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
+        this.annTextIndicator.onCreate(this.annBaseEllipse.getAreaString(), pointList[5], pointList[4]);
+    };
+    AnnEllipse.prototype.onDragPoint = function (draggedObj, deltaX, deltaY) {
+        var pointList = this.getSurroundPointList();
+        if (draggedObj === this.annPointList[0]) {
+            // Top point
+            pointList[0].y += deltaY;
+            pointList[2].y -= deltaY;
         }
         else if (draggedObj === this.annPointList[1]) {
-            leftPoint.x -= deltaX;
-            rightPoint.x += deltaX;
+            // Right point
+            pointList[1].x += deltaX;
+            pointList[3].x -= deltaX;
         }
         else if (draggedObj === this.annPointList[2]) {
-            topPoint.y -= deltaY;
-            bottomPoint.y += deltaY;
+            // Bottom point
+            pointList[0].y -= deltaY;
+            pointList[2].y += deltaY;
         }
-        this.redraw(topPoint, bottomPoint, leftPoint, rightPoint);
+        else if (draggedObj === this.annPointList[3]) {
+            // Left point
+            pointList[1].x -= deltaX;
+            pointList[3].x += deltaX;
+        }
+        this.redraw(pointList);
     };
     return AnnEllipse;
 }(_ann_extend_object__WEBPACK_IMPORTED_MODULE_4__["AnnExtendObject"]));
@@ -3079,20 +3531,21 @@ var AnnExtendObject = /** @class */ (function (_super) {
     function AnnExtendObject(parentObj, imageViewer) {
         var _this = _super.call(this, parentObj, imageViewer) || this;
         _this.annObjList = [];
-        _this.guideNeeded = false;
+        _this.loadedFromTag = false; // The annotation is created when loading image
+        _this.annDefData = imageViewer.getAnnotationService().getAnnDefDataByClassName(_this.constructor.name);
         if (parentObj) {
             parentObj.onChildCreated(_this);
         }
         return _this;
     }
     AnnExtendObject.prototype.getTypeName = function () {
-        return this.annTypeName;
-    };
-    AnnExtendObject.prototype.setGuideNeeded = function (guideNeeded) {
-        this.guideNeeded = guideNeeded;
+        return this.annDefData.className;
     };
     AnnExtendObject.prototype.isGuideNeeded = function () {
-        return this.guideNeeded;
+        return this.annDefData.needGuide;
+    };
+    AnnExtendObject.prototype.isLoadedFromTag = function () {
+        return this.loadedFromTag;
     };
     AnnExtendObject.prototype.selectChildByStepIndex = function (stepIndex) {
         if (!this.isGuideNeeded())
@@ -3104,7 +3557,7 @@ var AnnExtendObject = /** @class */ (function (_super) {
         }
     };
     AnnExtendObject.prototype.onMouseEvent = function (mouseEventType, point, mouseObj) {
-        alert("Error in AnnExtendObject.onMouseEvent, this function must be overrided.");
+        alert("Error in AnnExtendObject.onMouseEvent, this function must be overrode.");
     };
     AnnExtendObject.prototype.onSwitchFocus = function () {
         var _this = this;
@@ -3154,7 +3607,7 @@ var AnnExtendObject = /** @class */ (function (_super) {
     AnnExtendObject.prototype.onRotate = function (angle) {
         this.annObjList.forEach(function (annObj) {
             // The text indicator is drawn in the separated layer, need to rotate it.
-            if (annObj.constructor.name === "AnnTextIndicator") {
+            if (annObj.constructor.name === "AnnTextIndicator" || annObj.constructor.name === "AnnText") {
                 annObj.onRotate(angle);
             }
         });
@@ -3201,17 +3654,145 @@ var AnnExtendObject = /** @class */ (function (_super) {
         this.annObjList.forEach(function (annObj) { return annObj.setVisible(visible); });
     };
     AnnExtendObject.prototype.onLoad = function (annSerialize) {
-        alert("Internal error : AnnExtendObject.onLoad() should never be called.");
-        return undefined;
+        this.loadedFromTag = true;
+        var config = this.onLoadConfig(annSerialize);
+        this.onCreateFromConfig(config);
+        this.onSelect(config.selected, config.selected);
+        if (!this.parentObj) {
+            this.onDrawEnded();
+        }
     };
     AnnExtendObject.prototype.onSave = function (annSerialize) {
         alert("Internal error : AnnExtendObject.onSave() should never be called.");
     };
+    AnnExtendObject.prototype.onCreateFromConfig = function (config) {
+        alert("Internal error : AnnExtendObject.onCreateFromConfig() should never be called.");
+        return undefined;
+    };
+    AnnExtendObject.prototype.onLoadConfig = function (annSerialize) {
+        alert("Internal error : AnnExtendObject.onLoadConfig() should never be called.");
+        return undefined;
+    };
+    AnnExtendObject.prototype.onDragStarted = function (pos) {
+    };
+    AnnExtendObject.prototype.onDragEnded = function (pos) {
+    };
     AnnExtendObject.prototype.addChildObj = function (annObj) {
         this.annObjList.push(annObj);
     };
+    AnnExtendObject.prototype.saveBasicInfo = function (annSerialize, saveMoving) {
+        if (saveMoving === void 0) { saveMoving = false; }
+        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
+        annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4); // AnnType
+        annSerialize.writeInteger(1, 4); // created
+        if (saveMoving) {
+            annSerialize.writeInteger(0, 4); // moving
+        }
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1); // selected
+    };
     return AnnExtendObject;
 }(_ann_object__WEBPACK_IMPORTED_MODULE_0__["AnnObject"]));
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/extend-object/ann-free-area.ts":
+/*!***********************************************************!*\
+  !*** ./src/app/annotation/extend-object/ann-free-area.ts ***!
+  \***********************************************************/
+/*! exports provided: AnnFreeArea */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnFreeArea", function() { return AnnFreeArea; });
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
+/* harmony import */ var _ann_extend_object__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ann-extend-object */ "./src/app/annotation/extend-object/ann-extend-object.ts");
+/* harmony import */ var _base_object_ann_base_polygon__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../base-object/ann-base-polygon */ "./src/app/annotation/base-object/ann-base-polygon.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+var AnnFreeArea = /** @class */ (function (_super) {
+    __extends(AnnFreeArea, _super);
+    function AnnFreeArea(parent, imageViewer) {
+        return _super.call(this, parent, imageViewer) || this;
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Override functions of base class
+    AnnFreeArea.prototype.onMouseEvent = function (mouseEventType, point, mouseObj) {
+        var imagePoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].screenToImage(point, this.image.transformMatrix);
+        if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseDown) {
+            if (this.created) {
+                this.onSelect(true, false);
+                return;
+            }
+            if (!this.annBasePolygon) {
+                this.annBasePolygon = new _base_object_ann_base_polygon__WEBPACK_IMPORTED_MODULE_3__["AnnBasePolygon"](this, [[imagePoint.x, imagePoint.y]], this.imageViewer, true);
+            }
+        }
+        else if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].DblClick) {
+            this.annBasePolygon.setClosed(true);
+            this.focusedObj = this.annBasePolygon;
+            if (!this.parentObj) {
+                this.onDrawEnded();
+            }
+        }
+        else if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
+            if (this.annBasePolygon) {
+                this.annBasePolygon.addPoint(imagePoint);
+            }
+        }
+    };
+    AnnFreeArea.prototype.onCreate = function (pointList) {
+        this.annBasePolygon = new _base_object_ann_base_polygon__WEBPACK_IMPORTED_MODULE_3__["AnnBasePolygon"](this, [], this.imageViewer, true);
+        var dataList = [];
+        var length = pointList.length;
+        for (var i = 0; i < length; i++) {
+            dataList.push([pointList[i].x, pointList[i].y]);
+        }
+        this.annBasePolygon.setPointList(dataList);
+        this.annBasePolygon.setClosed(true);
+    };
+    AnnFreeArea.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadFreeArea();
+    };
+    AnnFreeArea.prototype.onCreateFromConfig = function (config) {
+        this.onCreate(config.pointList);
+        this.focusedObj = this.annBasePolygon;
+    };
+    AnnFreeArea.prototype.onSave = function (annSerialize) {
+        this.annBasePolygon.saveBasicInfo(annSerialize, this.annDefData);
+        this.annBasePolygon.onSave(annSerialize);
+    };
+    AnnFreeArea.prototype.onDrag = function (deltaX, deltaY) {
+        var _this = this;
+        if (this.focusedObj === this.annBasePolygon) {
+            this.onTranslate(deltaX, deltaY);
+        }
+        else {
+            this.focusedObj.onTranslate(deltaX, deltaY);
+            var index = this.annObjList.findIndex(function (annObj) { return annObj === _this.focusedObj; });
+            this.annBasePolygon.updatePoint(index - 1, this.focusedObj.getPosition());
+        }
+    };
+    return AnnFreeArea;
+}(_ann_extend_object__WEBPACK_IMPORTED_MODULE_2__["AnnExtendObject"]));
 
 
 
@@ -3275,13 +3856,63 @@ var AnnImage = /** @class */ (function (_super) {
             }
         }
     };
-    AnnImage.prototype.onCreate = function (imageData, topLeftPoint) {
-        this.annBaseImage = new _base_object_ann_base_image__WEBPACK_IMPORTED_MODULE_3__["AnnBaseImage"](this, imageData, topLeftPoint, this.imageViewer);
-        var width = this.annBaseImage.getWidth();
-        var height = this.annBaseImage.getHeight();
-        this.annRectangle = new _extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_2__["AnnRectangle"](this, this.imageViewer);
-        this.annRectangle.onCreate(topLeftPoint, width, height, false);
-        this.annBaseImage.onLevelDown("bottom");
+    AnnImage.prototype.onCreate = function (imageFileName, topLeftPoint, bottomRightPoint) {
+        var _this = this;
+        if (bottomRightPoint === void 0) { bottomRightPoint = undefined; }
+        this.imageFileName = imageFileName;
+        var imageData = new Image();
+        imageData.onload = function (ev) {
+            _this.annBaseImage = new _base_object_ann_base_image__WEBPACK_IMPORTED_MODULE_3__["AnnBaseImage"](_this, imageData, topLeftPoint, _this.imageViewer);
+            var width, height;
+            if (bottomRightPoint) {
+                width = bottomRightPoint.x - topLeftPoint.x;
+                height = bottomRightPoint.y - topLeftPoint.y;
+            }
+            else {
+                width = _this.annBaseImage.getWidth();
+                height = _this.annBaseImage.getHeight();
+            }
+            _this.annRectangle = new _extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_2__["AnnRectangle"](_this, _this.imageViewer);
+            _this.annRectangle.onCreate(topLeftPoint, width, height, false);
+            _this.annBaseImage.onLevelDown("bottom");
+            if (bottomRightPoint) {
+                _this.onRectangleChanged();
+            }
+            if (_this.loadedFromTag) {
+                _this.focusedObj = _this.annBaseImage;
+                _this.onSelect(_this.selected, _this.selected);
+                if (!_this.parentObj) {
+                    _this.onDrawEnded();
+                }
+                _this.imageViewer.refresh();
+            }
+        };
+        imageData.src = this.imageViewer.getBaseUrl() + "assets/img/Stamp/" + imageFileName + ".PNG";
+    };
+    AnnImage.prototype.onLoad = function (config) {
+        this.loadedFromTag = true;
+        this.onCreateFromConfig(config);
+    };
+    AnnImage.prototype.onSave = function (annSerialize) {
+        annSerialize.writeString(this.annDefData.imageSuiteAnnName);
+        annSerialize.writeString(this.imageFileName);
+        annSerialize.writeBytes([]);
+        annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4);
+        annSerialize.writeInteger(1, 4); // created
+        annSerialize.writeInteger(0, 4); // moving
+        annSerialize.writeInteger(this.selected ? 1 : 0, 1); // selected
+        var rect = this.annRectangle.getRect();
+        annSerialize.writeIntegerPoint({ x: rect.x, y: rect.y });
+        annSerialize.writeIntegerPoint({ x: rect.x + rect.width, y: rect.y + rect.height });
+        annSerialize.writeInteger(1, 1);
+        annSerialize.writeInteger(0, 4);
+    };
+    AnnImage.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadImage();
+    };
+    AnnImage.prototype.onCreateFromConfig = function (config) {
+        this.selected = config.selected;
+        this.onCreate(config.imageFileName, config.topLeftPoint, config.bottomRightPoint);
     };
     AnnImage.prototype.onSelect = function (selected, focused) {
         _super.prototype.onSelect.call(this, selected, focused);
@@ -3292,11 +3923,7 @@ var AnnImage = /** @class */ (function (_super) {
     AnnImage.prototype.onDrag = function (deltaX, deltaY) {
         if (this.annRectangle === this.focusedObj) {
             this.annRectangle.onDrag(deltaX, deltaY);
-            var rect = this.annRectangle.getRect();
-            rect = _ann_tool__WEBPACK_IMPORTED_MODULE_4__["AnnTool"].formatRect(rect);
-            this.annBaseImage.onMove(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](rect.x, rect.y));
-            this.annBaseImage.setWidth(rect.width);
-            this.annBaseImage.setHeight(rect.height);
+            this.onRectangleChanged();
         }
         else {
             this.onTranslate(deltaX, deltaY);
@@ -3314,6 +3941,17 @@ var AnnImage = /** @class */ (function (_super) {
     };
     AnnImage.prototype.getRect = function () {
         return this.annBaseImage.getRect();
+    };
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    AnnImage.prototype.onRectangleChanged = function () {
+        var rect = this.annRectangle.getRect();
+        rect = _ann_tool__WEBPACK_IMPORTED_MODULE_4__["AnnTool"].formatRect(rect);
+        this.annBaseImage.onMove(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](rect.x, rect.y));
+        this.annBaseImage.setWidth(rect.width);
+        this.annBaseImage.setHeight(rect.height);
     };
     return AnnImage;
 }(_ann_extend_object__WEBPACK_IMPORTED_MODULE_1__["AnnExtendObject"]));
@@ -3337,7 +3975,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../base-object/ann-base-line */ "./src/app/annotation/base-object/ann-base-line.ts");
 /* harmony import */ var _ann_extend_object__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-extend-object */ "./src/app/annotation/extend-object/ann-extend-object.ts");
 /* harmony import */ var _ann_point__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ann-point */ "./src/app/annotation/extend-object/ann-point.ts");
-/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -3351,7 +3988,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
 
 
 
@@ -3407,18 +4043,15 @@ var AnnLine = /** @class */ (function (_super) {
         this.annEndPoint.onCreate(endPoint);
         this.focusedObj = this.annBaseLine;
     };
-    AnnLine.prototype.onLoad = function (annSerialize) {
-        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_5__["AnnConfigLoader"].loadLine(annSerialize);
+    AnnLine.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadLine();
+    };
+    AnnLine.prototype.onCreateFromConfig = function (config) {
         this.onCreate(config.startPoint, config.endPoint);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
+        this.focusedObj = this.annBaseLine;
     };
     AnnLine.prototype.onSave = function (annSerialize) {
-        annSerialize.writeString("CGXAnnLineEx");
-        annSerialize.writeNumber(33, 4);
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(1, 1);
+        this.saveBasicInfo(annSerialize);
         this.annBaseLine.onSave(annSerialize);
     };
     AnnLine.prototype.onDrag = function (deltaX, deltaY) {
@@ -3470,6 +4103,45 @@ var AnnLine = /** @class */ (function (_super) {
 
 /***/ }),
 
+/***/ "./src/app/annotation/extend-object/ann-lumbar-curve.ts":
+/*!**************************************************************!*\
+  !*** ./src/app/annotation/extend-object/ann-lumbar-curve.ts ***!
+  \**************************************************************/
+/*! exports provided: AnnLumbarCurve */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnLumbarCurve", function() { return AnnLumbarCurve; });
+/* harmony import */ var _ann_curve__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ann-curve */ "./src/app/annotation/extend-object/ann-curve.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+var AnnLumbarCurve = /** @class */ (function (_super) {
+    __extends(AnnLumbarCurve, _super);
+    function AnnLumbarCurve(parent, imageViewer) {
+        var _this = _super.call(this, parent, imageViewer) || this;
+        _this.radiusInImage = _this.pixelSpacing ? 220 / _this.pixelSpacing.cx : 220;
+        return _this;
+    }
+    return AnnLumbarCurve;
+}(_ann_curve__WEBPACK_IMPORTED_MODULE_0__["AnnCurve"]));
+
+
+
+/***/ }),
+
 /***/ "./src/app/annotation/extend-object/ann-mark-spot.ts":
 /*!***********************************************************!*\
   !*** ./src/app/annotation/extend-object/ann-mark-spot.ts ***!
@@ -3504,9 +4176,7 @@ var __extends = (undefined && undefined.__extends) || (function () {
 var AnnMarkSpot = /** @class */ (function (_super) {
     __extends(AnnMarkSpot, _super);
     function AnnMarkSpot(parent, imageViewer) {
-        var _this = _super.call(this, parent, imageViewer) || this;
-        _this.annTypeName = "Mark Spot";
-        return _this;
+        return _super.call(this, parent, imageViewer) || this;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
@@ -3531,6 +4201,27 @@ var AnnMarkSpot = /** @class */ (function (_super) {
             if (!this.parentObj) {
                 this.onDrawEnded();
             }
+        }
+    };
+    AnnMarkSpot.prototype.onCreate = function (pointList) {
+        this.onDeleteChildren();
+        for (var i = 0; i < pointList.length; i++) {
+            this.createNewPoint(pointList[i]);
+        }
+    };
+    AnnMarkSpot.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadMarkSpot();
+    };
+    AnnMarkSpot.prototype.onCreateFromConfig = function (config) {
+        this.onCreate(config.pointList);
+        this.focusedObj = this.annObjList[0];
+    };
+    AnnMarkSpot.prototype.onSave = function (annSerialize) {
+        this.saveBasicInfo(annSerialize);
+        var count = this.annObjList.length;
+        annSerialize.writeInteger(count, 4);
+        for (var i = 0; i < count; i++) {
+            annSerialize.writeIntegerPoint(this.annObjList[i].getPosition());
         }
     };
     AnnMarkSpot.prototype.onDrag = function (deltaX, deltaY) {
@@ -3632,10 +4323,6 @@ var AnnPoint = /** @class */ (function (_super) {
     AnnPoint.prototype.getPosition = function () {
         return this.annCenterCircle.getPosition();
     };
-    AnnPoint.prototype.setVisible = function (visible) {
-        this.annCenterCircle.setVisible(visible);
-        this.annOuterCircle.setVisible(visible && this.parentObj.getFocusedObj() === this);
-    };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Public functions
     AnnPoint.prototype.enableShowAlways = function (showAlways) {
@@ -3664,7 +4351,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ann_point__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-point */ "./src/app/annotation/extend-object/ann-point.ts");
 /* harmony import */ var _base_object_ann_base_polygon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../base-object/ann-base-polygon */ "./src/app/annotation/base-object/ann-base-polygon.ts");
 /* harmony import */ var _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ann-text-indicator */ "./src/app/annotation/extend-object/ann-text-indicator.ts");
-/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -3678,7 +4364,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
 
 
 
@@ -3753,14 +4438,15 @@ var AnnPolygon = /** @class */ (function (_super) {
             this.annTextIndicator.onCreate(this.annBasePolygon.getAreaString(), arrowEndPoint, arrowStartPoint);
         }
     };
-    AnnPolygon.prototype.onLoad = function (annSerialize) {
-        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_6__["AnnConfigLoader"].loadPolygon(annSerialize);
+    AnnPolygon.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadPolygon();
+    };
+    AnnPolygon.prototype.onCreateFromConfig = function (config) {
         this.onCreate(config.pointList, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
+        this.focusedObj = this.annBasePolygon;
     };
     AnnPolygon.prototype.onSave = function (annSerialize) {
+        this.annBasePolygon.saveBasicInfo(annSerialize, this.annDefData);
         this.annBasePolygon.onSave(annSerialize);
         this.annTextIndicator.onSave(annSerialize);
     };
@@ -3818,7 +4504,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ann_point__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ann-point */ "./src/app/annotation/extend-object/ann-point.ts");
 /* harmony import */ var _base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../base-object/ann-base-rectangle */ "./src/app/annotation/base-object/ann-base-rectangle.ts");
 /* harmony import */ var _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ann-text-indicator */ "./src/app/annotation/extend-object/ann-text-indicator.ts");
-/* harmony import */ var _ann_config_loader__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../ann-config-loader */ "./src/app/annotation/ann-config-loader.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -3832,7 +4517,6 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
 
 
 
@@ -3915,18 +4599,15 @@ var AnnRectangle = /** @class */ (function (_super) {
         this.createFromPointList(pointList, showIndicator);
         this.focusedObj = this.annBaseRectangle;
     };
-    AnnRectangle.prototype.onLoad = function (annSerialize) {
-        var config = _ann_config_loader__WEBPACK_IMPORTED_MODULE_6__["AnnConfigLoader"].loadRectangle(annSerialize);
+    AnnRectangle.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadRectangle();
+    };
+    AnnRectangle.prototype.onCreateFromConfig = function (config) {
         this.onCreate(config.baseRect.topLeftPoint, config.baseRect.width, config.baseRect.height, true, config.textIndicator.startPoint, config.textIndicator.endPoint);
-        if (!this.parentObj) {
-            this.onDrawEnded();
-        }
+        this.focusedObj = this.annBaseRectangle;
     };
     AnnRectangle.prototype.onSave = function (annSerialize) {
-        annSerialize.writeString("CGXAnnSquare");
-        annSerialize.writeNumber(2, 4);
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 1);
+        this.saveBasicInfo(annSerialize);
         this.annBaseRectangle.onSave(annSerialize);
         this.annTextIndicator.onSave(annSerialize);
     };
@@ -4071,11 +4752,7 @@ var AnnRuler = /** @class */ (function (_super) {
                 this.annLine.onMouseEvent(mouseEventType, point, null);
             }
             else {
-                this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
-                this.annMiddlePoint = new _ann_point__WEBPACK_IMPORTED_MODULE_4__["AnnPoint"](this, this.imageViewer);
-                this.annMiddlePoint.onCreate(_ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(this.annLine.getStartPosition(), imagePoint));
-                var text = this.getLength(this.annLine.getStartPosition(), this.annLine.getEndPosition());
-                this.annTextIndicator.onCreate(text, this.annMiddlePoint.getPosition());
+                this.redraw(this.annLine.getStartPosition(), imagePoint);
                 this.focusedObj = this.annLine;
                 if (!this.parentObj) {
                     this.onDrawEnded();
@@ -4085,14 +4762,34 @@ var AnnRuler = /** @class */ (function (_super) {
         else if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
             if (this.annLine) {
                 this.annLine.onMouseEvent(mouseEventType, point, null);
-                this.CalNodePos(this.annLine.getStartPosition(), imagePoint);
+                this.redraw(this.annLine.getStartPosition(), imagePoint);
             }
         }
+    };
+    AnnRuler.prototype.onCreate = function (startPoint, endPoint, textPoint) {
+        this.onDeleteChildren();
+        this.annLine = new _ann_line__WEBPACK_IMPORTED_MODULE_6__["AnnLine"](this, this.imageViewer);
+        this.annLine.onCreate(startPoint, endPoint);
+        this.redraw(startPoint, endPoint, textPoint);
+    };
+    AnnRuler.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadRuler();
+    };
+    AnnRuler.prototype.onCreateFromConfig = function (config) {
+        this.onCreate(config.startPoint, config.endPoint, config.textIndicator.startPoint);
+        this.focusedObj = this.annLine;
+    };
+    AnnRuler.prototype.onSave = function (annSerialize) {
+        this.saveBasicInfo(annSerialize);
+        this.annLine.getBaseLine().onSave(annSerialize);
+        this.lineNodeA.onSave(annSerialize);
+        this.lineNodeB.onSave(annSerialize);
+        this.annTextIndicator.onSave(annSerialize);
     };
     AnnRuler.prototype.onDrag = function (deltaX, deltaY) {
         if (this.focusedObj === this.annLine) {
             this.annLine.onDrag(deltaX, deltaY);
-            this.CalNodePos(this.annLine.getStartPosition(), this.annLine.getEndPosition());
+            this.redraw(this.annLine.getStartPosition(), this.annLine.getEndPosition());
             this.annMiddlePoint.onMove(_ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(this.annLine.getStartPosition(), this.annLine.getEndPosition()));
             var text = this.getLength(this.annLine.getStartPosition(), this.annLine.getEndPosition());
             this.annTextIndicator.setText(text);
@@ -4104,11 +4801,16 @@ var AnnRuler = /** @class */ (function (_super) {
             this.onTranslate(deltaX, deltaY);
         }
     };
+    AnnRuler.prototype.getSurroundPointList = function () {
+        _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(this.annLine.getStartPosition(), this.annLine.getEndPosition());
+        return [this.annMiddlePoint.getPosition()];
+    };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    AnnRuler.prototype.CalNodePos = function (ptStart, ptEnd) {
-        var sineTheta = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(ptEnd, ptStart);
-        var cosineTheta = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(ptEnd, ptStart);
+    AnnRuler.prototype.redraw = function (startPoint, endPoint, textPoint) {
+        if (textPoint === void 0) { textPoint = undefined; }
+        var sineTheta = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(endPoint, startPoint);
+        var cosineTheta = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(endPoint, startPoint);
         var ptStartA;
         var ptStartB;
         var ptEndA;
@@ -4117,18 +4819,19 @@ var AnnRuler = /** @class */ (function (_super) {
         ptStartB = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
         ptEndA = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
         ptEndB = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](0, 0);
-        ptStartA.x = ptStart.x - this.rulerNode * sineTheta + 0.5;
-        ptStartB.x = ptStart.x + this.rulerNode * sineTheta + 0.5;
-        ptStartA.y = ptStart.y + this.rulerNode * cosineTheta + 0.5;
-        ptStartB.y = ptStart.y - this.rulerNode * cosineTheta + 0.5;
-        sineTheta = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(ptStart, ptEnd);
-        cosineTheta = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(ptStart, ptEnd);
-        ptEndA.x = ptEnd.x - this.rulerNode * sineTheta + 0.5;
-        ptEndB.x = ptEnd.x + this.rulerNode * sineTheta + 0.5;
-        ptEndA.y = ptEnd.y + this.rulerNode * cosineTheta + 0.5;
-        ptEndB.y = ptEnd.y - this.rulerNode * cosineTheta + 0.5;
+        ptStartA.x = startPoint.x - this.rulerNode * sineTheta + 0.5;
+        ptStartB.x = startPoint.x + this.rulerNode * sineTheta + 0.5;
+        ptStartA.y = startPoint.y + this.rulerNode * cosineTheta + 0.5;
+        ptStartB.y = startPoint.y - this.rulerNode * cosineTheta + 0.5;
+        sineTheta = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getSineTheta(startPoint, endPoint);
+        cosineTheta = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].getCosineTheta(startPoint, endPoint);
+        ptEndA.x = endPoint.x - this.rulerNode * sineTheta + 0.5;
+        ptEndB.x = endPoint.x + this.rulerNode * sineTheta + 0.5;
+        ptEndA.y = endPoint.y + this.rulerNode * cosineTheta + 0.5;
+        ptEndB.y = endPoint.y - this.rulerNode * cosineTheta + 0.5;
         if (!this.lineNodeA) {
             this.lineNodeA = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, ptStartA, ptStartB, this.imageViewer);
+            this.lineNodeA.onLevelDown("bottom");
         }
         else {
             this.lineNodeA.onMoveStartPoint(ptStartA);
@@ -4136,24 +4839,37 @@ var AnnRuler = /** @class */ (function (_super) {
         }
         if (!this.lineNodeB) {
             this.lineNodeB = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, ptEndA, ptEndB, this.imageViewer);
+            this.lineNodeB.onLevelDown("bottom");
         }
         else {
             this.lineNodeB.onMoveStartPoint(ptEndA);
             this.lineNodeB.onMoveEndPoint(ptEndB);
         }
+        var centerPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(startPoint, endPoint);
+        if (!this.annMiddlePoint) {
+            this.annMiddlePoint = new _ann_point__WEBPACK_IMPORTED_MODULE_4__["AnnPoint"](this, this.imageViewer);
+            this.annMiddlePoint.onCreate(centerPoint);
+        }
+        else {
+            this.annMiddlePoint.onMove(centerPoint);
+        }
+        var text = this.getLength(startPoint, endPoint);
+        if (!this.annTextIndicator) {
+            this.annTextIndicator = new _ann_text_indicator__WEBPACK_IMPORTED_MODULE_5__["AnnTextIndicator"](this, this.imageViewer);
+            this.annTextIndicator.onCreate(text, this.annMiddlePoint.getPosition(), textPoint);
+        }
+        else {
+            this.annTextIndicator.setText(text);
+        }
     };
-    AnnRuler.prototype.getSurroundPointList = function () {
-        _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(this.annLine.getStartPosition(), this.annLine.getEndPosition());
-        return [this.annMiddlePoint.getPosition()];
-    };
-    AnnRuler.prototype.getLength = function (ptStart, ptEnd) {
+    AnnRuler.prototype.getLength = function (startPoint, endPoint) {
         var strDist;
         if (this.pixelSpacing) {
-            var dDistance = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countPhysicalDistance(ptStart, ptEnd, this.pixelSpacing);
+            var dDistance = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countPhysicalDistance(startPoint, endPoint, this.pixelSpacing);
             strDist = dDistance.toFixed(2) + "mm";
         }
         else {
-            var dDistance = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(ptStart, ptEnd);
+            var dDistance = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].countDistance(startPoint, endPoint);
             strDist = dDistance.toFixed(2) + "pt";
         }
         return strDist;
@@ -4224,8 +4940,8 @@ var AnnTextIndicator = /** @class */ (function (_super) {
     };
     AnnTextIndicator.prototype.onSave = function (annSerialize) {
         annSerialize.writeString("CGXAnnLabel");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 1);
         this.annArrow.onSave(annSerialize, false);
         this.annText.onSave(annSerialize);
     };
@@ -4337,6 +5053,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ann_extend_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ann-extend-object */ "./src/app/annotation/extend-object/ann-extend-object.ts");
 /* harmony import */ var _base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../base-object/ann-base-rectangle */ "./src/app/annotation/base-object/ann-base-rectangle.ts");
 /* harmony import */ var _base_object_ann_base_text__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../base-object/ann-base-text */ "./src/app/annotation/base-object/ann-base-text.ts");
+/* harmony import */ var _extend_object_ann_point__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../extend-object/ann-point */ "./src/app/annotation/extend-object/ann-point.ts");
+/* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -4353,6 +5071,8 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 
 
+
+
 var AnnText = /** @class */ (function (_super) {
     __extends(AnnText, _super);
     function AnnText(parentObj, imageViewer) {
@@ -4360,37 +5080,112 @@ var AnnText = /** @class */ (function (_super) {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Override functions of base class
-    AnnText.prototype.onCreate = function (position, text) {
+    AnnText.prototype.onCreate = function (position, text, forTextIndicator) {
+        if (forTextIndicator === void 0) { forTextIndicator = true; }
+        this.forTextIndicator = forTextIndicator;
         this.annBaseText = new _base_object_ann_base_text__WEBPACK_IMPORTED_MODULE_2__["AnnBaseText"](this, " " + text + " ", position, this.imageViewer);
+        this.annBaseText.setFontSizeFixed(!forTextIndicator);
         var rect = this.annBaseText.getRect();
         this.annRectangle = new _base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_1__["AnnBaseRectangle"](this, { x: rect.x, y: rect.y }, rect.width, rect.height, this.imageViewer, true);
-        this.annBaseText.onLevelDown("bottom");
-        this.focusedObj = this.annBaseText;
-        if (!this.parentObj) {
-            this.onDrawEnded();
+        if (!forTextIndicator) {
+            var posPoint = { x: rect.x, y: rect.y + rect.height };
+            var posAnn = _ann_tool__WEBPACK_IMPORTED_MODULE_4__["AnnTool"].annLabelLayerToAnnLayer(posPoint, this.imageViewer);
+            this.annPosPoint = new _extend_object_ann_point__WEBPACK_IMPORTED_MODULE_3__["AnnPoint"](this, this.imageViewer);
+            this.annPosPoint.onCreate(posAnn);
+            this.annPosPoint.setVisible(false);
+            this.annPosPoint.enableShowAlways(false);
+            var adjustPoint = { x: rect.x + rect.width, y: rect.y + rect.height };
+            var adjustAnn = _ann_tool__WEBPACK_IMPORTED_MODULE_4__["AnnTool"].annLabelLayerToAnnLayer(adjustPoint, this.imageViewer);
+            this.annAdjustPoint = new _extend_object_ann_point__WEBPACK_IMPORTED_MODULE_3__["AnnPoint"](this, this.imageViewer);
+            this.annAdjustPoint.onCreate(adjustAnn);
         }
+        this.annBaseText.onLevelDown("bottom");
+        this.focusedObj = this.annRectangle;
+    };
+    AnnText.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadTextMark();
+    };
+    AnnText.prototype.onCreateFromConfig = function (config) {
+        this.onCreate(config.position, config.text, false);
+        this.annBaseText.setFontSize(config.fontSize * 2);
+        this.redrawByText();
+        this.focusedObj = this.annRectangle;
     };
     AnnText.prototype.onSave = function (annSerialize) {
+        var fontSize = this.annBaseText.getCreateFontSize();
+        if (!this.forTextIndicator) {
+            annSerialize.writeString(this.annDefData.imageSuiteAnnName);
+            annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4); // AnnType
+            annSerialize.writeInteger(1, 4); // created
+            annSerialize.writeInteger(0, 4); // is active
+            annSerialize.writeInteger(0, 4); // edit created
+            annSerialize.writeInteger(1, 4); // state
+            annSerialize.writeInteger(this.selected ? 1 : 0, 1); // selected
+            annSerialize.writeInteger(fontSize / 2, 4); // font size 
+        }
         annSerialize.writeString("CGXAnnText");
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 4);
-        annSerialize.writeNumber(0, 1);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 4);
+        annSerialize.writeInteger(0, 1);
         var pointList = this.annRectangle.getSurroundPointList();
-        annSerialize.writePoint(pointList[2]);
-        annSerialize.writePoint(pointList[0]);
+        annSerialize.writeIntegerPoint(pointList[2]);
+        annSerialize.writeIntegerPoint(pointList[0]);
         annSerialize.writeString(this.annBaseText.getText().trim());
-        annSerialize.writeNumber(1, 4);
-        annSerialize.writeNumber(0, 4);
-        annSerialize.writeNumber(20, 4);
+        annSerialize.writeInteger(1, 4);
+        annSerialize.writeInteger(0, 4);
+        annSerialize.writeInteger(fontSize, 4);
     };
     AnnText.prototype.onScale = function () {
-        _super.prototype.onScale.call(this);
-        this.redrawRect();
-        this.onLevelUp();
+        if (this.forTextIndicator) {
+            _super.prototype.onScale.call(this);
+            this.redrawByText();
+        }
+        else {
+            this.annRectangle.onScale();
+            this.annPosPoint.onScale();
+            this.annAdjustPoint.onScale();
+        }
+    };
+    AnnText.prototype.onFlip = function (vertical) {
+        if (this.forTextIndicator) {
+            _super.prototype.onFlip.call(this, vertical);
+        }
+        else {
+            this.annPosPoint.onFlip(vertical);
+            this.redrawByPosPoint();
+        }
+    };
+    AnnText.prototype.onRotate = function (angle) {
+        if (this.forTextIndicator) {
+            _super.prototype.onRotate.call(this, angle);
+        }
+        else {
+            this.annPosPoint.onRotate(angle);
+            this.redrawByPosPoint();
+        }
+    };
+    AnnText.prototype.onDrag = function (deltaX, deltaY) {
+        if (this.focusedObj === this.annRectangle || this.focusedObj === this.annBaseText) {
+            this.annBaseText.onDrag(deltaX, deltaY);
+            this.redrawByText();
+        }
+        else if (this.focusedObj === this.annAdjustPoint) {
+            this.annAdjustPoint.setVisible(false);
+            this.annAdjustPoint.onDrag(deltaX, deltaY);
+            this.redrawByAdjustPoint();
+        }
+    };
+    AnnText.prototype.onDragEnded = function (pos) {
+        if (this.focusedObj === this.annAdjustPoint) {
+            this.annAdjustPoint.setVisible(true);
+            this.focusedObj = this.annRectangle;
+            this.redrawByText();
+            this.imageViewer.refresh();
+        }
     };
     AnnText.prototype.onMove = function (point) {
         this.annBaseText.onMove(point);
-        this.redrawRect();
+        this.redrawByText();
     };
     AnnText.prototype.getPosition = function () {
         return this.annRectangle.getPosition();
@@ -4400,17 +5195,50 @@ var AnnText = /** @class */ (function (_super) {
     };
     AnnText.prototype.setText = function (text) {
         this.annBaseText.setText(text);
-        this.redrawRect();
+        this.redrawByText();
     };
     AnnText.prototype.getRect = function () {
         return this.annBaseText.getRect();
     };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
-    AnnText.prototype.redrawRect = function () {
+    AnnText.prototype.redrawByPosPoint = function () {
+        this.annBaseText.onMove(this.annPosPoint.getPosition());
         var rect = this.annBaseText.getRect();
         this.annRectangle.redraw(rect);
         this.annBaseText.onLevelUp();
+        var adjustPoint = { x: rect.x + rect.width, y: rect.y + rect.height };
+        var adjustAnn = _ann_tool__WEBPACK_IMPORTED_MODULE_4__["AnnTool"].annLabelLayerToAnnLayer(adjustPoint, this.imageViewer);
+        this.annAdjustPoint.onMove(adjustAnn);
+    };
+    AnnText.prototype.redrawByText = function () {
+        var rect = this.annBaseText.getRect();
+        this.annRectangle.redraw(rect);
+        if (!this.forTextIndicator) {
+            var posPoint = { x: rect.x, y: rect.y + rect.height };
+            var posAnn = _ann_tool__WEBPACK_IMPORTED_MODULE_4__["AnnTool"].annLabelLayerToAnnLayer(posPoint, this.imageViewer);
+            this.annPosPoint.onMove(posAnn);
+            var adjustPoint = { x: rect.x + rect.width, y: rect.y + rect.height };
+            var adjustAnn = _ann_tool__WEBPACK_IMPORTED_MODULE_4__["AnnTool"].annLabelLayerToAnnLayer(adjustPoint, this.imageViewer);
+            this.annAdjustPoint.onMove(adjustAnn);
+        }
+    };
+    AnnText.prototype.redrawByAdjustPoint = function () {
+        var adjustPoint = this.annAdjustPoint.getPosition();
+        var newBottomRight = _ann_tool__WEBPACK_IMPORTED_MODULE_4__["AnnTool"].annLayerToAnnLabelLayer(adjustPoint, this.imageViewer);
+        var pos = this.annRectangle.getPosition();
+        var oldHeight = this.annRectangle.getHeight();
+        var fontSize = this.annBaseText.getCreateFontSize();
+        var newFontSize = fontSize * (newBottomRight.y - pos.y) / oldHeight;
+        if (newFontSize < 0) {
+            return;
+        }
+        this.annBaseText.setFontSize(newFontSize);
+        var rect = this.annBaseText.getRect();
+        this.annRectangle.redraw(rect);
+        var posPoint = { x: rect.x, y: rect.y + rect.height };
+        var posAnn = _ann_tool__WEBPACK_IMPORTED_MODULE_4__["AnnTool"].annLabelLayerToAnnLayer(posPoint, this.imageViewer);
+        this.annPosPoint.onMove(posAnn);
     };
     return AnnText;
 }(_ann_extend_object__WEBPACK_IMPORTED_MODULE_0__["AnnExtendObject"]));
@@ -4466,32 +5294,107 @@ var AnnVerticalAxis = /** @class */ (function (_super) {
                 this.onSelect(true, false);
                 return;
             }
-            if (this.annLine) {
-                var centerPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(this.annLine.getStartPosition(), this.annLine.getEndPosition());
-                this.annCenterPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_4__["AnnPoint"](this, this.imageViewer);
-                this.annCenterPoint.onCreate(centerPoint);
+            if (this.annBaseLine) {
+                this.createCenterPoint();
                 if (!this.parentObj) {
                     this.onDrawEnded();
                 }
             }
         }
         else if (mouseEventType === _models_annotation__WEBPACK_IMPORTED_MODULE_0__["MouseEventType"].MouseMove) {
-            var startPoint = { x: imagePoint.x, y: 0 };
-            var endPoint = { x: imagePoint.x, y: this.image.height() };
-            if (this.annLine) {
-                this.annLine.onMoveStartPoint(startPoint);
-                this.annLine.onMoveEndPoint(endPoint);
-            }
-            else {
-                this.annLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, startPoint, endPoint, this.imageViewer);
-            }
+            this.redraw(imagePoint);
         }
+    };
+    AnnVerticalAxis.prototype.onCreate = function (centerPoint) {
+        this.onDeleteChildren();
+        this.redraw(centerPoint);
+        this.createCenterPoint();
+    };
+    AnnVerticalAxis.prototype.onLoadConfig = function (annSerialize) {
+        return annSerialize.loadVerticalAxis();
+    };
+    AnnVerticalAxis.prototype.onCreateFromConfig = function (config) {
+        var centerPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(config.startPoint, config.endPoint);
+        this.onCreate(centerPoint);
+        this.focusedObj = this.annBaseLine;
+    };
+    AnnVerticalAxis.prototype.onSave = function (annSerialize) {
+        this.saveBasicInfo(annSerialize);
+        annSerialize.writeInteger(0, 4); //initRotateCount
+        this.annBaseLine.onSave(annSerialize);
     };
     AnnVerticalAxis.prototype.onDrag = function (deltaX, deltaY) {
         this.onTranslate(deltaX, 0);
     };
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    AnnVerticalAxis.prototype.redraw = function (centerPoint) {
+        var startPoint = { x: centerPoint.x, y: 0 };
+        var endPoint = { x: centerPoint.x, y: this.image.height() };
+        if (this.annBaseLine) {
+            this.annBaseLine.onMoveStartPoint(startPoint);
+            this.annBaseLine.onMoveEndPoint(endPoint);
+        }
+        else {
+            this.annBaseLine = new _base_object_ann_base_line__WEBPACK_IMPORTED_MODULE_2__["AnnBaseLine"](this, startPoint, endPoint, this.imageViewer);
+        }
+    };
+    AnnVerticalAxis.prototype.createCenterPoint = function () {
+        var centerPoint = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].centerPoint(this.annBaseLine.getStartPosition(), this.annBaseLine.getEndPosition());
+        this.annCenterPoint = new _ann_point__WEBPACK_IMPORTED_MODULE_4__["AnnPoint"](this, this.imageViewer);
+        this.annCenterPoint.onCreate(centerPoint);
+    };
     return AnnVerticalAxis;
 }(_ann_extend_object__WEBPACK_IMPORTED_MODULE_3__["AnnExtendObject"]));
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/layer-object/ann-graphic-overlay.ts":
+/*!****************************************************************!*\
+  !*** ./src/app/annotation/layer-object/ann-graphic-overlay.ts ***!
+  \****************************************************************/
+/*! exports provided: AnnGraphicOverlay */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnGraphicOverlay", function() { return AnnGraphicOverlay; });
+/* harmony import */ var _base_object_ann_base_graphic_overlay__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../base-object/ann-base-graphic-overlay */ "./src/app/annotation/base-object/ann-base-graphic-overlay.ts");
+
+var AnnGraphicOverlay = /** @class */ (function () {
+    function AnnGraphicOverlay(graphicOverlayDataList, imageViewer) {
+        var _this = this;
+        this.graphicOverlayDataList = graphicOverlayDataList;
+        this.imageViewer = imageViewer;
+        this.annGraphicOverlayList = new Array();
+        this.mgLayerDrawn = false;
+        this.graphicOverlayDataList.forEach(function (graphicOverlayData) { return _this.annGraphicOverlayList.push(new _base_object_ann_base_graphic_overlay__WEBPACK_IMPORTED_MODULE_0__["AnnBaseGraphicOverlay"](undefined, graphicOverlayData, imageViewer, imageViewer.getImageLayerId())); });
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    AnnGraphicOverlay.prototype.onFlip = function (vertical) {
+        this.annGraphicOverlayList.forEach(function (annObj) { return annObj.onFlip(vertical); });
+    };
+    AnnGraphicOverlay.prototype.setVisible = function (visible) {
+        this.annGraphicOverlayList.forEach(function (annObj) { return annObj.setVisible(visible); });
+    };
+    AnnGraphicOverlay.prototype.onReset = function () {
+        this.annGraphicOverlayList.forEach(function (annObj) { return annObj.onReset(); });
+    };
+    AnnGraphicOverlay.prototype.del = function () {
+        this.annGraphicOverlayList.forEach(function (annObj) { return annObj.onDeleteChildren(); });
+    };
+    AnnGraphicOverlay.prototype.drawToMgLayer = function () {
+        var _this = this;
+        if (!this.mgLayerDrawn) {
+            this.graphicOverlayDataList.forEach(function (graphicOverlayData) { return _this.annGraphicOverlayList.push(new _base_object_ann_base_graphic_overlay__WEBPACK_IMPORTED_MODULE_0__["AnnBaseGraphicOverlay"](undefined, graphicOverlayData, _this.imageViewer, _this.imageViewer.getMgLayer().id)); });
+        }
+        this.mgLayerDrawn = true;
+    };
+    return AnnGraphicOverlay;
+}());
 
 
 
@@ -4557,12 +5460,17 @@ var AnnGuide = /** @class */ (function () {
         });
     }
     AnnGuide.createAnnGuideDataList = function () {
-        var annGuideCervicalCurve = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideData"]("Cervical Curve", "ann_cervicalcurve");
+        var annGuideCervicalCurve = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideData"]("AnnCervicalCurve");
         annGuideCervicalCurve.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnCervicalCurve_01.png", "Step 1. Click to place a point on the center of the anterior tubercle of the anterior arch"));
         annGuideCervicalCurve.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnCervicalCurve_02.png", "Step 2. Click to place a point on the top center of the first thoracic vertebrae"));
         annGuideCervicalCurve.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnCervicalCurve_03.png", "Step 3. Click on either side of the line to flip the curve. Move center point to change radius of curve", "Step 3. Move center point to change radius of curve"));
         this.annGuideDataList.push(annGuideCervicalCurve);
-        var annCardiothoracicRatio = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideData"]("Cardiothoracic Ratio", "ann_cervicalcurve");
+        var annGuideLumbarCurve = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideData"]("AnnLumbarCurve");
+        annGuideLumbarCurve.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnLumbarCurve_01.png", "Step 1. Click to place a point on center of 12th thoracic vertebrae"));
+        annGuideLumbarCurve.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnLumbarCurve_02.png", "Step 2. Click to place a point on top center of sacrum"));
+        annGuideLumbarCurve.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnLumbarCurve_03.png", "Step 3. Click either side of line to flip curve.Move center point to change radius of curve", "Step 3. Move center point to change radius of curve"));
+        this.annGuideDataList.push(annGuideLumbarCurve);
+        var annCardiothoracicRatio = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideData"]("AnnCardiothoracicRatio");
         annCardiothoracicRatio.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnHCRatio_01.png", "Step 1. Click to place a point on the highest point of the spine"));
         annCardiothoracicRatio.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnHCRatio_02.png", "Step 2. Click to place a point on the lowest point of the spine"));
         annCardiothoracicRatio.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnHCRatio_03.png", "Step 3. Click to place a point on the right side of the heart at its widest point"));
@@ -4570,7 +5478,7 @@ var AnnGuide = /** @class */ (function () {
         annCardiothoracicRatio.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnHCRatio_05.png", "Step 5. Click to place a point on the right side of the chest at its widest point"));
         annCardiothoracicRatio.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnHCRatio_06.png", "Step 6. Click to place a point on the left side of the chest at its widest point"));
         this.annGuideDataList.push(annCardiothoracicRatio);
-        var annGuideMarkSpot = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideData"]("Mark Spot", "ann_line");
+        var annGuideMarkSpot = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideData"]("AnnMarkSpot");
         annGuideMarkSpot.addStepConfig(new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["AnnGuideStepConfig"]("CGXAnnMarkSpot_01.png", "Step 1.Click to place point(s) on the anatomy. Double Click when complete"));
         this.annGuideDataList.push(annGuideMarkSpot);
     };
@@ -4650,6 +5558,9 @@ var AnnGuide = /** @class */ (function () {
     // Set the target annotation object
     AnnGuide.prototype.setGuideTargetObj = function (guideTarget) {
         this.annGuideTarget = guideTarget;
+        if (!this.actionButtonLoaded) {
+            return;
+        }
         if (this.annGuideTarget && this.annGuideTarget.isCreated()) {
             // If the annotation is created, need to disable the Close and Reset button
             this.annGuideCloseButton.onDisabled();
@@ -5013,12 +5924,6 @@ var AnnImageRuler = /** @class */ (function () {
         }
         var canvasWidth = canvas.width;
         var canvasHeight = canvas.height;
-        this.linesVertical.forEach(function (line) { if (line)
-            line.del(); });
-        this.linesHorizontal.forEach(function (line) { if (line)
-            line.del(); });
-        this.linesVertical = [];
-        this.linesHorizontal = [];
         var strRulerInfo = '';
         this.reset(imageViewer);
         // horizontal ruler
@@ -5173,15 +6078,202 @@ var AnnImageRuler = /** @class */ (function () {
             annImageRuler.baseLineV = undefined;
         }
         if (annImageRuler.linesVertical) {
-            annImageRuler.linesVertical.forEach(function (line) { line.del(); });
+            annImageRuler.linesVertical.forEach(function (line) { return line.del(); });
             annImageRuler.linesVertical = [];
         }
         if (annImageRuler.linesHorizontal) {
-            annImageRuler.linesHorizontal.forEach(function (line) { line.del(); });
+            annImageRuler.linesHorizontal.forEach(function (line) { return line.del(); });
             annImageRuler.linesHorizontal = [];
         }
     };
     return AnnImageRuler;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/layer-object/ann-magnify.ts":
+/*!********************************************************!*\
+  !*** ./src/app/annotation/layer-object/ann-magnify.ts ***!
+  \********************************************************/
+/*! exports provided: AnnMagnify */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnMagnify", function() { return AnnMagnify; });
+/* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ann-tool */ "./src/app/annotation/ann-tool.ts");
+
+var AnnMagnify = /** @class */ (function () {
+    function AnnMagnify(imageViewer) {
+        this.imageViewer = imageViewer;
+        this.halfWidth = 80;
+        this.started = false;
+        this.imageLayer = this.imageViewer.getImageLayer();
+        this.mgLayer = this.imageViewer.getMgLayer();
+        this.canvas = this.imageViewer.getCtCanvas();
+        this.font = this.imageViewer.getTextFont();
+        this.textOverlayId = this.imageViewer.getTextOverlayLayerId();
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    AnnMagnify.prototype.start = function (screenPoint, scale) {
+        this.mgLayer.transform(1, 0, 0, 1, 0, 0, true);
+        this.mgLayer.optns.scaleMatrix = this.imageLayer.optns.scaleMatrix;
+        this.mgLayer.optns.rotateMatrix = this.imageLayer.optns.rotateMatrix;
+        this.mgLayer.optns.translateMatrix = this.imageLayer.optns.translateMatrix;
+        this.mgLayer.scale(scale);
+        this.mgLayer.visible(true);
+        if (!this.jcImage) {
+            this.jcImage = jCanvaScript.image(this.canvas).layer(this.mgLayer.id);
+        }
+        if (!this.jcRect) {
+            var rectPos = this.getRectPos(screenPoint);
+            this.jcRect = jCanvaScript.rect(rectPos.x, rectPos.y, this.halfWidth * 2, this.halfWidth * 2, "rgba(127,255,0)").layer(this.textOverlayId);
+        }
+        else {
+            this.jcRect.visible(true);
+        }
+        if (!this.jcText) {
+            var textPos = this.getTextPos(screenPoint);
+            this.jcText = jCanvaScript.text("" + scale, textPos.x, textPos.y).layer(this.imageViewer.getTextOverlayLayerId()).color("rgba(127,255,0)").font(this.textOverlayId).align("left");
+        }
+        else {
+            this.jcText.visible(true);
+            this.jcText.string("" + scale);
+        }
+        this.started = true;
+        this.moveTo(screenPoint);
+    };
+    AnnMagnify.prototype.moveTo = function (screenPoint) {
+        if (!this.started) {
+            return;
+        }
+        var rectPos = this.getRectPos(screenPoint);
+        this.jcRect._x = rectPos.x;
+        this.jcRect._y = rectPos.y;
+        var textPos = this.getTextPos(screenPoint);
+        this.jcText._x = textPos.x;
+        this.jcText._y = textPos.y;
+        // Convert screen point to image point
+        var imagePoint = _ann_tool__WEBPACK_IMPORTED_MODULE_0__["AnnTool"].screenToImage(screenPoint, this.imageLayer.transform());
+        var screenAfter = _ann_tool__WEBPACK_IMPORTED_MODULE_0__["AnnTool"].imageToScreen(imagePoint, this.mgLayer.transform());
+        // Move mg layer
+        this.mgLayer.translate(screenPoint.x - screenAfter.x, screenPoint.y - screenAfter.y);
+        // Clip the layer to only show the image under rectangle
+        this.mgLayer.clip(this.jcRect);
+    };
+    AnnMagnify.prototype.end = function () {
+        this.mgLayer.visible(false);
+        if (this.jcRect) {
+            this.jcRect.visible(false);
+        }
+        if (this.jcText) {
+            this.jcText.visible(false);
+        }
+        this.started = false;
+    };
+    AnnMagnify.prototype.isStarted = function () {
+        return this.started;
+    };
+    AnnMagnify.prototype.del = function () {
+        if (this.jcImage) {
+            this.jcImage.del();
+        }
+        if (this.jcRect) {
+            this.jcRect.del();
+        }
+        if (this.jcText) {
+            this.jcText.del();
+        }
+    };
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Private functions
+    AnnMagnify.prototype.getRectPos = function (screenPoint) {
+        return { x: screenPoint.x - this.halfWidth, y: screenPoint.y - this.halfWidth };
+    };
+    AnnMagnify.prototype.getTextPos = function (screenPoint) {
+        return { x: screenPoint.x - this.halfWidth + 2, y: screenPoint.y + this.halfWidth - 2 };
+    };
+    return AnnMagnify;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/annotation/layer-object/ann-text-overlay.ts":
+/*!*************************************************************!*\
+  !*** ./src/app/annotation/layer-object/ann-text-overlay.ts ***!
+  \*************************************************************/
+/*! exports provided: AnnTextOverlay */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnTextOverlay", function() { return AnnTextOverlay; });
+var AnnTextOverlay = /** @class */ (function () {
+    function AnnTextOverlay(imageViewer, dicomImageService) {
+        this.imageViewer = imageViewer;
+        this.dicomImageService = dicomImageService;
+        this.jcTextOverlayList = [];
+        this.textOverlayDataList = [];
+        this.canvas = this.imageViewer.getCanvas();
+        this.image = this.imageViewer.getImage();
+        this.layerId = this.imageViewer.getTextOverlayLayerId();
+        this.font = this.imageViewer.getTextFont();
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Public functions
+    AnnTextOverlay.prototype.updateWindowCenter = function (width, center) {
+        if (this.windowCenterIndex !== -1) {
+            var text = this.textOverlayDataList[this.windowCenterIndex].text.format(width, center);
+            this.jcTextOverlayList[this.windowCenterIndex].string(text);
+        }
+    };
+    AnnTextOverlay.prototype.updateZoomRatioTextOverlay = function (roomRatio) {
+        if (this.zoomRatioIndex !== -1) {
+            var text = this.textOverlayDataList[this.zoomRatioIndex].text.format(roomRatio.toFixed(2));
+            this.jcTextOverlayList[this.zoomRatioIndex].string(text);
+        }
+    };
+    AnnTextOverlay.prototype.redraw = function () {
+        var _this = this;
+        this.del();
+        this.windowCenterIndex = -1;
+        this.zoomRatioIndex = -1;
+        if (this.canvas.width) {
+            if (this.canvas.width >= 800) {
+                this.font.size = 15;
+            }
+            else if (this.canvas.width < 300) {
+                this.font.size = 10;
+            }
+            else {
+                this.font.size = 10 + Math.floor((this.canvas.width - 300) / 100);
+            }
+        }
+        this.textOverlayDataList = this.dicomImageService.getOverlayDisplayList(this.image, this.canvas, this.font);
+        this.textOverlayDataList.forEach(function (overlay, index) {
+            var label = jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).layer(_this.layerId)
+                .color(_this.font.color).font(_this.font.getCanvasFontString()).align(overlay.align);
+            _this.jcTextOverlayList.push(label);
+            if (overlay.id === "9003") {
+                _this.windowCenterIndex = index;
+                _this.updateWindowCenter(_this.image.cornerStoneImage.windowWidth, _this.image.cornerStoneImage.windowCenter);
+            }
+            else if (overlay.id === "9004") {
+                _this.zoomRatioIndex = index;
+                _this.updateZoomRatioTextOverlay(_this.image.getScaleValue());
+            }
+        });
+    };
+    AnnTextOverlay.prototype.del = function () {
+        this.jcTextOverlayList.forEach(function (jcText) { return jcText.del(); });
+        this.jcTextOverlayList.length = 0;
+    };
+    return AnnTextOverlay;
 }());
 
 
@@ -5233,17 +6325,6 @@ var AppRoutingModule = /** @class */ (function () {
 
 /***/ }),
 
-/***/ "./src/app/app.component.css":
-/*!***********************************!*\
-  !*** ./src/app/app.component.css ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "/*#DivTop\r\n{\r\n  width:976px;\r\n  margin: 0px;\r\n  padding: 12px 12px 12px 16px;\r\n  border-bottom: solid 4px #FFFFFF;\r\n  background-color: #000000;\r\n  color: #cccccc;\r\n  height: 20px;\r\n}*/\r\n\r\n/*#DivTop .navbar-fixed-top{\r\n  border-width: 0 0 2px 0;\r\n  -webkit-border-image: -webkit-linear-gradient(left, #ff9900, #5c492c) 100% 1;\r\n  border-color: #ff9900;\r\n  border-image: linear-gradient(left, #ff9900, #5c492c) 100% 1;\r\n  border-style: solid;\r\n}*/\r\n\r\n\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7OztFQVNFOztBQUVGOzs7Ozs7RUFNRSIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLyojRGl2VG9wXHJcbntcclxuICB3aWR0aDo5NzZweDtcclxuICBtYXJnaW46IDBweDtcclxuICBwYWRkaW5nOiAxMnB4IDEycHggMTJweCAxNnB4O1xyXG4gIGJvcmRlci1ib3R0b206IHNvbGlkIDRweCAjRkZGRkZGO1xyXG4gIGJhY2tncm91bmQtY29sb3I6ICMwMDAwMDA7XHJcbiAgY29sb3I6ICNjY2NjY2M7XHJcbiAgaGVpZ2h0OiAyMHB4O1xyXG59Ki9cclxuXHJcbi8qI0RpdlRvcCAubmF2YmFyLWZpeGVkLXRvcHtcclxuICBib3JkZXItd2lkdGg6IDAgMCAycHggMDtcclxuICAtd2Via2l0LWJvcmRlci1pbWFnZTogLXdlYmtpdC1saW5lYXItZ3JhZGllbnQobGVmdCwgI2ZmOTkwMCwgIzVjNDkyYykgMTAwJSAxO1xyXG4gIGJvcmRlci1jb2xvcjogI2ZmOTkwMDtcclxuICBib3JkZXItaW1hZ2U6IGxpbmVhci1ncmFkaWVudChsZWZ0LCAjZmY5OTAwLCAjNWM0OTJjKSAxMDAlIDE7XHJcbiAgYm9yZGVyLXN0eWxlOiBzb2xpZDtcclxufSovXHJcblxyXG5cclxuIl19 */"
-
-/***/ }),
-
 /***/ "./src/app/app.component.html":
 /*!************************************!*\
   !*** ./src/app/app.component.html ***!
@@ -5251,7 +6332,18 @@ module.exports = "/*#DivTop\r\n{\r\n  width:976px;\r\n  margin: 0px;\r\n  paddin
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<body id=\"bodyLayout\">\r\n\r\n<div class=\"navbar navbar-inverse navbar-fixed-top\">\r\n    <app-header-bar></app-header-bar>\r\n</div>\r\n\r\n<div class=\"container body-content\">\r\n    <!--<app-worklist-shell></app-worklist-shell>-->\r\n    <template #shellContainer></template>\r\n    <!--<router-outlet></router-outlet>-->\r\n</div>\r\n\r\n</body>\r\n\r\n<!--<div style=\"text-align:center\">\r\n    <h1>\r\n        Welcome to {{ title }}!\r\n    </h1>\r\n    <img width=\"300\" alt=\"Angular Logo\" src=\"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==\">\r\n</div>\r\n<h2>Here are some links to help you start: </h2>\r\n<ul>\r\n    <li>\r\n        <h2><a target=\"_blank\" rel=\"noopener\" href=\"https://angular.io/tutorial\">Tour of Heroes</a></h2>\r\n    </li>\r\n    <li>\r\n        <h2><a target=\"_blank\" rel=\"noopener\" href=\"https://github.com/angular/angular-cli/wiki\">CLI Documentation</a></h2>\r\n    </li>\r\n    <li>\r\n        <h2><a target=\"_blank\" rel=\"noopener\" href=\"https://blog.angular.io/\">Angular blog</a></h2>\r\n    </li>\r\n</ul>-->\r\n"
+module.exports = "<body id=\"bodyLayout\">\r\n    <div id=\"test123\" class=\"navbar navbar-fixed-top black-header\">\r\n        <app-header-bar></app-header-bar>\r\n    </div>\r\n\r\n    <div class=\"container body-content\">\r\n        <!--<app-worklist-shell></app-worklist-shell>-->\r\n        <template #shellContainer></template>\r\n        <!--<router-outlet></router-outlet>-->\r\n    </div>\r\n</body>\r\n"
+
+/***/ }),
+
+/***/ "./src/app/app.component.less":
+/*!************************************!*\
+  !*** ./src/app/app.component.less ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvYXBwLmNvbXBvbmVudC5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7O2NBSWM7QUFDZDs7Ozs7Ozs7Ozs7Ozs7Ozs7OztFQW1CRSIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQubGVzcyJ9 */"
 
 /***/ }),
 
@@ -5323,6 +6415,7 @@ var AppComponent = /** @class */ (function () {
     AppComponent.prototype.ngOnInit = function () {
         this.createWorklistShell();
         this.initConerstone();
+        document.body.className = 'theme-' + 'light';
     };
     AppComponent.prototype.createWorklistShell = function () {
         var componentFactory = this.resolver.resolveComponentFactory(_components_worklist_shell_worklist_shell_component__WEBPACK_IMPORTED_MODULE_1__["WorklistShellComponent"]);
@@ -5368,7 +6461,7 @@ var AppComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: "app-root",
             template: __webpack_require__(/*! ./app.component.html */ "./src/app/app.component.html"),
-            styles: [__webpack_require__(/*! ./app.component.css */ "./src/app/app.component.css")]
+            styles: [__webpack_require__(/*! ./app.component.less */ "./src/app/app.component.less")]
         }),
         __metadata("design:paramtypes", [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ComponentFactoryResolver"], _services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_3__["ShellNavigatorService"],
             _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_7__["DicomImageService"], _services_worklist_service__WEBPACK_IMPORTED_MODULE_8__["WorklistService"],
@@ -5424,12 +6517,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./components/dialog/select-studydate-dialog/select-studydate-dialog.component */ "./src/app/components/dialog/select-studydate-dialog/select-studydate-dialog.component.ts");
 /* harmony import */ var _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./components/dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
 /* harmony import */ var _components_viewer_shell_viewer_bottombar_viewer_bottombar_component__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./components/viewer-shell/viewer-bottombar/viewer-bottombar.component */ "./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.ts");
+/* harmony import */ var _components_worklist_shell_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./components/worklist-shell/worklist/patient-edit/patient-edit.component */ "./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.ts");
+/* harmony import */ var _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./components/worklist-shell/worklist/export-study/export-study.component */ "./src/app/components/worklist-shell/worklist/export-study/export-study.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
 
 
 
@@ -5489,7 +6586,9 @@ var AppModule = /** @class */ (function () {
                 _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"],
                 _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_30__["SelectStudydateDialogComponent"],
                 _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectMarkerDialogComponent"],
-                _components_viewer_shell_viewer_bottombar_viewer_bottombar_component__WEBPACK_IMPORTED_MODULE_32__["ViewerBottombarComponent"]
+                _components_viewer_shell_viewer_bottombar_viewer_bottombar_component__WEBPACK_IMPORTED_MODULE_32__["ViewerBottombarComponent"],
+                _components_worklist_shell_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_33__["PatientEditComponent"],
+                _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__["ExportStudyComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -5518,7 +6617,7 @@ var AppModule = /** @class */ (function () {
             ],
             providers: [],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"]],
-            entryComponents: [_components_common_message_box_message_box_component__WEBPACK_IMPORTED_MODULE_19__["MessageBoxComponent"], _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"], _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_30__["SelectStudydateDialogComponent"], _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectMarkerDialogComponent"]]
+            entryComponents: [_components_common_message_box_message_box_component__WEBPACK_IMPORTED_MODULE_19__["MessageBoxComponent"], _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"], _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_30__["SelectStudydateDialogComponent"], _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectMarkerDialogComponent"], _components_worklist_shell_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_33__["PatientEditComponent"], _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__["ExportStudyComponent"]]
         })
     ], AppModule);
     return AppModule;
@@ -5815,7 +6914,7 @@ var DropdownButtonMenuComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".mat-dialog-title {\r\n    border-bottom: 1px solid #FF9900;\r\n    color: #f90;\r\n    font-size: 18px;\r\n    margin: -24px -24px 0px -24px;\r\n    min-width: 400px;\r\n    padding: 1px 10px;\r\n}\r\n\r\n.mat-dialog-content {\r\n    color: white;\r\n    font-size: 16px;\r\n    height: 80px;\r\n    min-width: 400px;\r\n    padding: 10px 10px;\r\n}\r\n\r\n.mat-dialog-actions { margin-right: -12px; }\r\n\r\n.mat-form-field { min-width: 400px; }\r\n\r\n.mat-raised-button {\r\n    background-color: #444;\r\n    border: 1px solid #777;\r\n    border-radius: 3px;\r\n    color: white;\r\n    margin-left: 6px;\r\n    padding: 3px;\r\n    width: 100px;\r\n}\r\n\r\n.mat-raised-button:disabled:hover { color: #999; }\r\n\r\n.mat-raised-button:hover { color: #f90; }\r\n\r\n.mat-dialog-actions { flex-direction: row-reverse; }\r\n\r\n.matInput {\r\n    caret-color: #F90;\r\n    color: green;\r\n}\r\n\r\n.mat-input-element { caret-color: #F90; }\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9jb21tb24vbWVzc2FnZS1ib3gvbWVzc2FnZS1ib3guY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGdDQUFnQztJQUNoQyxXQUFXO0lBQ1gsZUFBZTtJQUNmLDZCQUE2QjtJQUM3QixnQkFBZ0I7SUFDaEIsaUJBQWlCO0FBQ3JCOztBQUVBO0lBQ0ksWUFBWTtJQUNaLGVBQWU7SUFDZixZQUFZO0lBQ1osZ0JBQWdCO0lBQ2hCLGtCQUFrQjtBQUN0Qjs7QUFFQSxzQkFBc0IsbUJBQW1CLEVBQUU7O0FBRTNDLGtCQUFrQixnQkFBZ0IsRUFBRTs7QUFFcEM7SUFDSSxzQkFBc0I7SUFDdEIsc0JBQXNCO0lBQ3RCLGtCQUFrQjtJQUNsQixZQUFZO0lBQ1osZ0JBQWdCO0lBQ2hCLFlBQVk7SUFDWixZQUFZO0FBQ2hCOztBQUVBLG9DQUFvQyxXQUFXLEVBQUU7O0FBRWpELDJCQUEyQixXQUFXLEVBQUU7O0FBRXhDLHNCQUFzQiwyQkFBMkIsRUFBRTs7QUFFbkQ7SUFDSSxpQkFBaUI7SUFDakIsWUFBWTtBQUNoQjs7QUFFQSxxQkFBcUIsaUJBQWlCLEVBQUUiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL2NvbW1vbi9tZXNzYWdlLWJveC9tZXNzYWdlLWJveC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm1hdC1kaWFsb2ctdGl0bGUge1xyXG4gICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICNGRjk5MDA7XHJcbiAgICBjb2xvcjogI2Y5MDtcclxuICAgIGZvbnQtc2l6ZTogMThweDtcclxuICAgIG1hcmdpbjogLTI0cHggLTI0cHggMHB4IC0yNHB4O1xyXG4gICAgbWluLXdpZHRoOiA0MDBweDtcclxuICAgIHBhZGRpbmc6IDFweCAxMHB4O1xyXG59XHJcblxyXG4ubWF0LWRpYWxvZy1jb250ZW50IHtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIGZvbnQtc2l6ZTogMTZweDtcclxuICAgIGhlaWdodDogODBweDtcclxuICAgIG1pbi13aWR0aDogNDAwcHg7XHJcbiAgICBwYWRkaW5nOiAxMHB4IDEwcHg7XHJcbn1cclxuXHJcbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBtYXJnaW4tcmlnaHQ6IC0xMnB4OyB9XHJcblxyXG4ubWF0LWZvcm0tZmllbGQgeyBtaW4td2lkdGg6IDQwMHB4OyB9XHJcblxyXG4ubWF0LXJhaXNlZC1idXR0b24ge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzQ0NDtcclxuICAgIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XHJcbiAgICBib3JkZXItcmFkaXVzOiAzcHg7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBtYXJnaW4tbGVmdDogNnB4O1xyXG4gICAgcGFkZGluZzogM3B4O1xyXG4gICAgd2lkdGg6IDEwMHB4O1xyXG59XHJcblxyXG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIgeyBjb2xvcjogIzk5OTsgfVxyXG5cclxuLm1hdC1yYWlzZWQtYnV0dG9uOmhvdmVyIHsgY29sb3I6ICNmOTA7IH1cclxuXHJcbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBmbGV4LWRpcmVjdGlvbjogcm93LXJldmVyc2U7IH1cclxuXHJcbi5tYXRJbnB1dCB7XHJcbiAgICBjYXJldC1jb2xvcjogI0Y5MDtcclxuICAgIGNvbG9yOiBncmVlbjtcclxufVxyXG5cclxuLm1hdC1pbnB1dC1lbGVtZW50IHsgY2FyZXQtY29sb3I6ICNGOTA7IH1cclxuIl19 */"
+module.exports = ".mat-dialog-title {\r\n    border-bottom: 1px solid #FF9900;\r\n    color: #f90;\r\n    font-size: 18px;\r\n    margin: -24px -24px 0px -24px;\r\n    min-width: 400px;\r\n    padding: 1px 10px;\r\n}\r\n\r\n.mat-dialog-content {\r\n    color: white;\r\n    font-size: 16px;\r\n    min-height: 80px;\r\n    min-width: 400px;\r\n    padding: 10px 10px;\r\n}\r\n\r\n.mat-dialog-actions { margin-right: -12px; }\r\n\r\n.mat-form-field { min-width: 400px; }\r\n\r\n.mat-raised-button {\r\n    background-color: #444;\r\n    border: 1px solid #777;\r\n    border-radius: 3px;\r\n    color: white;\r\n    margin-left: 6px;\r\n    padding: 3px;\r\n    width: 100px;\r\n}\r\n\r\n.mat-raised-button:disabled:hover { color: #999; }\r\n\r\n.mat-raised-button:hover { color: #f90; }\r\n\r\n.mat-dialog-actions { flex-direction: row-reverse; }\r\n\r\n.matInput {\r\n    caret-color: #F90;\r\n    color: green;\r\n}\r\n\r\n.mat-input-element { caret-color: #F90; }\r\n\r\n#span-message-text {\r\n    word-break: break-all;\r\n    word-wrap: break-word;\r\n    white-space: pre-wrap;\r\n    min-width: 400px;\r\n}\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9jb21tb24vbWVzc2FnZS1ib3gvbWVzc2FnZS1ib3guY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGdDQUFnQztJQUNoQyxXQUFXO0lBQ1gsZUFBZTtJQUNmLDZCQUE2QjtJQUM3QixnQkFBZ0I7SUFDaEIsaUJBQWlCO0FBQ3JCOztBQUVBO0lBQ0ksWUFBWTtJQUNaLGVBQWU7SUFDZixnQkFBZ0I7SUFDaEIsZ0JBQWdCO0lBQ2hCLGtCQUFrQjtBQUN0Qjs7QUFFQSxzQkFBc0IsbUJBQW1CLEVBQUU7O0FBRTNDLGtCQUFrQixnQkFBZ0IsRUFBRTs7QUFFcEM7SUFDSSxzQkFBc0I7SUFDdEIsc0JBQXNCO0lBQ3RCLGtCQUFrQjtJQUNsQixZQUFZO0lBQ1osZ0JBQWdCO0lBQ2hCLFlBQVk7SUFDWixZQUFZO0FBQ2hCOztBQUVBLG9DQUFvQyxXQUFXLEVBQUU7O0FBRWpELDJCQUEyQixXQUFXLEVBQUU7O0FBRXhDLHNCQUFzQiwyQkFBMkIsRUFBRTs7QUFFbkQ7SUFDSSxpQkFBaUI7SUFDakIsWUFBWTtBQUNoQjs7QUFFQSxxQkFBcUIsaUJBQWlCLEVBQUU7O0FBRXhDO0lBQ0kscUJBQXFCO0lBQ3JCLHFCQUFxQjtJQUNyQixxQkFBcUI7SUFDckIsZ0JBQWdCO0FBQ3BCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9jb21tb24vbWVzc2FnZS1ib3gvbWVzc2FnZS1ib3guY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5tYXQtZGlhbG9nLXRpdGxlIHtcclxuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjRkY5OTAwO1xyXG4gICAgY29sb3I6ICNmOTA7XHJcbiAgICBmb250LXNpemU6IDE4cHg7XHJcbiAgICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcclxuICAgIG1pbi13aWR0aDogNDAwcHg7XHJcbiAgICBwYWRkaW5nOiAxcHggMTBweDtcclxufVxyXG5cclxuLm1hdC1kaWFsb2ctY29udGVudCB7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBmb250LXNpemU6IDE2cHg7XHJcbiAgICBtaW4taGVpZ2h0OiA4MHB4O1xyXG4gICAgbWluLXdpZHRoOiA0MDBweDtcclxuICAgIHBhZGRpbmc6IDEwcHggMTBweDtcclxufVxyXG5cclxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IG1hcmdpbi1yaWdodDogLTEycHg7IH1cclxuXHJcbi5tYXQtZm9ybS1maWVsZCB7IG1pbi13aWR0aDogNDAwcHg7IH1cclxuXHJcbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNDQ0O1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzc3NztcclxuICAgIGJvcmRlci1yYWRpdXM6IDNweDtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIG1hcmdpbi1sZWZ0OiA2cHg7XHJcbiAgICBwYWRkaW5nOiAzcHg7XHJcbiAgICB3aWR0aDogMTAwcHg7XHJcbn1cclxuXHJcbi5tYXQtcmFpc2VkLWJ1dHRvbjpkaXNhYmxlZDpob3ZlciB7IGNvbG9yOiAjOTk5OyB9XHJcblxyXG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIgeyBjb2xvcjogI2Y5MDsgfVxyXG5cclxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTsgfVxyXG5cclxuLm1hdElucHV0IHtcclxuICAgIGNhcmV0LWNvbG9yOiAjRjkwO1xyXG4gICAgY29sb3I6IGdyZWVuO1xyXG59XHJcblxyXG4ubWF0LWlucHV0LWVsZW1lbnQgeyBjYXJldC1jb2xvcjogI0Y5MDsgfVxyXG5cclxuI3NwYW4tbWVzc2FnZS10ZXh0IHtcclxuICAgIHdvcmQtYnJlYWs6IGJyZWFrLWFsbDtcclxuICAgIHdvcmQtd3JhcDogYnJlYWstd29yZDtcclxuICAgIHdoaXRlLXNwYWNlOiBwcmUtd3JhcDtcclxuICAgIG1pbi13aWR0aDogNDAwcHg7XHJcbn0iXX0= */"
 
 /***/ }),
 
@@ -5826,7 +6925,7 @@ module.exports = ".mat-dialog-title {\r\n    border-bottom: 1px solid #FF9900;\r
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h5 mat-dialog-title>{{content.title}}</h5>\r\n\r\n\r\n<mat-dialog-content [formGroup]=\"form\">\r\n\r\n    <i *ngIf=\"content.messageType === 0\" class=\"glyphicon glyphicon-info-sign\" style=\"padding-right: 8px\"></i>\r\n    <i *ngIf=\"content.messageType === 1\" class=\"glyphicon glyphicon-question-sign\" style=\"padding-right: 8px\"></i>\r\n    <i *ngIf=\"content.messageType === 2\" class=\"glyphicon glyphicon-warning-sign\" style=\"color: #F90; padding-right: 8px;\"></i>\r\n    <i *ngIf=\"content.messageType === 3\" class=\"glyphicon glyphicon-remove\" style=\"color: #F90; padding-right: 8px;\"></i>\r\n    <span *ngIf=\"content.messageType !== 4\" style=\"color: white\">{{content.messageText}}</span>\r\n    <mat-form-field *ngIf=\"content.messageType === 4\">\r\n        <input matInput\r\n               placeholder=\"{{content.messageText}}\"\r\n               formControlName=\"valueInput\"\r\n               (change)=\"onInput($event)\">\r\n    </mat-form-field>\r\n</mat-dialog-content>\r\n\r\n<mat-dialog-actions>\r\n\r\n    <button *ngIf=\"needShowYesNoButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onNo()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>No\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowYesNoButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onYes()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Yes\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowCancelButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onCancel()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowOkButton()\" class=\"mat-raised-button\" [disabled]=\"needDisableYesButton\"\r\n            (click)=\"onOk()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n\r\n</mat-dialog-actions>\r\n"
+module.exports = "<h5 mat-dialog-title>{{content.title}}</h5>\r\n\r\n\r\n<mat-dialog-content [formGroup]=\"form\">\r\n\r\n    <i *ngIf=\"content.messageType === 0\" class=\"glyphicon glyphicon-info-sign\" style=\"padding-right: 8px\"></i>\r\n    <i *ngIf=\"content.messageType === 1\" class=\"glyphicon glyphicon-question-sign\" style=\"padding-right: 8px\"></i>\r\n    <i *ngIf=\"content.messageType === 2\" class=\"glyphicon glyphicon-warning-sign\" style=\"color: #F90; padding-right: 8px;\"></i>\r\n    <i *ngIf=\"content.messageType === 3\" class=\"glyphicon glyphicon-remove\" style=\"color: #F90; padding-right: 8px;\"></i>\r\n    <span id=\"span-message-text\" *ngIf=\"content.messageType !== 4\" style=\"color: white\">{{content.messageText}}</span>\r\n    <mat-form-field *ngIf=\"content.messageType === 4\">\r\n        <input matInput\r\n               placeholder=\"{{content.messageText}}\"\r\n               formControlName=\"valueInput\"\r\n               (input)=\"onInput($event)\">\r\n    </mat-form-field>\r\n</mat-dialog-content>\r\n\r\n<mat-dialog-actions>\r\n\r\n    <button *ngIf=\"needShowYesNoButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onNo()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>No\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowYesNoButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onYes()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Yes\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowCancelButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onCancel()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowOkButton()\" class=\"mat-raised-button\" [disabled]=\"needDisableYesButton\"\r\n            (click)=\"onOk()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n\r\n</mat-dialog-actions>\r\n"
 
 /***/ }),
 
@@ -5862,10 +6961,23 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 
 var MessageBoxComponent = /** @class */ (function () {
     function MessageBoxComponent(fb, dialogRef, messageBoxContent) {
+        var _this = this;
         this.fb = fb;
         this.dialogRef = dialogRef;
         this.needDisableYesButton = false;
         this.content = messageBoxContent;
+        //this.content.messageText = this.content.callbackFunction();
+        if (this.content.callbackFunction) {
+            this.content.callbackFunction.call(this.content.callbackOwner, this.content.callbackArg).subscribe(function (value) {
+                if (value === "") {
+                    _this.form.value.dialogResult = _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["DialogResult"].Ok;
+                    _this.dialogRef.close(_this.form.value);
+                }
+                else {
+                    _this.content.messageText = value;
+                }
+            });
+        }
         this.form = fb.group({
             dialogResult: [_models_messageBox__WEBPACK_IMPORTED_MODULE_3__["DialogResult"].Yes],
             valueInput: [this.valueInput, _angular_forms__WEBPACK_IMPORTED_MODULE_2__["Validators"].required]
@@ -5890,14 +7002,17 @@ var MessageBoxComponent = /** @class */ (function () {
         this.form.value.dialogResult = _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["DialogResult"].Cancel;
         this.dialogRef.close(this.form.value);
     };
+    MessageBoxComponent.prototype.closeDialog = function () {
+        this.dialogRef.close();
+    };
     MessageBoxComponent.prototype.needShowYesNoButton = function () {
         return this.content.messageType === _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxType"].Question;
     };
     MessageBoxComponent.prototype.needShowOkButton = function () {
-        return this.content.messageType !== _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxType"].Question;
+        return this.content.messageType !== _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxType"].Question && this.content.messageType !== _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxType"].InfoCancel;
     };
     MessageBoxComponent.prototype.needShowCancelButton = function () {
-        return this.content.messageType === _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxType"].Input;
+        return this.content.messageType === _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxType"].Input || this.content.messageType === _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxType"].InfoCancel;
     };
     MessageBoxComponent.prototype.onInput = function (event) {
         this.needDisableYesButton = this.content.messageType === _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxType"].Input &&
@@ -6084,7 +7199,7 @@ var SelectMarkerDialogComponent = /** @class */ (function () {
         this.dialogRef.close();
     };
     SelectMarkerDialogComponent.prototype.onOkClick = function (markerData) {
-        this.dialogRef.close(this.getImageUrl(markerData));
+        this.dialogRef.close(markerData.imageName.substr(0, markerData.imageName.length - 4));
     };
     SelectMarkerDialogComponent.prototype.getImageUrl = function (markerData) {
         return this.baseUrl + "assets/img/Stamp/" + markerData.imageName;
@@ -6113,7 +7228,7 @@ var SelectMarkerDialogComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".mat-dialog-title {\r\n    border-bottom: 1px solid #FF9900;\r\n    color: #f90;\r\n    font-size: 15px;\r\n    margin: -24px -24px 0px -24px;\r\n    min-width: 200px;\r\n    padding: 1px 10px;\r\n}\r\n\r\n.mat-dialog-content {\r\n    color: white;\r\n    font-size: 15px;\r\n    height: 100px;\r\n    min-width: 200px;\r\n    padding: 10px 10px;\r\n}\r\n\r\n.mat-dialog-actions { margin-right: -12px; }\r\n\r\n.mat-form-field { }\r\n\r\n.mat-raised-button {\r\n    background-color: #444;\r\n    border: 1px solid #777;\r\n    border-radius: 3px;\r\n    color: white;\r\n    font-size: 13px;\r\n    margin-left: 6px;\r\n    padding: 1px;\r\n    width: 100px;\r\n}\r\n\r\n.mat-raised-button:disabled:hover { color: #999; }\r\n\r\n.mat-raised-button:hover { color: #f90; }\r\n\r\n.mat-dialog-actions { flex-direction: row-reverse; }\r\n\r\n.matInput {\r\n    caret-color: #F90;\r\n    color: green;\r\n}\r\n\r\n.mat-input-element { caret-color: #F90; }\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGdDQUFnQztJQUNoQyxXQUFXO0lBQ1gsZUFBZTtJQUNmLDZCQUE2QjtJQUM3QixnQkFBZ0I7SUFDaEIsaUJBQWlCO0FBQ3JCOztBQUVBO0lBQ0ksWUFBWTtJQUNaLGVBQWU7SUFDZixhQUFhO0lBQ2IsZ0JBQWdCO0lBQ2hCLGtCQUFrQjtBQUN0Qjs7QUFFQSxzQkFBc0IsbUJBQW1CLEVBQUU7O0FBRTNDLGtCQUFrQjs7QUFFbEI7SUFDSSxzQkFBc0I7SUFDdEIsc0JBQXNCO0lBQ3RCLGtCQUFrQjtJQUNsQixZQUFZO0lBQ1osZUFBZTtJQUNmLGdCQUFnQjtJQUNoQixZQUFZO0lBQ1osWUFBWTtBQUNoQjs7QUFFQSxvQ0FBb0MsV0FBVyxFQUFFOztBQUVqRCwyQkFBMkIsV0FBVyxFQUFFOztBQUV4QyxzQkFBc0IsMkJBQTJCLEVBQUU7O0FBRW5EO0lBQ0ksaUJBQWlCO0lBQ2pCLFlBQVk7QUFDaEI7O0FBRUEscUJBQXFCLGlCQUFpQixFQUFFIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5tYXQtZGlhbG9nLXRpdGxlIHtcclxuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjRkY5OTAwO1xyXG4gICAgY29sb3I6ICNmOTA7XHJcbiAgICBmb250LXNpemU6IDE1cHg7XHJcbiAgICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcclxuICAgIG1pbi13aWR0aDogMjAwcHg7XHJcbiAgICBwYWRkaW5nOiAxcHggMTBweDtcclxufVxyXG5cclxuLm1hdC1kaWFsb2ctY29udGVudCB7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBmb250LXNpemU6IDE1cHg7XHJcbiAgICBoZWlnaHQ6IDEwMHB4O1xyXG4gICAgbWluLXdpZHRoOiAyMDBweDtcclxuICAgIHBhZGRpbmc6IDEwcHggMTBweDtcclxufVxyXG5cclxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IG1hcmdpbi1yaWdodDogLTEycHg7IH1cclxuXHJcbi5tYXQtZm9ybS1maWVsZCB7IH1cclxuXHJcbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNDQ0O1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzc3NztcclxuICAgIGJvcmRlci1yYWRpdXM6IDNweDtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIGZvbnQtc2l6ZTogMTNweDtcclxuICAgIG1hcmdpbi1sZWZ0OiA2cHg7XHJcbiAgICBwYWRkaW5nOiAxcHg7XHJcbiAgICB3aWR0aDogMTAwcHg7XHJcbn1cclxuXHJcbi5tYXQtcmFpc2VkLWJ1dHRvbjpkaXNhYmxlZDpob3ZlciB7IGNvbG9yOiAjOTk5OyB9XHJcblxyXG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIgeyBjb2xvcjogI2Y5MDsgfVxyXG5cclxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTsgfVxyXG5cclxuLm1hdElucHV0IHtcclxuICAgIGNhcmV0LWNvbG9yOiAjRjkwO1xyXG4gICAgY29sb3I6IGdyZWVuO1xyXG59XHJcblxyXG4ubWF0LWlucHV0LWVsZW1lbnQgeyBjYXJldC1jb2xvcjogI0Y5MDsgfVxyXG4iXX0= */"
+module.exports = ".mat-dialog-title {\r\n    border-bottom: 1px solid #FF9900;\r\n    color: #f90;\r\n    font-size: 15px;\r\n    margin: -24px -24px 0px -24px;\r\n    min-width: 200px;\r\n    padding: 1px 10px;\r\n}\r\n\r\n.mat-dialog-content {\r\n    color: white;\r\n    font-size: 15px;\r\n    height: 100px;\r\n    min-width: 200px;\r\n    padding: 10px 10px;\r\n}\r\n\r\n.mat-dialog-actions { margin-right: -12px; }\r\n\r\n.mat-form-field { }\r\n\r\n.mat-raised-button {\r\n    background-color: #444;\r\n    border: 1px solid #777;\r\n    border-radius: 3px;\r\n    color: white;\r\n    font-size: 13px;\r\n    margin-left: 6px;\r\n    padding: 1px;\r\n    width: 100px;\r\n}\r\n\r\n.mat-raised-button:disabled:hover { color: #999; }\r\n\r\n.mat-raised-button:hover { color: #f90; }\r\n\r\n.mat-dialog-actions { flex-direction: row-reverse; }\r\n\r\n.matInput {\r\n    caret-color: #F90;\r\n    color: green;\r\n}\r\n\r\n.mat-input-element { caret-color: #F90; }\r\n\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLGdDQUFnQztJQUNoQyxXQUFXO0lBQ1gsZUFBZTtJQUNmLDZCQUE2QjtJQUM3QixnQkFBZ0I7SUFDaEIsaUJBQWlCO0FBQ3JCOztBQUVBO0lBQ0ksWUFBWTtJQUNaLGVBQWU7SUFDZixhQUFhO0lBQ2IsZ0JBQWdCO0lBQ2hCLGtCQUFrQjtBQUN0Qjs7QUFFQSxzQkFBc0IsbUJBQW1CLEVBQUU7O0FBRTNDLGtCQUFrQjs7QUFFbEI7SUFDSSxzQkFBc0I7SUFDdEIsc0JBQXNCO0lBQ3RCLGtCQUFrQjtJQUNsQixZQUFZO0lBQ1osZUFBZTtJQUNmLGdCQUFnQjtJQUNoQixZQUFZO0lBQ1osWUFBWTtBQUNoQjs7QUFFQSxvQ0FBb0MsV0FBVyxFQUFFOztBQUVqRCwyQkFBMkIsV0FBVyxFQUFFOztBQUV4QyxzQkFBc0IsMkJBQTJCLEVBQUU7O0FBRW5EO0lBQ0ksaUJBQWlCO0lBQ2pCLFlBQVk7QUFDaEI7O0FBRUEscUJBQXFCLGlCQUFpQixFQUFFIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cvc2VsZWN0LXN0dWR5ZGF0ZS1kaWFsb2cuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5tYXQtZGlhbG9nLXRpdGxlIHtcclxuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjRkY5OTAwO1xyXG4gICAgY29sb3I6ICNmOTA7XHJcbiAgICBmb250LXNpemU6IDE1cHg7XHJcbiAgICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcclxuICAgIG1pbi13aWR0aDogMjAwcHg7XHJcbiAgICBwYWRkaW5nOiAxcHggMTBweDtcclxufVxyXG5cclxuLm1hdC1kaWFsb2ctY29udGVudCB7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBmb250LXNpemU6IDE1cHg7XHJcbiAgICBoZWlnaHQ6IDEwMHB4O1xyXG4gICAgbWluLXdpZHRoOiAyMDBweDtcclxuICAgIHBhZGRpbmc6IDEwcHggMTBweDtcclxufVxyXG5cclxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IG1hcmdpbi1yaWdodDogLTEycHg7IH1cclxuXHJcbi5tYXQtZm9ybS1maWVsZCB7IH1cclxuXHJcbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNDQ0O1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzc3NztcclxuICAgIGJvcmRlci1yYWRpdXM6IDNweDtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIGZvbnQtc2l6ZTogMTNweDtcclxuICAgIG1hcmdpbi1sZWZ0OiA2cHg7XHJcbiAgICBwYWRkaW5nOiAxcHg7XHJcbiAgICB3aWR0aDogMTAwcHg7XHJcbn1cclxuXHJcbi5tYXQtcmFpc2VkLWJ1dHRvbjpkaXNhYmxlZDpob3ZlciB7IGNvbG9yOiAjOTk5OyB9XHJcblxyXG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIgeyBjb2xvcjogI2Y5MDsgfVxyXG5cclxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTsgfVxyXG5cclxuLm1hdElucHV0IHtcclxuICAgIGNhcmV0LWNvbG9yOiAjRjkwO1xyXG4gICAgY29sb3I6IGdyZWVuO1xyXG59XHJcblxyXG4ubWF0LWlucHV0LWVsZW1lbnQgeyBjYXJldC1jb2xvcjogI0Y5MDsgfVxyXG5cclxuIl19 */"
 
 /***/ }),
 
@@ -6565,22 +7680,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
 /* harmony import */ var _services_image_selector_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../services/image-selector.service */ "./src/app/services/image-selector.service.ts");
 /* harmony import */ var _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../services/dicom-image.service */ "./src/app/services/dicom-image.service.ts");
-/* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
-/* harmony import */ var _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../models/viewer-image-data */ "./src/app/models/viewer-image-data.ts");
-/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
-/* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
-/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
-/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../services/log.service */ "./src/app/services/log.service.ts");
-/* harmony import */ var _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../../models/dailog-data/image-process */ "./src/app/models/dailog-data/image-process.ts");
-/* harmony import */ var _dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../dialog/manual-wl-dialog/manual-wl-dialog.component */ "./src/app/components/dialog/manual-wl-dialog/manual-wl-dialog.component.ts");
-/* harmony import */ var _dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
-/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../../models/messageBox */ "./src/app/models/messageBox.ts");
-/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../../models/annotation */ "./src/app/models/annotation.ts");
-/* harmony import */ var _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../annotation/ann-tool */ "./src/app/annotation/ann-tool.ts");
-/* harmony import */ var _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-guide */ "./src/app/annotation/layer-object/ann-guide.ts");
-/* harmony import */ var _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-image-ruler */ "./src/app/annotation/layer-object/ann-image-ruler.ts");
-/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
-/* harmony import */ var _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../../../annotation/ann-serialize */ "./src/app/annotation/ann-serialize.ts");
+/* harmony import */ var _services_annotation_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/annotation.service */ "./src/app/services/annotation.service.ts");
+/* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
+/* harmony import */ var _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../models/viewer-image-data */ "./src/app/models/viewer-image-data.ts");
+/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
+/* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
+/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../../services/log.service */ "./src/app/services/log.service.ts");
+/* harmony import */ var _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../../models/dailog-data/image-process */ "./src/app/models/dailog-data/image-process.ts");
+/* harmony import */ var _dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../dialog/manual-wl-dialog/manual-wl-dialog.component */ "./src/app/components/dialog/manual-wl-dialog/manual-wl-dialog.component.ts");
+/* harmony import */ var _dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
+/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../../models/messageBox */ "./src/app/models/messageBox.ts");
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../../annotation/ann-tool */ "./src/app/annotation/ann-tool.ts");
+/* harmony import */ var _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-text */ "./src/app/annotation/extend-object/ann-text.ts");
+/* harmony import */ var _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-guide */ "./src/app/annotation/layer-object/ann-guide.ts");
+/* harmony import */ var _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-image-ruler */ "./src/app/annotation/layer-object/ann-image-ruler.ts");
+/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
+/* harmony import */ var _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../../../annotation/ann-serialize */ "./src/app/annotation/ann-serialize.ts");
+/* harmony import */ var _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-graphic-overlay */ "./src/app/annotation/layer-object/ann-graphic-overlay.ts");
+/* harmony import */ var _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-text-overlay */ "./src/app/annotation/layer-object/ann-text-overlay.ts");
+/* harmony import */ var _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-magnify */ "./src/app/annotation/layer-object/ann-magnify.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6610,8 +7730,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
+
+
+
 var ImageViewerComponent = /** @class */ (function () {
-    function ImageViewerComponent(imageSelectorService, dicomImageService, configurationService, viewContext, worklistService, dialogService, logService, ngZone) {
+    function ImageViewerComponent(imageSelectorService, dicomImageService, configurationService, viewContext, worklistService, dialogService, logService, ngZone, annotationService) {
         var _this = this;
         this.imageSelectorService = imageSelectorService;
         this.dicomImageService = dicomImageService;
@@ -6621,14 +7746,13 @@ var ImageViewerComponent = /** @class */ (function () {
         this.dialogService = dialogService;
         this.logService = logService;
         this.ngZone = ngZone;
+        this.annotationService = annotationService;
         this.needResize = false;
         this.selected = false;
         this.dragging = false;
         this.mouseEventHelper = {};
         this.eventHandlers = {};
-        this.annObjList = [];
         this.ctrlKeyPressed = false;
-        this.jcTextOverlayList = [];
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(function (viewerImageData) {
             _this.doSelectImage(viewerImageData);
         });
@@ -6693,12 +7817,11 @@ var ImageViewerComponent = /** @class */ (function () {
         if (this.image) {
             this.showWaitingText();
         }
-        this.annGuide = new _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_16__["AnnGuide"](this);
-        this.annImageRuler = new _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_17__["AnnImageRuler"](this);
+        this.annGuide = new _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_18__["AnnGuide"](this);
+        this.annImageRuler = new _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_19__["AnnImageRuler"](this);
     };
     ImageViewerComponent.prototype.showImage = function () {
-        this.ctImage = this.image.cornerStoneImage;
-        if (this.ctImage) {
+        if (this.image.cornerStoneImage) {
             this.initHelpElement();
             this.canvas = this.canvasRef.nativeElement;
             var canvasId = this.getCanvasId();
@@ -6711,11 +7834,16 @@ var ImageViewerComponent = /** @class */ (function () {
             this.jcanvas.height(this.canvas.height);
             this.logService.debug(this.logPrefix + 'showImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
             this.isImageLoaded = false;
-            cornerstone.displayImage(this.helpElement, this.ctImage);
+            cornerstone.displayImage(this.helpElement, this.image.cornerStoneImage);
             this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
         }
         else {
             this.logService.debug(this.logPrefix + 'local test data, no image to show.');
+        }
+        var id = this.getId();
+        var index = id.substr(id.length - 4, 4);
+        if (index === "0000") {
+            this.onSelected();
         }
     };
     ImageViewerComponent.prototype.loadImage = function () {
@@ -6728,7 +7856,7 @@ var ImageViewerComponent = /** @class */ (function () {
         // The image is null, which means to clear the image viewer
         if (!this.image) {
             if (this.jcanvas) {
-                this.jcanvas.clear();
+                this.deleteAll();
             }
             return;
         }
@@ -6744,6 +7872,7 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.onImageDownloaded = function (ctImage) {
         this.logService.info(this.logPrefix + "Image is downloaded from server. Start to show it by cornerstone.");
         this.image.setCornerStoneImage(ctImage);
+        this.image.graphicOverlayDataList = this.dicomImageService.getGraphicOverlayList(this.image);
         this.showImage();
     };
     ImageViewerComponent.prototype.adjustHeight = function () {
@@ -6771,7 +7900,7 @@ var ImageViewerComponent = /** @class */ (function () {
                 }
             }
             else {
-                this.jcanvas.clear();
+                this.deleteAll();
             }
             this.needResize = false;
         }
@@ -6789,6 +7918,9 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.isCtrlKeyPressed = function () {
         return this.ctrlKeyPressed;
     };
+    ImageViewerComponent.prototype.getImageLayerId = function () {
+        return this.imgLayerId;
+    };
     ImageViewerComponent.prototype.getAnnotationLayerId = function () {
         return this.annLayerId;
     };
@@ -6801,8 +7933,14 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.getAnnImageRulerLayerId = function () {
         return this.imgRulerLayerId;
     };
+    ImageViewerComponent.prototype.getTextOverlayLayerId = function () {
+        return this.olLayerId;
+    };
     ImageViewerComponent.prototype.getImageLayer = function () {
         return this.imgLayer;
+    };
+    ImageViewerComponent.prototype.getMgLayer = function () {
+        return this.mgLayer;
     };
     ImageViewerComponent.prototype.getAnnLabelLayer = function () {
         return this.annLabelLayer;
@@ -6816,6 +7954,9 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.getCanvas = function () {
         return this.canvas;
     };
+    ImageViewerComponent.prototype.getCtCanvas = function () {
+        return cornerstone.getEnabledElement(this.helpElement).canvas;
+    };
     ImageViewerComponent.prototype.getContext = function () {
         return this.viewContext.curContext;
     };
@@ -6823,7 +7964,7 @@ var ImageViewerComponent = /** @class */ (function () {
         return this.baseUrl;
     };
     ImageViewerComponent.prototype.getTextFont = function () {
-        return this.configurationService.getOverlayFont();
+        return this.configurationService.getTextOverlayFont();
     };
     ImageViewerComponent.prototype.selectAnnotation = function (annObj) {
         if (annObj) {
@@ -6832,7 +7973,9 @@ var ImageViewerComponent = /** @class */ (function () {
                     this.curSelectObj.onSelect(false, false);
                 }
                 this.curSelectObj = annObj;
-                this.curSelectObj.onSelect(true, true);
+                if (!this.curSelectObj.isSelected()) {
+                    this.curSelectObj.onSelect(true, true);
+                }
             }
         }
         else {
@@ -6846,25 +7989,26 @@ var ImageViewerComponent = /** @class */ (function () {
             }
             this.curSelectObj = undefined;
         }
-        if (this.curSelectObj && this.curSelectObj.isGuideNeeded()) {
-            var stepIndex = this.curSelectObj.getFocusedObj().getStepIndex();
-            if (stepIndex !== -1) {
-                this.annGuide.setGuideTargetObj(this.curSelectObj);
-                this.annGuide.show(this.curSelectObj.getTypeName(), stepIndex);
-            }
+        var stepIndex = (this.curSelectObj && this.curSelectObj.isGuideNeeded()) ? this.curSelectObj.getFocusedObj().getStepIndex() : -1;
+        if (stepIndex !== -1) {
+            this.annGuide.setGuideTargetObj(this.curSelectObj);
+            this.annGuide.show(this.curSelectObj.getTypeName(), stepIndex);
+        }
+        else {
+            this.annGuide.hide();
         }
     };
     ImageViewerComponent.prototype.selectNextAnnotation = function (backward) {
-        var len = this.annObjList.length;
+        var len = this.image.annObjList.length;
         if (len === 0)
             return;
         if (!this.curSelectObj) {
-            this.selectAnnotation(this.annObjList[0]);
+            this.selectAnnotation(this.image.annObjList[0]);
             return;
         }
         var i = 0;
         for (; i < len; i++) {
-            if (this.curSelectObj === this.annObjList[i])
+            if (this.curSelectObj === this.image.annObjList[i])
                 break;
         }
         var nextIndex = i;
@@ -6874,18 +8018,18 @@ var ImageViewerComponent = /** @class */ (function () {
         else {
             nextIndex = (i === len - 1) ? 0 : i + 1;
         }
-        this.selectAnnotation(this.annObjList[nextIndex]);
+        this.selectAnnotation(this.image.annObjList[nextIndex]);
     };
     ImageViewerComponent.prototype.onAnnotationCreated = function (annObj) {
-        //if (this.curSelectObj !== annObj) {
-        //    alert("error in onAnnotationCreated");
-        //    return;
-        //}
-        this.curSelectObj = annObj;
-        if (annObj.isCreated()) {
-            this.annObjList.push(this.curSelectObj);
+        if (!annObj.isCreated()) {
+            alert("Internal error in onAnnotationCreated()");
+            return;
         }
-        this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].SelectAnn);
+        this.image.annObjList.push(annObj);
+        if (!annObj.isLoadedFromTag()) {
+            this.curSelectObj = annObj;
+            this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn);
+        }
     };
     ImageViewerComponent.prototype.stepGuide = function () {
         this.annGuide.step();
@@ -6898,7 +8042,7 @@ var ImageViewerComponent = /** @class */ (function () {
         this.curSelectObj = undefined;
         this.annGuide.stepTo(0);
         if (!needRecreate) {
-            this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].SelectAnn);
+            this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn);
         }
     };
     ImageViewerComponent.prototype.selectChildByStepIndex = function (stepIndex) {
@@ -6922,6 +8066,9 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.refresh = function () {
         this.redraw(1);
+    };
+    ImageViewerComponent.prototype.getAnnotationService = function () {
+        return this.annotationService;
     };
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////'
     ImageViewerComponent.prototype.onKeyUp = function (event) {
@@ -7031,35 +8178,30 @@ var ImageViewerComponent = /** @class */ (function () {
         this.logService.debug(this.logPrefix + 'onImageLoaded() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
         var ctCanvas = cornerstone.getEnabledElement(this.helpElement).canvas;
         this.jcImage = jCanvaScript.image(ctCanvas).layer(this.imgLayerId);
-        this.setContext(this.viewContext.curContext);
+        this.toggleGraphicOverlay(true);
         //fit window
         this.fitWindow();
         // Save the original window center/width for later reset.
-        this.originalWindowCenter = this.ctImage.windowCenter;
-        this.originalWindowWidth = this.ctImage.windowWidth;
+        this.originalWindowCenter = this.image.cornerStoneImage.windowCenter;
+        this.originalWindowWidth = this.image.cornerStoneImage.windowWidth;
         this.hideWaitingText();
         this.showTextOverlay();
+        this.updateImageTransform();
         this.syncAnnLabelLayerTransform();
-        this.annSerialize = new _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_19__["AnnSerialize"](this.image.annData, this);
-        this.annSerialize.createAnn();
+        this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn);
+        this.annSerialize = new _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_21__["AnnSerialize"](this.image.annData, this);
+        this.deleteAllAnnotation();
+        if (!this.annSerialize.createAnn()) {
+            this.setContext(this.viewContext.curContext);
+        }
         this.redraw(2);
-        //  setTimeout(() => { this.jcanvas.frame(); }, 1);
     };
     ImageViewerComponent.prototype.showWaitingText = function () {
         this.olLayer.visible(true);
-        var font = this.configurationService.getOverlayFont();
+        var font = this.configurationService.getTextOverlayFont();
         this.waitingLabel = jCanvaScript.text("Loading.....", this.canvas.width / 2, this.canvas.height / 2).layer(this.olLayerId)
-            .color(font.color).font(font.getCanvasFontString()).align('center');
+            .color(font.color).font(font.getCanvasFontString()).align("center");
         this.redraw(1);
-        //jc.arc(60, 100, 60, 90, 180, 1, 'rgb(25,99,253)', 0).draggable();
-        //var imgData = jc.imageData(100, 100); //���ý�������Ĵ�С
-        //for (var i = 0; i < 100; i++) {
-        //    for (var j = 0; j < 100; j++) {
-        //        imgData.setPixel(i, j, 'rgba(' + i + ',' + j + ',' + (i + j) + ',' + (i / 100) + ')');
-        //        //�������ص�i,jΪ���ص�����
-        //    }
-        //}
-        //imgData.putData(0, 0).draggable(); //���ý��������λ��
     };
     ImageViewerComponent.prototype.hideWaitingText = function () {
         if (this.waitingLabel) {
@@ -7068,42 +8210,12 @@ var ImageViewerComponent = /** @class */ (function () {
         }
     };
     ImageViewerComponent.prototype.showTextOverlay = function () {
-        var _this = this;
         this.olLayer.visible(true);
-        var font = this.configurationService.getOverlayFont();
-        var canvasContext = this.canvas.getContext("2d");
-        canvasContext.font = font.getCanvasFontString();
-        var overlayList = this.dicomImageService.getOverlayDisplayList(this.image, this.canvas.width, this.canvas.height, canvasContext);
-        this.jcTextOverlayList.forEach(function (jcText) { return jcText.del(); });
-        this.jcTextOverlayList.length = 0;
-        overlayList.forEach(function (overlay) {
-            var label = jCanvaScript.text(overlay.text, overlay.posX, overlay.posY).layer(_this.olLayerId)
-                .color(font.color).font(font.getCanvasFontString()).align(overlay.align);
-            if (overlay.id === "9003") {
-                _this.wlLabel = label;
-                _this.wlLabelFormat = overlay.text;
-                _this.updateWlTextOverlay(_this.image.cornerStoneImage.windowWidth, _this.image.cornerStoneImage.windowCenter);
-            }
-            else if (overlay.id === "9004") {
-                _this.zoomRatioLabel = label;
-                _this.zoomRatioFormat = overlay.text;
-                _this.updateZoomRatioTextOverlay(_this.getScale());
-            }
-            _this.jcTextOverlayList.push(label);
-        });
+        if (!this.annTextOverlay) {
+            this.annTextOverlay = new _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_23__["AnnTextOverlay"](this, this.dicomImageService);
+        }
+        this.annTextOverlay.redraw();
         this.redraw(1);
-        //this.configurationService.overlayList.forEach(overlay => {
-        //    var overlayValue = this.dicomImageService.getTextOverlayValue(this.image, overlay);
-        //    var displayText = overlay.prefix + overlayValue + overlay.suffix;
-        //    jCanvaScript.text(displayText, 5, 15+line*20).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
-        //    line++;
-        //});
-        //jCanvaScript.text("Test", 5, 15).id(idLbl).layer(this.olLayerId).color("#ffffff").font(font).align("left");
-        //this.label = jCanvaScript(`#${idLbl}`);
-        //this.label._x = 5;
-        //this.label._y = 34;
-        //this.label.align('left');
-        //this.label.string('aaaaa');
     };
     ImageViewerComponent.prototype.createLayers = function (canvasId) {
         //create layers
@@ -7158,6 +8270,7 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.onSelected = function () {
         this.imageSelectorService.selectImage(this.imageData);
+        this.canvas.focus();
     };
     ImageViewerComponent.prototype.getBorderStyle = function () {
         return this.selected ? "1px solid #F90" : "1px solid #555555";
@@ -7192,7 +8305,7 @@ var ImageViewerComponent = /** @class */ (function () {
         if (!this.isImageLoaded) {
             return;
         }
-        var draggable = context.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Pan;
+        var draggable = context.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Pan;
         this.draggable(draggable);
         //each time context changed, we should unselect cur selected object
         this.selectAnnotation(undefined);
@@ -7217,70 +8330,60 @@ var ImageViewerComponent = /** @class */ (function () {
         if (!this.selected)
             return;
         switch (operation.type) {
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].Rotate:
-                {
-                    this.rotate(operation.data.angle);
-                    break;
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].Rotate: {
+                this.rotate(operation.data.angle);
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].Flip: {
+                this.flip(operation.data);
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].Invert: {
+                this.invert();
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitWidth:
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitHeight:
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitOriginal:
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitWindow: {
+                this.doFit(operation.type);
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ShowOverlay: {
+                this.olLayer.visible(operation.data.show);
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ShowRuler: {
+                this.imgRulerLayer.visible(operation.data.show);
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ShowAnnotation: {
+                this.annLayer.visible(operation.data.show);
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ShowGraphicOverlay: {
+                this.toggleGraphicOverlay(operation.data.show);
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ManualWL: {
+                this.doManualWl();
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ToggleKeyImage: {
+                if (this.image.keyImage === 'Y') {
+                    this.image.keyImage = 'N';
+                    this.setKeyImage(false);
                 }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].Flip:
-                {
-                    this.flip(operation.data);
-                    break;
+                else {
+                    this.image.keyImage = 'Y';
+                    this.setKeyImage(true);
                 }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].Invert:
-                {
-                    break;
-                }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].FitWidth:
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].FitHeight:
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].FitOriginal:
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].FitWindow:
-                {
-                    this.doFit(operation.type);
-                    break;
-                }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].Reset:
-                {
-                    this.doReset();
-                    break;
-                }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ShowOverlay:
-                {
-                    this.olLayer.visible(operation.data.show);
-                    break;
-                }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ShowRuler:
-                {
-                    this.imgRulerLayer.visible(operation.data.show);
-                    break;
-                }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].Reset:
-                {
-                    this.doReset();
-                    break;
-                }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ShowAnnotation:
-                {
-                    this.annLayer.visible(operation.data.show);
-                    break;
-                }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ManualWL:
-                {
-                    this.doManualWl();
-                    break;
-                }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].ToggleKeyImage:
-                {
-                    if (this.image.keyImage === 'Y') {
-                        this.image.keyImage = 'N';
-                        this.setKeyImage(false);
-                    }
-                    else {
-                        this.image.keyImage = 'Y';
-                        this.setKeyImage(true);
-                    }
-                    break;
-                }
+                break;
+            }
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].Reset: {
+                this.doReset();
+                break;
+            }
         }
         this.redraw(1);
     };
@@ -7288,29 +8391,29 @@ var ImageViewerComponent = /** @class */ (function () {
         var curContext = this.viewContext.curContext;
         var cursorUrl = "url(" + this.baseUrl + "/assets/img/cursor/{0}.cur),move";
         var cursor = "default";
-        if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
-            cursor = cursorUrl.format("adjustwl");
-        }
-        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Pan) {
-            cursor = cursorUrl.format("hand");
-        }
-        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select) {
-            cursor = "default";
-        }
-        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Zoom) {
-            cursor = cursorUrl.format("zoom");
-        }
-        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Magnifier) {
-            cursor = cursorUrl.format("zoom");
-        }
-        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].ROIZoom) {
-            cursor = cursorUrl.format("rectzoom");
-        }
-        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].SelectAnn) {
-            cursor = cursorUrl.format("select");
-        }
-        else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
-            cursor = cursorUrl.format(curContext.data.cursorName);
+        switch (curContext.action) {
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL:
+                cursor = cursorUrl.format("adjustwl");
+                break;
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Pan:
+                cursor = cursorUrl.format("hand");
+                break;
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Zoom:
+                cursor = cursorUrl.format("zoom");
+                break;
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Magnify:
+                cursor = cursorUrl.format("magnify");
+                break;
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].ROIZoom:
+                cursor = cursorUrl.format("rectzoom");
+                break;
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn:
+                cursor = cursorUrl.format("select");
+                break;
+            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn:
+                var cursorName = this.annotationService.getCursorNameByType(curContext.data);
+                cursor = cursorUrl.format(cursorName);
+                break;
         }
         return cursor;
     };
@@ -7318,12 +8421,15 @@ var ImageViewerComponent = /** @class */ (function () {
         var cursor = this.getCursorFromContext();
         this.setCursor(cursor);
         var curContext = this.viewContext.curContext;
-        if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
-            if (curContext.data.needGuide) {
-                this.annGuide.show(curContext.data.className);
+        if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
+            var annDefData = this.annotationService.getAnnDefDataByType(curContext.data);
+            if (!annDefData)
+                return;
+            if (annDefData.needGuide) {
+                this.annGuide.show(annDefData.className);
                 this.redraw(1);
             }
-            else if (curContext.data.cursorName === "ann_stamp") {
+            else if (annDefData.cursorName === "ann_stamp") {
                 this.selectMarker();
             }
         }
@@ -7333,7 +8439,7 @@ var ImageViewerComponent = /** @class */ (function () {
             return;
         this.imgLayer.rotate(angle, "center");
         this.updateImageTransform();
-        this.annObjList.forEach(function (obj) { return obj.onRotate(angle); });
+        this.image.annObjList.forEach(function (obj) { return obj.onRotate(angle); });
     };
     ImageViewerComponent.prototype.flip = function (flipVertical) {
         var viewPort = cornerstone.getViewport(this.helpElement);
@@ -7348,7 +8454,15 @@ var ImageViewerComponent = /** @class */ (function () {
             viewPort.hflip = !viewPort.hflip;
         }
         cornerstone.setViewport(this.helpElement, viewPort);
-        this.annObjList.forEach(function (annObj) { return annObj.onFlip(flipVertical); });
+        this.image.annObjList.forEach(function (annObj) { return annObj.onFlip(flipVertical); });
+        if (this.annGraphicOverlay) {
+            this.annGraphicOverlay.onFlip(flipVertical);
+        }
+    };
+    ImageViewerComponent.prototype.invert = function () {
+        var viewPort = cornerstone.getViewport(this.helpElement);
+        viewPort.invert = !viewPort.invert;
+        cornerstone.setViewport(this.helpElement, viewPort);
     };
     ImageViewerComponent.prototype.scale = function (value) {
         if (value > 0) {
@@ -7356,7 +8470,7 @@ var ImageViewerComponent = /** @class */ (function () {
             this.updateImageTransform();
             //var totalScale = this.getScale();
             ////adjust objects' size
-            //this.annObjList.forEach(function (obj) {
+            //this.image.annObjList.forEach(function (obj) {
             //    if (obj.onScale) {
             //        obj.onScale(totalScale);
             //    }
@@ -7370,7 +8484,7 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.translate = function (x, y) {
         this.imgLayer.translate(x, y);
         this.updateImageTransform();
-        //this.annObjList.forEach(function (obj) {
+        //this.image.annObjList.forEach(function (obj) {
         //    if (obj.onTranslate) {
         //        obj.onTranslate();
         //    }
@@ -7404,6 +8518,9 @@ var ImageViewerComponent = /** @class */ (function () {
         var curRotate = 0 - this.getRotate(); //get rotate return the minus value
         var width = this.image.width();
         var height = this.image.height();
+        var parent = this.canvas.parentElement.parentElement;
+        this.canvas.width = parent.clientWidth;
+        this.canvas.height = parent.clientHeight;
         var canvasWidth = this.canvas.width;
         var canvasHeight = this.canvas.height;
         var widthScale = canvasWidth / width;
@@ -7442,8 +8559,8 @@ var ImageViewerComponent = /** @class */ (function () {
             this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
         }
         // Reset W/L
-        this.ctImage.windowWidth = this.originalWindowWidth;
-        this.ctImage.windowCenter = this.originalWindowCenter;
+        this.image.cornerStoneImage.windowWidth = this.originalWindowWidth;
+        this.image.cornerStoneImage.windowCenter = this.originalWindowCenter;
         var viewPort = cornerstone.getViewport(this.helpElement);
         viewPort.voi.windowCenter = this.originalWindowCenter;
         viewPort.voi.windowWidth = this.originalWindowWidth;
@@ -7455,6 +8572,9 @@ var ImageViewerComponent = /** @class */ (function () {
         this.updateZoomRatioTextOverlay(this.getScale());
         this.deleteAllAnnotation();
         this.curSelectObj = undefined;
+        if (this.annGraphicOverlay) {
+            this.annGraphicOverlay.onReset();
+        }
         this.refreshUi();
     };
     ImageViewerComponent.prototype.doFit = function (fitType) {
@@ -7475,7 +8595,7 @@ var ImageViewerComponent = /** @class */ (function () {
             heightScale = canvasHeight / width;
         }
         this.imgLayer.transform(1, 0, 0, 1, 0, 0, true);
-        if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].FitWindow) {
+        if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitWindow) {
             if (widthScale < heightScale) {
                 this.scale(widthScale);
                 this.translate((canvasWidth - width * widthScale) / 2, (canvasHeight - height * widthScale) / 2);
@@ -7485,15 +8605,15 @@ var ImageViewerComponent = /** @class */ (function () {
                 this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
             }
         }
-        else if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].FitHeight) {
+        else if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitHeight) {
             this.scale(heightScale);
             this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
         }
-        else if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].FitWidth) {
+        else if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitWidth) {
             this.scale(widthScale);
             this.translate((canvasWidth - width * widthScale) / 2, (canvasHeight - height * widthScale) / 2);
         }
-        else if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["OperationEnum"].FitOriginal) {
+        else if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitOriginal) {
             this.translate((canvasWidth - width) / 2, (canvasHeight - height) / 2);
         }
         this.rotate(curRotate);
@@ -7538,37 +8658,33 @@ var ImageViewerComponent = /** @class */ (function () {
         this.imgLayer.draggable({
             disabled: !draggable,
             start: function (arg) {
-                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
                     canvas.style.cursor = "move";
                 }
             },
             stop: function (arg) {
-                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
                     canvas.style.cursor = "auto";
                 }
             },
             drag: function (arg) {
-                self.annObjList.forEach(function (obj) {
-                    //if (obj.onTranslate) {
-                    //    obj.onTranslate.call(obj);
-                    //}
-                });
             }
         });
     };
     ImageViewerComponent.prototype.saveImage = function () {
         var _this = this;
-        var annString = this.annSerialize.getAnnString(this.annObjList);
+        var annString = this.annSerialize.getAnnString(this.image.annObjList);
+        this.image.cornerStoneImage.data.elements["x0011101d"] = this.annSerialize.annData;
         this.dicomImageService.saveImageAnn(this.image.id, annString).subscribe(function (ret) {
-            var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_13__["MessageBoxContent"]();
+            var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxContent"]();
             content.title = "Save Image";
             if (ret) {
                 content.messageText = "Save image failed! " + ret;
-                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_13__["MessageBoxType"].Error;
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxType"].Error;
             }
             else {
                 content.messageText = "Save image successfully!";
-                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_13__["MessageBoxType"].Info;
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxType"].Info;
             }
             _this.dialogService.showMessageBox(content);
         });
@@ -7577,7 +8693,7 @@ var ImageViewerComponent = /** @class */ (function () {
         if (!this.isImageLoaded)
             return;
         var self = this;
-        var dcmImg = self.ctImage;
+        var dcmImg = self.image.cornerStoneImage;
         if (deltaX != 0 || deltaY != 0) {
             var maxVOI = dcmImg.maxPixelValue * dcmImg.slope + dcmImg.intercept;
             var minVOI = dcmImg.minPixelValue * dcmImg.slope + dcmImg.intercept;
@@ -7613,7 +8729,7 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.refreshUi = function () {
         var _this = this;
-        this.annObjList.forEach(function (annObject) { return annObject.onScale(_this.getScale()); });
+        this.image.annObjList.forEach(function (annObject) { return annObject.onScale(_this.getScale()); });
         this.annImageRuler.reDraw(this);
     };
     ImageViewerComponent.prototype.registerImgLayerEvents = function () {
@@ -7648,7 +8764,7 @@ var ImageViewerComponent = /** @class */ (function () {
         var viewContext = self.viewContext;
         //log('viwer mouse down: ' + this.canvasId);
         //if in select context, and not click any object, will unselect all objects.
-        if (viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select) {
+        if (viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Select) {
             if (!evt.event.cancelBubble) {
                 //if (self.curSelectObj && self.curSelectObj.select) {
                 //    self.curSelectObj.onSelect(false);
@@ -7661,7 +8777,7 @@ var ImageViewerComponent = /** @class */ (function () {
                 self.draggable(false);
             }
         }
-        else if (viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+        else if (viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
             var parm = viewContext.curContext.data;
             if (parm && parm.type && !parm.objCreated) {
                 var newObj = new parm.type();
@@ -7669,21 +8785,21 @@ var ImageViewerComponent = /** @class */ (function () {
                 parm.objCreated = true; //stop create the annObject again
             }
         }
-        self.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseDown, "onMouseDown");
+        self.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseDown, "onMouseDown");
     };
     ImageViewerComponent.prototype.onMouseMove = function (evt) {
         //this.logService.debug("Image Layer - onMouseMove");
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseMove, "onMouseMove");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseMove, "onMouseMove");
     };
     ImageViewerComponent.prototype.onMouseOut = function (evt) {
         this.logService.debug("Image Layer - onMouseOut");
         //log('viwer mouse out: ' + this.canvasId);
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseOut, "onMouseOut");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseOut, "onMouseOut");
     };
     ImageViewerComponent.prototype.onMouseUp = function (evt) {
         this.logService.debug("Image Layer - onMouseUp");
         //log('viwer mouse up: ' +this.canvasId);
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseUp, "onMouseUp");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseUp, "onMouseUp");
     };
     //image layer events
     ImageViewerComponent.prototype.registerEvent = function (obj, type) {
@@ -7728,7 +8844,7 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         //covert screen point to image point
         if (arg.x) {
-            arg = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_15__["AnnTool"].screenToImage(arg, this.imgLayer.transform());
+            arg = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].screenToImage(arg, this.imgLayer.transform());
         }
         handlers.forEach(function (obj) {
             if (obj[handler]) {
@@ -7796,13 +8912,14 @@ var ImageViewerComponent = /** @class */ (function () {
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
         this.mouseEventHelper._mouseDownPosCvs = point;
         if (this.mouseEventHelper._mouseWhich === 1) {
-            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
                 if (this.curSelectObj && !this.curSelectObj.isCreated()) {
-                    this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].DblClick, point, null);
+                    this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].DblClick, point, null);
                 }
             }
         }
-        this.canvas.onmouseup(evt); //cause jc to trigger mouseup event, which will stop the drag (imglayer)
+        if (this.canvas && this.canvas.on)
+            this.canvas.onmouseup(evt); //cause jc to trigger mouseup event, which will stop the drag (imglayer)
         this.redraw(1);
         //log('canvas dblclick: ' + this.canvas.id);
     };
@@ -7829,25 +8946,25 @@ var ImageViewerComponent = /** @class */ (function () {
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
         this.mouseEventHelper._mouseDownPosCvs = point;
         if (this.mouseEventHelper._mouseWhich === 3) { //right mouse
-            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
                 // Right click to cancel the creation of an annotation.
                 this.cancelCreate(true);
             }
             else {
                 this.mouseEventHelper._lastContext = this.viewContext.curContext;
-                this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL);
+                this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL);
             }
         }
         else if (this.mouseEventHelper._mouseWhich === 1) {
-            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Magnifier) {
-                //this._startMagnifier(evt);
+            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Magnify) {
+                this.startMagnify(point);
             }
-            else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+            else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
                 if (this.curSelectObj) {
                     // There is annotation selected
                     if (!this.curSelectObj.isCreated()) {
                         // The selected annotation is creating
-                        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseDown, point, null);
+                        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseDown, point, null);
                     }
                     else {
                         // The selected annotation is created
@@ -7861,7 +8978,7 @@ var ImageViewerComponent = /** @class */ (function () {
                     this.startCreateAnnAtPoint(point);
                 }
             }
-            else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].SelectAnn) {
+            else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn) {
             }
         }
         this.redraw(1);
@@ -7871,6 +8988,7 @@ var ImageViewerComponent = /** @class */ (function () {
         if (!this.isImageLoaded) {
             return;
         }
+        var point = { x: evt.offsetX, y: evt.offsetY };
         //console.log(evt.offsetX + "," + evt.offsetY);
         var curContext = this.viewContext.curContext;
         if (!self.mouseEventHelper._lastPosCvs) {
@@ -7878,34 +8996,32 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         var deltaX = evt.offsetX - self.mouseEventHelper._lastPosCvs.x;
         var deltaY = evt.offsetY - self.mouseEventHelper._lastPosCvs.y;
-        if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) {
+        if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
             if (this.curSelectObj && !this.curSelectObj.isCreated()) {
-                var point = { x: evt.offsetX, y: evt.offsetY };
-                this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseMove, point, null);
+                var point_1 = { x: evt.offsetX, y: evt.offsetY };
+                this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseMove, point_1, null);
             }
         }
         else {
             if (self.mouseEventHelper._mouseWhich === 3) {
-                if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
+                if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL) {
                     self.doWL(deltaX, deltaY);
                 }
             }
             else if (self.mouseEventHelper._mouseWhich === 1) {
-                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Magnifier) {
-                    //if (self._magnifying) {
-                    //    self._loadMagnifierData(evt);
-                    //}
+                if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Magnify) {
+                    this.magnifyAtPoint(point);
                 }
-                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
+                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL) {
                     self.doWL(deltaX, deltaY);
                 }
-                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Zoom) {
+                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Zoom) {
                     var delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
                     if (Math.abs(delta) > 0) {
                         self.doZoom(delta);
                     }
                 }
-                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].ROIZoom) {
+                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].ROIZoom) {
                     var curPosCvs = {
                         x: evt.offsetX,
                         y: evt.offsetY
@@ -7930,10 +9046,10 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         this.dragging = false;
         var curContext = this.viewContext.curContext;
-        if (self.mouseEventHelper._mouseWhich == 3) {
-            if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].WL) {
-                if (self.mouseEventHelper._lastContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].CreateAnn) { //cancel create
-                    this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextEnum"].Select);
+        if (self.mouseEventHelper._mouseWhich === 3) {
+            if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL) {
+                if (self.mouseEventHelper._lastContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) { //cancel create
+                    this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Select);
                 }
                 else {
                     this.viewContext.setContext(self.mouseEventHelper._lastContext.action, self.mouseEventHelper._lastContext.data);
@@ -7941,9 +9057,10 @@ var ImageViewerComponent = /** @class */ (function () {
             }
         }
         else if (self.mouseEventHelper._mouseWhich === 1) {
-            //if (curContext.action == contextEnum.magnifier && self._magnifying) {
-            //    self._endMagnifier();
-            //} else if (curContext.action == contextEnum.roizoom) {
+            if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Magnify) {
+                this.endMagnify();
+            }
+            //else if (curContext.action == contextEnum.roizoom) {
             //    var endPosCvs = {
             //        x: evt.offsetX,
             //        y: evt.offsetY
@@ -8019,33 +9136,33 @@ var ImageViewerComponent = /** @class */ (function () {
     //    return annObj;
     //}
     ImageViewerComponent.prototype.deleteAllAnnotation = function () {
-        this.annObjList.forEach(function (annObj) { return annObj.onDeleteChildren(); });
-        this.annObjList.length = 0;
+        this.image.annObjList.forEach(function (annObj) { return annObj.onDeleteChildren(); });
+        this.image.annObjList.length = 0;
     };
     ImageViewerComponent.prototype.deleteAnnotation = function (annObj) {
         if (!annObj)
             return;
         if (annObj.isCreated()) {
             // If this annotation is already created, need to remove it from the list
-            var len = this.annObjList.length;
+            var len = this.image.annObjList.length;
             var i = 0;
             for (; i < len; i++) {
-                if (this.annObjList[i] === annObj) {
+                if (this.image.annObjList[i] === annObj) {
                     break;
                 }
             }
             if (i !== len) {
-                this.annObjList.splice(i, 1);
+                this.image.annObjList.splice(i, 1);
             }
         }
         annObj.onDeleteChildren();
     };
     ImageViewerComponent.prototype.doManualWl = function () {
         var _this = this;
-        var windowLevelData = new _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_10__["WindowLevelData"]();
-        windowLevelData.windowCenter = this.ctImage.windowCenter;
-        windowLevelData.windowWidth = this.ctImage.windowWidth;
-        this.dialogService.showDialog(_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_11__["ManualWlDialogComponent"], windowLevelData).subscribe(function (val) {
+        var windowLevelData = new _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_11__["WindowLevelData"]();
+        windowLevelData.windowCenter = this.image.cornerStoneImage.windowCenter;
+        windowLevelData.windowWidth = this.image.cornerStoneImage.windowWidth;
+        this.dialogService.showDialog(_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_12__["ManualWlDialogComponent"], windowLevelData).subscribe(function (val) {
             _this.doWlByValue(val.windowCenter, val.windowWidth);
         });
     };
@@ -8054,29 +9171,35 @@ var ImageViewerComponent = /** @class */ (function () {
         viewPort.voi.windowCenter = center;
         viewPort.voi.windowWidth = width;
         cornerstone.setViewport(this.helpElement, viewPort);
-        this.ctImage.windowWidth = width;
-        this.ctImage.windowCenter = center;
+        this.image.cornerStoneImage.windowWidth = width;
+        this.image.cornerStoneImage.windowCenter = center;
         this.updateWlTextOverlay(width, center);
     };
     ImageViewerComponent.prototype.updateWlTextOverlay = function (width, center) {
-        if (this.wlLabel) {
-            this.wlLabel.string(this.wlLabelFormat.format(width, center));
+        if (this.annTextOverlay) {
+            this.annTextOverlay.updateWindowCenter(width, center);
         }
     };
     ImageViewerComponent.prototype.updateZoomRatioTextOverlay = function (roomRatio) {
-        if (this.zoomRatioLabel) {
-            this.zoomRatioLabel.string(this.zoomRatioFormat.format(roomRatio.toFixed(2)));
+        if (this.annTextOverlay) {
+            this.annTextOverlay.updateZoomRatioTextOverlay(roomRatio);
         }
     };
     ImageViewerComponent.prototype.startCreateAnnAtPoint = function (point) {
         this.updateImageTransform();
-        var annType = this.viewContext.curContext.data.classType;
-        this.curSelectObj = new annType(undefined, this);
-        if (this.viewContext.curContext.data.needGuide) {
-            this.curSelectObj.setGuideNeeded(true);
-            this.annGuide.setGuideTargetObj(this.curSelectObj);
+        var annDefData = this.annotationService.getAnnDefDataByType(this.viewContext.curContext.data);
+        if (!annDefData)
+            return;
+        if (annDefData.imageSuiteAnnType === _models_annotation__WEBPACK_IMPORTED_MODULE_15__["AnnType"].Text) {
+            this.createFreeText(point);
         }
-        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_14__["MouseEventType"].MouseDown, point, null);
+        else {
+            this.curSelectObj = new annDefData.classType(undefined, this);
+            if (annDefData.needGuide) {
+                this.annGuide.setGuideTargetObj(this.curSelectObj);
+            }
+            this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseDown, point, null);
+        }
     };
     ImageViewerComponent.prototype.deleteSelectedAnnotation = function () {
         this.deleteAnnotation(this.curSelectObj);
@@ -8085,16 +9208,12 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.selectMarker = function () {
         var _this = this;
-        this.dialogService.showDialog(_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_12__["SelectMarkerDialogComponent"], undefined).subscribe(function (val) {
+        this.dialogService.showDialog(_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_13__["SelectMarkerDialogComponent"], undefined).subscribe(function (val) {
             if (val) {
-                var imageData_1 = new Image();
-                imageData_1.onload = function (ev) {
-                    _this.updateImageTransform();
-                    var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_18__["AnnImage"](undefined, _this);
-                    annImage.onCreate(imageData_1, new _models_annotation__WEBPACK_IMPORTED_MODULE_14__["Point"](0, 0));
-                    _this.curSelectObj = annImage;
-                };
-                imageData_1.src = val;
+                _this.updateImageTransform();
+                var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_20__["AnnImage"](undefined, _this);
+                annImage.onCreate(val, new _models_annotation__WEBPACK_IMPORTED_MODULE_15__["Point"](0, 0));
+                _this.curSelectObj = annImage;
             }
         });
     };
@@ -8106,6 +9225,82 @@ var ImageViewerComponent = /** @class */ (function () {
             this.jcanvas.frame();
         }
     };
+    ImageViewerComponent.prototype.deleteAll = function () {
+        if (this.annMagnify) {
+            this.annMagnify.del();
+        }
+        if (this.annTextOverlay) {
+            this.annTextOverlay.del();
+        }
+        if (this.annGraphicOverlay) {
+            this.annGraphicOverlay.del();
+        }
+        if (this.annImageRuler) {
+            this.annImageRuler.reset(this);
+        }
+        if (this.image && this.image.annObjList) {
+            this.deleteAllAnnotation();
+        }
+        if (this.jcImage) {
+            this.jcImage.del();
+        }
+    };
+    ImageViewerComponent.prototype.toggleGraphicOverlay = function (show) {
+        if (!this.image || this.image.graphicOverlayDataList.length === 0) {
+            return;
+        }
+        if (show) {
+            if (!this.annGraphicOverlay) {
+                this.annGraphicOverlay = new _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_22__["AnnGraphicOverlay"](this.image.graphicOverlayDataList, this);
+            }
+            this.annGraphicOverlay.setVisible(true);
+        }
+        else {
+            if (this.annGraphicOverlay) {
+                this.annGraphicOverlay.setVisible(false);
+            }
+        }
+    };
+    ImageViewerComponent.prototype.startMagnify = function (point) {
+        if (!this.annMagnify) {
+            this.annMagnify = new _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_24__["AnnMagnify"](this);
+        }
+        this.annMagnify.start(point, this.viewContext.curContext.data);
+        this.canvas.style.cursor = "none";
+        if (this.annGraphicOverlay) {
+            this.annGraphicOverlay.drawToMgLayer();
+        }
+    };
+    ImageViewerComponent.prototype.magnifyAtPoint = function (point) {
+        if (!this.annMagnify || !this.annMagnify.isStarted()) {
+            return;
+        }
+        this.annMagnify.moveTo(point);
+    };
+    ImageViewerComponent.prototype.endMagnify = function () {
+        if (!this.annMagnify || !this.annMagnify.isStarted()) {
+            return;
+        }
+        this.annMagnify.end();
+        this.setCursorFromContext();
+    };
+    ImageViewerComponent.prototype.createFreeText = function (point) {
+        var _this = this;
+        var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxContent"]();
+        content.title = "Text";
+        content.messageText = "Please input the text:";
+        content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxType"].Input;
+        this.dialogService.showMessageBox(content).subscribe(function (val) {
+            if (val.dialogResult === _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["DialogResult"].Ok) {
+                var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].screenToImage(point, _this.image.transformMatrix);
+                var annObj = new _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_17__["AnnText"](undefined, _this);
+                annObj.onCreate(imagePoint, val.valueInput, false);
+                annObj.onDrawEnded();
+                _this.curSelectObj = annObj;
+                _this.redraw(1);
+            }
+        });
+    };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])("viewerCanvas"),
         __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ElementRef"])
@@ -8116,8 +9311,8 @@ var ImageViewerComponent = /** @class */ (function () {
     ], ImageViewerComponent.prototype, "helpElementRef", void 0);
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
-        __metadata("design:type", _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_5__["ViewerImageData"]),
-        __metadata("design:paramtypes", [_models_viewer_image_data__WEBPACK_IMPORTED_MODULE_5__["ViewerImageData"]])
+        __metadata("design:type", _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_6__["ViewerImageData"]),
+        __metadata("design:paramtypes", [_models_viewer_image_data__WEBPACK_IMPORTED_MODULE_6__["ViewerImageData"]])
     ], ImageViewerComponent.prototype, "imageData", null);
     ImageViewerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -8128,12 +9323,13 @@ var ImageViewerComponent = /** @class */ (function () {
         }),
         __metadata("design:paramtypes", [_services_image_selector_service__WEBPACK_IMPORTED_MODULE_2__["ImageSelectorService"],
             _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_3__["DicomImageService"],
-            _services_configuration_service__WEBPACK_IMPORTED_MODULE_7__["ConfigurationService"],
-            _services_view_context_service__WEBPACK_IMPORTED_MODULE_4__["ViewContextService"],
-            _services_worklist_service__WEBPACK_IMPORTED_MODULE_6__["WorklistService"],
-            _services_dialog_service__WEBPACK_IMPORTED_MODULE_8__["DialogService"],
-            _services_log_service__WEBPACK_IMPORTED_MODULE_9__["LogService"],
-            _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"]])
+            _services_configuration_service__WEBPACK_IMPORTED_MODULE_8__["ConfigurationService"],
+            _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextService"],
+            _services_worklist_service__WEBPACK_IMPORTED_MODULE_7__["WorklistService"],
+            _services_dialog_service__WEBPACK_IMPORTED_MODULE_9__["DialogService"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_10__["LogService"],
+            _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"],
+            _services_annotation_service__WEBPACK_IMPORTED_MODULE_4__["AnnotationService"]])
     ], ImageViewerComponent);
     return ImageViewerComponent;
 }());
@@ -8699,18 +9895,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
 /* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
 /* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../models/annotation */ "./src/app/models/annotation.ts");
-/* harmony import */ var _annotation_extend_object_ann_line__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-line */ "./src/app/annotation/extend-object/ann-line.ts");
-/* harmony import */ var _annotation_extend_object_ann_ellipse__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-ellipse */ "./src/app/annotation/extend-object/ann-ellipse.ts");
-/* harmony import */ var _annotation_extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-rectangle */ "./src/app/annotation/extend-object/ann-rectangle.ts");
-/* harmony import */ var _annotation_extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-arrow */ "./src/app/annotation/extend-object/ann-arrow.ts");
-/* harmony import */ var _annotation_extend_object_ann_curve__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-curve */ "./src/app/annotation/extend-object/ann-curve.ts");
-/* harmony import */ var _annotation_extend_object_ann_ruler__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-ruler */ "./src/app/annotation/extend-object/ann-ruler.ts");
-/* harmony import */ var _annotation_extend_object_ann_cardiothoracic_ratio__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-cardiothoracic-ratio */ "./src/app/annotation/extend-object/ann-cardiothoracic-ratio.ts");
-/* harmony import */ var _annotation_extend_object_ann_vertical_axis__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-vertical-axis */ "./src/app/annotation/extend-object/ann-vertical-axis.ts");
-/* harmony import */ var _annotation_extend_object_ann_mark_spot__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-mark-spot */ "./src/app/annotation/extend-object/ann-mark-spot.ts");
-/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
-/* harmony import */ var _annotation_extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-polygon */ "./src/app/annotation/extend-object/ann-polygon.ts");
-/* harmony import */ var _annotation_extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../annotation/extend-object/ann-angle */ "./src/app/annotation/extend-object/ann-angle.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8725,29 +9909,13 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 var ViewerToolbarComponent = /** @class */ (function () {
     function ViewerToolbarComponent(imageSelectorService, viewContext, configurationService) {
         this.imageSelectorService = imageSelectorService;
         this.viewContext = viewContext;
         this.configurationService = configurationService;
         this.selectPanButtonMenuList = [
-            {
-                name: "selection",
-                tip: "Select",
-                operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Select }
-            },
+            { name: "selection", tip: "Select", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Select } },
             { name: "Pan", tip: "Pan", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Pan } }
         ];
         this.rotateFlipButtonMenuList = [
@@ -8758,28 +9926,12 @@ var ViewerToolbarComponent = /** @class */ (function () {
         ];
         this.zoomButtonMenuList = [
             { name: "Zoom", tip: "Zoom", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Zoom } },
-            {
-                name: "rectzoom",
-                tip: "ROI Zoom",
-                operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].ROIZoom }
-            }
+            { name: "rectzoom", tip: "ROI Zoom", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].ROIZoom } }
         ];
         this.magnifyButtonMenuList = [
-            {
-                name: "magnify2",
-                tip: "Magnify X 2",
-                operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].MagnifyX2 }
-            },
-            {
-                name: "magnify4",
-                tip: "Magnify X 4",
-                operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].MagnifyX4 }
-            },
-            {
-                name: "magnify8",
-                tip: "Magnify X 8",
-                operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].MagnifyX8 }
-            },
+            { name: "magnify2", tip: "Magnify X 2", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Magnify, 2) } },
+            { name: "magnify4", tip: "Magnify X 4", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Magnify, 4) } },
+            { name: "magnify8", tip: "Magnify X 8", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Magnify, 8) } }
         ];
         this.fitButtonMenuList = [
             { name: "fitheight", tip: "Fit Height", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].FitHeight, data: null } },
@@ -8794,60 +9946,50 @@ var ViewerToolbarComponent = /** @class */ (function () {
             { name: "Invert", tip: "Invert", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].Invert, data: null } }
         ];
         this.keyImageButtonMenu = {
-            name: "SetKeyImage",
-            tip: "Key Image",
-            operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ToggleKeyImage, data: null }
+            name: "SetKeyImage", tip: "Key Image", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ToggleKeyImage, data: null }
         };
         this.resetButtonMenu = {
             name: "Reset", tip: "Reset", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].Reset, data: null }
         };
         this.showAnnotationButtonMenu = {
-            name: "showannotation",
-            tip: "Show Annotation",
-            operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowAnnotation, data: null }
+            name: "showannotation", tip: "Show Annotation", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowAnnotation, data: null }
         };
         this.showOverlayButtonMenu = {
-            name: "showoverlay",
-            tip: "Show Overlay",
-            operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowOverlay, data: null }
+            name: "showoverlay", tip: "Show Overlay", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowOverlay, data: null }
         };
         this.showRulerButtonMenu = {
-            name: "showruler",
-            tip: "Show Ruler",
-            operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowRuler, data: null }
+            name: "showruler", tip: "Show Ruler", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowRuler, data: null }
         };
         this.showGraphicOverlayButtonMenu = {
-            name: "showgraphicoverlay",
-            tip: "Show Graphic Overlay",
-            operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowGraphicOverlay, data: null }
+            name: "showgraphicoverlay", tip: "Show Graphic Overlay", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowGraphicOverlay, data: null }
         };
         this.selectAnnotationButtonMenu = {
-            name: "ann_selection",
-            tip: "Select Annotation",
-            operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn }
+            name: "ann_selection", tip: "Select Annotation", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn }
         };
         this.simpleAnnotation1ButtonMenu = [
-            { name: "ann_line", tip: "Line", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_line__WEBPACK_IMPORTED_MODULE_5__["AnnLine"], "Line", "ann_line", false)) } },
-            { name: "ann_angle", tip: "Angle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_16__["AnnAngle"], "Angle", "ann_angle", false)) } },
-            { name: "ann_arrow", tip: "Arrow", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_8__["AnnArrow"], "Arrow", "ann_line", false)) } },
-            { name: "ann_vaxis", tip: "Vertical Axis", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_vertical_axis__WEBPACK_IMPORTED_MODULE_12__["AnnVerticalAxis"], "Vertical Axis", "ann_cervicalcurve", false)) } },
-            { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_mark_spot__WEBPACK_IMPORTED_MODULE_13__["AnnMarkSpot"], "Mark Spot", "ann_line", true)) } }
+            { name: "ann_line", tip: "Line", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].LineExt) } },
+            { name: "ann_angle", tip: "Angle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Protractor) } },
+            { name: "ann_arrow", tip: "Arrow", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Arrow) } },
+            { name: "ann_vaxis", tip: "Vertical Axis", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Vaxis) } },
+            { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].MarkSpot) } },
+            { name: "ann_freearea", tip: "Free Area", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].FreeArea) } },
+            { name: "ann_text", tip: "Text", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Text) } }
         ];
         this.simpleAnnotation2ButtonMenu = [
-            { name: "ann_ellipse", tip: "Eclipse", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_ellipse__WEBPACK_IMPORTED_MODULE_6__["AnnEllipse"], "Ellipse", "ellipse", false)) } },
-            { name: "ann_polygon", tip: "Polygon", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_15__["AnnPolygon"], "Polygon", "polygon", false)) } },
-            { name: "ann_rectangle", tip: "Rectangle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_7__["AnnRectangle"], "Rectangle", "rect", false)) } },
-            { name: "ann_ruler", tip: "Ruler", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_ruler__WEBPACK_IMPORTED_MODULE_10__["AnnRuler"], "Ruler", "ann_line", false)) } }
+            { name: "ann_ellipse", tip: "Eclipse", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Ellipse) } },
+            { name: "ann_polygon", tip: "Polygon", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Polygon) } },
+            { name: "ann_rectangle", tip: "Rectangle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Rect) } },
+            { name: "ann_ruler", tip: "Ruler", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Ruler) } }
         ];
         this.extendAnnotation1ButtonMenu = [
-            { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_curve__WEBPACK_IMPORTED_MODULE_9__["AnnCurve"], "Cervical Curve", "ann_cervicalcurve", true)) } }
+            { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].CervicalCurve) } },
+            { name: "ann_lumbarcurve", tip: "Lumbar Curve", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].LumbarCurve) } }
         ];
         this.extendAnnotation2ButtonMenu = [
-            { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_cardiothoracic_ratio__WEBPACK_IMPORTED_MODULE_11__["AnnCardiothoracicRatio"], "Cardiothoracic Ratio", "ann_cervicalcurve", true)) } }
+            { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].HeartChestRatio) } }
         ];
         this.markerButtonMenu = {
-            name: "ann_stamp", tip: "Markers", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, new _models_annotation__WEBPACK_IMPORTED_MODULE_4__["Annotation"](_annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_14__["AnnImage"], "Marker", "ann_stamp", false))
-            }
+            name: "ann_stamp", tip: "Markers", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Stamp) }
         };
         this.buttonDivideSrc = this.configurationService.getBaseUrl() + "assets/img/DicomViewer/fenge2.png";
     }
@@ -8909,6 +10051,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
 /* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
 /* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../models/messageBox */ "./src/app/models/messageBox.ts");
+/* harmony import */ var _worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../worklist/patient-edit/patient-edit.component */ "./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.ts");
+/* harmony import */ var _worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../worklist/export-study/export-study.component */ "./src/app/components/worklist-shell/worklist/export-study/export-study.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8918,6 +10062,8 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
+
 
 
 
@@ -8947,8 +10093,14 @@ var OperateToolbarComponent = /** @class */ (function () {
     OperateToolbarComponent.prototype.onReassign = function () {
     };
     OperateToolbarComponent.prototype.onTransfer = function () {
+        this.dialogService.showDialog(_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_5__["ExportStudyComponent"], this.worklistService.checkedStudies).subscribe(function (val) {
+            //this.getStudyDate(val);
+        });
     };
     OperateToolbarComponent.prototype.onTagEdit = function () {
+        this.dialogService.showDialog(_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_4__["PatientEditComponent"], this.worklistService.checkedSingleStudy).subscribe(function (val) {
+            //this.getStudyDate(val);
+        });
     };
     OperateToolbarComponent.prototype.onDeletePrevent = function () {
         this.worklistService.onDeletePrevent();
@@ -8957,11 +10109,6 @@ var OperateToolbarComponent = /** @class */ (function () {
         this.worklistService.onDeleteAllow();
     };
     OperateToolbarComponent.prototype.onDeleteStudy = function () {
-        //this.dialogService.showDialog(DeleteStudyDialogComponent, 0).subscribe(
-        //    deletionReason => {
-        //        this.worklistService.onDeleteStudy(deletionReason);
-        //    }
-        //);
         var _this = this;
         var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxContent"]();
         content.title = "Deletion Reason";
@@ -9099,7 +10246,7 @@ var QueryShortcutComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".query, .queryClear, .querySave {\r\n    border: none;\r\n    height: 30px;\r\n    outline: none;\r\n    width: 100px;\r\n}\r\n\r\n.query { background: url('Query_All.png') no-repeat left top; }\r\n\r\n.query:hover { background: url('Query_All.png') no-repeat right top; }\r\n\r\n.query:active { background: url('Query_All.png') no-repeat right bottom; }\r\n\r\n.queryClear { background: url('ClearCondition_All.png') no-repeat left top; }\r\n\r\n.queryClear:hover { background: url('ClearCondition_All.png') no-repeat right top; }\r\n\r\n.queryClear:active { background: url('ClearCondition_All.png') no-repeat right bottom; }\r\n\r\n.querySave { background: url('Query_Save.png') no-repeat left top; }\r\n\r\n.querySave:hover { background: url('Query_Save.png') no-repeat right top; }\r\n\r\n.querySave:active { background: url('Query_Save.png') no-repeat right bottom; }\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC9xdWVyeS10b29sYmFyL3F1ZXJ5LXRvb2xiYXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLFlBQVk7SUFDWixZQUFZO0lBQ1osYUFBYTtJQUNiLFlBQVk7QUFDaEI7O0FBRUEsU0FBUyxtREFBK0UsRUFBRTs7QUFFMUYsZUFBZSxvREFBZ0YsRUFBRTs7QUFFakcsZ0JBQWdCLHVEQUFtRixFQUFFOztBQUVyRyxjQUFjLDREQUF3RixFQUFFOztBQUV4RyxvQkFBb0IsNkRBQXlGLEVBQUU7O0FBRS9HLHFCQUFxQixnRUFBNEYsRUFBRTs7QUFFbkgsYUFBYSxvREFBZ0YsRUFBRTs7QUFFL0YsbUJBQW1CLHFEQUFpRixFQUFFOztBQUV0RyxvQkFBb0Isd0RBQW9GLEVBQUUiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3F1ZXJ5LXRvb2xiYXIvcXVlcnktdG9vbGJhci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnF1ZXJ5LCAucXVlcnlDbGVhciwgLnF1ZXJ5U2F2ZSB7XHJcbiAgICBib3JkZXI6IG5vbmU7XHJcbiAgICBoZWlnaHQ6IDMwcHg7XHJcbiAgICBvdXRsaW5lOiBub25lO1xyXG4gICAgd2lkdGg6IDEwMHB4O1xyXG59XHJcblxyXG4ucXVlcnkgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wOyB9XHJcblxyXG4ucXVlcnk6aG92ZXIgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgfVxyXG5cclxuLnF1ZXJ5OmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9RdWVyeV9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XHJcblxyXG4ucXVlcnlDbGVhciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cclxuXHJcbi5xdWVyeUNsZWFyOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0NsZWFyQ29uZGl0aW9uX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IH1cclxuXHJcbi5xdWVyeUNsZWFyOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XHJcblxyXG4ucXVlcnlTYXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cclxuXHJcbi5xdWVyeVNhdmU6aG92ZXIgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfU2F2ZS5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IH1cclxuXHJcbi5xdWVyeVNhdmU6YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XHJcbiJdfQ== */"
+module.exports = ".query, .queryClear, .querySave {\r\n    border: none;\r\n    height: 30px;\r\n    outline: none;\r\n    width: 100px;\r\n}\r\n\r\n.query { background: url('Query_All.png') no-repeat left top; }\r\n\r\n.query:hover { background: url('Query_All.png') no-repeat right top; }\r\n\r\n.query:active { background: url('Query_All.png') no-repeat right bottom; }\r\n\r\n.queryClear { background: url('ClearCondition_All.png') no-repeat left top; }\r\n\r\n.queryClear:hover { background: url('ClearCondition_All.png') no-repeat right top; }\r\n\r\n.queryClear:active { background: url('ClearCondition_All.png') no-repeat right bottom; }\r\n\r\n.querySave { background: url('Query_Save.png') no-repeat left top; }\r\n\r\n.querySave:hover { background: url('Query_Save.png') no-repeat right top; }\r\n\r\n.querySave:active { background: url('Query_Save.png') no-repeat right bottom; }\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC9xdWVyeS10b29sYmFyL3F1ZXJ5LXRvb2xiYXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLFlBQVk7SUFDWixZQUFZO0lBQ1osYUFBYTtJQUNiLFlBQVk7QUFDaEI7O0FBRUEsU0FBUyxtREFBK0UsRUFBRTs7QUFFMUYsZUFBZSxvREFBZ0YsRUFBRTs7QUFFakcsZ0JBQWdCLHVEQUFtRixFQUFFOztBQUVyRyxjQUFjLDREQUF3RixFQUFFOztBQUV4RyxvQkFBb0IsNkRBQXlGLEVBQUU7O0FBRS9HLHFCQUFxQixnRUFBNEYsRUFBRTs7QUFFbkgsYUFBYSxvREFBZ0YsRUFBRTs7QUFFL0YsbUJBQW1CLHFEQUFpRixFQUFFOztBQUV0RyxvQkFBb0Isd0RBQW9GLEVBQUUiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3F1ZXJ5LXRvb2xiYXIvcXVlcnktdG9vbGJhci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnF1ZXJ5LCAucXVlcnlDbGVhciwgLnF1ZXJ5U2F2ZSB7XHJcbiAgICBib3JkZXI6IG5vbmU7XHJcbiAgICBoZWlnaHQ6IDMwcHg7XHJcbiAgICBvdXRsaW5lOiBub25lO1xyXG4gICAgd2lkdGg6IDEwMHB4O1xyXG59XHJcblxyXG4ucXVlcnkgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wOyB9XHJcblxyXG4ucXVlcnk6aG92ZXIgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgfVxyXG5cclxuLnF1ZXJ5OmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9RdWVyeV9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XHJcblxyXG4ucXVlcnlDbGVhciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cclxuXHJcbi5xdWVyeUNsZWFyOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0NsZWFyQ29uZGl0aW9uX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IH1cclxuXHJcbi5xdWVyeUNsZWFyOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XHJcblxyXG4ucXVlcnlTYXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cclxuXHJcbi5xdWVyeVNhdmU6aG92ZXIgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfU2F2ZS5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IH1cclxuXHJcbi5xdWVyeVNhdmU6YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9Il19 */"
 
 /***/ }),
 
@@ -9189,17 +10336,6 @@ var QueryToolbarComponent = /** @class */ (function () {
 
 /***/ }),
 
-/***/ "./src/app/components/worklist-shell/worklist-shell.component.css":
-/*!************************************************************************!*\
-  !*** ./src/app/components/worklist-shell/worklist-shell.component.css ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "#div-scroll {\r\n    height: 100%;\r\n    overflow: auto;\r\n    width: 100%;\r\n}\r\n\r\n#div-scroll::-webkit-scrollbar {\r\n    background-color: #808080;\r\n    width: 12px;\r\n}\r\n\r\n#div-scroll::-webkit-scrollbar-thumb {\r\n    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);\r\n    background-color: #555;\r\n    border-radius: 10px;\r\n}\r\n\r\n#div-scroll::-webkit-scrollbar-corner { background-color: dimgray; }\r\n\r\n#divContainer {\r\n    border-bottom: 2px solid #666;\r\n    bottom: 0px;\r\n    left: 0px;\r\n    position: absolute;\r\n    right: 0px;\r\n    top: 40px;\r\n}\r\n\r\n.studyQueryToolbar {\r\n    background-color: black;\r\n    color: #F5F5F5;\r\n    display: block;\r\n    height: 40px;\r\n    margin: 0 auto;\r\n    padding: 3px;\r\n    width: 100%;\r\n}\r\n\r\n.studyOpertionToolbar {\r\n    background-color: black;\r\n    border-bottom: 2px solid #666;\r\n    border-top: 1px solid #333;\r\n    bottom: 0;\r\n    color: #F5F5F5;\r\n    display: block;\r\n    height: 48px;\r\n    margin: 0 auto;\r\n    padding: 4px;\r\n    position: fixed;\r\n    width: 100%;\r\n}\r\n\r\n#panelStudyDash {\r\n    background-color: black;\r\n    border: none;\r\n    margin: 0px;\r\n    padding: 5px 10px;\r\n    visibility: visible;\r\n}\r\n\r\n#panelStudyDash button {\r\n    border: none;\r\n    height: 30px;\r\n    outline: none;\r\n    width: 100px;\r\n}\r\n\r\n#panelStudyDash .save-query {\r\n    cursor: pointer;\r\n    float: right;\r\n}\r\n\r\n#panelStudyDash .checkbox {\r\n    margin-left: 5px;\r\n    margin-right: 5px;\r\n}\r\n\r\n#panelStudyDash #statusLabel { margin: 0px; }\r\n\r\n#divStudies {\r\n    margin-bottom: 0px;\r\n    min-height: 200px;\r\n    position: static;\r\n    width: 100%;\r\n}\r\n\r\n/*#divStudies::-webkit-scrollbar{\r\n    width:16px;\r\n    background-color:black;\r\n}\r\n\r\n#divStudies::-webkit-scrollbar-thumb{\r\n    background-color:#535353;\r\n    border-radius: 10px;\r\n}*/\r\n\r\n@media (min-width: 768px) {    \r\n    #panelStudyDash .checkbox { top: -2px; }\r\n\r\n    #panelStudyDash .checkbox label input { top: 2px; }\r\n}\r\n\r\n@media (max-width: 768px) {\r\n    #divStudies {\r\n        border: none;\r\n        left: 1px;\r\n        position: absolute;\r\n        right: 1px;\r\n        top: 42px;\r\n        visibility: visible;\r\n    }\r\n\r\n    #panelStudyDash {\r\n        left: 1px;\r\n        padding: 5px 2px;\r\n        position: absolute;\r\n        right: 1px;\r\n        visibility: visible;\r\n    }\r\n\r\n    #panelStudyDash .form-group, .checkbox, button {\r\n        display: inline-block;\r\n        margin: 0px;\r\n    }\r\n\r\n    #panelStudyDash #statusLabel { display: none; }\r\n\r\n    #panelStudyDash .save-query { display: none; }\r\n\r\n    #panelStudyDash .checkbox {\r\n        margin-left: 5px;\r\n        margin-right: 5px;\r\n        top: -10px;\r\n    }\r\n\r\n    .sp_panel-container, .sp_panel-left, .sp_panel-right {\r\n        visibility: hidden;\r\n        z-index: 0;\r\n    }\r\n}\r\n\r\n/* horizontal panel*/\r\n\r\n.sp_panel-container {\r\n    display: flex;\r\n    flex-direction: row;\r\n    overflow: hidden;\r\n    /* avoid browser level touch actions */\r\n    /*xtouch-action: none;*/\r\n}\r\n\r\n.sp_panel-left {\r\n    /*min-width: 1px;*/\r\n    /*white-space: nowrap;*/\r\n    background: #07090c;\r\n    display: flex;\r\n    flex: 0 0 auto;\r\n    flex-direction: column;\r\n    min-height: 200px;\r\n    overflow: hidden;\r\n    /* only manually resize */\r\n    padding: 4px;\r\n    width: 200px;\r\n    /*color: white;*/\r\n}\r\n\r\n.sp_splitter {\r\n    background: url('split_vertical_collapse.jpg') center center no-repeat #535353;\r\n    cursor: pointer;\r\n    flex: 0 0 auto;\r\n    min-height: 200px;\r\n    width: 8px;\r\n}\r\n\r\n.sp_panel-right {\r\n    background: black;\r\n    color: white;\r\n    min-height: 200px;\r\n    min-width: 200px;\r\n    padding-bottom: 100px;\r\n    width: 100%;\r\n}\r\n\r\n/* vertical panel */\r\n\r\n.sp_panel-container-vertical {\r\n    display: flex;\r\n    flex-direction: column;\r\n    overflow: hidden;\r\n}\r\n\r\n.sp_panel-top {\r\n    flex: 0 0 auto;\r\n    /* only manually resize */\r\n    /*padding: 10px;*/\r\n    height: 70%;\r\n    min-height: 300px;\r\n    overflow-y: auto;\r\n    width: 100%;\r\n    /*white-space: nowrap;\r\n  background: #838383;\r\n  color: white;*/\r\n    z-index: 0;\r\n}\r\n\r\n.sp_splitter-horizontal {\r\n    background: url('split_horizontal_collapse.jpg') center center no-repeat #535353;\r\n    cursor: pointer;\r\n    flex: 0 0 auto;\r\n    height: 8px;\r\n    z-index: 2;\r\n}\r\n\r\n.sp_panel-bottom {\r\n    flex: 1 1 auto;\r\n    /* resizable */\r\n    /*padding: 10px;*/\r\n    min-height: 200px;\r\n    overflow-y: auto;\r\n    /*background: #eee;*/\r\n    z-index: 1;\r\n}\r\n\r\n.navbar-right { padding-right: 10px; }\r\n\r\n.sp_panel-right .table { white-space: nowrap; }\r\n\r\n#trStudiesHeader a { color: black; }\r\n\r\n#trSeriesHeader a { color: black; }\r\n\r\n#leftPanelTop { flex: 1 1 auto; }\r\n\r\n#leftPanelBottom {\r\n    flex: 0 0 auto;\r\n    height: 20%;\r\n}\r\n\r\n#formUploadImage input[type=file] { width: 600px; }\r\n\r\n#tblSeries td:nth-child(1) { text-align: center; }\r\n\r\n#tblSeries img {\r\n    height: 50px;\r\n    margin: auto;\r\n    width: 50px;\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC1zaGVsbC5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksWUFBWTtJQUNaLGNBQWM7SUFDZCxXQUFXO0FBQ2Y7O0FBRUE7SUFDSSx5QkFBeUI7SUFDekIsV0FBVztBQUNmOztBQUVBO0lBQ0ksbURBQW1EO0lBQ25ELHNCQUFzQjtJQUN0QixtQkFBbUI7QUFDdkI7O0FBRUEsd0NBQXdDLHlCQUF5QixFQUFFOztBQUVuRTtJQUNJLDZCQUE2QjtJQUM3QixXQUFXO0lBQ1gsU0FBUztJQUNULGtCQUFrQjtJQUNsQixVQUFVO0lBQ1YsU0FBUztBQUNiOztBQUVBO0lBQ0ksdUJBQXVCO0lBQ3ZCLGNBQWM7SUFDZCxjQUFjO0lBQ2QsWUFBWTtJQUNaLGNBQWM7SUFDZCxZQUFZO0lBQ1osV0FBVztBQUNmOztBQUVBO0lBQ0ksdUJBQXVCO0lBQ3ZCLDZCQUE2QjtJQUM3QiwwQkFBMEI7SUFDMUIsU0FBUztJQUNULGNBQWM7SUFDZCxjQUFjO0lBQ2QsWUFBWTtJQUNaLGNBQWM7SUFDZCxZQUFZO0lBQ1osZUFBZTtJQUNmLFdBQVc7QUFDZjs7QUFFQTtJQUNJLHVCQUF1QjtJQUN2QixZQUFZO0lBQ1osV0FBVztJQUNYLGlCQUFpQjtJQUNqQixtQkFBbUI7QUFDdkI7O0FBRUE7SUFDSSxZQUFZO0lBQ1osWUFBWTtJQUNaLGFBQWE7SUFDYixZQUFZO0FBQ2hCOztBQUVBO0lBQ0ksZUFBZTtJQUNmLFlBQVk7QUFDaEI7O0FBRUE7SUFDSSxnQkFBZ0I7SUFDaEIsaUJBQWlCO0FBQ3JCOztBQUVBLCtCQUErQixXQUFXLEVBQUU7O0FBRTVDO0lBQ0ksa0JBQWtCO0lBQ2xCLGlCQUFpQjtJQUNqQixnQkFBZ0I7SUFDaEIsV0FBVztBQUNmOztBQUVBOzs7Ozs7OztFQVFFOztBQUVGO0lBQ0ksNEJBQTRCLFNBQVMsRUFBRTs7SUFFdkMsd0NBQXdDLFFBQVEsRUFBRTtBQUN0RDs7QUFFQTtJQUNJO1FBQ0ksWUFBWTtRQUNaLFNBQVM7UUFDVCxrQkFBa0I7UUFDbEIsVUFBVTtRQUNWLFNBQVM7UUFDVCxtQkFBbUI7SUFDdkI7O0lBRUE7UUFDSSxTQUFTO1FBQ1QsZ0JBQWdCO1FBQ2hCLGtCQUFrQjtRQUNsQixVQUFVO1FBQ1YsbUJBQW1CO0lBQ3ZCOztJQUVBO1FBQ0kscUJBQXFCO1FBQ3JCLFdBQVc7SUFDZjs7SUFFQSwrQkFBK0IsYUFBYSxFQUFFOztJQUU5Qyw4QkFBOEIsYUFBYSxFQUFFOztJQUU3QztRQUNJLGdCQUFnQjtRQUNoQixpQkFBaUI7UUFDakIsVUFBVTtJQUNkOztJQUVBO1FBQ0ksa0JBQWtCO1FBQ2xCLFVBQVU7SUFDZDtBQUNKOztBQUVBLG9CQUFvQjs7QUFFcEI7SUFDSSxhQUFhO0lBQ2IsbUJBQW1CO0lBQ25CLGdCQUFnQjtJQUNoQixzQ0FBc0M7SUFDdEMsdUJBQXVCO0FBQzNCOztBQUVBO0lBQ0ksa0JBQWtCO0lBQ2xCLHVCQUF1QjtJQUN2QixtQkFBbUI7SUFDbkIsYUFBYTtJQUNiLGNBQWM7SUFDZCxzQkFBc0I7SUFDdEIsaUJBQWlCO0lBQ2pCLGdCQUFnQjtJQUNoQix5QkFBeUI7SUFDekIsWUFBWTtJQUNaLFlBQVk7SUFDWixnQkFBZ0I7QUFDcEI7O0FBRUE7SUFDSSw4RUFBdUc7SUFDdkcsZUFBZTtJQUNmLGNBQWM7SUFDZCxpQkFBaUI7SUFDakIsVUFBVTtBQUNkOztBQUVBO0lBQ0ksaUJBQWlCO0lBQ2pCLFlBQVk7SUFDWixpQkFBaUI7SUFDakIsZ0JBQWdCO0lBQ2hCLHFCQUFxQjtJQUNyQixXQUFXO0FBQ2Y7O0FBR0EsbUJBQW1COztBQUVuQjtJQUNJLGFBQWE7SUFDYixzQkFBc0I7SUFDdEIsZ0JBQWdCO0FBQ3BCOztBQUVBO0lBQ0ksY0FBYztJQUNkLHlCQUF5QjtJQUN6QixpQkFBaUI7SUFDakIsV0FBVztJQUNYLGlCQUFpQjtJQUNqQixnQkFBZ0I7SUFDaEIsV0FBVztJQUNYOztnQkFFWTtJQUNaLFVBQVU7QUFDZDs7QUFFQTtJQUNJLGdGQUF5RztJQUN6RyxlQUFlO0lBQ2YsY0FBYztJQUNkLFdBQVc7SUFDWCxVQUFVO0FBQ2Q7O0FBRUE7SUFDSSxjQUFjO0lBQ2QsY0FBYztJQUNkLGlCQUFpQjtJQUNqQixpQkFBaUI7SUFDakIsZ0JBQWdCO0lBQ2hCLG9CQUFvQjtJQUNwQixVQUFVO0FBQ2Q7O0FBRUEsZ0JBQWdCLG1CQUFtQixFQUFFOztBQUVyQyx5QkFBeUIsbUJBQW1CLEVBQUU7O0FBRTlDLHFCQUFxQixZQUFZLEVBQUU7O0FBRW5DLG9CQUFvQixZQUFZLEVBQUU7O0FBR2xDLGdCQUFnQixjQUFjLEVBQUU7O0FBRWhDO0lBQ0ksY0FBYztJQUNkLFdBQVc7QUFDZjs7QUFFQSxvQ0FBb0MsWUFBWSxFQUFFOztBQUVsRCw2QkFBNkIsa0JBQWtCLEVBQUU7O0FBRWpEO0lBQ0ksWUFBWTtJQUNaLFlBQVk7SUFDWixXQUFXO0FBQ2YiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0LXNoZWxsLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIjZGl2LXNjcm9sbCB7XHJcbiAgICBoZWlnaHQ6IDEwMCU7XHJcbiAgICBvdmVyZmxvdzogYXV0bztcclxuICAgIHdpZHRoOiAxMDAlO1xyXG59XHJcblxyXG4jZGl2LXNjcm9sbDo6LXdlYmtpdC1zY3JvbGxiYXIge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzgwODA4MDtcclxuICAgIHdpZHRoOiAxMnB4O1xyXG59XHJcblxyXG4jZGl2LXNjcm9sbDo6LXdlYmtpdC1zY3JvbGxiYXItdGh1bWIge1xyXG4gICAgLXdlYmtpdC1ib3gtc2hhZG93OiBpbnNldCAwIDAgNnB4IHJnYmEoMCwgMCwgMCwgLjMpO1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcclxuICAgIGJvcmRlci1yYWRpdXM6IDEwcHg7XHJcbn1cclxuXHJcbiNkaXYtc2Nyb2xsOjotd2Via2l0LXNjcm9sbGJhci1jb3JuZXIgeyBiYWNrZ3JvdW5kLWNvbG9yOiBkaW1ncmF5OyB9XHJcblxyXG4jZGl2Q29udGFpbmVyIHtcclxuICAgIGJvcmRlci1ib3R0b206IDJweCBzb2xpZCAjNjY2O1xyXG4gICAgYm90dG9tOiAwcHg7XHJcbiAgICBsZWZ0OiAwcHg7XHJcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XHJcbiAgICByaWdodDogMHB4O1xyXG4gICAgdG9wOiA0MHB4O1xyXG59XHJcblxyXG4uc3R1ZHlRdWVyeVRvb2xiYXIge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogYmxhY2s7XHJcbiAgICBjb2xvcjogI0Y1RjVGNTtcclxuICAgIGRpc3BsYXk6IGJsb2NrO1xyXG4gICAgaGVpZ2h0OiA0MHB4O1xyXG4gICAgbWFyZ2luOiAwIGF1dG87XHJcbiAgICBwYWRkaW5nOiAzcHg7XHJcbiAgICB3aWR0aDogMTAwJTtcclxufVxyXG5cclxuLnN0dWR5T3BlcnRpb25Ub29sYmFyIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IGJsYWNrO1xyXG4gICAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkICM2NjY7XHJcbiAgICBib3JkZXItdG9wOiAxcHggc29saWQgIzMzMztcclxuICAgIGJvdHRvbTogMDtcclxuICAgIGNvbG9yOiAjRjVGNUY1O1xyXG4gICAgZGlzcGxheTogYmxvY2s7XHJcbiAgICBoZWlnaHQ6IDQ4cHg7XHJcbiAgICBtYXJnaW46IDAgYXV0bztcclxuICAgIHBhZGRpbmc6IDRweDtcclxuICAgIHBvc2l0aW9uOiBmaXhlZDtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG59XHJcblxyXG4jcGFuZWxTdHVkeURhc2gge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogYmxhY2s7XHJcbiAgICBib3JkZXI6IG5vbmU7XHJcbiAgICBtYXJnaW46IDBweDtcclxuICAgIHBhZGRpbmc6IDVweCAxMHB4O1xyXG4gICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcclxufVxyXG5cclxuI3BhbmVsU3R1ZHlEYXNoIGJ1dHRvbiB7XHJcbiAgICBib3JkZXI6IG5vbmU7XHJcbiAgICBoZWlnaHQ6IDMwcHg7XHJcbiAgICBvdXRsaW5lOiBub25lO1xyXG4gICAgd2lkdGg6IDEwMHB4O1xyXG59XHJcblxyXG4jcGFuZWxTdHVkeURhc2ggLnNhdmUtcXVlcnkge1xyXG4gICAgY3Vyc29yOiBwb2ludGVyO1xyXG4gICAgZmxvYXQ6IHJpZ2h0O1xyXG59XHJcblxyXG4jcGFuZWxTdHVkeURhc2ggLmNoZWNrYm94IHtcclxuICAgIG1hcmdpbi1sZWZ0OiA1cHg7XHJcbiAgICBtYXJnaW4tcmlnaHQ6IDVweDtcclxufVxyXG5cclxuI3BhbmVsU3R1ZHlEYXNoICNzdGF0dXNMYWJlbCB7IG1hcmdpbjogMHB4OyB9XHJcblxyXG4jZGl2U3R1ZGllcyB7XHJcbiAgICBtYXJnaW4tYm90dG9tOiAwcHg7XHJcbiAgICBtaW4taGVpZ2h0OiAyMDBweDtcclxuICAgIHBvc2l0aW9uOiBzdGF0aWM7XHJcbiAgICB3aWR0aDogMTAwJTtcclxufVxyXG5cclxuLyojZGl2U3R1ZGllczo6LXdlYmtpdC1zY3JvbGxiYXJ7XHJcbiAgICB3aWR0aDoxNnB4O1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjpibGFjaztcclxufVxyXG5cclxuI2RpdlN0dWRpZXM6Oi13ZWJraXQtc2Nyb2xsYmFyLXRodW1ie1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjojNTM1MzUzO1xyXG4gICAgYm9yZGVyLXJhZGl1czogMTBweDtcclxufSovXHJcblxyXG5AbWVkaWEgKG1pbi13aWR0aDogNzY4cHgpIHsgICAgXHJcbiAgICAjcGFuZWxTdHVkeURhc2ggLmNoZWNrYm94IHsgdG9wOiAtMnB4OyB9XHJcblxyXG4gICAgI3BhbmVsU3R1ZHlEYXNoIC5jaGVja2JveCBsYWJlbCBpbnB1dCB7IHRvcDogMnB4OyB9XHJcbn1cclxuXHJcbkBtZWRpYSAobWF4LXdpZHRoOiA3NjhweCkge1xyXG4gICAgI2RpdlN0dWRpZXMge1xyXG4gICAgICAgIGJvcmRlcjogbm9uZTtcclxuICAgICAgICBsZWZ0OiAxcHg7XHJcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xyXG4gICAgICAgIHJpZ2h0OiAxcHg7XHJcbiAgICAgICAgdG9wOiA0MnB4O1xyXG4gICAgICAgIHZpc2liaWxpdHk6IHZpc2libGU7XHJcbiAgICB9XHJcblxyXG4gICAgI3BhbmVsU3R1ZHlEYXNoIHtcclxuICAgICAgICBsZWZ0OiAxcHg7XHJcbiAgICAgICAgcGFkZGluZzogNXB4IDJweDtcclxuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XHJcbiAgICAgICAgcmlnaHQ6IDFweDtcclxuICAgICAgICB2aXNpYmlsaXR5OiB2aXNpYmxlO1xyXG4gICAgfVxyXG5cclxuICAgICNwYW5lbFN0dWR5RGFzaCAuZm9ybS1ncm91cCwgLmNoZWNrYm94LCBidXR0b24ge1xyXG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcclxuICAgICAgICBtYXJnaW46IDBweDtcclxuICAgIH1cclxuXHJcbiAgICAjcGFuZWxTdHVkeURhc2ggI3N0YXR1c0xhYmVsIHsgZGlzcGxheTogbm9uZTsgfVxyXG5cclxuICAgICNwYW5lbFN0dWR5RGFzaCAuc2F2ZS1xdWVyeSB7IGRpc3BsYXk6IG5vbmU7IH1cclxuXHJcbiAgICAjcGFuZWxTdHVkeURhc2ggLmNoZWNrYm94IHtcclxuICAgICAgICBtYXJnaW4tbGVmdDogNXB4O1xyXG4gICAgICAgIG1hcmdpbi1yaWdodDogNXB4O1xyXG4gICAgICAgIHRvcDogLTEwcHg7XHJcbiAgICB9XHJcblxyXG4gICAgLnNwX3BhbmVsLWNvbnRhaW5lciwgLnNwX3BhbmVsLWxlZnQsIC5zcF9wYW5lbC1yaWdodCB7XHJcbiAgICAgICAgdmlzaWJpbGl0eTogaGlkZGVuO1xyXG4gICAgICAgIHotaW5kZXg6IDA7XHJcbiAgICB9XHJcbn1cclxuXHJcbi8qIGhvcml6b250YWwgcGFuZWwqL1xyXG5cclxuLnNwX3BhbmVsLWNvbnRhaW5lciB7XHJcbiAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAgZmxleC1kaXJlY3Rpb246IHJvdztcclxuICAgIG92ZXJmbG93OiBoaWRkZW47XHJcbiAgICAvKiBhdm9pZCBicm93c2VyIGxldmVsIHRvdWNoIGFjdGlvbnMgKi9cclxuICAgIC8qeHRvdWNoLWFjdGlvbjogbm9uZTsqL1xyXG59XHJcblxyXG4uc3BfcGFuZWwtbGVmdCB7XHJcbiAgICAvKm1pbi13aWR0aDogMXB4OyovXHJcbiAgICAvKndoaXRlLXNwYWNlOiBub3dyYXA7Ki9cclxuICAgIGJhY2tncm91bmQ6ICMwNzA5MGM7XHJcbiAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAgZmxleDogMCAwIGF1dG87XHJcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xyXG4gICAgbWluLWhlaWdodDogMjAwcHg7XHJcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xyXG4gICAgLyogb25seSBtYW51YWxseSByZXNpemUgKi9cclxuICAgIHBhZGRpbmc6IDRweDtcclxuICAgIHdpZHRoOiAyMDBweDtcclxuICAgIC8qY29sb3I6IHdoaXRlOyovXHJcbn1cclxuXHJcbi5zcF9zcGxpdHRlciB7XHJcbiAgICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc3BsaXRfdmVydGljYWxfY29sbGFwc2UuanBnKSBjZW50ZXIgY2VudGVyIG5vLXJlcGVhdCAjNTM1MzUzO1xyXG4gICAgY3Vyc29yOiBwb2ludGVyO1xyXG4gICAgZmxleDogMCAwIGF1dG87XHJcbiAgICBtaW4taGVpZ2h0OiAyMDBweDtcclxuICAgIHdpZHRoOiA4cHg7XHJcbn1cclxuXHJcbi5zcF9wYW5lbC1yaWdodCB7XHJcbiAgICBiYWNrZ3JvdW5kOiBibGFjaztcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xyXG4gICAgbWluLXdpZHRoOiAyMDBweDtcclxuICAgIHBhZGRpbmctYm90dG9tOiAxMDBweDtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG59XHJcblxyXG5cclxuLyogdmVydGljYWwgcGFuZWwgKi9cclxuXHJcbi5zcF9wYW5lbC1jb250YWluZXItdmVydGljYWwge1xyXG4gICAgZGlzcGxheTogZmxleDtcclxuICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XHJcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xyXG59XHJcblxyXG4uc3BfcGFuZWwtdG9wIHtcclxuICAgIGZsZXg6IDAgMCBhdXRvO1xyXG4gICAgLyogb25seSBtYW51YWxseSByZXNpemUgKi9cclxuICAgIC8qcGFkZGluZzogMTBweDsqL1xyXG4gICAgaGVpZ2h0OiA3MCU7XHJcbiAgICBtaW4taGVpZ2h0OiAzMDBweDtcclxuICAgIG92ZXJmbG93LXk6IGF1dG87XHJcbiAgICB3aWR0aDogMTAwJTtcclxuICAgIC8qd2hpdGUtc3BhY2U6IG5vd3JhcDtcclxuICBiYWNrZ3JvdW5kOiAjODM4MzgzO1xyXG4gIGNvbG9yOiB3aGl0ZTsqL1xyXG4gICAgei1pbmRleDogMDtcclxufVxyXG5cclxuLnNwX3NwbGl0dGVyLWhvcml6b250YWwge1xyXG4gICAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NwbGl0X2hvcml6b250YWxfY29sbGFwc2UuanBnKSBjZW50ZXIgY2VudGVyIG5vLXJlcGVhdCAjNTM1MzUzO1xyXG4gICAgY3Vyc29yOiBwb2ludGVyO1xyXG4gICAgZmxleDogMCAwIGF1dG87XHJcbiAgICBoZWlnaHQ6IDhweDtcclxuICAgIHotaW5kZXg6IDI7XHJcbn1cclxuXHJcbi5zcF9wYW5lbC1ib3R0b20ge1xyXG4gICAgZmxleDogMSAxIGF1dG87XHJcbiAgICAvKiByZXNpemFibGUgKi9cclxuICAgIC8qcGFkZGluZzogMTBweDsqL1xyXG4gICAgbWluLWhlaWdodDogMjAwcHg7XHJcbiAgICBvdmVyZmxvdy15OiBhdXRvO1xyXG4gICAgLypiYWNrZ3JvdW5kOiAjZWVlOyovXHJcbiAgICB6LWluZGV4OiAxO1xyXG59XHJcblxyXG4ubmF2YmFyLXJpZ2h0IHsgcGFkZGluZy1yaWdodDogMTBweDsgfVxyXG5cclxuLnNwX3BhbmVsLXJpZ2h0IC50YWJsZSB7IHdoaXRlLXNwYWNlOiBub3dyYXA7IH1cclxuXHJcbiN0clN0dWRpZXNIZWFkZXIgYSB7IGNvbG9yOiBibGFjazsgfVxyXG5cclxuI3RyU2VyaWVzSGVhZGVyIGEgeyBjb2xvcjogYmxhY2s7IH1cclxuXHJcblxyXG4jbGVmdFBhbmVsVG9wIHsgZmxleDogMSAxIGF1dG87IH1cclxuXHJcbiNsZWZ0UGFuZWxCb3R0b20ge1xyXG4gICAgZmxleDogMCAwIGF1dG87XHJcbiAgICBoZWlnaHQ6IDIwJTtcclxufVxyXG5cclxuI2Zvcm1VcGxvYWRJbWFnZSBpbnB1dFt0eXBlPWZpbGVdIHsgd2lkdGg6IDYwMHB4OyB9XHJcblxyXG4jdGJsU2VyaWVzIHRkOm50aC1jaGlsZCgxKSB7IHRleHQtYWxpZ246IGNlbnRlcjsgfVxyXG5cclxuI3RibFNlcmllcyBpbWcge1xyXG4gICAgaGVpZ2h0OiA1MHB4O1xyXG4gICAgbWFyZ2luOiBhdXRvO1xyXG4gICAgd2lkdGg6IDUwcHg7XHJcbn1cclxuIl19 */"
-
-/***/ }),
-
 /***/ "./src/app/components/worklist-shell/worklist-shell.component.html":
 /*!*************************************************************************!*\
   !*** ./src/app/components/worklist-shell/worklist-shell.component.html ***!
@@ -9208,6 +10344,17 @@ module.exports = "#div-scroll {\r\n    height: 100%;\r\n    overflow: auto;\r\n 
 /***/ (function(module, exports) {
 
 module.exports = "<div [style.visibility]=\"hideMe? 'hidden' : 'visible'\" id=\"divContainer\" class=\"sp_panel-container\">\r\n\r\n    <div class=\"sp_panel-left\">\r\n        <app-query-shortcut></app-query-shortcut>\r\n    </div>\r\n\r\n    <div class=\"sp_splitter\">\r\n    </div>\r\n\r\n    <div class=\"sp_panel-right\">\r\n        <div class=\"studyQueryToolbar\">\r\n            <app-query-toolbar></app-query-toolbar>\r\n        </div>\r\n\r\n        <div id=\"div-scroll\">\r\n            <app-worklist></app-worklist>\r\n        </div>\r\n\r\n        <div class=\"studyOpertionToolbar\">\r\n            <app-operate-toolbar></app-operate-toolbar>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
+
+/***/ }),
+
+/***/ "./src/app/components/worklist-shell/worklist-shell.component.less":
+/*!*************************************************************************!*\
+  !*** ./src/app/components/worklist-shell/worklist-shell.component.less ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n#div-scroll {\n  height: 100%;\n  overflow: auto;\n  width: 100%;\n}\n#div-scroll::-webkit-scrollbar {\n  background-color: #333;\n  width: 12px;\n}\n#div-scroll::-webkit-scrollbar-thumb {\n  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);\n  background-color: #555;\n  border-radius: 10px;\n}\n#div-scroll::-webkit-scrollbar-corner {\n  background-color: dimgray;\n}\n#divContainer {\n  border-bottom: 2px solid #666;\n  bottom: 0px;\n  left: 0px;\n  position: absolute;\n  right: 0px;\n  top: 40px;\n}\n.studyQueryToolbar {\n  background-color: #000;\n  /*color: #F5F5F5;*/\n  display: block;\n  height: 40px;\n  margin: 0 auto;\n  padding: 3px;\n  width: 100%;\n}\n.studyOpertionToolbar {\n  background-color: #000;\n  border-bottom: 2px solid #333;\n  border-top: 1px solid #555;\n  bottom: 0;\n  /*color: #F5F5F5;*/\n  display: block;\n  height: 48px;\n  margin: 0 auto;\n  padding: 4px;\n  position: fixed;\n  width: 100%;\n}\n#panelStudyDash {\n  background-color: #000;\n  border: none;\n  margin: 0px;\n  padding: 5px 10px;\n  visibility: visible;\n}\n#panelStudyDash button {\n  border: none;\n  height: 30px;\n  outline: none;\n  width: 100px;\n}\n#panelStudyDash .save-query {\n  cursor: pointer;\n  float: right;\n}\n#panelStudyDash .checkbox {\n  margin-left: 5px;\n  margin-right: 5px;\n}\n#panelStudyDash #statusLabel {\n  margin: 0px;\n}\n#divStudies {\n  margin-bottom: 0px;\n  min-height: 200px;\n  position: static;\n  width: 100%;\n}\n/*#divStudies::-webkit-scrollbar{\n    width:16px;\n    background-color:black;\n}\n\n#divStudies::-webkit-scrollbar-thumb{\n    background-color:#535353;\n    border-radius: 10px;\n}*/\n@media (min-width: 768px) {\n  #panelStudyDash .checkbox {\n    top: -2px;\n  }\n  #panelStudyDash .checkbox label input {\n    top: 2px;\n  }\n}\n@media (max-width: 768px) {\n  #divStudies {\n    border: none;\n    left: 1px;\n    position: absolute;\n    right: 1px;\n    top: 42px;\n    visibility: visible;\n  }\n  #panelStudyDash {\n    left: 1px;\n    padding: 5px 2px;\n    position: absolute;\n    right: 1px;\n    visibility: visible;\n  }\n  #panelStudyDash .form-group,\n  .checkbox,\n  button {\n    display: inline-block;\n    margin: 0px;\n  }\n  #panelStudyDash #statusLabel {\n    display: none;\n  }\n  #panelStudyDash .save-query {\n    display: none;\n  }\n  #panelStudyDash .checkbox {\n    margin-left: 5px;\n    margin-right: 5px;\n    top: -10px;\n  }\n  .sp_panel-container,\n  .sp_panel-left,\n  .sp_panel-right {\n    visibility: hidden;\n    z-index: 0;\n  }\n}\n/* horizontal panel*/\n.sp_panel-container {\n  display: flex;\n  flex-direction: row;\n  overflow: hidden;\n  /* avoid browser level touch actions */\n  /*xtouch-action: none;*/\n}\n.sp_panel-left {\n  /*min-width: 1px;*/\n  /*white-space: nowrap;*/\n  background: #000;\n  display: flex;\n  flex: 0 0 auto;\n  flex-direction: column;\n  min-height: 200px;\n  overflow: hidden;\n  /* only manually resize */\n  padding: 4px;\n  width: 200px;\n  /*color: white;*/\n}\n.sp_splitter {\n  background: url('split_vertical_collapse.jpg') center center no-repeat #555;\n  cursor: pointer;\n  flex: 0 0 auto;\n  min-height: 200px;\n  width: 8px;\n}\n.sp_panel-right {\n  background: #000;\n  color: #fff;\n  min-height: 200px;\n  min-width: 200px;\n  padding-bottom: 100px;\n  width: 100%;\n}\n/* vertical panel */\n.sp_panel-container-vertical {\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n.sp_panel-top {\n  flex: 0 0 auto;\n  /* only manually resize */\n  /*padding: 10px;*/\n  height: 70%;\n  min-height: 300px;\n  overflow-y: auto;\n  width: 100%;\n  /*white-space: nowrap;\n    background: #838383;\n    color: white;*/\n  z-index: 0;\n}\n.sp_splitter-horizontal {\n  background: url('split_horizontal_collapse.jpg') center center no-repeat #555;\n  cursor: pointer;\n  flex: 0 0 auto;\n  height: 8px;\n  z-index: 2;\n}\n.sp_panel-bottom {\n  flex: 1 1 auto;\n  /* resizable */\n  /*padding: 10px;*/\n  min-height: 200px;\n  overflow-y: auto;\n  /*background: #eee;*/\n  z-index: 1;\n}\n.navbar-right {\n  padding-right: 10px;\n}\n.sp_panel-right .table {\n  white-space: nowrap;\n}\n#trStudiesHeader a {\n  color: #000;\n}\n#trSeriesHeader a {\n  color: #000;\n}\n#leftPanelTop {\n  flex: 1 1 auto;\n}\n#leftPanelBottom {\n  flex: 0 0 auto;\n  height: 20%;\n}\n#formUploadImage input[type=file] {\n  width: 600px;\n}\n#tblSeries td:nth-child(1) {\n  text-align: center;\n}\n#tblSeries img {\n  height: 50px;\n  margin: auto;\n  width: 50px;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC1zaGVsbC5jb21wb25lbnQubGVzcyIsInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC9EOi9Xb3JrL0dpdC9JU0dpdFNlcnZlci9JbWFnZVZpZXdQYWNzL0NzaC5JbWFnZVN1aXRlLldlYkNsaWVudC9zcmMvYXBwL2NvbXBvbmVudHMvd29ya2xpc3Qtc2hlbGwvd29ya2xpc3Qtc2hlbGwuY29tcG9uZW50Lmxlc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Y0FJYztBQUNkOzs7Ozs7Ozs7Ozs7Ozs7Ozs7O0VBbUJFO0FDdEJGO0VBQ0ksWUFBQTtFQUNBLGNBQUE7RUFDQSxXQUFBO0FEd0JKO0FDckJBO0VBQ0ksc0JBQUE7RUFDQSxXQUFBO0FEdUJKO0FDcEJBO0VBQ0ksb0RBQUE7RUFDQSxzQkFBQTtFQUNBLG1CQUFBO0FEc0JKO0FDbkJBO0VBQXdDLHlCQUFBO0FEc0J4QztBQ3BCQTtFQUNJLDZCQUFBO0VBQ0EsV0FBQTtFQUNBLFNBQUE7RUFDQSxrQkFBQTtFQUNBLFVBQUE7RUFDQSxTQUFBO0FEc0JKO0FDbkJBO0VBQ0ksc0JBQUE7RURxQkYsa0JBQWtCO0VDbkJoQixjQUFBO0VBQ0EsWUFBQTtFQUNBLGNBQUE7RUFDQSxZQUFBO0VBQ0EsV0FBQTtBRHFCSjtBQ2xCQTtFQUNJLHNCQUFBO0VBQ0EsNkJBQUE7RUFDQSwwQkFBQTtFQUNBLFNBQUE7RURvQkYsa0JBQWtCO0VDbEJoQixjQUFBO0VBQ0EsWUFBQTtFQUNBLGNBQUE7RUFDQSxZQUFBO0VBQ0EsZUFBQTtFQUNBLFdBQUE7QURvQko7QUNqQkE7RUFDSSxzQkFBQTtFQUNBLFlBQUE7RUFDQSxXQUFBO0VBQ0EsaUJBQUE7RUFDQSxtQkFBQTtBRG1CSjtBQ2hCQTtFQUNJLFlBQUE7RUFDQSxZQUFBO0VBQ0EsYUFBQTtFQUNBLFlBQUE7QURrQko7QUNmQTtFQUNJLGVBQUE7RUFDQSxZQUFBO0FEaUJKO0FDZEE7RUFDSSxnQkFBQTtFQUNBLGlCQUFBO0FEZ0JKO0FDYkE7RUFBK0IsV0FBQTtBRGdCL0I7QUNkQTtFQUNJLGtCQUFBO0VBQ0EsaUJBQUE7RUFDQSxnQkFBQTtFQUNBLFdBQUE7QURnQko7QUFDQTs7Ozs7Ozs7RUFRRTtBQ1pGO0VBQ0k7SUFBNEIsU0FBQTtFRGU5QjtFQ2JFO0lBQXdDLFFBQUE7RURnQjFDO0FBQ0Y7QUNkQTtFQUNJO0lBQ0ksWUFBQTtJQUNBLFNBQUE7SUFDQSxrQkFBQTtJQUNBLFVBQUE7SUFDQSxTQUFBO0lBQ0EsbUJBQUE7RURnQk47RUNiRTtJQUNJLFNBQUE7SUFDQSxnQkFBQTtJQUNBLGtCQUFBO0lBQ0EsVUFBQTtJQUNBLG1CQUFBO0VEZU47RUNaRTs7O0lBQ0kscUJBQUE7SUFDQSxXQUFBO0VEZ0JOO0VDYkU7SUFBK0IsYUFBQTtFRGdCakM7RUNkRTtJQUE4QixhQUFBO0VEaUJoQztFQ2ZFO0lBQ0ksZ0JBQUE7SUFDQSxpQkFBQTtJQUNBLFVBQUE7RURpQk47RUNkRTs7O0lBQ0ksa0JBQUE7SUFDQSxVQUFBO0VEa0JOO0FBQ0Y7QUFDQSxvQkFBb0I7QUNkcEI7RUFDSSxhQUFBO0VBQ0EsbUJBQUE7RUFDQSxnQkFBQTtFRGdCRixzQ0FBc0M7RUFDdEMsdUJBQXVCO0FBQ3pCO0FDYkE7RURlRSxrQkFBa0I7RUFDbEIsdUJBQXVCO0VDYnJCLGdCQUFBO0VBQ0EsYUFBQTtFQUNBLGNBQUE7RUFDQSxzQkFBQTtFQUNBLGlCQUFBO0VBQ0EsZ0JBQUE7RURlRix5QkFBeUI7RUNidkIsWUFBQTtFQUNBLFlBQUE7RURlRixnQkFBZ0I7QUFDbEI7QUNaQTtFQUNJLDJFQUFBO0VBQ0EsZUFBQTtFQUNBLGNBQUE7RUFDQSxpQkFBQTtFQUNBLFVBQUE7QURjSjtBQ1hBO0VBQ0ksZ0JBQUE7RUFDQSxXQUFBO0VBQ0EsaUJBQUE7RUFDQSxnQkFBQTtFQUNBLHFCQUFBO0VBQ0EsV0FBQTtBRGFKO0FBQ0EsbUJBQW1CO0FDUm5CO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsZ0JBQUE7QURVSjtBQ1BBO0VBQ0ksY0FBQTtFRFNGLHlCQUF5QjtFQUN6QixpQkFBaUI7RUNQZixXQUFBO0VBQ0EsaUJBQUE7RUFDQSxnQkFBQTtFQUNBLFdBQUE7RURTRjs7a0JBRWdCO0VDUGQsVUFBQTtBRFNKO0FDTkE7RUFDSSw2RUFBQTtFQUNBLGVBQUE7RUFDQSxjQUFBO0VBQ0EsV0FBQTtFQUNBLFVBQUE7QURRSjtBQ0xBO0VBQ0ksY0FBQTtFRE9GLGNBQWM7RUFDZCxpQkFBaUI7RUNMZixpQkFBQTtFQUNBLGdCQUFBO0VET0Ysb0JBQW9CO0VDTGxCLFVBQUE7QURPSjtBQ0pBO0VBQWdCLG1CQUFBO0FET2hCO0FDTEE7RUFBeUIsbUJBQUE7QURRekI7QUNOQTtFQUFxQixXQUFBO0FEU3JCO0FDUEE7RUFBb0IsV0FBQTtBRFVwQjtBQ1BBO0VBQWdCLGNBQUE7QURVaEI7QUNSQTtFQUNJLGNBQUE7RUFDQSxXQUFBO0FEVUo7QUNQQTtFQUFvQyxZQUFBO0FEVXBDO0FDUkE7RUFBNkIsa0JBQUE7QURXN0I7QUNUQTtFQUNJLFlBQUE7RUFDQSxZQUFBO0VBQ0EsV0FBQTtBRFdKIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC1zaGVsbC5jb21wb25lbnQubGVzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qQGJsYWNrOiAjMDAwO1xuQG9yYW5nZTogb3JhbmdlO1xuQGdyYXk6ICM1NTU7XG5Ac2lsdmVyOiAjYWFhO1xuQHdoaXRlOiAjZmZmOyovXG4vKi50aGVtZS1kYXJrIHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEBibGFjaztcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHNpbHZlcjtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAZ3JheTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEBncmF5O1xuICAgIEBmb250LWNvbG9yIDogQHdoaXRlO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59XG5cblxuLnRoZW1lLWxpZ2h0IHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHdoaXRlO1xuICAgIEBkaXNhYmxlLWNvbG9yIDogQHdoaXRlO1xuICAgIEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZm9udC1jb2xvcjogQGJsYWNrO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59Ki9cbiNkaXYtc2Nyb2xsIHtcbiAgaGVpZ2h0OiAxMDAlO1xuICBvdmVyZmxvdzogYXV0bztcbiAgd2lkdGg6IDEwMCU7XG59XG4jZGl2LXNjcm9sbDo6LXdlYmtpdC1zY3JvbGxiYXIge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMzMzO1xuICB3aWR0aDogMTJweDtcbn1cbiNkaXYtc2Nyb2xsOjotd2Via2l0LXNjcm9sbGJhci10aHVtYiB7XG4gIC13ZWJraXQtYm94LXNoYWRvdzogaW5zZXQgMCAwIDZweCByZ2JhKDAsIDAsIDAsIDAuMyk7XG4gIGJhY2tncm91bmQtY29sb3I6ICM1NTU7XG4gIGJvcmRlci1yYWRpdXM6IDEwcHg7XG59XG4jZGl2LXNjcm9sbDo6LXdlYmtpdC1zY3JvbGxiYXItY29ybmVyIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogZGltZ3JheTtcbn1cbiNkaXZDb250YWluZXIge1xuICBib3JkZXItYm90dG9tOiAycHggc29saWQgIzY2NjtcbiAgYm90dG9tOiAwcHg7XG4gIGxlZnQ6IDBweDtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICByaWdodDogMHB4O1xuICB0b3A6IDQwcHg7XG59XG4uc3R1ZHlRdWVyeVRvb2xiYXIge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMDAwO1xuICAvKmNvbG9yOiAjRjVGNUY1OyovXG4gIGRpc3BsYXk6IGJsb2NrO1xuICBoZWlnaHQ6IDQwcHg7XG4gIG1hcmdpbjogMCBhdXRvO1xuICBwYWRkaW5nOiAzcHg7XG4gIHdpZHRoOiAxMDAlO1xufVxuLnN0dWR5T3BlcnRpb25Ub29sYmFyIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbiAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkICMzMzM7XG4gIGJvcmRlci10b3A6IDFweCBzb2xpZCAjNTU1O1xuICBib3R0b206IDA7XG4gIC8qY29sb3I6ICNGNUY1RjU7Ki9cbiAgZGlzcGxheTogYmxvY2s7XG4gIGhlaWdodDogNDhweDtcbiAgbWFyZ2luOiAwIGF1dG87XG4gIHBhZGRpbmc6IDRweDtcbiAgcG9zaXRpb246IGZpeGVkO1xuICB3aWR0aDogMTAwJTtcbn1cbiNwYW5lbFN0dWR5RGFzaCB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMwMDA7XG4gIGJvcmRlcjogbm9uZTtcbiAgbWFyZ2luOiAwcHg7XG4gIHBhZGRpbmc6IDVweCAxMHB4O1xuICB2aXNpYmlsaXR5OiB2aXNpYmxlO1xufVxuI3BhbmVsU3R1ZHlEYXNoIGJ1dHRvbiB7XG4gIGJvcmRlcjogbm9uZTtcbiAgaGVpZ2h0OiAzMHB4O1xuICBvdXRsaW5lOiBub25lO1xuICB3aWR0aDogMTAwcHg7XG59XG4jcGFuZWxTdHVkeURhc2ggLnNhdmUtcXVlcnkge1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGZsb2F0OiByaWdodDtcbn1cbiNwYW5lbFN0dWR5RGFzaCAuY2hlY2tib3gge1xuICBtYXJnaW4tbGVmdDogNXB4O1xuICBtYXJnaW4tcmlnaHQ6IDVweDtcbn1cbiNwYW5lbFN0dWR5RGFzaCAjc3RhdHVzTGFiZWwge1xuICBtYXJnaW46IDBweDtcbn1cbiNkaXZTdHVkaWVzIHtcbiAgbWFyZ2luLWJvdHRvbTogMHB4O1xuICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgcG9zaXRpb246IHN0YXRpYztcbiAgd2lkdGg6IDEwMCU7XG59XG4vKiNkaXZTdHVkaWVzOjotd2Via2l0LXNjcm9sbGJhcntcbiAgICB3aWR0aDoxNnB4O1xuICAgIGJhY2tncm91bmQtY29sb3I6YmxhY2s7XG59XG5cbiNkaXZTdHVkaWVzOjotd2Via2l0LXNjcm9sbGJhci10aHVtYntcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiM1MzUzNTM7XG4gICAgYm9yZGVyLXJhZGl1czogMTBweDtcbn0qL1xuQG1lZGlhIChtaW4td2lkdGg6IDc2OHB4KSB7XG4gICNwYW5lbFN0dWR5RGFzaCAuY2hlY2tib3gge1xuICAgIHRvcDogLTJweDtcbiAgfVxuICAjcGFuZWxTdHVkeURhc2ggLmNoZWNrYm94IGxhYmVsIGlucHV0IHtcbiAgICB0b3A6IDJweDtcbiAgfVxufVxuQG1lZGlhIChtYXgtd2lkdGg6IDc2OHB4KSB7XG4gICNkaXZTdHVkaWVzIHtcbiAgICBib3JkZXI6IG5vbmU7XG4gICAgbGVmdDogMXB4O1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICByaWdodDogMXB4O1xuICAgIHRvcDogNDJweDtcbiAgICB2aXNpYmlsaXR5OiB2aXNpYmxlO1xuICB9XG4gICNwYW5lbFN0dWR5RGFzaCB7XG4gICAgbGVmdDogMXB4O1xuICAgIHBhZGRpbmc6IDVweCAycHg7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHJpZ2h0OiAxcHg7XG4gICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbiAgfVxuICAjcGFuZWxTdHVkeURhc2ggLmZvcm0tZ3JvdXAsXG4gIC5jaGVja2JveCxcbiAgYnV0dG9uIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gICAgbWFyZ2luOiAwcHg7XG4gIH1cbiAgI3BhbmVsU3R1ZHlEYXNoICNzdGF0dXNMYWJlbCB7XG4gICAgZGlzcGxheTogbm9uZTtcbiAgfVxuICAjcGFuZWxTdHVkeURhc2ggLnNhdmUtcXVlcnkge1xuICAgIGRpc3BsYXk6IG5vbmU7XG4gIH1cbiAgI3BhbmVsU3R1ZHlEYXNoIC5jaGVja2JveCB7XG4gICAgbWFyZ2luLWxlZnQ6IDVweDtcbiAgICBtYXJnaW4tcmlnaHQ6IDVweDtcbiAgICB0b3A6IC0xMHB4O1xuICB9XG4gIC5zcF9wYW5lbC1jb250YWluZXIsXG4gIC5zcF9wYW5lbC1sZWZ0LFxuICAuc3BfcGFuZWwtcmlnaHQge1xuICAgIHZpc2liaWxpdHk6IGhpZGRlbjtcbiAgICB6LWluZGV4OiAwO1xuICB9XG59XG4vKiBob3Jpem9udGFsIHBhbmVsKi9cbi5zcF9wYW5lbC1jb250YWluZXIge1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbGV4LWRpcmVjdGlvbjogcm93O1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICAvKiBhdm9pZCBicm93c2VyIGxldmVsIHRvdWNoIGFjdGlvbnMgKi9cbiAgLyp4dG91Y2gtYWN0aW9uOiBub25lOyovXG59XG4uc3BfcGFuZWwtbGVmdCB7XG4gIC8qbWluLXdpZHRoOiAxcHg7Ki9cbiAgLyp3aGl0ZS1zcGFjZTogbm93cmFwOyovXG4gIGJhY2tncm91bmQ6ICMwMDA7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsZXg6IDAgMCBhdXRvO1xuICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgLyogb25seSBtYW51YWxseSByZXNpemUgKi9cbiAgcGFkZGluZzogNHB4O1xuICB3aWR0aDogMjAwcHg7XG4gIC8qY29sb3I6IHdoaXRlOyovXG59XG4uc3Bfc3BsaXR0ZXIge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc3BsaXRfdmVydGljYWxfY29sbGFwc2UuanBnKSBjZW50ZXIgY2VudGVyIG5vLXJlcGVhdCAjNTU1O1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGZsZXg6IDAgMCBhdXRvO1xuICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgd2lkdGg6IDhweDtcbn1cbi5zcF9wYW5lbC1yaWdodCB7XG4gIGJhY2tncm91bmQ6ICMwMDA7XG4gIGNvbG9yOiAjZmZmO1xuICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgbWluLXdpZHRoOiAyMDBweDtcbiAgcGFkZGluZy1ib3R0b206IDEwMHB4O1xuICB3aWR0aDogMTAwJTtcbn1cbi8qIHZlcnRpY2FsIHBhbmVsICovXG4uc3BfcGFuZWwtY29udGFpbmVyLXZlcnRpY2FsIHtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cbi5zcF9wYW5lbC10b3Age1xuICBmbGV4OiAwIDAgYXV0bztcbiAgLyogb25seSBtYW51YWxseSByZXNpemUgKi9cbiAgLypwYWRkaW5nOiAxMHB4OyovXG4gIGhlaWdodDogNzAlO1xuICBtaW4taGVpZ2h0OiAzMDBweDtcbiAgb3ZlcmZsb3cteTogYXV0bztcbiAgd2lkdGg6IDEwMCU7XG4gIC8qd2hpdGUtc3BhY2U6IG5vd3JhcDtcbiAgICBiYWNrZ3JvdW5kOiAjODM4MzgzO1xuICAgIGNvbG9yOiB3aGl0ZTsqL1xuICB6LWluZGV4OiAwO1xufVxuLnNwX3NwbGl0dGVyLWhvcml6b250YWwge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc3BsaXRfaG9yaXpvbnRhbF9jb2xsYXBzZS5qcGcpIGNlbnRlciBjZW50ZXIgbm8tcmVwZWF0ICM1NTU7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgZmxleDogMCAwIGF1dG87XG4gIGhlaWdodDogOHB4O1xuICB6LWluZGV4OiAyO1xufVxuLnNwX3BhbmVsLWJvdHRvbSB7XG4gIGZsZXg6IDEgMSBhdXRvO1xuICAvKiByZXNpemFibGUgKi9cbiAgLypwYWRkaW5nOiAxMHB4OyovXG4gIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICBvdmVyZmxvdy15OiBhdXRvO1xuICAvKmJhY2tncm91bmQ6ICNlZWU7Ki9cbiAgei1pbmRleDogMTtcbn1cbi5uYXZiYXItcmlnaHQge1xuICBwYWRkaW5nLXJpZ2h0OiAxMHB4O1xufVxuLnNwX3BhbmVsLXJpZ2h0IC50YWJsZSB7XG4gIHdoaXRlLXNwYWNlOiBub3dyYXA7XG59XG4jdHJTdHVkaWVzSGVhZGVyIGEge1xuICBjb2xvcjogIzAwMDtcbn1cbiN0clNlcmllc0hlYWRlciBhIHtcbiAgY29sb3I6ICMwMDA7XG59XG4jbGVmdFBhbmVsVG9wIHtcbiAgZmxleDogMSAxIGF1dG87XG59XG4jbGVmdFBhbmVsQm90dG9tIHtcbiAgZmxleDogMCAwIGF1dG87XG4gIGhlaWdodDogMjAlO1xufVxuI2Zvcm1VcGxvYWRJbWFnZSBpbnB1dFt0eXBlPWZpbGVdIHtcbiAgd2lkdGg6IDYwMHB4O1xufVxuI3RibFNlcmllcyB0ZDpudGgtY2hpbGQoMSkge1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG59XG4jdGJsU2VyaWVzIGltZyB7XG4gIGhlaWdodDogNTBweDtcbiAgbWFyZ2luOiBhdXRvO1xuICB3aWR0aDogNTBweDtcbn1cbiIsIkBpbXBvcnQgJy4uLy4uLy4uL3RoZW1lcy5sZXNzJztcblxuI2Rpdi1zY3JvbGwge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBvdmVyZmxvdzogYXV0bztcbiAgICB3aWR0aDogMTAwJTtcbn1cblxuI2Rpdi1zY3JvbGw6Oi13ZWJraXQtc2Nyb2xsYmFyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYm9yZGVyLWNvbG9yO1xuICAgIHdpZHRoOiAxMnB4O1xufVxuXG4jZGl2LXNjcm9sbDo6LXdlYmtpdC1zY3JvbGxiYXItdGh1bWIge1xuICAgIC13ZWJraXQtYm94LXNoYWRvdzogaW5zZXQgMCAwIDZweCByZ2JhKDAsIDAsIDAsIC4zKTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyLXJhZGl1czogMTBweDtcbn1cblxuI2Rpdi1zY3JvbGw6Oi13ZWJraXQtc2Nyb2xsYmFyLWNvcm5lciB7IGJhY2tncm91bmQtY29sb3I6IGRpbWdyYXk7IH1cblxuI2RpdkNvbnRhaW5lciB7XG4gICAgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkICM2NjY7XG4gICAgYm90dG9tOiAwcHg7XG4gICAgbGVmdDogMHB4O1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICByaWdodDogMHB4O1xuICAgIHRvcDogNDBweDtcbn1cblxuLnN0dWR5UXVlcnlUb29sYmFyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICAvKmNvbG9yOiAjRjVGNUY1OyovXG4gICAgZGlzcGxheTogYmxvY2s7XG4gICAgaGVpZ2h0OiA0MHB4O1xuICAgIG1hcmdpbjogMCBhdXRvO1xuICAgIHBhZGRpbmc6IDNweDtcbiAgICB3aWR0aDogMTAwJTtcbn1cblxuLnN0dWR5T3BlcnRpb25Ub29sYmFyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBib3JkZXItYm90dG9tOiAycHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICBib3JkZXItdG9wOiAxcHggc29saWQgQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvdHRvbTogMDtcbiAgICAvKmNvbG9yOiAjRjVGNUY1OyovXG4gICAgZGlzcGxheTogYmxvY2s7XG4gICAgaGVpZ2h0OiA0OHB4O1xuICAgIG1hcmdpbjogMCBhdXRvO1xuICAgIHBhZGRpbmc6IDRweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbiNwYW5lbFN0dWR5RGFzaCB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIG1hcmdpbjogMHB4O1xuICAgIHBhZGRpbmc6IDVweCAxMHB4O1xuICAgIHZpc2liaWxpdHk6IHZpc2libGU7XG59XG5cbiNwYW5lbFN0dWR5RGFzaCBidXR0b24ge1xuICAgIGJvcmRlcjogbm9uZTtcbiAgICBoZWlnaHQ6IDMwcHg7XG4gICAgb3V0bGluZTogbm9uZTtcbiAgICB3aWR0aDogMTAwcHg7XG59XG5cbiNwYW5lbFN0dWR5RGFzaCAuc2F2ZS1xdWVyeSB7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGZsb2F0OiByaWdodDtcbn1cblxuI3BhbmVsU3R1ZHlEYXNoIC5jaGVja2JveCB7XG4gICAgbWFyZ2luLWxlZnQ6IDVweDtcbiAgICBtYXJnaW4tcmlnaHQ6IDVweDtcbn1cblxuI3BhbmVsU3R1ZHlEYXNoICNzdGF0dXNMYWJlbCB7IG1hcmdpbjogMHB4OyB9XG5cbiNkaXZTdHVkaWVzIHtcbiAgICBtYXJnaW4tYm90dG9tOiAwcHg7XG4gICAgbWluLWhlaWdodDogMjAwcHg7XG4gICAgcG9zaXRpb246IHN0YXRpYztcbiAgICB3aWR0aDogMTAwJTtcbn1cblxuLyojZGl2U3R1ZGllczo6LXdlYmtpdC1zY3JvbGxiYXJ7XG4gICAgd2lkdGg6MTZweDtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOmJsYWNrO1xufVxuXG4jZGl2U3R1ZGllczo6LXdlYmtpdC1zY3JvbGxiYXItdGh1bWJ7XG4gICAgYmFja2dyb3VuZC1jb2xvcjojNTM1MzUzO1xuICAgIGJvcmRlci1yYWRpdXM6IDEwcHg7XG59Ki9cblxuQG1lZGlhIChtaW4td2lkdGg6IDc2OHB4KSB7ICAgIFxuICAgICNwYW5lbFN0dWR5RGFzaCAuY2hlY2tib3ggeyB0b3A6IC0ycHg7IH1cblxuICAgICNwYW5lbFN0dWR5RGFzaCAuY2hlY2tib3ggbGFiZWwgaW5wdXQgeyB0b3A6IDJweDsgfVxufVxuXG5AbWVkaWEgKG1heC13aWR0aDogNzY4cHgpIHtcbiAgICAjZGl2U3R1ZGllcyB7XG4gICAgICAgIGJvcmRlcjogbm9uZTtcbiAgICAgICAgbGVmdDogMXB4O1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHJpZ2h0OiAxcHg7XG4gICAgICAgIHRvcDogNDJweDtcbiAgICAgICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbiAgICB9XG5cbiAgICAjcGFuZWxTdHVkeURhc2gge1xuICAgICAgICBsZWZ0OiAxcHg7XG4gICAgICAgIHBhZGRpbmc6IDVweCAycHg7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgcmlnaHQ6IDFweDtcbiAgICAgICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbiAgICB9XG5cbiAgICAjcGFuZWxTdHVkeURhc2ggLmZvcm0tZ3JvdXAsIC5jaGVja2JveCwgYnV0dG9uIHtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICAgICAgICBtYXJnaW46IDBweDtcbiAgICB9XG5cbiAgICAjcGFuZWxTdHVkeURhc2ggI3N0YXR1c0xhYmVsIHsgZGlzcGxheTogbm9uZTsgfVxuXG4gICAgI3BhbmVsU3R1ZHlEYXNoIC5zYXZlLXF1ZXJ5IHsgZGlzcGxheTogbm9uZTsgfVxuXG4gICAgI3BhbmVsU3R1ZHlEYXNoIC5jaGVja2JveCB7XG4gICAgICAgIG1hcmdpbi1sZWZ0OiA1cHg7XG4gICAgICAgIG1hcmdpbi1yaWdodDogNXB4O1xuICAgICAgICB0b3A6IC0xMHB4O1xuICAgIH1cblxuICAgIC5zcF9wYW5lbC1jb250YWluZXIsIC5zcF9wYW5lbC1sZWZ0LCAuc3BfcGFuZWwtcmlnaHQge1xuICAgICAgICB2aXNpYmlsaXR5OiBoaWRkZW47XG4gICAgICAgIHotaW5kZXg6IDA7XG4gICAgfVxufVxuXG4vKiBob3Jpem9udGFsIHBhbmVsKi9cblxuLnNwX3BhbmVsLWNvbnRhaW5lciB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogcm93O1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgLyogYXZvaWQgYnJvd3NlciBsZXZlbCB0b3VjaCBhY3Rpb25zICovXG4gICAgLyp4dG91Y2gtYWN0aW9uOiBub25lOyovXG59XG5cbi5zcF9wYW5lbC1sZWZ0IHtcbiAgICAvKm1pbi13aWR0aDogMXB4OyovXG4gICAgLyp3aGl0ZS1zcGFjZTogbm93cmFwOyovXG4gICAgYmFja2dyb3VuZDogQGJhY2tncm91bmQtY29sb3I7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4OiAwIDAgYXV0bztcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgLyogb25seSBtYW51YWxseSByZXNpemUgKi9cbiAgICBwYWRkaW5nOiA0cHg7XG4gICAgd2lkdGg6IDIwMHB4O1xuICAgIC8qY29sb3I6IHdoaXRlOyovXG59XG5cbi5zcF9zcGxpdHRlciB7XG4gICAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NwbGl0X3ZlcnRpY2FsX2NvbGxhcHNlLmpwZykgY2VudGVyIGNlbnRlciBuby1yZXBlYXQgQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBmbGV4OiAwIDAgYXV0bztcbiAgICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgICB3aWR0aDogOHB4O1xufVxuXG4uc3BfcGFuZWwtcmlnaHQge1xuICAgIGJhY2tncm91bmQ6IEBiYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgICBtaW4td2lkdGg6IDIwMHB4O1xuICAgIHBhZGRpbmctYm90dG9tOiAxMDBweDtcbiAgICB3aWR0aDogMTAwJTtcbn1cblxuXG4vKiB2ZXJ0aWNhbCBwYW5lbCAqL1xuXG4uc3BfcGFuZWwtY29udGFpbmVyLXZlcnRpY2FsIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cblxuLnNwX3BhbmVsLXRvcCB7XG4gICAgZmxleDogMCAwIGF1dG87XG4gICAgLyogb25seSBtYW51YWxseSByZXNpemUgKi9cbiAgICAvKnBhZGRpbmc6IDEwcHg7Ki9cbiAgICBoZWlnaHQ6IDcwJTtcbiAgICBtaW4taGVpZ2h0OiAzMDBweDtcbiAgICBvdmVyZmxvdy15OiBhdXRvO1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIC8qd2hpdGUtc3BhY2U6IG5vd3JhcDtcbiAgICBiYWNrZ3JvdW5kOiAjODM4MzgzO1xuICAgIGNvbG9yOiB3aGl0ZTsqL1xuICAgIHotaW5kZXg6IDA7XG59XG5cbi5zcF9zcGxpdHRlci1ob3Jpem9udGFsIHtcbiAgICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc3BsaXRfaG9yaXpvbnRhbF9jb2xsYXBzZS5qcGcpIGNlbnRlciBjZW50ZXIgbm8tcmVwZWF0IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgZmxleDogMCAwIGF1dG87XG4gICAgaGVpZ2h0OiA4cHg7XG4gICAgei1pbmRleDogMjtcbn1cblxuLnNwX3BhbmVsLWJvdHRvbSB7XG4gICAgZmxleDogMSAxIGF1dG87XG4gICAgLyogcmVzaXphYmxlICovXG4gICAgLypwYWRkaW5nOiAxMHB4OyovXG4gICAgbWluLWhlaWdodDogMjAwcHg7XG4gICAgb3ZlcmZsb3cteTogYXV0bztcbiAgICAvKmJhY2tncm91bmQ6ICNlZWU7Ki9cbiAgICB6LWluZGV4OiAxO1xufVxuXG4ubmF2YmFyLXJpZ2h0IHsgcGFkZGluZy1yaWdodDogMTBweDsgfVxuXG4uc3BfcGFuZWwtcmlnaHQgLnRhYmxlIHsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgfVxuXG4jdHJTdHVkaWVzSGVhZGVyIGEgeyBjb2xvcjogQGJhY2tncm91bmQtY29sb3I7IH1cblxuI3RyU2VyaWVzSGVhZGVyIGEgeyBjb2xvcjogQGJhY2tncm91bmQtY29sb3I7IH1cblxuXG4jbGVmdFBhbmVsVG9wIHsgZmxleDogMSAxIGF1dG87IH1cblxuI2xlZnRQYW5lbEJvdHRvbSB7XG4gICAgZmxleDogMCAwIGF1dG87XG4gICAgaGVpZ2h0OiAyMCU7XG59XG5cbiNmb3JtVXBsb2FkSW1hZ2UgaW5wdXRbdHlwZT1maWxlXSB7IHdpZHRoOiA2MDBweDsgfVxuXG4jdGJsU2VyaWVzIHRkOm50aC1jaGlsZCgxKSB7IHRleHQtYWxpZ246IGNlbnRlcjsgfVxuXG4jdGJsU2VyaWVzIGltZyB7XG4gICAgaGVpZ2h0OiA1MHB4O1xuICAgIG1hcmdpbjogYXV0bztcbiAgICB3aWR0aDogNTBweDtcbn1cbiJdfQ== */"
 
 /***/ }),
 
@@ -9255,7 +10402,7 @@ var WorklistShellComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: "app-worklist-shell",
             template: __webpack_require__(/*! ./worklist-shell.component.html */ "./src/app/components/worklist-shell/worklist-shell.component.html"),
-            styles: [__webpack_require__(/*! ./worklist-shell.component.css */ "./src/app/components/worklist-shell/worklist-shell.component.css")]
+            styles: [__webpack_require__(/*! ./worklist-shell.component.less */ "./src/app/components/worklist-shell/worklist-shell.component.less")]
         }),
         __metadata("design:paramtypes", [_services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_1__["ShellNavigatorService"]])
     ], WorklistShellComponent);
@@ -9266,14 +10413,218 @@ var WorklistShellComponent = /** @class */ (function () {
 
 /***/ }),
 
-/***/ "./src/app/components/worklist-shell/worklist/worklist.component.css":
-/*!***************************************************************************!*\
-  !*** ./src/app/components/worklist-shell/worklist/worklist.component.css ***!
-  \***************************************************************************/
+/***/ "./src/app/components/worklist-shell/worklist/export-study/export-study.component.html":
+/*!*********************************************************************************************!*\
+  !*** ./src/app/components/worklist-shell/worklist/export-study/export-study.component.html ***!
+  \*********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "#tblStudies a {\r\n    color: white;\r\n}\r\n\r\n\r\n/*#tblStudies {\r\n    border: 1px solid black;\r\n    table-layout: fixed;\r\n}\r\n\r\nth,\r\ntd {\r\n    border: 1px solid black;\r\n    width: 100px;\r\n    overflow: hidden;\r\n    min-width:200px;\r\n}*/\r\n\r\n\r\nul {\r\n    list-style: none;\r\n    -webkit-padding-start: 0px;\r\n            padding-inline-start: 0px;\r\n}\r\n\r\n\r\nli {\r\n    float: left;\r\n    padding: 2px;\r\n}\r\n\r\n\r\nli button {\r\n        cursor: pointer;\r\n    }\r\n\r\n\r\nthead {\r\n    background: #444444;\r\n}\r\n\r\n\r\nthead tr {\r\n    background-color: #444444;\r\n}\r\n\r\n\r\nthead td {\r\n    background-color: #444444;\r\n}\r\n\r\n\r\nthead div {\r\n    font-weight: normal;\r\n}\r\n\r\n\r\n.worklistHeader {\r\n    cursor:pointer;\r\n    min-width:50px;\r\n}\r\n\r\n\r\n#headContent td tr{\r\n    border: 0px;\r\n}\r\n\r\n\r\n#tblStudies td {\r\n    border: 1px solid #333;\r\n    color: #ccc;\r\n}\r\n\r\n\r\n#tblStudies th {\r\n    border: 1px solid #333;\r\n}\r\n\r\n\r\n#tblStudies tr.cust-info td {\r\n    background-color: #222;\r\n}\r\n\r\n\r\n#trStudiesHeader a {\r\n    color: #ddd;\r\n}\r\n\r\n\r\n#trSeriesHeader a {\r\n    color: white;\r\n}\r\n\r\n\r\n#trStudiesHeader tr td {\r\n    border:hidden;\r\n    padding-right:5px;\r\n}\r\n\r\n\r\n#trStudiesQuery input[type=text] {\r\n    background-color: black;\r\n    border: 1px solid #444;\r\n    vertical-align: middle;\r\n    width: 100%;\r\n}\r\n\r\n\r\n#trStudiesQuery input[type=checkbox] {\r\n    background-color: black;\r\n    border: 1px solid #444;\r\n    vertical-align: middle;\r\n    width: 100%;\r\n}\r\n\r\n\r\nselect {\r\n    background-color: black;\r\n    border: 1px solid #444;\r\n    width: 100%;\r\n}\r\n\r\n\r\n#trStudiesQuery td:nth-child(n) {\r\n    margin: 0px;\r\n    padding: 1px;\r\n    vertical-align: middle;\r\n}\r\n\r\n\r\n#tblStudies tbody tr:nth-child(2n + 1) {\r\n    background-color: #181818;\r\n}\r\n\r\n\r\n/*#tblStudies tr:nth-child(1) { background-color: black; }\r\n\r\n#tblStudies tr:nth-child(2) { background-color: black; }*/\r\n\r\n\r\n#tblStudies tbody tr:hover {\r\n    background-color: #555;\r\n    color: #f90;\r\n}\r\n\r\n\r\n/*#tblStudies tr:nth-child(1):hover { background-color: black; }\r\n\r\n#tblStudies tr:nth-child(2):hover {\r\n    background-color: black;\r\n    color: white;\r\n}*/\r\n\r\n\r\n#trStudiesQuery .dropdown {\r\n    background-color: #555555;\r\n    color: red;\r\n}\r\n\r\n\r\n#trStudiesQuery .dropdown .btn {\r\n        background-color: #555555;\r\n        min-width: 70px;\r\n        padding: 1px 6px;\r\n    }\r\n\r\n\r\n.loading-shade {\r\n    align-items: center;\r\n    background: rgba(0, 0, 0, 0.15);\r\n    bottom: 0px;\r\n    display: flex;\r\n    justify-content: center;\r\n    left: 0px;\r\n    margin: auto;\r\n    position: fixed;\r\n    right: 0px;\r\n    top: 0px;\r\n    z-index: 1;\r\n}\r\n\r\n\r\n.shortcut-name-button {\r\n    background-color: transparent;\r\n    border: none;\r\n    border-width: 0px;\r\n    color: inherit;\r\n    outline: none;\r\n}\r\n\r\n\r\n.shortcut-name-button:disabled {\r\n    color: #555555;\r\n}\r\n\r\n\r\n.patientIdCol {\r\n    cursor: pointer;\r\n    text-decoration: underline;\r\n}\r\n\r\n\r\n.setRead, .setUnread {\r\n    border: none;\r\n    height: 40px;\r\n    outline: none;\r\n    width: 40px;\r\n}\r\n\r\n\r\n.setRead { \r\n    background: url('setRead_40_40_All.png') no-repeat left top;\r\n    background-size: cover;\r\n}\r\n\r\n\r\n.setRead:hover { background: url('setRead_40_40_All.png') no-repeat right top; background-size: cover;}\r\n\r\n\r\n.setRead:active { background: url('setRead_40_40_All.png') no-repeat left bottom; background-size: cover;}\r\n\r\n\r\n.setRead:disabled { background: url('setRead_40_40_All.png') no-repeat right bottom; background-size: cover;}\r\n\r\n\r\n.setReadCover {\r\n    height: 20px;\r\n    width: 20px;\r\n    overflow: hidden;\r\n}\r\n\r\n\r\n.setUnread { background: url('setUnread_40_40_All.png') no-repeat left top; background-size: cover;}\r\n\r\n\r\n.setUnread:hover { background: url('setUnread_40_40_All.png') no-repeat right top; background-size: cover;}\r\n\r\n\r\n.setUnread:active { background: url('setUnread_40_40_All.png') no-repeat left bottom; background-size: cover;}\r\n\r\n\r\n.setUnread:disabled { background: url('setUnread_40_40_All.png') no-repeat right bottom; background-size: cover;}\r\n\r\n\r\n.setUnreadCover {\r\n    height: 20px;\r\n    width: 20px;\r\n    overflow: hidden;\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksWUFBWTtBQUNoQjs7O0FBR0E7Ozs7Ozs7Ozs7O0VBV0U7OztBQUVGO0lBQ0ksZ0JBQWdCO0lBQ2hCLDBCQUF5QjtZQUF6Qix5QkFBeUI7QUFDN0I7OztBQUVBO0lBQ0ksV0FBVztJQUNYLFlBQVk7QUFDaEI7OztBQUVJO1FBQ0ksZUFBZTtJQUNuQjs7O0FBRUo7SUFDSSxtQkFBbUI7QUFDdkI7OztBQUVBO0lBQ0kseUJBQXlCO0FBQzdCOzs7QUFFQTtJQUNJLHlCQUF5QjtBQUM3Qjs7O0FBRUE7SUFDSSxtQkFBbUI7QUFDdkI7OztBQUVBO0lBQ0ksY0FBYztJQUNkLGNBQWM7QUFDbEI7OztBQUVBO0lBQ0ksV0FBVztBQUNmOzs7QUFFQTtJQUNJLHNCQUFzQjtJQUN0QixXQUFXO0FBQ2Y7OztBQUVBO0lBQ0ksc0JBQXNCO0FBQzFCOzs7QUFFQTtJQUNJLHNCQUFzQjtBQUMxQjs7O0FBRUE7SUFDSSxXQUFXO0FBQ2Y7OztBQUVBO0lBQ0ksWUFBWTtBQUNoQjs7O0FBRUE7SUFDSSxhQUFhO0lBQ2IsaUJBQWlCO0FBQ3JCOzs7QUFFQTtJQUNJLHVCQUF1QjtJQUN2QixzQkFBc0I7SUFDdEIsc0JBQXNCO0lBQ3RCLFdBQVc7QUFDZjs7O0FBRUE7SUFDSSx1QkFBdUI7SUFDdkIsc0JBQXNCO0lBQ3RCLHNCQUFzQjtJQUN0QixXQUFXO0FBQ2Y7OztBQUVBO0lBQ0ksdUJBQXVCO0lBQ3ZCLHNCQUFzQjtJQUN0QixXQUFXO0FBQ2Y7OztBQUVBO0lBQ0ksV0FBVztJQUNYLFlBQVk7SUFDWixzQkFBc0I7QUFDMUI7OztBQUVBO0lBQ0kseUJBQXlCO0FBQzdCOzs7QUFFQTs7eURBRXlEOzs7QUFFekQ7SUFDSSxzQkFBc0I7SUFDdEIsV0FBVztBQUNmOzs7QUFFQTs7Ozs7RUFLRTs7O0FBRUY7SUFDSSx5QkFBeUI7SUFDekIsVUFBVTtBQUNkOzs7QUFFSTtRQUNJLHlCQUF5QjtRQUN6QixlQUFlO1FBQ2YsZ0JBQWdCO0lBQ3BCOzs7QUFFSjtJQUNJLG1CQUFtQjtJQUNuQiwrQkFBK0I7SUFDL0IsV0FBVztJQUNYLGFBQWE7SUFDYix1QkFBdUI7SUFDdkIsU0FBUztJQUNULFlBQVk7SUFDWixlQUFlO0lBQ2YsVUFBVTtJQUNWLFFBQVE7SUFDUixVQUFVO0FBQ2Q7OztBQUVBO0lBQ0ksNkJBQTZCO0lBQzdCLFlBQVk7SUFDWixpQkFBaUI7SUFDakIsY0FBYztJQUNkLGFBQWE7QUFDakI7OztBQUVBO0lBQ0ksY0FBYztBQUNsQjs7O0FBRUE7SUFDSSxlQUFlO0lBQ2YsMEJBQTBCO0FBQzlCOzs7QUFJQTtJQUNJLFlBQVk7SUFDWixZQUFZO0lBQ1osYUFBYTtJQUNiLFdBQVc7QUFDZjs7O0FBRUE7SUFDSSwyREFBd0Y7SUFDeEYsc0JBQXNCO0FBQzFCOzs7QUFHQSxpQkFBaUIsNERBQXdGLEVBQUUsc0JBQXNCLENBQUM7OztBQUVsSSxrQkFBa0IsOERBQTBGLEVBQUUsc0JBQXNCLENBQUM7OztBQUVySSxvQkFBb0IsK0RBQTJGLEVBQUUsc0JBQXNCLENBQUM7OztBQUV4STtJQUNJLFlBQVk7SUFDWixXQUFXO0lBQ1gsZ0JBQWdCO0FBQ3BCOzs7QUFFQSxhQUFhLDZEQUF5RixFQUFFLHNCQUFzQixDQUFDOzs7QUFFL0gsbUJBQW1CLDhEQUEwRixFQUFFLHNCQUFzQixDQUFDOzs7QUFFdEksb0JBQW9CLGdFQUE0RixFQUFFLHNCQUFzQixDQUFDOzs7QUFFekksc0JBQXNCLGlFQUE2RixFQUFFLHNCQUFzQixDQUFDOzs7QUFFNUk7SUFDSSxZQUFZO0lBQ1osV0FBVztJQUNYLGdCQUFnQjtBQUNwQiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvd29ya2xpc3Qtc2hlbGwvd29ya2xpc3Qvd29ya2xpc3QuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIiN0YmxTdHVkaWVzIGEge1xyXG4gICAgY29sb3I6IHdoaXRlO1xyXG59XHJcblxyXG5cclxuLyojdGJsU3R1ZGllcyB7XHJcbiAgICBib3JkZXI6IDFweCBzb2xpZCBibGFjaztcclxuICAgIHRhYmxlLWxheW91dDogZml4ZWQ7XHJcbn1cclxuXHJcbnRoLFxyXG50ZCB7XHJcbiAgICBib3JkZXI6IDFweCBzb2xpZCBibGFjaztcclxuICAgIHdpZHRoOiAxMDBweDtcclxuICAgIG92ZXJmbG93OiBoaWRkZW47XHJcbiAgICBtaW4td2lkdGg6MjAwcHg7XHJcbn0qL1xyXG5cclxudWwge1xyXG4gICAgbGlzdC1zdHlsZTogbm9uZTtcclxuICAgIHBhZGRpbmctaW5saW5lLXN0YXJ0OiAwcHg7XHJcbn1cclxuXHJcbmxpIHtcclxuICAgIGZsb2F0OiBsZWZ0O1xyXG4gICAgcGFkZGluZzogMnB4O1xyXG59XHJcblxyXG4gICAgbGkgYnV0dG9uIHtcclxuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XHJcbiAgICB9XHJcblxyXG50aGVhZCB7XHJcbiAgICBiYWNrZ3JvdW5kOiAjNDQ0NDQ0O1xyXG59XHJcblxyXG50aGVhZCB0ciB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNDQ0NDQ0O1xyXG59XHJcblxyXG50aGVhZCB0ZCB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNDQ0NDQ0O1xyXG59XHJcblxyXG50aGVhZCBkaXYge1xyXG4gICAgZm9udC13ZWlnaHQ6IG5vcm1hbDtcclxufVxyXG5cclxuLndvcmtsaXN0SGVhZGVyIHtcclxuICAgIGN1cnNvcjpwb2ludGVyO1xyXG4gICAgbWluLXdpZHRoOjUwcHg7XHJcbn1cclxuXHJcbiNoZWFkQ29udGVudCB0ZCB0cntcclxuICAgIGJvcmRlcjogMHB4O1xyXG59XHJcblxyXG4jdGJsU3R1ZGllcyB0ZCB7XHJcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xyXG4gICAgY29sb3I6ICNjY2M7XHJcbn1cclxuXHJcbiN0YmxTdHVkaWVzIHRoIHtcclxuICAgIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XHJcbn1cclxuXHJcbiN0YmxTdHVkaWVzIHRyLmN1c3QtaW5mbyB0ZCB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjMjIyO1xyXG59XHJcblxyXG4jdHJTdHVkaWVzSGVhZGVyIGEge1xyXG4gICAgY29sb3I6ICNkZGQ7XHJcbn1cclxuXHJcbiN0clNlcmllc0hlYWRlciBhIHtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxufVxyXG5cclxuI3RyU3R1ZGllc0hlYWRlciB0ciB0ZCB7XHJcbiAgICBib3JkZXI6aGlkZGVuO1xyXG4gICAgcGFkZGluZy1yaWdodDo1cHg7XHJcbn1cclxuXHJcbiN0clN0dWRpZXNRdWVyeSBpbnB1dFt0eXBlPXRleHRdIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IGJsYWNrO1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzQ0NDtcclxuICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XHJcbiAgICB3aWR0aDogMTAwJTtcclxufVxyXG5cclxuI3RyU3R1ZGllc1F1ZXJ5IGlucHV0W3R5cGU9Y2hlY2tib3hdIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IGJsYWNrO1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzQ0NDtcclxuICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XHJcbiAgICB3aWR0aDogMTAwJTtcclxufVxyXG5cclxuc2VsZWN0IHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IGJsYWNrO1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzQ0NDtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG59XHJcblxyXG4jdHJTdHVkaWVzUXVlcnkgdGQ6bnRoLWNoaWxkKG4pIHtcclxuICAgIG1hcmdpbjogMHB4O1xyXG4gICAgcGFkZGluZzogMXB4O1xyXG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcclxufVxyXG5cclxuI3RibFN0dWRpZXMgdGJvZHkgdHI6bnRoLWNoaWxkKDJuICsgMSkge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzE4MTgxODtcclxufVxyXG5cclxuLyojdGJsU3R1ZGllcyB0cjpudGgtY2hpbGQoMSkgeyBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjazsgfVxyXG5cclxuI3RibFN0dWRpZXMgdHI6bnRoLWNoaWxkKDIpIHsgYmFja2dyb3VuZC1jb2xvcjogYmxhY2s7IH0qL1xyXG5cclxuI3RibFN0dWRpZXMgdGJvZHkgdHI6aG92ZXIge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcclxuICAgIGNvbG9yOiAjZjkwO1xyXG59XHJcblxyXG4vKiN0YmxTdHVkaWVzIHRyOm50aC1jaGlsZCgxKTpob3ZlciB7IGJhY2tncm91bmQtY29sb3I6IGJsYWNrOyB9XHJcblxyXG4jdGJsU3R1ZGllcyB0cjpudGgtY2hpbGQoMik6aG92ZXIge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogYmxhY2s7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbn0qL1xyXG5cclxuI3RyU3R1ZGllc1F1ZXJ5IC5kcm9wZG93biB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1NTU1O1xyXG4gICAgY29sb3I6IHJlZDtcclxufVxyXG5cclxuICAgICN0clN0dWRpZXNRdWVyeSAuZHJvcGRvd24gLmJ0biB7XHJcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTU1NTtcclxuICAgICAgICBtaW4td2lkdGg6IDcwcHg7XHJcbiAgICAgICAgcGFkZGluZzogMXB4IDZweDtcclxuICAgIH1cclxuXHJcbi5sb2FkaW5nLXNoYWRlIHtcclxuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XHJcbiAgICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIDAuMTUpO1xyXG4gICAgYm90dG9tOiAwcHg7XHJcbiAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XHJcbiAgICBsZWZ0OiAwcHg7XHJcbiAgICBtYXJnaW46IGF1dG87XHJcbiAgICBwb3NpdGlvbjogZml4ZWQ7XHJcbiAgICByaWdodDogMHB4O1xyXG4gICAgdG9wOiAwcHg7XHJcbiAgICB6LWluZGV4OiAxO1xyXG59XHJcblxyXG4uc2hvcnRjdXQtbmFtZS1idXR0b24ge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XHJcbiAgICBib3JkZXI6IG5vbmU7XHJcbiAgICBib3JkZXItd2lkdGg6IDBweDtcclxuICAgIGNvbG9yOiBpbmhlcml0O1xyXG4gICAgb3V0bGluZTogbm9uZTtcclxufVxyXG5cclxuLnNob3J0Y3V0LW5hbWUtYnV0dG9uOmRpc2FibGVkIHtcclxuICAgIGNvbG9yOiAjNTU1NTU1O1xyXG59XHJcblxyXG4ucGF0aWVudElkQ29sIHtcclxuICAgIGN1cnNvcjogcG9pbnRlcjtcclxuICAgIHRleHQtZGVjb3JhdGlvbjogdW5kZXJsaW5lO1xyXG59XHJcblxyXG5cclxuXHJcbi5zZXRSZWFkLCAuc2V0VW5yZWFkIHtcclxuICAgIGJvcmRlcjogbm9uZTtcclxuICAgIGhlaWdodDogNDBweDtcclxuICAgIG91dGxpbmU6IG5vbmU7XHJcbiAgICB3aWR0aDogNDBweDtcclxufVxyXG5cclxuLnNldFJlYWQgeyBcclxuICAgIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcCA7XHJcbiAgICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xyXG59XHJcblxyXG5cclxuLnNldFJlYWQ6aG92ZXIgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0UmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO31cclxuXHJcbi5zZXRSZWFkOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjt9XHJcblxyXG4uc2V0UmVhZDpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxyXG5cclxuLnNldFJlYWRDb3ZlciB7XHJcbiAgICBoZWlnaHQ6IDIwcHg7XHJcbiAgICB3aWR0aDogMjBweDtcclxuICAgIG92ZXJmbG93OiBoaWRkZW47XHJcbn1cclxuXHJcbi5zZXRVbnJlYWQgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0VW5yZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDsgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjt9XHJcblxyXG4uc2V0VW5yZWFkOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO31cclxuXHJcbi5zZXRVbnJlYWQ6YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxyXG5cclxuLnNldFVucmVhZDpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRVbnJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTsgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjt9XHJcblxyXG4uc2V0VW5yZWFkQ292ZXIge1xyXG4gICAgaGVpZ2h0OiAyMHB4O1xyXG4gICAgd2lkdGg6IDIwcHg7XHJcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xyXG59XHJcbiJdfQ== */"
+module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=\".cdk-overlay-pane\"\r\n    cdkDragHandle>\r\n    Export Study\r\n</h1>\r\n<mat-dialog-content>\r\n    <div id=\"body-content\">\r\n\r\n        <div id=\"multi-study-instance\" [hidden]=\"studyNumber==1\">\r\n            <div>\r\n                <table>\r\n                    <tr>\r\n                        <th id=\"checkbox-row\">\r\n                            <input type=\"checkbox\" (click)=\"onAllStudyChecked($event)\" />\r\n                        </th>\r\n                        <th>\r\n                            Patient ID\r\n                        </th>\r\n                        <th>\r\n                            Patient Name\r\n                        </th>\r\n                        <th>\r\n                            Exam Type\r\n                        </th>\r\n                        <th>\r\n                            Accession No\r\n                        </th>\r\n                        <th>\r\n                            Study Date Time\r\n                        </th>\r\n                        <th>\r\n                            Image Count\r\n                        </th>\r\n\r\n                    </tr>\r\n                    <tr *ngFor=\"let study of studies\">\r\n                        <td>\r\n                            <input type=\"checkbox\"/>\r\n                        </td>\r\n                        <td>{{study.patient.patientId}}</td>\r\n\r\n                        <td>{{study.patient.patientName}}</td>\r\n\r\n                        <td></td>\r\n\r\n                        <td>{{study.accessionNo}}</td>\r\n\r\n                        <td>{{study.studyDate}}</td>\r\n                        \r\n                        <td>{{study.studyTime}}</td>\r\n\r\n\r\n                    </tr>\r\n                </table>\r\n            </div>\r\n        </div>\r\n        <div id=\"single-study-instance\" [hidden]=\"studyNumber!=1\">\r\n\r\n        </div>\r\n\r\n        <!--<div id=\"multi-study-instance\" [style.visibility]=\"studyNumber!=1 ? 'visible' : 'hidden'\">\r\n\r\n        </div>\r\n        <div id=\"single-study-instance\" [style.visibility]=\"studyNumber==1 ? 'visible' : 'hidden'\">\r\n\r\n        </div>-->\r\n    </div>\r\n    <div>\r\n\r\n    </div>\r\n\r\n\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n    <button class=\"mat-raised-button\" (click)=\"onCancelClick()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n    <button class=\"mat-raised-button\" (click)=\"onOkClick()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n</mat-dialog-actions>\r\n"
+
+/***/ }),
+
+/***/ "./src/app/components/worklist-shell/worklist/export-study/export-study.component.less":
+/*!*********************************************************************************************!*\
+  !*** ./src/app/components/worklist-shell/worklist/export-study/export-study.component.less ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n#body-content {\n  width: 800px;\n  height: 800px;\n}\n#multi-study-instance {\n  width: 700px;\n  height: 200px;\n  /*border:1px solid @border-color;*/\n}\n#single-study-instance {\n  width: 700px;\n  height: 200px;\n  /*border:1px solid @border-color;*/\n}\n.mat-dialog-title {\n  border-bottom: 1px solid orange;\n  color: orange;\n  font-size: 15px;\n  margin: -24px -24px 0px -24px;\n  min-width: 200px;\n  padding: 1px 10px;\n}\n.mat-dialog-content {\n  color: #fff;\n  font-size: 15px;\n  height: 800px;\n  min-width: 650px;\n  padding: 10px 10px;\n}\n.mat-dialog-actions {\n  margin-right: -12px;\n}\n.mat-form-field {\n  width: 100%;\n}\n.mat-raised-button {\n  background-color: #555;\n  border: 1px solid #777;\n  border-radius: 3px;\n  color: #fff;\n  font-size: 13px;\n  margin-left: 6px;\n  padding: 1px;\n  width: 100px;\n}\n.mat-raised-button:disabled:hover {\n  color: #555;\n}\n.mat-raised-button:hover {\n  color: orange;\n}\n.mat-dialog-actions {\n  flex-direction: row-reverse;\n}\n.matInput {\n  caret-color: orange;\n  color: green;\n}\n.mat-input-element {\n  width: 100%;\n  caret-color: orange;\n}\nth {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  background: #444;\n  /*color: @container-background-color;*/\n}\ntd {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  /*color: @container-background-color;*/\n}\nth,\ntd:first-child {\n  min-width: 20px;\n}\n/*#checkbox-row {\n    width: 50px;\n}*/\ntr:nth-child(odd) {\n  background-color: #181818;\n}\ntr:nth-child(even) {\n  background-color: #000;\n}\ninput {\n  background: #000;\n  caret-color: orange;\n  border: 1px solid #000;\n}\ninput:focus {\n  outline: none !important;\n  border-bottom: 1px solid orange;\n}\ninput:disabled {\n  color: #555;\n}\n::-webkit-inner-spin-button {\n  display: none;\n}\nselect {\n  background-color: #000;\n  border: 1px solid #333;\n  width: 100%;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIiwic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L2V4cG9ydC1zdHVkeS9EOi9Xb3JrL0dpdC9JU0dpdFNlcnZlci9JbWFnZVZpZXdQYWNzL0NzaC5JbWFnZVN1aXRlLldlYkNsaWVudC9zcmMvYXBwL2NvbXBvbmVudHMvd29ya2xpc3Qtc2hlbGwvd29ya2xpc3QvZXhwb3J0LXN0dWR5L2V4cG9ydC1zdHVkeS5jb21wb25lbnQubGVzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7OztjQUljO0FBQ2Q7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7RUFtQkU7QUN0QkY7RUFDSSxZQUFBO0VBQ0EsYUFBQTtBRHdCSjtBQ3JCQTtFQUNJLFlBQUE7RUFDQSxhQUFBO0VEdUJGLGtDQUFrQztBQUNwQztBQ3BCQTtFQUNJLFlBQUE7RUFDQSxhQUFBO0VEc0JGLGtDQUFrQztBQUNwQztBQ2pCQTtFQUNJLCtCQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7RUFDQSw2QkFBQTtFQUNBLGdCQUFBO0VBQ0EsaUJBQUE7QURtQko7QUNoQkE7RUFDSSxXQUFBO0VBQ0EsZUFBQTtFQUNBLGFBQUE7RUFDQSxnQkFBQTtFQUNBLGtCQUFBO0FEa0JKO0FDZkE7RUFBc0IsbUJBQUE7QURrQnRCO0FDaEJBO0VBQ0ksV0FBQTtBRGtCSjtBQ2ZBO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLGtCQUFBO0VBQ0EsV0FBQTtFQUNBLGVBQUE7RUFDQSxnQkFBQTtFQUNBLFlBQUE7RUFDQSxZQUFBO0FEaUJKO0FDZEE7RUFBb0MsV0FBQTtBRGlCcEM7QUNmQTtFQUEyQixhQUFBO0FEa0IzQjtBQ2hCQTtFQUFzQiwyQkFBQTtBRG1CdEI7QUNqQkE7RUFDSSxtQkFBQTtFQUNBLFlBQUE7QURtQko7QUNoQkE7RUFDSSxXQUFBO0VBQ0EsbUJBQUE7QURrQko7QUNYQTtFQUNJLFlBQUE7RUFDQSxzQkFBQTtFQUNBLGdCQUFBO0VBQ0EsZ0JBQUE7RURhRixzQ0FBc0M7QUFDeEM7QUNWQTtFQUNJLFlBQUE7RUFDQSxzQkFBQTtFQUNBLGdCQUFBO0VEWUYsc0NBQXNDO0FBQ3hDO0FDUkE7O0VBQ0ksZUFBQTtBRFdKO0FBQ0E7O0VBRUU7QUNQRjtFQUNFLHlCQUFBO0FEU0Y7QUNOQTtFQUNFLHNCQUFBO0FEUUY7QUNMQTtFQUNJLGdCQUFBO0VBQ0EsbUJBQUE7RUFDQSxzQkFBQTtBRE9KO0FDSkE7RUFDSSx3QkFBQTtFQUNBLCtCQUFBO0FETUo7QUNIQTtFQUNJLFdBQUE7QURLSjtBQ0ZBO0VBQThCLGFBQUE7QURLOUI7QUNIQTtFQUNJLHNCQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0FES0oiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L2V4cG9ydC1zdHVkeS9leHBvcnQtc3R1ZHkuY29tcG9uZW50Lmxlc3MiLCJzb3VyY2VzQ29udGVudCI6WyIvKkBibGFjazogIzAwMDtcbkBvcmFuZ2U6IG9yYW5nZTtcbkBncmF5OiAjNTU1O1xuQHNpbHZlcjogI2FhYTtcbkB3aGl0ZTogI2ZmZjsqL1xuLyoudGhlbWUtZGFyayB7XG4gICAgQGJhY2tncm91bmQtY29sb3IgOiBAYmxhY2s7XG4gICAgQHVuZGVybGluZS1jb2xvciA6IEBvcmFuZ2U7XG4gICAgQGJvcmRlci1jb2xvciA6IEBzaWx2ZXI7XG4gICAgQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yIDogQGdyYXk7XG4gICAgQGRpc2FibGUtY29sb3IgOiBAZ3JheTtcbiAgICBAZm9udC1jb2xvciA6IEB3aGl0ZTtcbiAgICAuY2hhbmdlLWRhcmsoQGJhY2tncm91bmQtY29sb3IpO1xufVxuXG5cbi50aGVtZS1saWdodCB7XG4gICAgQGJhY2tncm91bmQtY29sb3IgOiBAd2hpdGU7XG4gICAgQHVuZGVybGluZS1jb2xvciA6IEBvcmFuZ2U7XG4gICAgQGJvcmRlci1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEB3aGl0ZTtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAd2hpdGU7XG4gICAgQGZvbnQtY29sb3I6IEBibGFjaztcbiAgICAuY2hhbmdlLWRhcmsoQGJhY2tncm91bmQtY29sb3IpO1xufSovXG4jYm9keS1jb250ZW50IHtcbiAgd2lkdGg6IDgwMHB4O1xuICBoZWlnaHQ6IDgwMHB4O1xufVxuI211bHRpLXN0dWR5LWluc3RhbmNlIHtcbiAgd2lkdGg6IDcwMHB4O1xuICBoZWlnaHQ6IDIwMHB4O1xuICAvKmJvcmRlcjoxcHggc29saWQgQGJvcmRlci1jb2xvcjsqL1xufVxuI3NpbmdsZS1zdHVkeS1pbnN0YW5jZSB7XG4gIHdpZHRoOiA3MDBweDtcbiAgaGVpZ2h0OiAyMDBweDtcbiAgLypib3JkZXI6MXB4IHNvbGlkIEBib3JkZXItY29sb3I7Ki9cbn1cbi5tYXQtZGlhbG9nLXRpdGxlIHtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIG9yYW5nZTtcbiAgY29sb3I6IG9yYW5nZTtcbiAgZm9udC1zaXplOiAxNXB4O1xuICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcbiAgbWluLXdpZHRoOiAyMDBweDtcbiAgcGFkZGluZzogMXB4IDEwcHg7XG59XG4ubWF0LWRpYWxvZy1jb250ZW50IHtcbiAgY29sb3I6ICNmZmY7XG4gIGZvbnQtc2l6ZTogMTVweDtcbiAgaGVpZ2h0OiA4MDBweDtcbiAgbWluLXdpZHRoOiA2NTBweDtcbiAgcGFkZGluZzogMTBweCAxMHB4O1xufVxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7XG4gIG1hcmdpbi1yaWdodDogLTEycHg7XG59XG4ubWF0LWZvcm0tZmllbGQge1xuICB3aWR0aDogMTAwJTtcbn1cbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XG4gIGJhY2tncm91bmQtY29sb3I6ICM1NTU7XG4gIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XG4gIGJvcmRlci1yYWRpdXM6IDNweDtcbiAgY29sb3I6ICNmZmY7XG4gIGZvbnQtc2l6ZTogMTNweDtcbiAgbWFyZ2luLWxlZnQ6IDZweDtcbiAgcGFkZGluZzogMXB4O1xuICB3aWR0aDogMTAwcHg7XG59XG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIge1xuICBjb2xvcjogIzU1NTtcbn1cbi5tYXQtcmFpc2VkLWJ1dHRvbjpob3ZlciB7XG4gIGNvbG9yOiBvcmFuZ2U7XG59XG4ubWF0LWRpYWxvZy1hY3Rpb25zIHtcbiAgZmxleC1kaXJlY3Rpb246IHJvdy1yZXZlcnNlO1xufVxuLm1hdElucHV0IHtcbiAgY2FyZXQtY29sb3I6IG9yYW5nZTtcbiAgY29sb3I6IGdyZWVuO1xufVxuLm1hdC1pbnB1dC1lbGVtZW50IHtcbiAgd2lkdGg6IDEwMCU7XG4gIGNhcmV0LWNvbG9yOiBvcmFuZ2U7XG59XG50aCB7XG4gIHBhZGRpbmc6IDNweDtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcbiAgbWluLXdpZHRoOiAxMDBweDtcbiAgYmFja2dyb3VuZDogIzQ0NDtcbiAgLypjb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yOyovXG59XG50ZCB7XG4gIHBhZGRpbmc6IDNweDtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcbiAgbWluLXdpZHRoOiAxMDBweDtcbiAgLypjb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yOyovXG59XG50aCxcbnRkOmZpcnN0LWNoaWxkIHtcbiAgbWluLXdpZHRoOiAyMHB4O1xufVxuLyojY2hlY2tib3gtcm93IHtcbiAgICB3aWR0aDogNTBweDtcbn0qL1xudHI6bnRoLWNoaWxkKG9kZCkge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMTgxODE4O1xufVxudHI6bnRoLWNoaWxkKGV2ZW4pIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbn1cbmlucHV0IHtcbiAgYmFja2dyb3VuZDogIzAwMDtcbiAgY2FyZXQtY29sb3I6IG9yYW5nZTtcbiAgYm9yZGVyOiAxcHggc29saWQgIzAwMDtcbn1cbmlucHV0OmZvY3VzIHtcbiAgb3V0bGluZTogbm9uZSAhaW1wb3J0YW50O1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgb3JhbmdlO1xufVxuaW5wdXQ6ZGlzYWJsZWQge1xuICBjb2xvcjogIzU1NTtcbn1cbjo6LXdlYmtpdC1pbm5lci1zcGluLWJ1dHRvbiB7XG4gIGRpc3BsYXk6IG5vbmU7XG59XG5zZWxlY3Qge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMDAwO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICB3aWR0aDogMTAwJTtcbn1cbiIsIkBpbXBvcnQgXCIuLi8uLi8uLi8uLi8uLi90aGVtZXMubGVzc1wiO1xuXG4jYm9keS1jb250ZW50IHtcbiAgICB3aWR0aDogODAwcHg7XG4gICAgaGVpZ2h0OiA4MDBweDtcbn1cblxuI211bHRpLXN0dWR5LWluc3RhbmNlIHtcbiAgICB3aWR0aDogNzAwcHg7XG4gICAgaGVpZ2h0OiAyMDBweDtcbiAgICAvKmJvcmRlcjoxcHggc29saWQgQGJvcmRlci1jb2xvcjsqL1xufVxuXG4jc2luZ2xlLXN0dWR5LWluc3RhbmNlIHtcbiAgICB3aWR0aDogNzAwcHg7XG4gICAgaGVpZ2h0OiAyMDBweDtcbiAgICAvKmJvcmRlcjoxcHggc29saWQgQGJvcmRlci1jb2xvcjsqL1xufSAgIFxuXG5cblxuLm1hdC1kaWFsb2ctdGl0bGUge1xuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGZvbnQtc2l6ZTogMTVweDtcbiAgICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcbiAgICBtaW4td2lkdGg6IDIwMHB4O1xuICAgIHBhZGRpbmc6IDFweCAxMHB4O1xufVxuXG4ubWF0LWRpYWxvZy1jb250ZW50IHtcbiAgICBjb2xvcjogQGZvbnQtY29sb3I7XG4gICAgZm9udC1zaXplOiAxNXB4O1xuICAgIGhlaWdodDogODAwcHg7XG4gICAgbWluLXdpZHRoOiA2NTBweDtcbiAgICBwYWRkaW5nOiAxMHB4IDEwcHg7XG59XG5cbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBtYXJnaW4tcmlnaHQ6IC0xMnB4OyB9XG5cbi5tYXQtZm9ybS1maWVsZCB7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XG4gICAgYm9yZGVyLXJhZGl1czogM3B4O1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBmb250LXNpemU6IDEzcHg7XG4gICAgbWFyZ2luLWxlZnQ6IDZweDtcbiAgICBwYWRkaW5nOiAxcHg7XG4gICAgd2lkdGg6IDEwMHB4O1xufVxuXG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIgeyBjb2xvcjogQGRpc2FibGUtY29sb3I7IH1cblxuLm1hdC1yYWlzZWQtYnV0dG9uOmhvdmVyIHsgY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7IH1cblxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTsgfVxuXG4ubWF0SW5wdXQge1xuICAgIGNhcmV0LWNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGNvbG9yOiBncmVlbjtcbn1cblxuLm1hdC1pbnB1dC1lbGVtZW50IHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBjYXJldC1jb2xvcjogQHVuZGVybGluZS1jb2xvcjtcbn1cblxudGFibGUge1xuXG59XG5cbnRoe1xuICAgIHBhZGRpbmc6IDNweDtcbiAgICBib3JkZXI6IDFweCBzb2xpZCBAYm9yZGVyLWNvbG9yO1xuICAgIG1pbi13aWR0aDogMTAwcHg7XG4gICAgYmFja2dyb3VuZDogQGhlYWRlci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIC8qY29sb3I6IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjsqL1xufVxuXG50ZCB7XG4gICAgcGFkZGluZzogM3B4O1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgbWluLXdpZHRoOiAxMDBweDtcbiAgICAvKmNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7Ki9cbn1cblxuXG50aCwgdGQ6Zmlyc3QtY2hpbGQge1xuICAgIG1pbi13aWR0aDogMjBweDtcbn1cblxuLyojY2hlY2tib3gtcm93IHtcbiAgICB3aWR0aDogNTBweDtcbn0qL1xuXG50cjpudGgtY2hpbGQob2RkKXtcbiAgYmFja2dyb3VuZC1jb2xvcjogQG9kZC10ci1jb2xvcjtcbn1cblxudHI6bnRoLWNoaWxkKGV2ZW4pe1xuICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbn1cblxuaW5wdXQge1xuICAgIGJhY2tncm91bmQ6IEBiYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGNhcmV0LWNvbG9yOkB1bmRlcmxpbmUtY29sb3I7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJhY2tncm91bmQtY29sb3I7XG59XG5cbmlucHV0OmZvY3Vze1xuICAgIG91dGxpbmU6IG5vbmUgIWltcG9ydGFudDtcbiAgICBib3JkZXItYm90dG9tOjFweCBzb2xpZCBAdW5kZXJsaW5lLWNvbG9yO1xufVxuXG5pbnB1dDpkaXNhYmxlZHtcbiAgICBjb2xvcjogQGRpc2FibGUtY29sb3I7XG59XG5cbjo6LXdlYmtpdC1pbm5lci1zcGluLWJ1dHRvbiB7IGRpc3BsYXk6IG5vbmU7IH1cblxuc2VsZWN0IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBib3JkZXI6IDFweCBzb2xpZCBAYm9yZGVyLWNvbG9yO1xuICAgIHdpZHRoOiAxMDAlO1xufSJdfQ== */"
+
+/***/ }),
+
+/***/ "./src/app/components/worklist-shell/worklist/export-study/export-study.component.ts":
+/*!*******************************************************************************************!*\
+  !*** ./src/app/components/worklist-shell/worklist/export-study/export-study.component.ts ***!
+  \*******************************************************************************************/
+/*! exports provided: ExportStudyComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExportStudyComponent", function() { return ExportStudyComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
+/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+
+
+
+
+var ExportStudyComponent = /** @class */ (function () {
+    function ExportStudyComponent(worklistService, dialogRef, studies, dialogService) {
+        this.worklistService = worklistService;
+        this.dialogRef = dialogRef;
+        this.dialogService = dialogService;
+        this.studyNumber = 0;
+        this.studyNumber = studies.length;
+        this.studies = new Array();
+        this.studies = studies;
+    }
+    ExportStudyComponent.prototype.ngOnInit = function () {
+    };
+    ExportStudyComponent.prototype.onCancelClick = function () {
+        this.dialogRef.close();
+    };
+    ExportStudyComponent.prototype.onOkClick = function () {
+        this.dialogRef.close();
+    };
+    ExportStudyComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-export-study',
+            template: __webpack_require__(/*! ./export-study.component.html */ "./src/app/components/worklist-shell/worklist/export-study/export-study.component.html"),
+            styles: [__webpack_require__(/*! ./export-study.component.less */ "./src/app/components/worklist-shell/worklist/export-study/export-study.component.less")]
+        }),
+        __param(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material__WEBPACK_IMPORTED_MODULE_2__["MAT_DIALOG_DATA"])),
+        __metadata("design:paramtypes", [_services_worklist_service__WEBPACK_IMPORTED_MODULE_3__["WorklistService"],
+            _angular_material__WEBPACK_IMPORTED_MODULE_2__["MatDialogRef"], Array, _services_dialog_service__WEBPACK_IMPORTED_MODULE_1__["DialogService"]])
+    ], ExportStudyComponent);
+    return ExportStudyComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.html":
+/*!*********************************************************************************************!*\
+  !*** ./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.html ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=\".cdk-overlay-pane\"\r\n    cdkDragHandle>\r\n    Patient Edit\r\n</h1>\r\n<mat-dialog-content>\r\n    <mat-list>\r\n        <table>\r\n            <tr>\r\n                <td>Family Name</td>\r\n                <td>Given Name</td>\r\n                <td>Middle Name</td>\r\n            </tr>\r\n            <tr>\r\n                <td style=\"width: 200px\">\r\n                    <input [(ngModel)]=\"study.patient.lastName\"/>\r\n                </td>\r\n                <td style=\"width: 200px\">\r\n                    <input [(ngModel)]=\"study.patient.firstName\" />\r\n                </td>\r\n                <td style=\"width: 200px\">\r\n                    <input [(ngModel)]=\"study.patient.middleName\" />\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>Patient ID</td>\r\n                <td>Date of Birth</td>\r\n                <td>Gender</td>\r\n            </tr>\r\n            <tr>\r\n                <td style=\"width: 200px\">\r\n                    <input [(ngModel)]=\"patientId\"/>\r\n                </td>\r\n                <td style=\"width: 200px\">\r\n                    <mat-form-field>\r\n                        <input matInput [matDatepicker]=\"picker1\" [(ngModel)]=\"patientBirthDate\"/>\r\n                        <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                        <mat-datepicker #picker1></mat-datepicker>\r\n                    </mat-form-field>\r\n                </td>\r\n                <td style=\"width: 200px\">\r\n                    <select [(ngModel)]=\"study.patient.patientSex\">\r\n                        <option *ngFor=\"let val of patientSexColumn.valueList | keyvalue\" [ngValue]=\"val.key.toUpperCase()\">{{val.value}}</option>\r\n                    </select>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td colspan=\"4\">Patient Comments</td>\r\n            </tr>\r\n            <tr>\r\n                <td colspan=\"4\" style=\"width: 600px\">\r\n                    <input [(ngModel)]=\"study.patient.patientComments\" />\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <br>\r\n        <mat-divider></mat-divider><br>\r\n        <table>\r\n            <tr>\r\n                <td>Accession Number</td>\r\n                <td>Referring Physician</td>\r\n            </tr>\r\n            <tr>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"study.accessionNo\"/>\r\n                </td>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"study.referPhysician\" />\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>Study Description</td>\r\n            </tr>\r\n            <tr>\r\n                <td colspan=\"4\" style=\"width: 600px\">\r\n                    <input [(ngModel)]=\"study.studyDescription\" />\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>Symptoms/Notes</td>\r\n            </tr>\r\n            <tr>\r\n                <td colspan=\"4\" style=\"width: 600px\">\r\n                    <input [(ngModel)]=\"study.additionalPatientHistory\" />\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>Study Date</td>\r\n                <td>Study Time</td>\r\n            </tr>\r\n            <tr>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"study.studyDate\" [disabled]=\"true\"/>\r\n                </td>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"study.studyTime\" [disabled]=\"true\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <br>\r\n        <mat-divider></mat-divider><br>\r\n        <table>\r\n            <tr>\r\n                <td>Series</td>\r\n                <td>Body Part Examined</td>\r\n            </tr>\r\n            <tr>\r\n                <td style=\"width: 300px\">\r\n                    <select (change)=\"onSeriesChanged($event.target.selectedIndex)\">\r\n                        <option *ngFor=\"let val of study.seriesList\" [ngValue]=\"val.seriesNo\">Series {{val.seriesNo}}</option>\r\n                    </select>\r\n                </td>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"series.bodyPart\" [disabled]=\"true\"/>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>Modality</td>\r\n                <td>View Position</td>\r\n            </tr>\r\n            <tr>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"series.modality\" />\r\n                </td>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"series.viewPosition\" [disabled]=\"true\"/>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>Series Description</td>\r\n            </tr>\r\n            <tr>\r\n                <td colspan=\"2\" style=\"width: 600px\">\r\n                    <input [(ngModel)]=\"series.seriesDescription\" />\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>Series Date</td>\r\n                <td>Series Time</td>\r\n            </tr>\r\n            <tr>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"series.seriesDateString\" [disabled]=\"true\"/>\r\n                </td>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"series.seriesTimeString\" [disabled]=\"true\"/>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>Patient Position</td>\r\n                <td>Series Number</td>\r\n            </tr>\r\n            <tr>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"series.patientPosition\" />\r\n                </td>\r\n                <td style=\"width: 300px\">\r\n                    <input [(ngModel)]=\"series.seriesNumber\" [disabled]=\"true\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </mat-list>\r\n\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n    <button class=\"mat-raised-button\" (click)=\"onCancelClick()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n    <button class=\"mat-raised-button\" (click)=\"onOkClick()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n</mat-dialog-actions>\r\n"
+
+/***/ }),
+
+/***/ "./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.less":
+/*!*********************************************************************************************!*\
+  !*** ./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.less ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n.mat-dialog-title {\n  border-bottom: 1px solid orange;\n  color: orange;\n  font-size: 15px;\n  margin: -24px -24px 0px -24px;\n  min-width: 200px;\n  padding: 1px 10px;\n}\n.mat-dialog-content {\n  color: #fff;\n  font-size: 15px;\n  height: 800px;\n  min-width: 650px;\n  padding: 10px 10px;\n}\n.mat-dialog-actions {\n  margin-right: -12px;\n}\n.mat-form-field {\n  width: 100%;\n}\n.mat-raised-button {\n  background-color: #555;\n  border: 1px solid #777;\n  border-radius: 3px;\n  color: #fff;\n  font-size: 13px;\n  margin-left: 6px;\n  padding: 1px;\n  width: 100px;\n}\n.mat-raised-button:disabled:hover {\n  color: #555;\n}\n.mat-raised-button:hover {\n  color: orange;\n}\n.mat-dialog-actions {\n  flex-direction: row-reverse;\n}\n.matInput {\n  caret-color: orange;\n  color: green;\n}\n.mat-input-element {\n  width: 100%;\n  caret-color: orange;\n}\ntd {\n  padding: 3px;\n}\ninput {\n  background: #000000;\n  caret-color: orange;\n  border: 1px solid #000000;\n  width: 100%;\n}\ninput:focus {\n  outline: none !important;\n  border-bottom: 1px solid orange;\n}\ninput:disabled {\n  color: #555;\n}\n::-webkit-inner-spin-button {\n  display: none;\n}\nselect {\n  background-color: #000;\n  border: 1px solid #333;\n  width: 100%;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9wYXRpZW50LWVkaXQvcGF0aWVudC1lZGl0LmNvbXBvbmVudC5sZXNzIiwic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L3BhdGllbnQtZWRpdC9EOi9Xb3JrL0dpdC9JU0dpdFNlcnZlci9JbWFnZVZpZXdQYWNzL0NzaC5JbWFnZVN1aXRlLldlYkNsaWVudC9zcmMvYXBwL2NvbXBvbmVudHMvd29ya2xpc3Qtc2hlbGwvd29ya2xpc3QvcGF0aWVudC1lZGl0L3BhdGllbnQtZWRpdC5jb21wb25lbnQubGVzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7OztjQUljO0FBQ2Q7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7RUFtQkU7QUN0QkY7RUFDSSwrQkFBQTtFQUNBLGFBQUE7RUFDQSxlQUFBO0VBQ0EsNkJBQUE7RUFDQSxnQkFBQTtFQUNBLGlCQUFBO0FEd0JKO0FDckJBO0VBQ0ksV0FBQTtFQUNBLGVBQUE7RUFDQSxhQUFBO0VBQ0EsZ0JBQUE7RUFDQSxrQkFBQTtBRHVCSjtBQ3BCQTtFQUFzQixtQkFBQTtBRHVCdEI7QUNyQkE7RUFDSSxXQUFBO0FEdUJKO0FDcEJBO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLGtCQUFBO0VBQ0EsV0FBQTtFQUNBLGVBQUE7RUFDQSxnQkFBQTtFQUNBLFlBQUE7RUFDQSxZQUFBO0FEc0JKO0FDbkJBO0VBQW9DLFdBQUE7QURzQnBDO0FDcEJBO0VBQTJCLGFBQUE7QUR1QjNCO0FDckJBO0VBQXNCLDJCQUFBO0FEd0J0QjtBQ3RCQTtFQUNJLG1CQUFBO0VBQ0EsWUFBQTtBRHdCSjtBQ3JCQTtFQUNJLFdBQUE7RUFDQSxtQkFBQTtBRHVCSjtBQ3BCQTtFQUNJLFlBQUE7QURzQko7QUNuQkE7RUFDSSxtQkFBQTtFQUNBLG1CQUFBO0VBQ0EseUJBQUE7RUFDQSxXQUFBO0FEcUJKO0FDbEJBO0VBQ0ksd0JBQUE7RUFDQSwrQkFBQTtBRG9CSjtBQ2pCQTtFQUNJLFdBQUE7QURtQko7QUNoQkE7RUFBOEIsYUFBQTtBRG1COUI7QUNqQkE7RUFDSSxzQkFBQTtFQUNBLHNCQUFBO0VBQ0EsV0FBQTtBRG1CSiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvd29ya2xpc3Qtc2hlbGwvd29ya2xpc3QvcGF0aWVudC1lZGl0L3BhdGllbnQtZWRpdC5jb21wb25lbnQubGVzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qQGJsYWNrOiAjMDAwO1xuQG9yYW5nZTogb3JhbmdlO1xuQGdyYXk6ICM1NTU7XG5Ac2lsdmVyOiAjYWFhO1xuQHdoaXRlOiAjZmZmOyovXG4vKi50aGVtZS1kYXJrIHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEBibGFjaztcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHNpbHZlcjtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAZ3JheTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEBncmF5O1xuICAgIEBmb250LWNvbG9yIDogQHdoaXRlO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59XG5cblxuLnRoZW1lLWxpZ2h0IHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHdoaXRlO1xuICAgIEBkaXNhYmxlLWNvbG9yIDogQHdoaXRlO1xuICAgIEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZm9udC1jb2xvcjogQGJsYWNrO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59Ki9cbi5tYXQtZGlhbG9nLXRpdGxlIHtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIG9yYW5nZTtcbiAgY29sb3I6IG9yYW5nZTtcbiAgZm9udC1zaXplOiAxNXB4O1xuICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcbiAgbWluLXdpZHRoOiAyMDBweDtcbiAgcGFkZGluZzogMXB4IDEwcHg7XG59XG4ubWF0LWRpYWxvZy1jb250ZW50IHtcbiAgY29sb3I6ICNmZmY7XG4gIGZvbnQtc2l6ZTogMTVweDtcbiAgaGVpZ2h0OiA4MDBweDtcbiAgbWluLXdpZHRoOiA2NTBweDtcbiAgcGFkZGluZzogMTBweCAxMHB4O1xufVxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7XG4gIG1hcmdpbi1yaWdodDogLTEycHg7XG59XG4ubWF0LWZvcm0tZmllbGQge1xuICB3aWR0aDogMTAwJTtcbn1cbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XG4gIGJhY2tncm91bmQtY29sb3I6ICM1NTU7XG4gIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XG4gIGJvcmRlci1yYWRpdXM6IDNweDtcbiAgY29sb3I6ICNmZmY7XG4gIGZvbnQtc2l6ZTogMTNweDtcbiAgbWFyZ2luLWxlZnQ6IDZweDtcbiAgcGFkZGluZzogMXB4O1xuICB3aWR0aDogMTAwcHg7XG59XG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIge1xuICBjb2xvcjogIzU1NTtcbn1cbi5tYXQtcmFpc2VkLWJ1dHRvbjpob3ZlciB7XG4gIGNvbG9yOiBvcmFuZ2U7XG59XG4ubWF0LWRpYWxvZy1hY3Rpb25zIHtcbiAgZmxleC1kaXJlY3Rpb246IHJvdy1yZXZlcnNlO1xufVxuLm1hdElucHV0IHtcbiAgY2FyZXQtY29sb3I6IG9yYW5nZTtcbiAgY29sb3I6IGdyZWVuO1xufVxuLm1hdC1pbnB1dC1lbGVtZW50IHtcbiAgd2lkdGg6IDEwMCU7XG4gIGNhcmV0LWNvbG9yOiBvcmFuZ2U7XG59XG50ZCB7XG4gIHBhZGRpbmc6IDNweDtcbn1cbmlucHV0IHtcbiAgYmFja2dyb3VuZDogIzAwMDAwMDtcbiAgY2FyZXQtY29sb3I6IG9yYW5nZTtcbiAgYm9yZGVyOiAxcHggc29saWQgIzAwMDAwMDtcbiAgd2lkdGg6IDEwMCU7XG59XG5pbnB1dDpmb2N1cyB7XG4gIG91dGxpbmU6IG5vbmUgIWltcG9ydGFudDtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIG9yYW5nZTtcbn1cbmlucHV0OmRpc2FibGVkIHtcbiAgY29sb3I6ICM1NTU7XG59XG46Oi13ZWJraXQtaW5uZXItc3Bpbi1idXR0b24ge1xuICBkaXNwbGF5OiBub25lO1xufVxuc2VsZWN0IHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcbiAgd2lkdGg6IDEwMCU7XG59XG4iLCJAaW1wb3J0IFwiLi4vLi4vLi4vLi4vLi4vdGhlbWVzLmxlc3NcIjtcblxuLm1hdC1kaWFsb2ctdGl0bGUge1xuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGZvbnQtc2l6ZTogMTVweDtcbiAgICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcbiAgICBtaW4td2lkdGg6IDIwMHB4O1xuICAgIHBhZGRpbmc6IDFweCAxMHB4O1xufVxuXG4ubWF0LWRpYWxvZy1jb250ZW50IHtcbiAgICBjb2xvcjogQGZvbnQtY29sb3I7XG4gICAgZm9udC1zaXplOiAxNXB4O1xuICAgIGhlaWdodDogODAwcHg7XG4gICAgbWluLXdpZHRoOiA2NTBweDtcbiAgICBwYWRkaW5nOiAxMHB4IDEwcHg7XG59XG5cbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBtYXJnaW4tcmlnaHQ6IC0xMnB4OyB9XG5cbi5tYXQtZm9ybS1maWVsZCB7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XG4gICAgYm9yZGVyLXJhZGl1czogM3B4O1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBmb250LXNpemU6IDEzcHg7XG4gICAgbWFyZ2luLWxlZnQ6IDZweDtcbiAgICBwYWRkaW5nOiAxcHg7XG4gICAgd2lkdGg6IDEwMHB4O1xufVxuXG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIgeyBjb2xvcjogQGRpc2FibGUtY29sb3I7IH1cblxuLm1hdC1yYWlzZWQtYnV0dG9uOmhvdmVyIHsgY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7IH1cblxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTsgfVxuXG4ubWF0SW5wdXQge1xuICAgIGNhcmV0LWNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGNvbG9yOiBncmVlbjtcbn1cblxuLm1hdC1pbnB1dC1lbGVtZW50IHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBjYXJldC1jb2xvcjogQHVuZGVybGluZS1jb2xvcjtcbn1cblxudGQge1xuICAgIHBhZGRpbmc6IDNweDtcbn1cblxuaW5wdXQge1xuICAgIGJhY2tncm91bmQ6ICMwMDAwMDA7XG4gICAgY2FyZXQtY29sb3I6QHVuZGVybGluZS1jb2xvcjtcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjMDAwMDAwO1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG5pbnB1dDpmb2N1c3tcbiAgICBvdXRsaW5lOiBub25lICFpbXBvcnRhbnQ7XG4gICAgYm9yZGVyLWJvdHRvbToxcHggc29saWQgQHVuZGVybGluZS1jb2xvcjtcbn1cblxuaW5wdXQ6ZGlzYWJsZWR7XG4gICAgY29sb3I6IEBkaXNhYmxlLWNvbG9yO1xufVxuXG46Oi13ZWJraXQtaW5uZXItc3Bpbi1idXR0b24geyBkaXNwbGF5OiBub25lOyB9XG5cbnNlbGVjdCB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICB3aWR0aDogMTAwJTtcbn0iXX0= */"
+
+/***/ }),
+
+/***/ "./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.ts":
+/*!*******************************************************************************************!*\
+  !*** ./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.ts ***!
+  \*******************************************************************************************/
+/*! exports provided: MY_FORMATS, PatientEditComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MY_FORMATS", function() { return MY_FORMATS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PatientEditComponent", function() { return PatientEditComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
+/* harmony import */ var _models_pssi__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../models/pssi */ "./src/app/models/pssi.ts");
+/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_5__);
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+
+
+
+
+
+
+var MY_FORMATS = {
+    parse: {
+        dateInput: "LL",
+    },
+    display: {
+        dateInput: "LL",
+        monthYearLabel: "MMM YYYY",
+        dateA11yLabel: "LL",
+        monthYearA11yLabel: "MMMM YYYY",
+    },
+};
+var PatientEditComponent = /** @class */ (function () {
+    function PatientEditComponent(worklistService, dialogRef, study, dialogService) {
+        this.worklistService = worklistService;
+        this.dialogRef = dialogRef;
+        this.dialogService = dialogService;
+        this.study = new _models_pssi__WEBPACK_IMPORTED_MODULE_3__["Study"]();
+        this.series = new _models_pssi__WEBPACK_IMPORTED_MODULE_3__["Series"]();
+        this.seriesNum = 0;
+        this.patientSexColumn = new _models_pssi__WEBPACK_IMPORTED_MODULE_3__["WorklistColumn"]();
+        this.study = study;
+        this.patientBirthDate = new Date(this.study.patient.patientBirthDate);
+        this.patientSexColumn = worklistService.worklistColumns[2];
+        this.getSeriesValue(0);
+    }
+    PatientEditComponent.prototype.onCancelClick = function () {
+        this.dialogRef.close();
+    };
+    PatientEditComponent.prototype.onOkClick = function () {
+        this.study.patient.patientBirthDate = moment__WEBPACK_IMPORTED_MODULE_5__(this.patientBirthDate).format('MM/DD/YYYY');
+        this.worklistService.onUpdateStudy(this.study);
+        this.dialogRef.close();
+    };
+    PatientEditComponent.prototype.getSeriesValue = function (seriesNum) {
+        // Remove Study in Series for circular json issue
+        for (var i = 0; i < this.study.seriesList.length; i++) {
+            var seriesTemp = this.study.seriesList[i];
+            seriesTemp.study = new _models_pssi__WEBPACK_IMPORTED_MODULE_3__["Study"]();
+            this.study.seriesList[i] = seriesTemp;
+        }
+        this.series = this.study.seriesList[seriesNum];
+        if (this.series.seriesNo == null) {
+            this.series.seriesNo = 1;
+        }
+    };
+    PatientEditComponent.prototype.onSeriesChanged = function (optionValue) {
+        this.series = this.study.seriesList[optionValue];
+    };
+    PatientEditComponent.prototype.onPatientSexChanged = function (optionValue) {
+        this.study.patient.patientSex = optionValue;
+    };
+    PatientEditComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-patient-edit',
+            template: __webpack_require__(/*! ./patient-edit.component.html */ "./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.html"),
+            styles: [__webpack_require__(/*! ./patient-edit.component.less */ "./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.less")]
+        }),
+        __param(2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material__WEBPACK_IMPORTED_MODULE_2__["MAT_DIALOG_DATA"])),
+        __metadata("design:paramtypes", [_services_worklist_service__WEBPACK_IMPORTED_MODULE_4__["WorklistService"],
+            _angular_material__WEBPACK_IMPORTED_MODULE_2__["MatDialogRef"],
+            _models_pssi__WEBPACK_IMPORTED_MODULE_3__["Study"],
+            _services_dialog_service__WEBPACK_IMPORTED_MODULE_1__["DialogService"]])
+    ], PatientEditComponent);
+    return PatientEditComponent;
+}());
+
+
 
 /***/ }),
 
@@ -9284,7 +10635,18 @@ module.exports = "#tblStudies a {\r\n    color: white;\r\n}\r\n\r\n\r\n/*#tblStu
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n    <table id=\"tblStudies\" class=\"table table-bordered table-condensed\">\r\n        <thead>\r\n            <tr id=\"trStudiesHeader\">\r\n                <th>\r\n                </th>\r\n                <th>\r\n                </th>\r\n                <th *ngFor=\"let col of worklistService.worklistColumns \" nowrap>\r\n                    <div id=\"headContent\" class=\"worklistHeader\">\r\n            <tr>\r\n                <td>\r\n                    <div (click)=\"onWorklistHeaderClicked(col.columnId)\">{{col.columnText}}</div>\r\n                </td>\r\n                <td>\r\n                    <i id=\"orderIcon\" *ngIf=\"col.columnId == orderHeader\" [className]=\"isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'\"></i>\r\n                </td>\r\n            </tr>\r\n</div>\r\n            </th>\r\n        </tr>\r\n<tr id=\"trStudiesQuery\">\r\n    <td>\r\n        <input type=\"checkbox\" (click)=\"onAllStudyChecked($event)\" (change)=\"onCheckStudyChanged()\"/>\r\n    </td>\r\n    <td>\r\n\r\n    </td>\r\n    <td *ngFor=\"let col of worklistService.worklistColumns\">\r\n        <div *ngIf=\"col.controlType == 'TextBox'\">\r\n            <input type=\"text\" [(ngModel)]=\"col.shortcutType[col.columnId]\" />\r\n        </div>\r\n        <div *ngIf=\"col.controlType == 'DropDownList'\">\r\n            <div *ngIf=\"col.columnId == 'studyDate'; else notStudyDate\">\r\n            <div>\r\n                <select *ngIf=\"!initStudyDate; else showStudyDateRange\" [(ngModel)]=\"col.shortcutType[col.columnId]\" (change)=\"onStudyDateChangeSelect($event.target.selectedIndex)\">\r\n                    <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\" >{{value.value}}</option>\r\n                </select>\r\n                <ng-template #showStudyDateRange>\r\n                    <table (click)=\"onStudyDateRangeTableClicked()\">\r\n                        <tr>\r\n                            <td>\r\n                                <mat-form-field>\r\n                                    <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" [(ngModel)]=\"worklistService.shortcut.studyDateFrom\">\r\n                                    <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                    <mat-datepicker #picker1></mat-datepicker>\r\n                                </mat-form-field>\r\n                            </td>\r\n                            <td id=\"tdStudyDateFrom\">\r\n                                <mat-form-field>\r\n                                    <input matInput [matDatepicker]=\"picker2\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"To\" [(ngModel)]=\"worklistService.shortcut.studyDateTo\">\r\n                                    <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                    <mat-datepicker #picker2></mat-datepicker>\r\n                                </mat-form-field>\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </ng-template>\r\n</div>\r\n        </div>\r\n        <ng-template #notStudyDate>\r\n            <select [(ngModel)]=\"col.shortcutType[col.columnId]\">\r\n                <option value=\"\">All</option>\r\n                <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n            </select>\r\n        </ng-template>\r\n    </div>\r\n        <div *ngIf=\"col.controlType == 'Calendar'\">\r\n            <tr>\r\n                <td>\r\n                    <mat-form-field>\r\n                        <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" (dateChange)=\"fromDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateFrom\">\r\n                        <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                        <mat-datepicker #picker1></mat-datepicker>\r\n                    </mat-form-field>\r\n                </td>\r\n                <td>\r\n                    <mat-form-field>\r\n                        <input matInput [matDatepicker]=\"picker2\" [min]=\"toMinDate\" [max]=\"toMaxDate\" placeholder=\"To\" (dateChange)=\"toDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateTo\">\r\n                        <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                        <mat-datepicker #picker2></mat-datepicker>\r\n                    </mat-form-field>\r\n                </td>\r\n            </tr>\r\n            </div>\r\n<td>\r\n    </tr>\r\n    </thead>\r\n    <tbody>\r\n        <tr *ngFor=\"let study of worklistService.studies\" >\r\n            <td>\r\n                <input type=\"checkbox\" [(ngModel)]=\"study.checked\" (change)=\"onCheckStudyChanged()\"/>\r\n            </td>\r\n            <td>\r\n                <div *ngIf=\"study.scanStatus == 'Ended'; else scanStatusCompleted\" class=\"setReadCover\">\r\n                    <button class=\"setRead\" role=\"button\" title=\"Set Read\" (click)=\"onSetRead(study)\"></button>\r\n                </div>\r\n                <ng-template #scanStatusCompleted>\r\n                    <div class=\"setUnreadCover\">\r\n                        <button class=\"setUnread\" role=\"button\" title=\"Set Unread\" (click)=\"onSetUnread(study)\"></button>\r\n                    </div>\r\n                </ng-template>\r\n            </td>\r\n            <td *ngFor=\"let col of worklistService.worklistColumns\" (click)=\"onStudyChecked(study)\" nowrap>\r\n                <div class=\"patientIdCol\" *ngIf=\"col.columnId == 'patientId'; else notPatientId\" (click)=\"doShowStudy(study)\">{{study.patient[col.columnId]}}</div>\r\n                <ng-template #notPatientId>\r\n                    <div *ngIf=\"study.patient[col.columnId]; else onlyStudy\">{{study.patient[col.columnId]}}</div>\r\n                    <ng-template #onlyStudy>\r\n                        <div *ngIf=\"col.columnId != 'bodyPartExamined'; else bodyPart\">{{study[col.columnId]}}</div>\r\n                        <ng-template #bodyPart>\r\n                            <span *ngFor=\"let bodyPart of study.bodyPartList; let i = index\">\r\n                                <span *ngIf=\"i != 0\">\r\n                                    ,\r\n                                </span>\r\n                                {{bodyPart}}\r\n                            </span>\r\n                        </ng-template>\r\n                    </ng-template>\r\n                </ng-template>\r\n            </td>\r\n        </tr>\r\n    </tbody>\r\n    <tfoot>\r\n        <tr id=\"trFoot\">\r\n            <td colspan=\"5\">\r\n                <ul>\r\n                    <li>\r\n                        <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(1)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">First</button>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onPrevPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">Prev</button>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onNextPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Next</button>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(worklistService.pageCount)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Last</button>\r\n                    </li>\r\n                    <li>\r\n                        <select id=\"ddlPageIndex\" [(ngModel)]=\"currentPage\">\r\n                            <option *ngFor=\"let page of worklistService.pages;\">{{page+1}}</option>\r\n                        </select>\r\n                    </li>\r\n                    <li>\r\n                        <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(currentPage)\" [disabled]=\"worklistService.pageCount == 1\">Goto</button>\r\n                    </li>\r\n                </ul>\r\n            </td>\r\n        </tr>\r\n    </tfoot>\r\n    </table>\r\n    </div>\r\n\r\n    <mat-progress-spinner [style.visibility]=\"worklistService.querying? 'visible' : 'hidden'\" class=\"loading-shade\"\r\n                          [color]=\"color\"\r\n                          [mode]=\"mode\"\r\n                          [value]=\"value\">\r\n    </mat-progress-spinner>\r\n"
+module.exports = "<div>\r\n    <table id=\"tblStudies\" class=\"table table-bordered table-condensed\">\r\n        <thead>\r\n            <tr id=\"trStudiesHeader\">\r\n                <th>\r\n                </th>\r\n                <th>\r\n                </th>\r\n                <th *ngFor=\"let col of worklistService.worklistColumns \" nowrap>\r\n                    <div id=\"headContent\" class=\"worklistHeader\">\r\n                        <table>\r\n                            <tr>\r\n                                <td>\r\n                                    <div (click)=\"onWorklistHeaderClicked(col.columnId)\">{{col.columnText}}</div>\r\n                                </td>\r\n                                <td>\r\n                                    <i id=\"orderIcon\" *ngIf=\"col.columnId == orderHeader\" [className]=\"isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'\"></i>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </th>\r\n            </tr>\r\n            <tr id=\"trStudiesQuery\">\r\n                <td>\r\n                    <input type=\"checkbox\" (click)=\"onAllStudyChecked($event)\" (change)=\"onCheckStudyChanged()\" />\r\n                </td>\r\n                <td></td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\">\r\n                    <div *ngIf=\"col.controlType == 'TextBox'\">\r\n                        <input type=\"text\" [(ngModel)]=\"col.shortcutType[col.columnId]\" />\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'DropDownList'\">\r\n                        <div *ngIf=\"col.columnId == 'studyDate'; else notStudyDate\">\r\n                            <div>\r\n                                <select *ngIf=\"!initStudyDate; else showStudyDateRange\" [(ngModel)]=\"col.shortcutType[col.columnId]\" (change)=\"onStudyDateChangeSelect($event.target.selectedIndex)\">\r\n                                    <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                                </select>\r\n                                <ng-template #showStudyDateRange>\r\n                                    <table (click)=\"onStudyDateRangeTableClicked()\">\r\n                                        <tr>\r\n                                            <td>\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" [(ngModel)]=\"worklistService.shortcut.studyDateFrom\"/>\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker1></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                            <td id=\"tdStudyDateFrom\">\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker2\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"To\" [(ngModel)]=\"worklistService.shortcut.studyDateTo\" />\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker2></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                        </tr>\r\n                                    </table>\r\n                                </ng-template>\r\n                            </div>\r\n                        </div>\r\n                        <ng-template #notStudyDate>\r\n                            <select [(ngModel)]=\"col.shortcutType[col.columnId]\">\r\n                                <option value=\"\">All</option>\r\n                                <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                            </select>\r\n                        </ng-template>\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'Calendar'\">\r\n                        <table>\r\n                            <tr>\r\n                                <td id=\"no-border\">\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" (dateChange)=\"fromDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateFrom\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker1></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                                <td>\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker2\" [min]=\"toMinDate\" [max]=\"toMaxDate\" placeholder=\"To\" (dateChange)=\"toDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateTo\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker2></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let study of worklistService.studies\">\r\n                <td>\r\n                    <input type=\"checkbox\" [(ngModel)]=\"study.studyChecked\" (change)=\"onCheckStudyChanged()\" />\r\n                </td>\r\n                <td>\r\n                    <div *ngIf=\"study.scanStatus == 'Ended'; else scanStatusCompleted\" class=\"setReadCover\">\r\n                        <button class=\"setRead\" role=\"button\" title=\"Set Read\" (click)=\"onSetRead(study)\"></button>\r\n                    </div>\r\n                    <ng-template #scanStatusCompleted>\r\n                        <div class=\"setUnreadCover\">\r\n                            <button class=\"setUnread\" role=\"button\" title=\"Set Unread\" (click)=\"onSetUnread(study)\"></button>\r\n                        </div>\r\n                    </ng-template>\r\n                </td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\" (click)=\"onStudyChecked(study)\" nowrap>\r\n                    <div class=\"patientIdCol\" *ngIf=\"col.columnId == 'patientId'; else notPatientId\">\r\n                        <div *ngIf=\"study['instanceAvailability'] === 'Online'; else offlineStudy\" class=\"onlineStudy\" (click)=\"doShowStudy(study)\">\r\n                            {{study.patient[col.columnId]}}\r\n                        </div>\r\n                        <ng-template #offlineStudy>\r\n                            <div class=\"offlineStudy\">\r\n                                {{study.patient[col.columnId]}}\r\n                            </div>\r\n                        </ng-template>\r\n                    </div>\r\n                    <ng-template #notPatientId>\r\n                        <div *ngIf=\"study.patient[col.columnId]; else onlyStudy\">{{study.patient[col.columnId]}}</div>\r\n                        <ng-template #onlyStudy>\r\n                            <div *ngIf=\"col.columnId != 'bodyPartExamined'; else bodyPart\">{{study[col.columnId]}}</div>\r\n                            <ng-template #bodyPart>\r\n                                <span *ngFor=\"let bodyPart of study.bodyPartList; let i = index\">\r\n                                    <span *ngIf=\"i != 0\">\r\n                                        ,\r\n                                    </span>\r\n                                    {{bodyPart}}\r\n                                </span>\r\n                            </ng-template>\r\n                        </ng-template>\r\n                    </ng-template>\r\n                </td>\r\n            </tr>\r\n        </tbody>\r\n        <tfoot>\r\n            <tr id=\"trFoot\">\r\n                <td colspan=\"5\">\r\n                    <ul>\r\n                        <li>\r\n                            <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(1)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">First</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onPrevPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">Prev</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onNextPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Next</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(worklistService.pageCount)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Last</button>\r\n                        </li>\r\n                        <li>\r\n                            <select id=\"ddlPageIndex\" [(ngModel)]=\"currentPage\">\r\n                                <option *ngFor=\"let page of worklistService.pages;\">{{page+1}}</option>\r\n                            </select>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(currentPage)\" [disabled]=\"worklistService.pageCount == 1\">Goto</button>\r\n                        </li>\r\n                    </ul>\r\n                </td>\r\n            </tr>\r\n        </tfoot>\r\n    </table>\r\n</div>\r\n\r\n<mat-progress-spinner [style.visibility]=\"worklistService.querying? 'visible' : 'hidden'\" class=\"loading-shade\"\r\n                      [color]=\"color\"\r\n                      [mode]=\"mode\"\r\n                      [value]=\"value\">\r\n</mat-progress-spinner>\r\n"
+
+/***/ }),
+
+/***/ "./src/app/components/worklist-shell/worklist/worklist.component.less":
+/*!****************************************************************************!*\
+  !*** ./src/app/components/worklist-shell/worklist/worklist.component.less ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n#tblStudies a {\n  color: #fff;\n}\nul {\n  list-style: none;\n  -webkit-padding-start: 0px;\n          padding-inline-start: 0px;\n}\nli {\n  float: left;\n  padding: 2px;\n}\nli button {\n  cursor: pointer;\n}\nthead {\n  background: #555;\n}\nthead tr {\n  background-color: #555;\n}\nthead td {\n  background-color: #555;\n}\nthead div {\n  font-weight: normal;\n}\n.worklistHeader {\n  cursor: pointer;\n  min-width: 50px;\n}\n#headContent td tr {\n  border: 0px;\n}\n#tblStudies td {\n  border: 1px solid #333;\n  color: #ccc;\n}\n#tblStudies td td {\n  border: none;\n}\n#tblStudies th {\n  border: 1px solid #333;\n}\n#tblStudies tr.cust-info td {\n  background-color: #000;\n}\n#trStudiesHeader a {\n  color: #ccc;\n}\n#trSeriesHeader a {\n  color: #fff;\n}\n#trStudiesHeader tr td {\n  border: hidden;\n  padding-right: 5px;\n}\n#trStudiesQuery input[type=text] {\n  background-color: #000;\n  border: 1px solid #333;\n  vertical-align: middle;\n  width: 100%;\n}\n#trStudiesQuery input[type=checkbox] {\n  background-color: #000;\n  border: 1px solid #333;\n  vertical-align: middle;\n  width: 100%;\n}\nselect {\n  background-color: #000;\n  border: 1px solid #333;\n  width: 100%;\n}\n#trStudiesQuery td:nth-child(n) {\n  margin: 0px;\n  padding: 1px;\n  vertical-align: middle;\n}\n#tblStudies tbody tr:nth-child(2n) {\n  background-color: #181818;\n}\n#tblStudies tbody tr:hover {\n  background-color: #555;\n  color: orange;\n}\n#trStudiesQuery .dropdown {\n  background-color: #555;\n  color: red;\n}\n#trStudiesQuery .dropdown .btn {\n  background-color: #555;\n  min-width: 70px;\n  padding: 1px 6px;\n}\n.loading-shade {\n  align-items: center;\n  background: #000;\n  bottom: 0px;\n  display: flex;\n  justify-content: center;\n  left: 0px;\n  margin: auto;\n  position: fixed;\n  right: 0px;\n  top: 0px;\n  z-index: 1;\n}\n.shortcut-name-button {\n  background-color: transparent;\n  border: none;\n  border-width: 0px;\n  color: inherit;\n  outline: none;\n}\n.shortcut-name-button:disabled {\n  color: #555;\n}\n.setRead,\n.setUnread {\n  border: none;\n  height: 40px;\n  outline: none;\n  width: 40px;\n}\n.setRead {\n  background: url('setRead_40_40_All.png') no-repeat left top;\n  background-size: cover;\n}\n.setRead:hover {\n  background: url('setRead_40_40_All.png') no-repeat right top;\n  background-size: cover;\n}\n.setRead:active {\n  background: url('setRead_40_40_All.png') no-repeat left bottom;\n  background-size: cover;\n}\n.setRead:disabled {\n  background: url('setRead_40_40_All.png') no-repeat right bottom;\n  background-size: cover;\n}\n.setReadCover {\n  height: 20px;\n  width: 20px;\n  overflow: hidden;\n}\n.setUnread {\n  background: url('setUnread_40_40_All.png') no-repeat left top;\n  background-size: cover;\n}\n.setUnread:hover {\n  background: url('setUnread_40_40_All.png') no-repeat right top;\n  background-size: cover;\n}\n.setUnread:active {\n  background: url('setUnread_40_40_All.png') no-repeat left bottom;\n  background-size: cover;\n}\n.setUnread:disabled {\n  background: url('setUnread_40_40_All.png') no-repeat right bottom;\n  background-size: cover;\n}\n.setUnreadCover {\n  height: 20px;\n  width: 20px;\n  overflow: hidden;\n}\n.onlineStudy {\n  color: #fff;\n  text-decoration: underline;\n  cursor: pointer;\n}\n.offlineStudy {\n  color: #555;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQubGVzcyIsInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9EOi9Xb3JrL0dpdC9JU0dpdFNlcnZlci9JbWFnZVZpZXdQYWNzL0NzaC5JbWFnZVN1aXRlLldlYkNsaWVudC9zcmMvYXBwL2NvbXBvbmVudHMvd29ya2xpc3Qtc2hlbGwvd29ya2xpc3Qvd29ya2xpc3QuY29tcG9uZW50Lmxlc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Y0FJYztBQUNkOzs7Ozs7Ozs7Ozs7Ozs7Ozs7O0VBbUJFO0FDdEJGO0VBQ0ksV0FBQTtBRHdCSjtBQ3JCQTtFQUNJLGdCQUFBO0VBQ0EsMEJBQUE7VUFBQSx5QkFBQTtBRHVCSjtBQ3BCQTtFQUNJLFdBQUE7RUFDQSxZQUFBO0FEc0JKO0FDbkJJO0VBQ0ksZUFBQTtBRHFCUjtBQ2xCQTtFQUNJLGdCQUFBO0FEb0JKO0FDakJBO0VBQ0ksc0JBQUE7QURtQko7QUNoQkE7RUFDSSxzQkFBQTtBRGtCSjtBQ2ZBO0VBQ0ksbUJBQUE7QURpQko7QUNkQTtFQUNJLGVBQUE7RUFDQSxlQUFBO0FEZ0JKO0FDYkE7RUFDSSxXQUFBO0FEZUo7QUNaQTtFQUNJLHNCQUFBO0VBQ0EsV0FBQTtBRGNKO0FDWEE7RUFDSSxZQUFBO0FEYUo7QUNUQTtFQUNJLHNCQUFBO0FEV0o7QUNSQTtFQUNJLHNCQUFBO0FEVUo7QUNQQTtFQUNJLFdBQUE7QURTSjtBQ05BO0VBQ0ksV0FBQTtBRFFKO0FDTEE7RUFDSSxjQUFBO0VBQ0Esa0JBQUE7QURPSjtBQ0pBO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLHNCQUFBO0VBQ0EsV0FBQTtBRE1KO0FDSEE7RUFDSSxzQkFBQTtFQUNBLHNCQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0FES0o7QUNGQTtFQUNJLHNCQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0FESUo7QUNEQTtFQUNJLFdBQUE7RUFDQSxZQUFBO0VBQ0Esc0JBQUE7QURHSjtBQ0FBO0VBQ0kseUJBQUE7QURFSjtBQ0NBO0VBQ0ksc0JBQUE7RUFDQSxhQUFBO0FEQ0o7QUNHQTtFQUNJLHNCQUFBO0VBQ0EsVUFBQTtBRERKO0FDSUk7RUFDSSxzQkFBQTtFQUNBLGVBQUE7RUFDQSxnQkFBQTtBREZSO0FDS0E7RUFDSSxtQkFBQTtFQUNBLGdCQUFBO0VBQ0EsV0FBQTtFQUNBLGFBQUE7RUFDQSx1QkFBQTtFQUNBLFNBQUE7RUFDQSxZQUFBO0VBQ0EsZUFBQTtFQUNBLFVBQUE7RUFDQSxRQUFBO0VBQ0EsVUFBQTtBREhKO0FDTUE7RUFDSSw2QkFBQTtFQUNBLFlBQUE7RUFDQSxpQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0FESko7QUNPQTtFQUNJLFdBQUE7QURMSjtBQ1FBOztFQUNJLFlBQUE7RUFDQSxZQUFBO0VBQ0EsYUFBQTtFQUNBLFdBQUE7QURMSjtBQ1FBO0VBQ0ksMkRBQUE7RUFDQSxzQkFBQTtBRE5KO0FDVUE7RUFBaUIsNERBQUE7RUFBMEYsc0JBQUE7QUROM0c7QUNRQTtFQUFrQiw4REFBQTtFQUE0RixzQkFBQTtBREo5RztBQ01BO0VBQW9CLCtEQUFBO0VBQTZGLHNCQUFBO0FERmpIO0FDSUE7RUFDSSxZQUFBO0VBQ0EsV0FBQTtFQUNBLGdCQUFBO0FERko7QUNLQTtFQUFhLDZEQUFBO0VBQTJGLHNCQUFBO0FERHhHO0FDR0E7RUFBbUIsOERBQUE7RUFBNEYsc0JBQUE7QURDL0c7QUNDQTtFQUFvQixnRUFBQTtFQUE4RixzQkFBQTtBREdsSDtBQ0RBO0VBQXNCLGlFQUFBO0VBQStGLHNCQUFBO0FES3JIO0FDSEE7RUFDSSxZQUFBO0VBQ0EsV0FBQTtFQUNBLGdCQUFBO0FES0o7QUNGQTtFQUNJLFdBQUE7RUFDQSwwQkFBQTtFQUNBLGVBQUE7QURJSjtBQ0RBO0VBQ0ksV0FBQTtBREdKIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQubGVzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qQGJsYWNrOiAjMDAwO1xuQG9yYW5nZTogb3JhbmdlO1xuQGdyYXk6ICM1NTU7XG5Ac2lsdmVyOiAjYWFhO1xuQHdoaXRlOiAjZmZmOyovXG4vKi50aGVtZS1kYXJrIHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEBibGFjaztcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHNpbHZlcjtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAZ3JheTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEBncmF5O1xuICAgIEBmb250LWNvbG9yIDogQHdoaXRlO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59XG5cblxuLnRoZW1lLWxpZ2h0IHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHdoaXRlO1xuICAgIEBkaXNhYmxlLWNvbG9yIDogQHdoaXRlO1xuICAgIEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZm9udC1jb2xvcjogQGJsYWNrO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59Ki9cbiN0YmxTdHVkaWVzIGEge1xuICBjb2xvcjogI2ZmZjtcbn1cbnVsIHtcbiAgbGlzdC1zdHlsZTogbm9uZTtcbiAgcGFkZGluZy1pbmxpbmUtc3RhcnQ6IDBweDtcbn1cbmxpIHtcbiAgZmxvYXQ6IGxlZnQ7XG4gIHBhZGRpbmc6IDJweDtcbn1cbmxpIGJ1dHRvbiB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cbnRoZWFkIHtcbiAgYmFja2dyb3VuZDogIzU1NTtcbn1cbnRoZWFkIHRyIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcbn1cbnRoZWFkIHRkIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcbn1cbnRoZWFkIGRpdiB7XG4gIGZvbnQtd2VpZ2h0OiBub3JtYWw7XG59XG4ud29ya2xpc3RIZWFkZXIge1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIG1pbi13aWR0aDogNTBweDtcbn1cbiNoZWFkQ29udGVudCB0ZCB0ciB7XG4gIGJvcmRlcjogMHB4O1xufVxuI3RibFN0dWRpZXMgdGQge1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICBjb2xvcjogI2NjYztcbn1cbiN0YmxTdHVkaWVzIHRkIHRkIHtcbiAgYm9yZGVyOiBub25lO1xufVxuI3RibFN0dWRpZXMgdGgge1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xufVxuI3RibFN0dWRpZXMgdHIuY3VzdC1pbmZvIHRkIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbn1cbiN0clN0dWRpZXNIZWFkZXIgYSB7XG4gIGNvbG9yOiAjY2NjO1xufVxuI3RyU2VyaWVzSGVhZGVyIGEge1xuICBjb2xvcjogI2ZmZjtcbn1cbiN0clN0dWRpZXNIZWFkZXIgdHIgdGQge1xuICBib3JkZXI6IGhpZGRlbjtcbiAgcGFkZGluZy1yaWdodDogNXB4O1xufVxuI3RyU3R1ZGllc1F1ZXJ5IGlucHV0W3R5cGU9dGV4dF0ge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMDAwO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICB3aWR0aDogMTAwJTtcbn1cbiN0clN0dWRpZXNRdWVyeSBpbnB1dFt0eXBlPWNoZWNrYm94XSB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMwMDA7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gIHdpZHRoOiAxMDAlO1xufVxuc2VsZWN0IHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcbiAgd2lkdGg6IDEwMCU7XG59XG4jdHJTdHVkaWVzUXVlcnkgdGQ6bnRoLWNoaWxkKG4pIHtcbiAgbWFyZ2luOiAwcHg7XG4gIHBhZGRpbmc6IDFweDtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbn1cbiN0YmxTdHVkaWVzIHRib2R5IHRyOm50aC1jaGlsZCgybikge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMTgxODE4O1xufVxuI3RibFN0dWRpZXMgdGJvZHkgdHI6aG92ZXIge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1O1xuICBjb2xvcjogb3JhbmdlO1xufVxuI3RyU3R1ZGllc1F1ZXJ5IC5kcm9wZG93biB7XG4gIGJhY2tncm91bmQtY29sb3I6ICM1NTU7XG4gIGNvbG9yOiByZWQ7XG59XG4jdHJTdHVkaWVzUXVlcnkgLmRyb3Bkb3duIC5idG4ge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1O1xuICBtaW4td2lkdGg6IDcwcHg7XG4gIHBhZGRpbmc6IDFweCA2cHg7XG59XG4ubG9hZGluZy1zaGFkZSB7XG4gIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gIGJhY2tncm91bmQ6ICMwMDA7XG4gIGJvdHRvbTogMHB4O1xuICBkaXNwbGF5OiBmbGV4O1xuICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgbGVmdDogMHB4O1xuICBtYXJnaW46IGF1dG87XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgcmlnaHQ6IDBweDtcbiAgdG9wOiAwcHg7XG4gIHotaW5kZXg6IDE7XG59XG4uc2hvcnRjdXQtbmFtZS1idXR0b24ge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDtcbiAgYm9yZGVyOiBub25lO1xuICBib3JkZXItd2lkdGg6IDBweDtcbiAgY29sb3I6IGluaGVyaXQ7XG4gIG91dGxpbmU6IG5vbmU7XG59XG4uc2hvcnRjdXQtbmFtZS1idXR0b246ZGlzYWJsZWQge1xuICBjb2xvcjogIzU1NTtcbn1cbi5zZXRSZWFkLFxuLnNldFVucmVhZCB7XG4gIGJvcmRlcjogbm9uZTtcbiAgaGVpZ2h0OiA0MHB4O1xuICBvdXRsaW5lOiBub25lO1xuICB3aWR0aDogNDBweDtcbn1cbi5zZXRSZWFkIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wO1xuICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xufVxuLnNldFJlYWQ6aG92ZXIge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0UmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xuICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xufVxuLnNldFJlYWQ6YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tO1xuICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xufVxuLnNldFJlYWQ6ZGlzYWJsZWQge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0UmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tO1xuICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xufVxuLnNldFJlYWRDb3ZlciB7XG4gIGhlaWdodDogMjBweDtcbiAgd2lkdGg6IDIwcHg7XG4gIG92ZXJmbG93OiBoaWRkZW47XG59XG4uc2V0VW5yZWFkIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7XG4gIGJhY2tncm91bmQtc2l6ZTogY292ZXI7XG59XG4uc2V0VW5yZWFkOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xuICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xufVxuLnNldFVucmVhZDphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0VW5yZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTtcbiAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cbi5zZXRVbnJlYWQ6ZGlzYWJsZWQge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0VW5yZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207XG4gIGJhY2tncm91bmQtc2l6ZTogY292ZXI7XG59XG4uc2V0VW5yZWFkQ292ZXIge1xuICBoZWlnaHQ6IDIwcHg7XG4gIHdpZHRoOiAyMHB4O1xuICBvdmVyZmxvdzogaGlkZGVuO1xufVxuLm9ubGluZVN0dWR5IHtcbiAgY29sb3I6ICNmZmY7XG4gIHRleHQtZGVjb3JhdGlvbjogdW5kZXJsaW5lO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG4ub2ZmbGluZVN0dWR5IHtcbiAgY29sb3I6ICM1NTU7XG59XG4iLCJAaW1wb3J0ICcuLi8uLi8uLi8uLi90aGVtZXMubGVzcyc7XG5cbiN0YmxTdHVkaWVzIGEge1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbn1cblxudWwge1xuICAgIGxpc3Qtc3R5bGU6IG5vbmU7XG4gICAgcGFkZGluZy1pbmxpbmUtc3RhcnQ6IDBweDtcbn1cblxubGkge1xuICAgIGZsb2F0OiBsZWZ0O1xuICAgIHBhZGRpbmc6IDJweDtcbn1cblxuICAgIGxpIGJ1dHRvbiB7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICB9XG5cbnRoZWFkIHtcbiAgICBiYWNrZ3JvdW5kOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG59XG5cbnRoZWFkIHRyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG59XG5cbnRoZWFkIHRkIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG59XG5cbnRoZWFkIGRpdiB7XG4gICAgZm9udC13ZWlnaHQ6IG5vcm1hbDtcbn1cblxuLndvcmtsaXN0SGVhZGVyIHtcbiAgICBjdXJzb3I6cG9pbnRlcjtcbiAgICBtaW4td2lkdGg6NTBweDtcbn1cblxuI2hlYWRDb250ZW50IHRkIHRye1xuICAgIGJvcmRlcjogMHB4O1xufVxuXG4jdGJsU3R1ZGllcyB0ZCB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICBjb2xvcjogQGZvbnQtc2Vjb25kLWNvbG9yO1xufVxuXG4jdGJsU3R1ZGllcyB0ZCB0ZCB7XG4gICAgYm9yZGVyIDogbm9uZTtcbn1cblxuXG4jdGJsU3R1ZGllcyB0aCB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbn1cblxuI3RibFN0dWRpZXMgdHIuY3VzdC1pbmZvIHRkIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbn1cblxuI3RyU3R1ZGllc0hlYWRlciBhIHtcbiAgICBjb2xvcjogQGZvbnQtc2Vjb25kLWNvbG9yO1xufVxuXG4jdHJTZXJpZXNIZWFkZXIgYSB7XG4gICAgY29sb3I6IEBmb250LWNvbG9yO1xufVxuXG4jdHJTdHVkaWVzSGVhZGVyIHRyIHRkIHtcbiAgICBib3JkZXI6aGlkZGVuO1xuICAgIHBhZGRpbmctcmlnaHQ6NXB4O1xufVxuXG4jdHJTdHVkaWVzUXVlcnkgaW5wdXRbdHlwZT10ZXh0XSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG4jdHJTdHVkaWVzUXVlcnkgaW5wdXRbdHlwZT1jaGVja2JveF0ge1xuICAgIGJhY2tncm91bmQtY29sb3I6IEBiYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICB3aWR0aDogMTAwJTtcbn1cblxuc2VsZWN0IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBib3JkZXI6IDFweCBzb2xpZCBAYm9yZGVyLWNvbG9yO1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG4jdHJTdHVkaWVzUXVlcnkgdGQ6bnRoLWNoaWxkKG4pIHtcbiAgICBtYXJnaW46IDBweDtcbiAgICBwYWRkaW5nOiAxcHg7XG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbn1cblxuI3RibFN0dWRpZXMgdGJvZHkgdHI6bnRoLWNoaWxkKDJuKSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQG9kZC10ci1jb2xvcjtcbn1cblxuI3RibFN0dWRpZXMgdGJvZHkgdHI6aG92ZXIge1xuICAgIGJhY2tncm91bmQtY29sb3I6IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICBjb2xvcjogQHVuZGVybGluZS1jb2xvcjtcbn1cblxuXG4jdHJTdHVkaWVzUXVlcnkgLmRyb3Bkb3duIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG4gICAgY29sb3I6IEBlcnJvci1jb2xvcjtcbn1cblxuICAgICN0clN0dWRpZXNRdWVyeSAuZHJvcGRvd24gLmJ0biB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICAgICAgbWluLXdpZHRoOiA3MHB4O1xuICAgICAgICBwYWRkaW5nOiAxcHggNnB4O1xuICAgIH1cblxuLmxvYWRpbmctc2hhZGUge1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgYmFja2dyb3VuZDogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm90dG9tOiAwcHg7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICBsZWZ0OiAwcHg7XG4gICAgbWFyZ2luOiBhdXRvO1xuICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICByaWdodDogMHB4O1xuICAgIHRvcDogMHB4O1xuICAgIHotaW5kZXg6IDE7XG59XG5cbi5zaG9ydGN1dC1uYW1lLWJ1dHRvbiB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIGJvcmRlci13aWR0aDogMHB4O1xuICAgIGNvbG9yOiBpbmhlcml0O1xuICAgIG91dGxpbmU6IG5vbmU7XG59XG5cbi5zaG9ydGN1dC1uYW1lLWJ1dHRvbjpkaXNhYmxlZCB7XG4gICAgY29sb3I6IEBkaXNhYmxlLWNvbG9yO1xufVxuXG4uc2V0UmVhZCwgLnNldFVucmVhZCB7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIGhlaWdodDogNDBweDtcbiAgICBvdXRsaW5lOiBub25lO1xuICAgIHdpZHRoOiA0MHB4O1xufVxuXG4uc2V0UmVhZCB7IFxuICAgIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcCA7XG4gICAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cblxuXG4uc2V0UmVhZDpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0UmVhZDphY3RpdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0UmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0UmVhZDpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0UmVhZENvdmVyIHtcbiAgICBoZWlnaHQ6IDIwcHg7XG4gICAgd2lkdGg6IDIwcHg7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cblxuLnNldFVucmVhZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRVbnJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wOyBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO31cblxuLnNldFVucmVhZDpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRVbnJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjt9XG5cbi5zZXRVbnJlYWQ6YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0VW5yZWFkOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO31cblxuLnNldFVucmVhZENvdmVyIHtcbiAgICBoZWlnaHQ6IDIwcHg7XG4gICAgd2lkdGg6IDIwcHg7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cblxuLm9ubGluZVN0dWR5IHtcbiAgICBjb2xvcjogQGZvbnQtY29sb3I7XG4gICAgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmU7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4ub2ZmbGluZVN0dWR5IHtcbiAgICBjb2xvcjpAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG59XG5cbiJdfQ== */"
 
 /***/ }),
 
@@ -9350,6 +10712,7 @@ var WorklistComponent = /** @class */ (function () {
         this.currentPage = 1;
         this.isDesc = false;
         this.orderHeader = "";
+        this.myplaceHolder = 'Enter Name';
         this.worklistColumnsTemp = [
             "PatientID",
             "PatientName",
@@ -9383,13 +10746,14 @@ var WorklistComponent = /** @class */ (function () {
         this.worklistService.onQueryWorklistCol();
     };
     WorklistComponent.prototype.onStudyChecked = function (study) {
-        study.checked = !study.checked;
+        study.studyChecked = !study.studyChecked;
+        this.onCheckStudyChanged();
     };
     WorklistComponent.prototype.onAllStudyChecked = function (event) {
-        this.worklistService.studies.forEach(function (study) { return study.checked = event.target.checked; });
+        this.worklistService.studies.forEach(function (study) { return study.studyChecked = event.target.studyChecked; });
     };
     WorklistComponent.prototype.doShowStudy = function (study) {
-        study.checked = true;
+        study.studyChecked = true;
         this.worklistService.onShowSingleStudy(study);
     };
     WorklistComponent.prototype.onStudyDateChangeSelect = function (optionValue) {
@@ -9441,6 +10805,16 @@ var WorklistComponent = /** @class */ (function () {
     WorklistComponent.prototype.onCheckStudyChanged = function () {
         this.worklistService.onCheckStudyChanged();
     };
+    WorklistComponent.prototype.checkPlaceHolder = function () {
+        if (this.myplaceHolder) {
+            this.myplaceHolder = null;
+            return;
+        }
+        else {
+            this.myplaceHolder = 'Enter Name';
+            return;
+        }
+    };
     WorklistComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: "app-worklist",
@@ -9451,7 +10825,7 @@ var WorklistComponent = /** @class */ (function () {
                 { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_5__["DateAdapter"], useClass: _angular_material_moment_adapter__WEBPACK_IMPORTED_MODULE_4__["MomentDateAdapter"], deps: [_angular_material_core__WEBPACK_IMPORTED_MODULE_5__["MAT_DATE_LOCALE"]] },
                 { provide: _angular_material_core__WEBPACK_IMPORTED_MODULE_5__["MAT_DATE_FORMATS"], useValue: MY_FORMATS },
             ],
-            styles: [__webpack_require__(/*! ./worklist.component.css */ "./src/app/components/worklist-shell/worklist/worklist.component.css")]
+            styles: [__webpack_require__(/*! ./worklist.component.less */ "./src/app/components/worklist-shell/worklist/worklist.component.less")]
         }),
         __metadata("design:paramtypes", [_services_worklist_service__WEBPACK_IMPORTED_MODULE_1__["WorklistService"], _services_dialog_service__WEBPACK_IMPORTED_MODULE_2__["DialogService"]])
     ], WorklistComponent);
@@ -9466,7 +10840,7 @@ var WorklistComponent = /** @class */ (function () {
 /*!**************************************!*\
   !*** ./src/app/models/annotation.ts ***!
   \**************************************/
-/*! exports provided: PositionInRectangle, AnnType, MouseEventType, Point, Size, Rectangle, Annotation, AnnGuideStepConfig, AnnGuideStepData, AnnGuideActionButton, AnnGuideData */
+/*! exports provided: PositionInRectangle, AnnType, MouseEventType, Point, Size, Rectangle, AnnotationDefinitionData, AnnGuideStepConfig, AnnGuideStepData, AnnGuideActionButton, AnnGuideData */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9477,7 +10851,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Point", function() { return Point; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Size", function() { return Size; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Rectangle", function() { return Rectangle; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Annotation", function() { return Annotation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnotationDefinitionData", function() { return AnnotationDefinitionData; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnGuideStepConfig", function() { return AnnGuideStepConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnGuideStepData", function() { return AnnGuideStepData; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnGuideActionButton", function() { return AnnGuideActionButton; });
@@ -9493,11 +10867,56 @@ var PositionInRectangle;
     PositionInRectangle[PositionInRectangle["BottomLeft"] = 6] = "BottomLeft";
     PositionInRectangle[PositionInRectangle["BottomRight"] = 7] = "BottomRight";
 })(PositionInRectangle || (PositionInRectangle = {}));
+// Annotation type, copied from ImageSuite Acq.
+// The annotation type in Web and Acq is different. Not sure why.
 var AnnType;
 (function (AnnType) {
-    AnnType[AnnType["Line"] = 1] = "Line";
-    AnnType[AnnType["Circle"] = 2] = "Circle";
-    AnnType[AnnType["Rectangle"] = 3] = "Rectangle";
+    AnnType[AnnType["None"] = 0] = "None";
+    AnnType[AnnType["Select"] = 1] = "Select";
+    AnnType[AnnType["Rect"] = 2] = "Rect";
+    AnnType[AnnType["RectEx"] = 3] = "RectEx";
+    AnnType[AnnType["Ellipse"] = 4] = "Ellipse";
+    AnnType[AnnType["Pointer"] = 5] = "Pointer";
+    AnnType[AnnType["FreeArea"] = 6] = "FreeArea";
+    AnnType[AnnType["Text"] = 7] = "Text";
+    AnnType[AnnType["Ruler"] = 8] = "Ruler";
+    AnnType[AnnType["Protractor"] = 9] = "Protractor";
+    AnnType[AnnType["Arrow"] = 10] = "Arrow";
+    AnnType[AnnType["Stamp"] = 11] = "Stamp";
+    AnnType[AnnType["Multiline"] = 12] = "Multiline";
+    AnnType[AnnType["HeartChestRatio"] = 13] = "HeartChestRatio";
+    AnnType[AnnType["CobbAngle"] = 14] = "CobbAngle";
+    AnnType[AnnType["LipmanCobbAngle"] = 15] = "LipmanCobbAngle";
+    AnnType[AnnType["Coxometry"] = 16] = "Coxometry";
+    AnnType[AnnType["Goniometry"] = 17] = "Goniometry";
+    AnnType[AnnType["Gd"] = 18] = "Gd";
+    AnnType[AnnType["Vd"] = 19] = "Vd";
+    AnnType[AnnType["Vhs"] = 20] = "Vhs";
+    AnnType[AnnType["Tta"] = 21] = "Tta";
+    AnnType[AnnType["Tplo"] = 22] = "Tplo";
+    AnnType[AnnType["Laminitis"] = 23] = "Laminitis";
+    AnnType[AnnType["Polygon"] = 24] = "Polygon";
+    AnnType[AnnType["Blade"] = 25] = "Blade";
+    AnnType[AnnType["Chiro"] = 26] = "Chiro";
+    AnnType[AnnType["Gonstead"] = 27] = "Gonstead";
+    AnnType[AnnType["Vaxis"] = 28] = "Vaxis";
+    AnnType[AnnType["VlineDistance"] = 29] = "VlineDistance";
+    AnnType[AnnType["LineExt"] = 30] = "LineExt";
+    AnnType[AnnType["CervicalCurve"] = 31] = "CervicalCurve";
+    AnnType[AnnType["LumbarCurve"] = 32] = "LumbarCurve";
+    AnnType[AnnType["GeorgeLine"] = 33] = "GeorgeLine";
+    AnnType[AnnType["LineEx1"] = 34] = "LineEx1";
+    AnnType[AnnType["OffsetCobbAngle"] = 35] = "OffsetCobbAngle";
+    AnnType[AnnType["ExtendedCobbAngle"] = 36] = "ExtendedCobbAngle";
+    AnnType[AnnType["MarkSpot"] = 37] = "MarkSpot";
+    AnnType[AnnType["LineRatio"] = 38] = "LineRatio";
+    AnnType[AnnType["VerticalDeflection"] = 39] = "VerticalDeflection";
+    AnnType[AnnType["HorizontalDeflection"] = 40] = "HorizontalDeflection";
+    AnnType[AnnType["GeorgesLineNew"] = 41] = "GeorgesLineNew";
+    AnnType[AnnType["Ara"] = 42] = "Ara";
+    AnnType[AnnType["VertebralCompression"] = 43] = "VertebralCompression";
+    AnnType[AnnType["Cmap"] = 44] = "Cmap";
+    AnnType[AnnType["LoganBasicMarking"] = 45] = "LoganBasicMarking";
 })(AnnType || (AnnType = {}));
 var MouseEventType;
 (function (MouseEventType) {
@@ -9537,14 +10956,16 @@ var Rectangle = /** @class */ (function () {
     return Rectangle;
 }());
 
-var Annotation = /** @class */ (function () {
-    function Annotation(classType, className, cursorName, needGuide) {
+var AnnotationDefinitionData = /** @class */ (function () {
+    function AnnotationDefinitionData(classType, cursorName, needGuide, imageSuiteAnnName, imageSuiteAnnType) {
         this.classType = classType;
-        this.className = className;
         this.cursorName = cursorName;
         this.needGuide = needGuide;
+        this.imageSuiteAnnName = imageSuiteAnnName;
+        this.imageSuiteAnnType = imageSuiteAnnType;
+        this.className = classType.name;
     }
-    return Annotation;
+    return AnnotationDefinitionData;
 }());
 
 // The configuration data for each step of the annotation
@@ -9646,11 +11067,10 @@ var AnnGuideActionButton = /** @class */ (function () {
 }());
 
 var AnnGuideData = /** @class */ (function () {
-    function AnnGuideData(annName, cursor) {
+    function AnnGuideData(annName) {
         this.guideStepConfigList = [];
         this.guideStepImageList = [];
         this.annName = annName;
-        this.cursor = cursor;
     }
     AnnGuideData.prototype.addStepConfig = function (annGuideStepConfig) {
         this.guideStepConfigList.push(annGuideStepConfig);
@@ -9864,6 +11284,7 @@ var MessageBoxType;
     MessageBoxType[MessageBoxType["Warning"] = 2] = "Warning";
     MessageBoxType[MessageBoxType["Error"] = 3] = "Error";
     MessageBoxType[MessageBoxType["Input"] = 4] = "Input";
+    MessageBoxType[MessageBoxType["InfoCancel"] = 5] = "InfoCancel";
 })(MessageBoxType || (MessageBoxType = {}));
 var DialogResult;
 (function (DialogResult) {
@@ -9926,41 +11347,49 @@ var MarkerGroupData = /** @class */ (function () {
 /*!***********************************!*\
   !*** ./src/app/models/overlay.ts ***!
   \***********************************/
-/*! exports provided: Overlay, OverlayDisplayGroup, OverlayDisplayItem */
+/*! exports provided: TextOverlayData, TextOverlayDisplayGroup, TextOverlayDisplayItem, GraphicOverlayData */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Overlay", function() { return Overlay; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OverlayDisplayGroup", function() { return OverlayDisplayGroup; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OverlayDisplayItem", function() { return OverlayDisplayItem; });
-var Overlay = /** @class */ (function () {
-    function Overlay() {
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TextOverlayData", function() { return TextOverlayData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TextOverlayDisplayGroup", function() { return TextOverlayDisplayGroup; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TextOverlayDisplayItem", function() { return TextOverlayDisplayItem; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GraphicOverlayData", function() { return GraphicOverlayData; });
+var TextOverlayData = /** @class */ (function () {
+    function TextOverlayData() {
     }
-    return Overlay;
+    return TextOverlayData;
 }());
 
-var OverlayDisplayGroup = /** @class */ (function () {
-    function OverlayDisplayGroup(overlay) {
+var TextOverlayDisplayGroup = /** @class */ (function () {
+    function TextOverlayDisplayGroup(overlay) {
         this.gridX = overlay.gridX;
         this.gridY = overlay.gridY;
         this.modality = overlay.modality;
         this.itemListAlignLeft = [];
         this.itemListAlignRight = [];
     }
-    OverlayDisplayGroup.prototype.match = function (overlay) {
+    TextOverlayDisplayGroup.prototype.match = function (overlay) {
         return this.gridX === overlay.gridX && this.gridY === overlay.gridY && this.modality === overlay.modality;
     };
-    OverlayDisplayGroup.prototype.add = function (overlay) {
+    TextOverlayDisplayGroup.prototype.add = function (overlay) {
         overlay.offsetX > 0 ? this.itemListAlignLeft.push(overlay) : this.itemListAlignRight.push(overlay);
     };
-    return OverlayDisplayGroup;
+    return TextOverlayDisplayGroup;
 }());
 
-var OverlayDisplayItem = /** @class */ (function () {
-    function OverlayDisplayItem() {
+var TextOverlayDisplayItem = /** @class */ (function () {
+    function TextOverlayDisplayItem() {
     }
-    return OverlayDisplayItem;
+    return TextOverlayDisplayItem;
+}());
+
+var GraphicOverlayData = /** @class */ (function () {
+    function GraphicOverlayData() {
+        this.dataList = [];
+    }
+    return GraphicOverlayData;
 }());
 
 
@@ -9971,7 +11400,7 @@ var OverlayDisplayItem = /** @class */ (function () {
 /*!********************************!*\
   !*** ./src/app/models/pssi.ts ***!
   \********************************/
-/*! exports provided: Pssi, Patient, Study, Series, Image, MultiframeImage, WorklistColumn, RecWorklistData, RecOfflineImageInfo */
+/*! exports provided: Pssi, Patient, Study, Series, Image, MultiframeImage, WorklistColumn, RecWorklistData, RecOfflineImageInfo, StudyTemp */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -9985,6 +11414,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WorklistColumn", function() { return WorklistColumn; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecWorklistData", function() { return RecWorklistData; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecOfflineImageInfo", function() { return RecOfflineImageInfo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StudyTemp", function() { return StudyTemp; });
 /* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/annotation */ "./src/app/models/annotation.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -10028,6 +11458,7 @@ var Patient = /** @class */ (function (_super) {
         clonedPatient.patientAge = patient.patientAge;
         clonedPatient.breed = patient.breed;
         clonedPatient.species = patient.species;
+        clonedPatient.patientComments = patient.patientComments;
         clonedPatient.studyList = new Array();
         if (cloneChild) {
             patient.studyList.forEach(function (study) {
@@ -10052,7 +11483,7 @@ var Study = /** @class */ (function (_super) {
     };
     Study.clone = function (study, cloneChild) {
         var clonedStudy = new Study();
-        clonedStudy.checked = study.checked;
+        clonedStudy.studyChecked = study.studyChecked;
         clonedStudy.detailsLoaded = study.detailsLoaded;
         clonedStudy.id = study.id;
         clonedStudy.studyId = study.studyId;
@@ -10100,7 +11531,7 @@ var Series = /** @class */ (function (_super) {
         clonedSeries.seriesTimeString = series.seriesTimeString;
         clonedSeries.bodyPart = series.bodyPart;
         clonedSeries.viewPosition = series.viewPosition;
-        clonedSeries.seriesNumber = series.seriesNumber;
+        clonedSeries.seriesNo = series.seriesNo;
         clonedSeries.imageCount = series.imageCount;
         clonedSeries.contrastBolus = series.contrastBolus;
         clonedSeries.localBodyPart = series.localBodyPart;
@@ -10125,7 +11556,10 @@ var Series = /** @class */ (function (_super) {
 var Image = /** @class */ (function (_super) {
     __extends(Image, _super);
     function Image() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.annObjList = [];
+        _this.graphicOverlayDataList = [];
+        return _this;
     }
     Image.clone = function (image, cloneChild) {
         var clonedImage = new Image();
@@ -10248,10 +11682,51 @@ var RecOfflineImageInfo = /** @class */ (function () {
     return RecOfflineImageInfo;
 }());
 
-var DictOfflineFlag = /** @class */ (function () {
-    function DictOfflineFlag() {
+var StudyTemp = /** @class */ (function (_super) {
+    __extends(StudyTemp, _super);
+    function StudyTemp() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    return DictOfflineFlag;
+    StudyTemp.prototype.setHide = function (hide) {
+        this.hide = hide;
+        this.seriesList.forEach(function (series) { return series.setHide(hide); });
+    };
+    StudyTemp.clone = function (study, cloneChild) {
+        var clonedStudy = new Study();
+        clonedStudy.studyChecked = study.studyChecked;
+        clonedStudy.detailsLoaded = study.detailsLoaded;
+        clonedStudy.id = study.id;
+        clonedStudy.studyId = study.studyId;
+        clonedStudy.studyInstanceUid = study.studyInstanceUid;
+        clonedStudy.studyDate = study.studyDate;
+        clonedStudy.studyTime = study.studyTime;
+        clonedStudy.accessionNo = study.accessionNo;
+        clonedStudy.seriesCount = study.seriesCount;
+        clonedStudy.imageCount = study.imageCount;
+        clonedStudy.modality = study.modality;
+        clonedStudy.studyDescription = study.studyDescription;
+        clonedStudy.referPhysician = study.referPhysician;
+        clonedStudy.tokenId = study.tokenId;
+        clonedStudy.additionalPatientHistory = study.additionalPatientHistory;
+        clonedStudy.veterinarian = study.veterinarian;
+        clonedStudy.requestedProcPriority = study.requestedProcPriority;
+        clonedStudy.seriesList = new Array();
+        if (cloneChild) {
+            study.seriesList.forEach(function (series) {
+                var clonedSeries = Series.clone(series, cloneChild);
+                clonedSeries.study = clonedStudy;
+                clonedStudy.seriesList.push(clonedSeries);
+            });
+        }
+        return clonedStudy;
+    };
+    return StudyTemp;
+}(Pssi));
+
+var PatientTemp = /** @class */ (function () {
+    function PatientTemp() {
+    }
+    return PatientTemp;
 }());
 
 
@@ -10301,6 +11776,12 @@ var Shortcut = /** @class */ (function () {
         this.studyDateTo = null;
         this.studyId = "";
         this.accessionNo = "";
+        this.instanceAvailability = "";
+        this.bodyPartExamined = "";
+        this.studyDescription = "";
+        this.reserved = "";
+        this.readed = "";
+        this.printed = "";
     };
     Shortcut.prototype.copyConditionFrom = function (shortcut) {
         this.patientId = shortcut.patientId;
@@ -10314,6 +11795,12 @@ var Shortcut = /** @class */ (function () {
         this.studyDateTo = shortcut.studyDateTo;
         this.studyId = shortcut.studyId;
         this.accessionNo = shortcut.accessionNo;
+        this.instanceAvailability = shortcut.instanceAvailability;
+        this.bodyPartExamined = shortcut.bodyPartExamined;
+        this.studyDescription = shortcut.studyDescription;
+        this.reserved = shortcut.reserved;
+        this.readed = shortcut.readed;
+        this.printed = shortcut.printed;
     };
     Shortcut.prototype.clone = function (theObj) {
         var obj = {};
@@ -10621,6 +12108,123 @@ var ViewerShellData = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/services/annotation.service.ts":
+/*!************************************************!*\
+  !*** ./src/app/services/annotation.service.ts ***!
+  \************************************************/
+/*! exports provided: AnnotationService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnotationService", function() { return AnnotationService; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _annotation_extend_object_ann_line__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../annotation/extend-object/ann-line */ "./src/app/annotation/extend-object/ann-line.ts");
+/* harmony import */ var _annotation_extend_object_ann_ellipse__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../annotation/extend-object/ann-ellipse */ "./src/app/annotation/extend-object/ann-ellipse.ts");
+/* harmony import */ var _annotation_extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../annotation/extend-object/ann-rectangle */ "./src/app/annotation/extend-object/ann-rectangle.ts");
+/* harmony import */ var _annotation_extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../annotation/extend-object/ann-arrow */ "./src/app/annotation/extend-object/ann-arrow.ts");
+/* harmony import */ var _annotation_extend_object_ann_ruler__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../annotation/extend-object/ann-ruler */ "./src/app/annotation/extend-object/ann-ruler.ts");
+/* harmony import */ var _annotation_extend_object_ann_cardiothoracic_ratio__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../annotation/extend-object/ann-cardiothoracic-ratio */ "./src/app/annotation/extend-object/ann-cardiothoracic-ratio.ts");
+/* harmony import */ var _annotation_extend_object_ann_vertical_axis__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../annotation/extend-object/ann-vertical-axis */ "./src/app/annotation/extend-object/ann-vertical-axis.ts");
+/* harmony import */ var _annotation_extend_object_ann_mark_spot__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../annotation/extend-object/ann-mark-spot */ "./src/app/annotation/extend-object/ann-mark-spot.ts");
+/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
+/* harmony import */ var _annotation_extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../annotation/extend-object/ann-polygon */ "./src/app/annotation/extend-object/ann-polygon.ts");
+/* harmony import */ var _annotation_extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../annotation/extend-object/ann-angle */ "./src/app/annotation/extend-object/ann-angle.ts");
+/* harmony import */ var _annotation_extend_object_ann_cervical_curve__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../annotation/extend-object/ann-cervical-curve */ "./src/app/annotation/extend-object/ann-cervical-curve.ts");
+/* harmony import */ var _annotation_extend_object_ann_lumbar_curve__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../annotation/extend-object/ann-lumbar-curve */ "./src/app/annotation/extend-object/ann-lumbar-curve.ts");
+/* harmony import */ var _annotation_extend_object_ann_free_area__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../annotation/extend-object/ann-free-area */ "./src/app/annotation/extend-object/ann-free-area.ts");
+/* harmony import */ var _annotation_extend_object_ann_point__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../annotation/extend-object/ann-point */ "./src/app/annotation/extend-object/ann-point.ts");
+/* harmony import */ var _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../annotation/extend-object/ann-text */ "./src/app/annotation/extend-object/ann-text.ts");
+/* harmony import */ var _annotation_extend_object_ann_text_indicator__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../annotation/extend-object/ann-text-indicator */ "./src/app/annotation/extend-object/ann-text-indicator.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var AnnotationService = /** @class */ (function () {
+    function AnnotationService() {
+        this.annDefinitionList = [];
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_line__WEBPACK_IMPORTED_MODULE_2__["AnnLine"], "ann_line", false, "CGXAnnLineEx", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].LineExt));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_ellipse__WEBPACK_IMPORTED_MODULE_3__["AnnEllipse"], "ellipse", false, "CGXAnnEllipse", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Ellipse));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_rectangle__WEBPACK_IMPORTED_MODULE_4__["AnnRectangle"], "rect", false, "CGXAnnSquare", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Rect));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_arrow__WEBPACK_IMPORTED_MODULE_5__["AnnArrow"], "ann_line", false, "CGXAnnArrowMark", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Arrow));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_ruler__WEBPACK_IMPORTED_MODULE_6__["AnnRuler"], "ann_line", false, "CGXAnnRuler", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Ruler));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_vertical_axis__WEBPACK_IMPORTED_MODULE_8__["AnnVerticalAxis"], "ann_cervicalcurve", false, "CGXAnnVAxis", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Vaxis));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_10__["AnnImage"], "ann_stamp", false, "CGXAnnStamp", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Stamp));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_polygon__WEBPACK_IMPORTED_MODULE_11__["AnnPolygon"], "polygon", false, "CGXAnnPolygon", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Polygon));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_angle__WEBPACK_IMPORTED_MODULE_12__["AnnAngle"], "ann_angle", false, "CGXAnnProtractor", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Protractor));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_free_area__WEBPACK_IMPORTED_MODULE_15__["AnnFreeArea"], "ann_freearea", false, "CGXAnnFreeArea", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].FreeArea));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_17__["AnnText"], "ann_text", false, "CGXAnnTextMark", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Text));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_cardiothoracic_ratio__WEBPACK_IMPORTED_MODULE_7__["AnnCardiothoracicRatio"], "ann_cervicalcurve", true, "CGXAnnHCRatio", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].HeartChestRatio));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_mark_spot__WEBPACK_IMPORTED_MODULE_9__["AnnMarkSpot"], "ann_line", true, "CGXAnnMarkSpot", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].MarkSpot));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_cervical_curve__WEBPACK_IMPORTED_MODULE_13__["AnnCervicalCurve"], "ann_cervicalcurve", true, "CGXAnnCervicalCurve", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].CervicalCurve));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_lumbar_curve__WEBPACK_IMPORTED_MODULE_14__["AnnLumbarCurve"], "ann_cervicalcurve", true, "CGXAnnLumbarCurve", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].LumbarCurve));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_point__WEBPACK_IMPORTED_MODULE_16__["AnnPoint"], "none", false, "", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].None));
+        this.annDefinitionList.push(new _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnotationDefinitionData"](_annotation_extend_object_ann_text_indicator__WEBPACK_IMPORTED_MODULE_18__["AnnTextIndicator"], "none", false, "", _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].None));
+    }
+    AnnotationService.prototype.getAnnDefDataByType = function (annType) {
+        var result = this.annDefinitionList.filter(function (annData) { return annData.imageSuiteAnnType === annType; });
+        return this.getSafeResult("getAnnDefDataByType", annType, result);
+    };
+    AnnotationService.prototype.getAnnDefDataByIsName = function (annIsName) {
+        var result = this.annDefinitionList.filter(function (annData) { return annData.imageSuiteAnnName === annIsName; });
+        return this.getSafeResult("getAnnDefDataByIsName", annIsName, result);
+    };
+    AnnotationService.prototype.getAnnDefDataByClassName = function (annClassName) {
+        var result = this.annDefinitionList.filter(function (annData) { return annData.className === annClassName; });
+        return this.getSafeResult("getAnnDefDataByClassName", annClassName, result);
+    };
+    AnnotationService.prototype.getCursorNameByType = function (annType) {
+        var annDefData = this.getAnnDefDataByType(annType);
+        return annDefData ? annDefData.cursorName : "default";
+    };
+    AnnotationService.prototype.getSafeResult = function (funName, getBy, result) {
+        if (result.length === 0) {
+            alert("AnnotationService." + funName + "() - Can not find Annotation data for annotation " + getBy + " in the list");
+            return undefined;
+        }
+        if (result.length > 1) {
+            alert("AnnotationService." + funName + "() - There are more than one Annotation data for annotation " + getBy + " in the list");
+        }
+        return result[0];
+    };
+    AnnotationService = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
+            providedIn: 'root'
+        }),
+        __metadata("design:paramtypes", [])
+    ], AnnotationService);
+    return AnnotationService;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/services/configuration.service.ts":
 /*!***************************************************!*\
   !*** ./src/app/services/configuration.service.ts ***!
@@ -10658,12 +12262,12 @@ var ConfigurationService = /** @class */ (function () {
         this.databaseService = databaseService;
         this.locationStrategy = locationStrategy;
         this.logService = logService;
-        this.overLayList = [];
+        this.textOverlayList = [];
         this.markerConfig = [];
         this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
         this.logService.info("Config: Base url is " + this.baseUrl);
-        this.databaseService.getOverlays().subscribe(function (overlayList) {
-            _this.overLayList = overlayList;
+        this.databaseService.getTextOverlays().subscribe(function (overlayList) {
+            _this.textOverlayList = overlayList;
         });
         this.databaseService.getMarkerConfig().subscribe(function (markerConfig) {
             _this.markerConfig = markerConfig;
@@ -10676,10 +12280,10 @@ var ConfigurationService = /** @class */ (function () {
     ConfigurationService.prototype.getBaseUrl = function () {
         return this.baseUrl;
     };
-    ConfigurationService.prototype.getOverlayConfigList = function () {
-        return this.overLayList;
+    ConfigurationService.prototype.getTextOverlayConfigList = function () {
+        return this.textOverlayList;
     };
-    ConfigurationService.prototype.getOverlayFont = function () {
+    ConfigurationService.prototype.getTextOverlayFont = function () {
         this.textOverlayFont = new _models_misc_data__WEBPACK_IMPORTED_MODULE_4__["FontData"]("Times New Roman", "#FFF", 15);
         return this.textOverlayFont;
     };
@@ -10763,7 +12367,7 @@ var DatabaseService = /** @class */ (function () {
         var url = this.overlayUrl + "/font/";
         return this.http.get(url);
     };
-    DatabaseService.prototype.getOverlays = function () {
+    DatabaseService.prototype.getTextOverlays = function () {
         var _this = this;
         var url = this.overlayUrl + "/";
         return this.http.get(url)
@@ -10788,6 +12392,14 @@ var DatabaseService = /** @class */ (function () {
         var url = this.shortcutUrl + "/create/";
         return this.http.post(url, shortcut, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("save shortcut"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("saveShortcut", [])));
+    };
+    /** Save study to the server */
+    DatabaseService.prototype.updateStudy = function (study) {
+        var _this = this;
+        var url = this.pssiUrl + "/updateStudy/";
+        //let jsonId = { study: study };
+        return this.http.post(url, study, httpOptions)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (study) { return _this.log("udpate study"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("updateStudy")));
     };
     DatabaseService.prototype.setRead = function (id) {
         var _this = this;
@@ -10831,11 +12443,19 @@ var DatabaseService = /** @class */ (function () {
         return this.http.post(url, shortcut, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("delete shortcut"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("deleteShortcut", [])));
     };
-    /** Delete shortcut to the server */
+    /** Get Offline Studies in Checked Studies to the server */
     DatabaseService.prototype.checkStudiesIncludeOffline = function (studyInstanceUIDList) {
         var _this = this;
         var url = this.pssiUrl + "/checkstudiesincludeoffline/";
         var data = { studyInstanceUIDList: studyInstanceUIDList, StudyOfflineMessage: "" };
+        return this.http.post(url, data, httpOptions)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("check Studies Include Offline"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setDeleteAllow")));
+    };
+    /** Get Offline Studies in Checked Studies to the server */
+    DatabaseService.prototype.studyOfflineInsertCDJobList = function (studyInstanceUIDList) {
+        var _this = this;
+        var url = this.pssiUrl + "/studyOfflineInsertCDJobList/";
+        var data = { studyInstanceUIDList: studyInstanceUIDList };
         return this.http.post(url, data, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (shortcut) { return _this.log("check Studies Include Offline"); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError("setDeleteAllow")));
     };
@@ -10855,10 +12475,10 @@ var DatabaseService = /** @class */ (function () {
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('setKeyImage')));
     };
     /** GET study from the server */
-    DatabaseService.prototype.getStudiesForDcmViewer = function (id, showHistoryStudies, showKeyImage) {
+    DatabaseService.prototype.getStudiesForDcmViewer = function (ids, showHistoryStudies, showKeyImage) {
         var _this = this;
         var url = this.pssiUrl + "/GetStudiesForDcmViewer/";
-        var data = { id: id, showHistoryStudies: showHistoryStudies, showKeyImage: showKeyImage };
+        var data = { ids: ids, showHistoryStudies: showHistoryStudies, showKeyImage: showKeyImage };
         return this.http.post(url, data, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (recWorklistData) { return _this.log('fetched recWorklistData'); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('getRecWorklistData')));
     };
@@ -10908,7 +12528,7 @@ var DatabaseService = /** @class */ (function () {
         study.studyDate = "2018-11-11";
         study.studyTime = "12:11:12";
         study.modality = "DX";
-        study.checked = false;
+        study.studyChecked = false;
         study.studyDescription = "Study Desc";
         study.seriesList = new Array();
         for (var i = 0; i < seriesCount; i++) {
@@ -11071,7 +12691,7 @@ var DicomImageService = /** @class */ (function () {
         this.logService = logService;
         this.logPrefix = "DicomImageService: ";
         this.dicomImageUrl = "dicomImage";
-        this.overlayDisplayGroupList = [];
+        this.textOverlayDisplayGroupList = [];
         this.baseUrl = this.configurationService.getBaseUrl();
     }
     /** Save Image annotation */
@@ -11093,19 +12713,34 @@ var DicomImageService = /** @class */ (function () {
         this.logService.info("Dicom Image Service : Downloading dicom image, url is " + imageUri);
         return cornerstone.loadImage(imageUri);
     };
-    DicomImageService.prototype.getOverlayDisplayList = function (image, canvasWidth, canvasHeight, canvasContext) {
+    DicomImageService.prototype.getOverlayDisplayList = function (image, canvas, font) {
         var _this = this;
-        if (this.overlayDisplayGroupList.length === 0) {
-            var overlayList = this.configurationService.getOverlayConfigList();
+        if (this.textOverlayDisplayGroupList.length === 0) {
+            var overlayList = this.configurationService.getTextOverlayConfigList();
             this.formatOverlayList(overlayList);
         }
+        var canvasContext = canvas.getContext("2d");
+        canvasContext.font = font.getCanvasFontString();
         var overlayDisplayList = [];
         var groupList = this.getOverlayDisplayGroup(image.series.modality);
         groupList.forEach(function (group) {
-            _this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignLeft, true, image, canvasWidth, canvasHeight, canvasContext);
-            _this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignRight, false, image, canvasWidth, canvasHeight, canvasContext);
+            _this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignLeft, true, image, canvas.width, canvas.height, canvasContext, font.size);
+            _this.addOverlayDisplayList(overlayDisplayList, group.itemListAlignRight, false, image, canvas.width, canvas.height, canvasContext, font.size);
         });
         return overlayDisplayList;
+    };
+    DicomImageService.prototype.getGraphicOverlayList = function (image) {
+        var graphicOverlayList = [];
+        // There are max 16 graphic overlays in a image
+        var groupNumber = 24576; // Hex 0x6000
+        for (var i = 0; i < 16; i++) {
+            var groupString = this.decimalToHexString(groupNumber + i * 2, 2);
+            var graphicOverlayData = this.getGraphicOverlayData(image, "x" + groupString);
+            if (graphicOverlayData) {
+                graphicOverlayList.push(graphicOverlayData);
+            }
+        }
+        return graphicOverlayList;
     };
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Text overlay functions
@@ -11114,7 +12749,7 @@ var DicomImageService = /** @class */ (function () {
         overlayList.forEach(function (overlay) {
             _this.addOverlayToGroup(overlay);
         });
-        this.overlayDisplayGroupList.forEach(function (group) {
+        this.textOverlayDisplayGroupList.forEach(function (group) {
             group.itemListAlignLeft = group.itemListAlignLeft.sort(function (n1, n2) {
                 return (n1.offsetX < n2.offsetX) ? -1 : 1;
             });
@@ -11124,11 +12759,11 @@ var DicomImageService = /** @class */ (function () {
         });
     };
     DicomImageService.prototype.addOverlayToGroup = function (overlay) {
-        var filtered = this.overlayDisplayGroupList.filter(function (value) { return value.match(overlay); });
+        var filtered = this.textOverlayDisplayGroupList.filter(function (value) { return value.match(overlay); });
         var overlayGroup = null;
         if (filtered.length === 0) {
-            overlayGroup = new _models_overlay__WEBPACK_IMPORTED_MODULE_3__["OverlayDisplayGroup"](overlay);
-            this.overlayDisplayGroupList.push(overlayGroup);
+            overlayGroup = new _models_overlay__WEBPACK_IMPORTED_MODULE_3__["TextOverlayDisplayGroup"](overlay);
+            this.textOverlayDisplayGroupList.push(overlayGroup);
         }
         else {
             overlayGroup = filtered[0];
@@ -11136,7 +12771,7 @@ var DicomImageService = /** @class */ (function () {
         overlayGroup.add(overlay);
     };
     DicomImageService.prototype.getOverlayDisplayGroup = function (modality) {
-        return this.overlayDisplayGroupList.filter(function (group) { return group.modality === modality; });
+        return this.textOverlayDisplayGroupList.filter(function (group) { return group.modality === modality; });
     };
     DicomImageService.prototype.getTextOverlayValue = function (image, overlay) {
         var tagValue;
@@ -11169,7 +12804,12 @@ var DicomImageService = /** @class */ (function () {
         }
         else {
             var tagString = this.getTagString(overlay.groupNumber, overlay.elementNumber);
-            tagValue = image.cornerStoneImage.data.string(tagString);
+            if (tagString === "x0011101c") {
+                tagValue = "Measure at anatomy";
+            }
+            else {
+                tagValue = image.cornerStoneImage.data.string(tagString);
+            }
         }
         return tagValue === undefined ? "" : tagValue;
     };
@@ -11184,11 +12824,11 @@ var DicomImageService = /** @class */ (function () {
     DicomImageService.prototype.getTagString = function (group, element) {
         return 'x' + this.decimalToHexString(group, 4) + this.decimalToHexString(element, 4);
     };
-    DicomImageService.prototype.addOverlayDisplayList = function (overlayDisplayList, overlayList, alignLeft, image, canvasWidth, canvasHeight, canvasContext) {
+    DicomImageService.prototype.addOverlayDisplayList = function (overlayDisplayList, overlayList, alignLeft, image, canvasWidth, canvasHeight, canvasContext, fontHeight) {
         var _this = this;
         var lineWidth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         overlayList.forEach(function (overlayConfig) {
-            var displayItem = new _models_overlay__WEBPACK_IMPORTED_MODULE_3__["OverlayDisplayItem"]();
+            var displayItem = new _models_overlay__WEBPACK_IMPORTED_MODULE_3__["TextOverlayDisplayItem"]();
             displayItem.align = alignLeft ? "left" : "right";
             var posX = overlayConfig.gridX / 2 * canvasWidth;
             if (overlayConfig.gridX === 0) {
@@ -11202,17 +12842,17 @@ var DicomImageService = /** @class */ (function () {
             }
             var posY = overlayConfig.gridY / 2 * canvasHeight;
             if (overlayConfig.gridY === 0) {
-                posY += 18;
+                posY += fontHeight + 3;
             }
             else if (overlayConfig.gridY === 2) {
-                posY += 15; // ? why
+                posY += fontHeight; // ? why
             }
-            var fontHeight = 20;
+            var height = fontHeight + 4;
             if (overlayConfig.offsetY > 0) {
-                posY += fontHeight * (overlayConfig.offsetY - 1);
+                posY += height * (overlayConfig.offsetY - 1);
             }
             else {
-                posY += fontHeight * overlayConfig.offsetY;
+                posY += height * overlayConfig.offsetY;
             }
             displayItem.id = overlayConfig.overlayId;
             displayItem.text = overlayConfig.prefix + _this.getTextOverlayValue(image, overlayConfig) + overlayConfig.suffix;
@@ -11223,6 +12863,47 @@ var DicomImageService = /** @class */ (function () {
             lineWidth[offSetY] += canvasContext.measureText(displayItem.text).width + 10;
             overlayDisplayList.push(displayItem);
         });
+    };
+    DicomImageService.prototype.getGraphicOverlayData = function (image, groupString) {
+        var element = image.cornerStoneImage.data.elements[groupString + "3000"];
+        var rows = image.cornerStoneImage.data.uint16(groupString + "0010");
+        var cols = image.cornerStoneImage.data.uint16(groupString + "0011");
+        var type = image.cornerStoneImage.data.string(groupString + "0040");
+        var startX = image.cornerStoneImage.data.uint16(groupString + "0050", 0);
+        var startY = image.cornerStoneImage.data.uint16(groupString + "0050", 1);
+        if (!element || !rows || !cols || !type || !startX || !startY) {
+            return undefined;
+        }
+        var graphicOverlayData = new _models_overlay__WEBPACK_IMPORTED_MODULE_3__["GraphicOverlayData"];
+        graphicOverlayData.rows = rows;
+        graphicOverlayData.cols = cols;
+        graphicOverlayData.type = type;
+        graphicOverlayData.startX = startX;
+        graphicOverlayData.startY = startY;
+        var imageWidth = image.width();
+        var imageHeight = image.height();
+        for (var i = 0; i < element.length; i++) {
+            var byte = image.cornerStoneImage.data.byteArray[element.dataOffset + i];
+            if (byte === 0) {
+                continue;
+            }
+            var y = Math.floor(i * 8 / cols);
+            var x = i * 8 % cols;
+            var flag = 128;
+            for (var j = 0; j < 8; j++) {
+                if (byte & flag) {
+                    var px = x - j + startX - 1;
+                    var py = y + startY - 1;
+                    if (px >= 0 && px < imageWidth && py >= 0 && py < imageHeight) {
+                        graphicOverlayData.dataList.push({ x: px, y: py });
+                    }
+                }
+                flag = flag >> 1;
+            }
+        }
+        graphicOverlayData.desc = image.cornerStoneImage.data.string(groupString + "0022");
+        graphicOverlayData.label = image.cornerStoneImage.data.string(groupString + "1500");
+        return graphicOverlayData;
     };
     DicomImageService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
@@ -11741,14 +13422,11 @@ var ViewContextEnum;
     ViewContextEnum[ViewContextEnum["Pan"] = 2] = "Pan";
     ViewContextEnum[ViewContextEnum["WL"] = 3] = "WL";
     ViewContextEnum[ViewContextEnum["Zoom"] = 4] = "Zoom";
-    ViewContextEnum[ViewContextEnum["Magnifier"] = 5] = "Magnifier";
+    ViewContextEnum[ViewContextEnum["Magnify"] = 5] = "Magnify";
     ViewContextEnum[ViewContextEnum["ROIZoom"] = 6] = "ROIZoom";
     ViewContextEnum[ViewContextEnum["CreateAnn"] = 7] = "CreateAnn";
     ViewContextEnum[ViewContextEnum["ROIWL"] = 8] = "ROIWL";
-    ViewContextEnum[ViewContextEnum["MagnifyX2"] = 9] = "MagnifyX2";
-    ViewContextEnum[ViewContextEnum["MagnifyX4"] = 10] = "MagnifyX4";
-    ViewContextEnum[ViewContextEnum["MagnifyX8"] = 11] = "MagnifyX8";
-    ViewContextEnum[ViewContextEnum["SelectAnn"] = 12] = "SelectAnn";
+    ViewContextEnum[ViewContextEnum["SelectAnn"] = 9] = "SelectAnn";
 })(ViewContextEnum || (ViewContextEnum = {}));
 var OperationEnum;
 (function (OperationEnum) {
@@ -11808,7 +13486,7 @@ var ViewContextService = /** @class */ (function () {
         this._showAnnotation = true;
         this._showOverlay = true;
         this._showRuler = true;
-        this._showGraphicOverlay = false;
+        this._showGraphicOverlay = true;
         this._keyImage = false;
         this.viewContextChangedSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
         this.viewContextChanged$ = this.viewContextChangedSource.asObservable();
@@ -11880,26 +13558,22 @@ var ViewContextService = /** @class */ (function () {
     });
     ViewContextService.prototype.onOperation = function (data) {
         switch (data.type) {
-            case OperationEnum.ShowAnnotation:
-                {
-                    this.showAnnotation = !this.showAnnotation;
-                    break;
-                }
-            case OperationEnum.ShowOverlay:
-                {
-                    this.showOverlay = !this.showOverlay;
-                    break;
-                }
-            case OperationEnum.ShowRuler:
-                {
-                    this.showRuler = !this.showRuler;
-                    break;
-                }
-            case OperationEnum.ShowGraphicOverlay:
-                {
-                    this.showGraphicOverlay = !this.showGraphicOverlay;
-                    break;
-                }
+            case OperationEnum.ShowAnnotation: {
+                this.showAnnotation = !this.showAnnotation;
+                break;
+            }
+            case OperationEnum.ShowOverlay: {
+                this.showOverlay = !this.showOverlay;
+                break;
+            }
+            case OperationEnum.ShowRuler: {
+                this.showRuler = !this.showRuler;
+                break;
+            }
+            case OperationEnum.ShowGraphicOverlay: {
+                this.showGraphicOverlay = !this.showGraphicOverlay;
+                break;
+            }
             default:
                 this.operationSource.next(data);
         }
@@ -11912,7 +13586,7 @@ var ViewContextService = /** @class */ (function () {
         if (this._curContext.action !== this._previousContext.action) {
             this.viewContextChangedSource.next(this._curContext);
         }
-        else if (this._curContext.action == ViewContextEnum.CreateAnn) {
+        else if (this._curContext.action === ViewContextEnum.CreateAnn) {
             //if want to create the same object even if current object is not finished yet, we still change context to delete it. 
             this.viewContextChangedSource.next(this._curContext);
         }
@@ -11930,7 +13604,7 @@ var ViewContextService = /** @class */ (function () {
             case OperationEnum.ToggleKeyImage:
                 return this._keyImage;
             default:
-                return buttonData.operationData.data == this._curContext.action;
+                return buttonData.operationData.data === this._curContext.action;
         }
     };
     ViewContextService.prototype.isImageToolBarButtonCheckStyle = function (buttonData) {
@@ -12016,6 +13690,13 @@ var WorklistService = /** @class */ (function () {
         this.bDisableDeletePreventBtn = true;
         this.bDisableDeleteAllowBtn = true;
         this.loadedStudyCount = 0;
+        this.isOffline = false;
+        this.checkedStudiesCount = 0;
+        this.studyOnlineReadyTicketCountMax = 0;
+        this.studyOnlineReadyTicketCount = 0;
+        this.maxStudyOnlineReadyTicketCount = 300;
+        this.checkStudyOnlineReadyStatusInterval = 500;
+        this.sumMaxCheckStudyOnlineReadyCount = 10;
         this._showHistoryStudies = true;
         // Observable Shortcut sources
         this.shortcutSelectedSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
@@ -12117,7 +13798,9 @@ var WorklistService = /** @class */ (function () {
             this.shellNavigatorService.shellNavigate(viewerShellData);
         }
         else {
-            this.databaseService.getStudiesForDcmViewer(study.id, this.showHistoryStudies, false).subscribe(function (value) { return _this.studyDetailsLoaded(1, value); });
+            this.checkedStudiesUids = new Array();
+            this.checkedStudiesUids.push(study.id);
+            this.databaseService.getStudiesForDcmViewer(this.checkedStudiesUids, this.showHistoryStudies, false).subscribe(function (value) { return _this.checkOfflineBeforeLoadImage(1, value); });
         }
     };
     WorklistService.prototype.onShowAllCheckedStudy = function () {
@@ -12125,38 +13808,28 @@ var WorklistService = /** @class */ (function () {
         if (this.isUsingLocalTestData()) {
             var viewerShellData_1 = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingPrococal());
             this.studies.forEach(function (study) {
-                if (study.checked) {
+                if (study.studyChecked) {
                     viewerShellData_1.addStudy(study);
                 }
             });
             this.shellNavigatorService.shellNavigate(viewerShellData_1);
         }
         else {
-            var checkedCount_1 = 0;
-            this.studies.forEach(function (study) {
-                if (study.checked) {
-                    checkedCount_1++;
-                }
-            });
-            this.studies.forEach(function (study) {
-                if (study.checked) {
-                    _this.databaseService.getStudiesForDcmViewer(study.id, _this.showHistoryStudies, false)
-                        .subscribe(function (value) { return _this.studyDetailsLoaded(checkedCount_1, value); });
-                }
-            });
+            this.databaseService.getStudiesForDcmViewer(this.checkedStudiesUids, this.showHistoryStudies, false)
+                .subscribe(function (value) { return _this.checkOfflineBeforeLoadImage(_this.checkedStudiesCount, value); });
         }
     };
     WorklistService.prototype.onLoadKeyImage = function () {
         var _this = this;
         var checkedCount = 0;
         this.studies.forEach(function (study) {
-            if (study.checked) {
+            if (study.studyChecked) {
                 checkedCount++;
             }
         });
         this.studies.forEach(function (study) {
-            if (study.checked) {
-                _this.databaseService.getStudiesForDcmViewer(study.id, _this.showHistoryStudies, true)
+            if (study.studyChecked) {
+                _this.databaseService.getStudiesForDcmViewer(_this.checkedStudiesUids, _this.showHistoryStudies, true)
                     .subscribe(function (value) { return _this.studyDetailsLoaded(checkedCount, value); });
             }
         });
@@ -12166,7 +13839,7 @@ var WorklistService = /** @class */ (function () {
         if (study === void 0) { study = null; }
         if (study == null) {
             this.studies.forEach(function (study) {
-                if (study.checked) {
+                if (study.studyChecked) {
                     _this.databaseService.setRead(study.studyInstanceUid)
                         .subscribe(function () { return _this.refreshShortcuts(); });
                 }
@@ -12182,7 +13855,7 @@ var WorklistService = /** @class */ (function () {
         if (study === void 0) { study = null; }
         if (study == null) {
             this.studies.forEach(function (study) {
-                if (study.checked) {
+                if (study.studyChecked) {
                     _this.databaseService.setUnread(study.studyInstanceUid)
                         .subscribe(function () { return _this.refreshShortcuts(); });
                 }
@@ -12201,36 +13874,46 @@ var WorklistService = /** @class */ (function () {
         var deletePreventCount = 0;
         var deleteAllowCount = 0;
         var checkedStudyCount = 0;
-        //studyUSBOfflineList = ;
+        var onlineStudiesCount = 0;
+        var offlineStudiesCount = 0;
+        this.checkedStudies = new Array();
+        this.checkedStudiesUids = new Array();
+        this.checkedStudiesInstanceUids = new Array();
+        this.checkedStudiesCount = 0;
         this.studies.forEach(function (study) {
-            if (study.checked) {
+            if (study.studyChecked) {
+                _this.checkedStudies.push(study);
+                _this.checkedStudiesUids.push(study.id);
+                _this.checkedStudiesInstanceUids.push(study.studyInstanceUid);
+                _this.checkedStudiesCount++;
+                _this.checkedSingleStudy = study;
                 checkedStudyCount++;
-                if (study.scanStatus == "Completed") {
+                if (study.scanStatus === "Completed") {
                     scanStatusCompletedCount++;
                 }
-                else if ((study.scanStatus == "Ended")) {
+                else if ((study.scanStatus === "Ended")) {
                     scanStatusEndedCount++;
                 }
-                if (study.reserved == "N") {
+                if (study.reserved === "N") {
                     deletePreventCount++;
                 }
-                else if ((study.reserved == "Y")) {
+                else if ((study.reserved === "Y")) {
                     deleteAllowCount++;
+                }
+                if (study.instanceAvailability === "Online") {
+                    onlineStudiesCount++;
+                }
+                else if (study.instanceAvailability === "Offline") {
+                    offlineStudiesCount++;
                 }
             }
         });
-        if (checkedStudyCount == 0) {
+        if (checkedStudyCount === 0) {
             this.initAllButton();
         }
         else {
-            this.checkedStudiesUid = new Array();
             // Check Offline Image
-            this.studies.forEach(function (study) {
-                if (study.checked) {
-                    (_this.checkedStudiesUid.push(study.studyInstanceUid));
-                }
-            });
-            this.checkStudiesIncludeOffline(this.checkedStudiesUid);
+            this.checkStudiesIncludeOffline(this.checkedStudiesInstanceUids);
             this.bDisableLoadImageButton = false;
             this.bDisableLoadKeyImage = false;
             this.bDisableChangeImageSeriesOrder = false;
@@ -12239,38 +13922,50 @@ var WorklistService = /** @class */ (function () {
             this.bDisableTagEdit = false;
             this.bDisableDeleteStudy = false;
             // Scan Status
-            if (scanStatusCompletedCount == 0) {
+            if (scanStatusCompletedCount === 0) {
                 this.bDisableSetUnreadBtn = true;
             }
             else {
                 this.bDisableSetUnreadBtn = false;
             }
-            if (scanStatusEndedCount == 0) {
+            if (scanStatusEndedCount === 0) {
                 this.bDisableSetReadBtn = true;
             }
             else {
                 this.bDisableSetReadBtn = false;
             }
-            if (scanStatusCompletedCount != 0 && scanStatusEndedCount != 0) {
+            if (scanStatusCompletedCount !== 0 && scanStatusEndedCount !== 0) {
                 this.bDisableSetReadBtn = true;
                 this.bDisableSetUnreadBtn = true;
             }
             // reserved
-            if (deletePreventCount == 0) {
+            if (deletePreventCount === 0) {
                 this.bDisableDeletePreventBtn = true;
             }
             else {
                 this.bDisableDeletePreventBtn = false;
             }
-            if (deleteAllowCount == 0) {
+            if (deleteAllowCount === 0) {
                 this.bDisableDeleteAllowBtn = true;
             }
             else {
                 this.bDisableDeleteAllowBtn = false;
             }
-            if (deletePreventCount != 0 && deleteAllowCount != 0) {
+            if (deletePreventCount !== 0 && deleteAllowCount !== 0) {
                 this.bDisableDeletePreventBtn = true;
                 this.bDisableDeleteAllowBtn = true;
+            }
+            if (offlineStudiesCount !== 0) {
+                this.bDisableDeleteAllowBtn = true;
+                this.bDisableDeletePreventBtn = true;
+                this.bDisableDeleteStudy = true;
+                this.bDisableLoadKeyImage = true;
+                this.bDisableReassign = true;
+                this.bDisableSetReadBtn = true;
+                this.bDisableSetUnreadBtn = true;
+                this.bDisableTagEdit = true;
+                this.bDisableTransfer = true;
+                this.bDisableChangeImageSeriesOrder = true;
             }
         }
     };
@@ -12280,21 +13975,17 @@ var WorklistService = /** @class */ (function () {
         ;
     };
     WorklistService.prototype.collectOfflineStudiesInfo = function (offlineStudiesInfo) {
-        var studyOfflineCollection = offlineStudiesInfo;
-        //if (studyOfflineCollection) {
-        //    var studyOfflineMsg = studyOfflineCollection.keys[0];
-        //    studyUSBOfflineList = studyOfflineCollection.values[0];
-        //    studyHasHistoryIsOffline = studyOfflineMsg.keys[0];
-        //    if (__studyHasHistoryIsOffline) {
-        //        __studyOfflineMsg = studyOfflineMsg.values[0];
-        //    }
-        //}
-        //return __studyHasHistoryIsOffline;
+        if (offlineStudiesInfo) {
+            this.studyUSBOfflineList = offlineStudiesInfo.studyUSBOfflineList;
+            this.popUpStudyOfflineMessage = offlineStudiesInfo.popUpStudyOfflineMessage;
+            this.isOffline = offlineStudiesInfo.isOffline;
+        }
+        return offlineStudiesInfo.isOffline;
     };
     WorklistService.prototype.onDeletePrevent = function () {
         var _this = this;
         this.studies.forEach(function (study) {
-            if (study.checked) {
+            if (study.studyChecked) {
                 _this.databaseService.setDeletePrevent(study.studyInstanceUid)
                     .subscribe(function () { return _this.refreshShortcuts(); });
             }
@@ -12303,7 +13994,7 @@ var WorklistService = /** @class */ (function () {
     WorklistService.prototype.onDeleteAllow = function () {
         var _this = this;
         this.studies.forEach(function (study) {
-            if (study.checked) {
+            if (study.studyChecked) {
                 _this.databaseService.setDeleteAllow(study.studyInstanceUid)
                     .subscribe(function () { return _this.refreshShortcuts(); });
             }
@@ -12312,7 +14003,7 @@ var WorklistService = /** @class */ (function () {
     WorklistService.prototype.onDeleteStudy = function (deletionReason) {
         var _this = this;
         this.studies.forEach(function (study) {
-            if (study.checked) {
+            if (study.studyChecked) {
                 _this.databaseService.deleteStudy(study.studyInstanceUid, deletionReason)
                     .subscribe(function () { return _this.refreshShortcuts(); });
             }
@@ -12342,12 +14033,32 @@ var WorklistService = /** @class */ (function () {
     WorklistService.prototype.onQueryStudyByShortcut = function (shortcut) {
         this.shortcut = shortcut;
     };
+    WorklistService.prototype.onUpdateStudy = function (study) {
+        var _this = this;
+        this.databaseService.updateStudy(study).subscribe(function (value) {
+            if (value) {
+                var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxContent"]();
+                content.title = "Successful";
+                content.messageText = "Update Patient Information Successfully.";
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxType"].Info;
+                _this.dialogService.showMessageBox(content).subscribe();
+                _this.refreshShortcuts();
+            }
+            else {
+                var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxContent"]();
+                content.title = "Failed";
+                content.messageText = "Update Patient Information failed.";
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxType"].Error;
+                _this.dialogService.showMessageBox(content).subscribe();
+            }
+        });
+    };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions
     WorklistService.prototype.formatStudies = function (recWorklistData) {
         var studiesList = recWorklistData.studyList;
         for (var i = 0; i < studiesList.length; i++) {
-            studiesList[i].checked = false;
+            studiesList[i].studyChecked = false;
             studiesList[i].detailsLoaded = false;
             studiesList[i].bodyPartList = new Array();
             for (var j = 0; j < studiesList[i].seriesList.length; j++) {
@@ -12389,26 +14100,47 @@ var WorklistService = /** @class */ (function () {
                 _this.loadedStudy.push(value);
             }
         });
-        this.loadedStudyCount++;
-        if (allCheckedStudyCount === this.loadedStudyCount) {
-            if (this.loadedStudy.length === 0) {
-                var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxContent"]();
-                content.title = "No Key Image";
-                content.messageText = "There is no key image!";
-                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxType"].Error;
-                this.dialogService.showMessageBox(content).subscribe();
-                this.loadedStudyCount = 0;
-                return;
-            }
-            var viewerShellData_2 = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingPrococal());
-            this.loadedStudy.forEach(function (value) {
-                value.detailsLoaded = true;
-                value.checked = true;
-                viewerShellData_2.addStudy(value);
-            });
-            this.shellNavigatorService.shellNavigate(viewerShellData_2);
-            this.loadedStudy = new Array();
+        if (this.loadedStudy.length === 0) {
+            var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxContent"]();
+            content.title = "No Key Image";
+            content.messageText = "There is no key image!";
+            content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxType"].Error;
+            this.dialogService.showMessageBox(content).subscribe();
             this.loadedStudyCount = 0;
+            return;
+        }
+        var viewerShellData = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingPrococal());
+        this.loadedStudy.forEach(function (value) {
+            value.detailsLoaded = true;
+            value.studyChecked = true;
+            viewerShellData.addStudy(value);
+        });
+        this.shellNavigatorService.shellNavigate(viewerShellData);
+        this.loadedStudy = new Array();
+        this.loadedStudyCount = 0;
+        this.refreshShortcuts();
+        //}
+    };
+    WorklistService.prototype.checkOfflineBeforeLoadImage = function (allCheckedStudyCount, getStudies) {
+        var _this = this;
+        this.getStudies = getStudies;
+        this.checkedStudiesCount = this.checkedStudiesCount;
+        if (this.isOffline) {
+            var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxContent"]();
+            content.title = "Restore Offline Image";
+            content.messageText = this.popUpStudyOfflineMessage;
+            content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["MessageBoxType"].InfoCancel;
+            content.callbackFunction = this.databaseService.studyOfflineInsertCDJobList;
+            content.callbackOwner = this.databaseService;
+            content.callbackArg = this.checkedStudiesInstanceUids;
+            this.dialogService.showMessageBox(content).subscribe(function (val) {
+                if (val.dialogResult === _models_messageBox__WEBPACK_IMPORTED_MODULE_7__["DialogResult"].Ok) {
+                    _this.studyDetailsLoaded(_this.checkedStudiesCount, _this.getStudies);
+                }
+            });
+        }
+        else {
+            this.studyDetailsLoaded(this.checkedStudiesCount, this.getStudies);
         }
     };
     WorklistService.prototype.initAllButton = function () {

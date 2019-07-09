@@ -36,7 +36,7 @@ export interface PeriodicElement {
 @Component({
     selector: "app-worklist",
     templateUrl: "./worklist.component.html",
-    styleUrls: ["./worklist.component.css"],
+    styleUrls: ["./worklist.component.less"],
     providers: [
         // i18n
         { provide: MAT_DATE_LOCALE, useValue: "zh-CN" },

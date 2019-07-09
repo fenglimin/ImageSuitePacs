@@ -3,6 +3,7 @@ import { WorklistService } from "../../../services/worklist.service";
 import { DialogService } from "../../../services/dialog.service";
 import { MessageBoxType, MessageBoxContent, DialogResult } from "../../../models/messageBox";
 import { PatientEditComponent } from "../worklist/patient-edit/patient-edit.component";
+import { ExportStudyComponent } from "../worklist/export-study/export-study.component";
 
 @Component({
     selector: "app-operate-toolbar",
@@ -45,7 +46,11 @@ export class OperateToolbarComponent implements OnInit {
     }
 
     onTransfer() {
-
+        this.dialogService.showDialog(ExportStudyComponent, this.worklistService.checkedStudies).subscribe(
+            val => {
+                //this.getStudyDate(val);
+            }
+        );
     }
 
     onTagEdit() {

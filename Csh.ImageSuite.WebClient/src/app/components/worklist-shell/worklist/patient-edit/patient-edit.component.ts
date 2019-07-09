@@ -26,8 +26,9 @@ export const MY_FORMATS = {
 @Component({
   selector: 'app-patient-edit',
   templateUrl: './patient-edit.component.html',
-  styleUrls: ['./patient-edit.component.css'],
+  styleUrls: ['./patient-edit.component.less'],
 })
+
 export class PatientEditComponent {
     study: Study = new Study();
     series: Series = new Series();

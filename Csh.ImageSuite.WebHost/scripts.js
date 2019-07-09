@@ -27,6 +27,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
  * 2. Support Polygon
  * 3. Use frame, and refresh canvas on demand. ( To improve performance )
  * 4. Draw the layer on demand. (Check need redraw for the layer)
+ * 5. Adjust the logic to check if the point is near line (To check whether a line is clicked)
  */
 (function (window, undefined) {
     var canvases = [],
@@ -661,7 +662,10 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             var poorPoint = transformPoint(x, y, multiplyM(object.matrix(), layer.matrix()));
             var dist = pointToLine({ x: object._x0, y: object._y0 }, { x: object._x1, y: object._y1 }, poorPoint);
 
-            if (dist <= 3) {
+            var dist0 = distance({ x: object._x0, y: object._y0 }, poorPoint);
+            var dist1 = distance({ x: object._x1, y: object._y1 }, poorPoint);
+            const distInImage = 3 / layer.optns.scaleMatrix[0][0];
+            if (dist <= distInImage && dist0 > distInImage && dist1 > distInImage) {
                 //log('in point, proto:' + object._proto);
                 return point;
             }
@@ -3200,7 +3204,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
                         var mouseDownObjects = [mouseDown.objects[i], objectLayer(mouseDown.objects[i])], mdObject;
                         for (var j = 0; j < 2; j++) {
                             mdObject = mouseDownObjects[j];
-                            if (mdObject.optns.drag.val == true && mdObject.optns.drag.disabled == false && i == mdObjectsLength) {
+                            if (mdObject.optns.drag.val == true && mdObject.optns.drag.disabled == false) {
                                 drag = optns.drag;
                                 dobject = drag.object = mdObject.optns.drag.object.visible(true);
                                 drag.drag = mdObject.optns.drag.drag;

@@ -1,0 +1,129 @@
+@import "../../../../../themes.less";
+
+#body-content {
+    width: 800px;
+    height: 800px;
+}
+
+#multi-study-instance {
+    width: 700px;
+    height: 200px;
+    /*border:1px solid @border-color;*/
+}
+
+#single-study-instance {
+    width: 700px;
+    height: 200px;
+    /*border:1px solid @border-color;*/
+}   
+
+
+
+.mat-dialog-title {
+    border-bottom: 1px solid @underline-color;
+    color: @underline-color;
+    font-size: 15px;
+    margin: -24px -24px 0px -24px;
+    min-width: 200px;
+    padding: 1px 10px;
+}
+
+.mat-dialog-content {
+    color: @font-color;
+    font-size: 15px;
+    height: 800px;
+    min-width: 650px;
+    padding: 10px 10px;
+}
+
+.mat-dialog-actions { margin-right: -12px; }
+
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-raised-button {
+    background-color: @container-background-color;
+    border: 1px solid #777;
+    border-radius: 3px;
+    color: @font-color;
+    font-size: 13px;
+    margin-left: 6px;
+    padding: 1px;
+    width: 100px;
+}
+
+.mat-raised-button:disabled:hover { color: @disable-color; }
+
+.mat-raised-button:hover { color: @underline-color; }
+
+.mat-dialog-actions { flex-direction: row-reverse; }
+
+.matInput {
+    caret-color: @underline-color;
+    color: green;
+}
+
+.mat-input-element {
+    width: 100%;
+    caret-color: @underline-color;
+}
+
+table {
+
+}
+
+th{
+    padding: 3px;
+    border: 1px solid @border-color;
+    min-width: 100px;
+    background: @header-background-color;
+    /*color: @container-background-color;*/
+}
+
+td {
+    padding: 3px;
+    border: 1px solid @border-color;
+    min-width: 100px;
+    /*color: @container-background-color;*/
+}
+
+
+th, td:first-child {
+    min-width: 20px;
+}
+
+/*#checkbox-row {
+    width: 50px;
+}*/
+
+tr:nth-child(odd){
+  background-color: @odd-tr-color;
+}
+
+tr:nth-child(even){
+  background-color: @background-color;
+}
+
+input {
+    background: @background-color;
+    caret-color:@underline-color;
+    border: 1px solid @background-color;
+}
+
+input:focus{
+    outline: none !important;
+    border-bottom:1px solid @underline-color;
+}
+
+input:disabled{
+    color: @disable-color;
+}
+
+::-webkit-inner-spin-button { display: none; }
+
+select {
+    background-color: @background-color;
+    border: 1px solid @border-color;
+    width: 100%;
+}

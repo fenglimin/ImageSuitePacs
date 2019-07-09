@@ -496,4 +496,19 @@ export class AnnSerialize {
 
         return { pointList: pointList, selected: selected }
     }
+
+    loadTextMark() {
+        const annType = this.readInteger(4); // 6
+        const created = this.readInteger(4);
+        const isActive = this.readInteger(4);
+        const editCreated = this.readInteger(4);
+        const state = this.readInteger(4);
+        const selected = this.readInteger(1);
+
+        const fontSize = this.readInteger(4);
+        const basicText = this.loadBaseText();
+
+        const position = { x: basicText.topLeftPoint.x, y: basicText.bottomRightPoint.y };
+        return { position: position, text: basicText.text, fontSize: fontSize, selected: selected };
+    }
 }

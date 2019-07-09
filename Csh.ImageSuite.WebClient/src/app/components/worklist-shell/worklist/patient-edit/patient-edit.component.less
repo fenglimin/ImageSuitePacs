@@ -1,6 +1,8 @@
+﻿@import "../../../../../themes.less";
+
 .mat-dialog-title {
-    border-bottom: 1px solid #FF9900;
-    color: #f90;
+    border-bottom: 1px solid @underline-color;
+    color: @underline-color;
     font-size: 15px;
     margin: -24px -24px 0px -24px;
     min-width: 200px;
@@ -8,7 +10,7 @@
 }
 
 .mat-dialog-content {
-    color: white;
+    color: @font-color;
     font-size: 15px;
     height: 800px;
     min-width: 650px;
@@ -21,35 +23,31 @@
     width: 100%;
 }
 
-/*div.mat-form-field-infix {
-    width: 100%;
-}*/
-
 .mat-raised-button {
-    background-color: #444;
+    background-color: @container-background-color;
     border: 1px solid #777;
     border-radius: 3px;
-    color: white;
+    color: @font-color;
     font-size: 13px;
     margin-left: 6px;
     padding: 1px;
     width: 100px;
 }
 
-.mat-raised-button:disabled:hover { color: #999; }
+.mat-raised-button:disabled:hover { color: @disable-color; }
 
-.mat-raised-button:hover { color: #f90; }
+.mat-raised-button:hover { color: @underline-color; }
 
 .mat-dialog-actions { flex-direction: row-reverse; }
 
 .matInput {
-    caret-color: #F90;
+    caret-color: @underline-color;
     color: green;
 }
 
 .mat-input-element {
     width: 100%;
-    caret-color: #F90;
+    caret-color: @underline-color;
 }
 
 td {
@@ -58,24 +56,24 @@ td {
 
 input {
     background: #000000;
-    caret-color:orange;
+    caret-color:@underline-color;
     border: 1px solid #000000;
     width: 100%;
 }
 
 input:focus{
     outline: none !important;
-    border-bottom:1px solid orange;
+    border-bottom:1px solid @underline-color;
 }
 
 input:disabled{
-    color:#ACA899;
+    color: @disable-color;
 }
 
 ::-webkit-inner-spin-button { display: none; }
 
 select {
-    background-color: black;
-    border: 1px solid #444;
+    background-color: @background-color;
+    border: 1px solid @border-color;
     width: 100%;
 }

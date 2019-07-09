@@ -184,6 +184,14 @@ export abstract class AnnExtendObject extends AnnObject {
         return undefined;
     }
 
+    onDragStarted(pos: Point) {
+
+    }
+
+    onDragEnded(pos: Point) {
+
+    }
+
     private addChildObj(annObj: AnnObject) {
         this.annObjList.push(annObj);
     }

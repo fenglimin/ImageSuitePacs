@@ -55,10 +55,10 @@ export class AnnTextIndicator extends AnnExtendObject {
         this.redrawArrow();
     }
 
-    //onTranslate(deltaX: number, deltaY: number) {
-    //    this.annArrow.onTranslate(deltaX, deltaY);
-    //    this.redrawText();
-    //}
+    onTranslate(deltaX: number, deltaY: number) {
+        this.annArrow.onTranslate(deltaX, deltaY);
+        this.redrawText();
+    }
 
     onFlip(vertical: boolean) {
         this.annArrow.onFlip(vertical);

@@ -104,6 +104,30 @@ export abstract class AnnObject {
         }
     }
 
+    onChildDragStarted(draggedObj: any, pos: Point) {
+
+        this.focusedObj = draggedObj;
+
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragStarted(this, pos);
+        } else {
+            this.onDragStarted(pos);
+        }
+    }
+
+    onChildDragEnded(draggedObj: any, pos: Point) {
+
+        this.focusedObj = draggedObj;
+
+        if (this.parentObj) {
+            // If have parent, let parent manage the drag status
+            this.parentObj.onChildDragEnded(this, pos);
+        } else {
+            this.onDragEnded(pos);
+        }
+    }
+
     onChildDragged(draggedObj: any, deltaX: number, deltaY: number) {
 
         this.focusedObj = draggedObj;
@@ -208,12 +232,22 @@ export abstract class AnnObject {
                 console.log(parentObj.constructor.name + " on drag start");
                 child._lastPos = {};
 
+                const point = AnnTool.screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
+                if (parentObj.onChildDragStarted) {
+                    parentObj.onChildDragStarted(child, point);
+                }
+
             },
             stop: arg => {
                 console.log(parentObj.constructor.name + " on drag stop");
                 child._lastPos = {};
-                if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn) {
+                if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn && parentObj.dragging) {
                     parentObj.dragging = false;
+
+                    const point = AnnTool.screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
+                    if (parentObj.onChildDragEnded) {
+                        parentObj.onChildDragEnded(child, point);
+                    }
                 }
             },
             drag: arg => {
@@ -317,4 +351,6 @@ export abstract class AnnObject {
     abstract setVisible(visible: boolean);
     abstract onLoad(config: any): any;
     abstract onSave(annSerialize: AnnSerialize);
+    abstract onDragStarted(pos: Point);
+    abstract onDragEnded(pos: Point);
 }

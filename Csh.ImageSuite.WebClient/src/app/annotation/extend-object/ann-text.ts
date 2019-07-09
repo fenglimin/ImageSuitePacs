@@ -30,26 +30,49 @@ export class AnnText extends AnnExtendObject {
         const rect = this.annBaseText.getRect();
         this.annRectangle = new AnnBaseRectangle(this, { x: rect.x, y: rect.y }, rect.width, rect.height, this.imageViewer, true);
 
-        const posPoint = { x: rect.x, y: rect.y + rect.height };
-        const posAnn = AnnTool.annLabelLayerToAnnLayer(posPoint, this.imageViewer);
-        this.annPosPoint = new AnnPoint(this, this.imageViewer);
-        this.annPosPoint.onCreate(posAnn);
-        this.annPosPoint.setVisible(false);
+        if (!forTextIndicator) {
+            const posPoint = { x: rect.x, y: rect.y + rect.height };
+            const posAnn = AnnTool.annLabelLayerToAnnLayer(posPoint, this.imageViewer);
+            this.annPosPoint = new AnnPoint(this, this.imageViewer);
+            this.annPosPoint.onCreate(posAnn);
+            this.annPosPoint.setVisible(false);
+            this.annPosPoint.enableShowAlways(false);
 
-        const adjustPoint = { x: rect.x + rect.width, y: rect.y + rect.height };
-        const adjustAnn = AnnTool.annLabelLayerToAnnLayer(adjustPoint, this.imageViewer);
-        this.annAdjustPoint = new AnnPoint(this, this.imageViewer);
-        this.annAdjustPoint.onCreate(adjustAnn);
-
-        this.annBaseText.onLevelDown("bottom");
-        this.focusedObj = this.annBaseText;
-
-        if (!this.parentObj) {
-            this.onDrawEnded();
+            const adjustPoint = { x: rect.x + rect.width, y: rect.y + rect.height };
+            const adjustAnn = AnnTool.annLabelLayerToAnnLayer(adjustPoint, this.imageViewer);
+            this.annAdjustPoint = new AnnPoint(this, this.imageViewer);
+            this.annAdjustPoint.onCreate(adjustAnn);
         }
+        
+        this.annBaseText.onLevelDown("bottom");
+        this.focusedObj = this.annRectangle;
+    }
+
+    onLoadConfig(annSerialize: AnnSerialize) {
+        return annSerialize.loadTextMark();
+    }
+
+    onCreateFromConfig(config: any) {
+        this.onCreate(config.position, config.text, false);
+        this.annBaseText.setFontSize(config.fontSize * 2);
+        this.redrawByText();
+        this.focusedObj = this.annRectangle;
     }
 
     onSave(annSerialize: AnnSerialize) {
+
+        const fontSize = this.annBaseText.getCreateFontSize();
+        if (!this.forTextIndicator) {
+            annSerialize.writeString(this.annDefData.imageSuiteAnnName);
+            annSerialize.writeInteger(this.annDefData.imageSuiteAnnType, 4);     // AnnType
+            annSerialize.writeInteger(1, 4);     // created
+            annSerialize.writeInteger(0, 4);     // is active
+            annSerialize.writeInteger(0, 4);     // edit created
+            annSerialize.writeInteger(1, 4);     // state
+            annSerialize.writeInteger(this.selected ? 1 : 0, 1);     // selected
+            annSerialize.writeInteger(fontSize / 2, 4);     // font size 
+        } 
+
         annSerialize.writeString("CGXAnnText");
         annSerialize.writeInteger(1, 4);
         annSerialize.writeInteger(0, 4);
@@ -62,7 +85,7 @@ export class AnnText extends AnnExtendObject {
         annSerialize.writeString(this.annBaseText.getText().trim());
         annSerialize.writeInteger(1, 4);
         annSerialize.writeInteger(0, 4);
-        annSerialize.writeInteger(20, 4);
+        annSerialize.writeInteger(fontSize, 4);
     }
 
     onScale() {
@@ -77,27 +100,46 @@ export class AnnText extends AnnExtendObject {
     }
 
     onFlip(vertical: boolean) {
-        this.annPosPoint.onFlip(vertical);
-        this.redrawByPosPoint();
+        if (this.forTextIndicator) {
+            super.onFlip(vertical);
+        } else {
+            this.annPosPoint.onFlip(vertical);
+            this.redrawByPosPoint();
+        }
     }
 
     onRotate(angle: number) {
-        this.annPosPoint.onRotate(angle);
-        this.redrawByPosPoint();
+        if (this.forTextIndicator) {
+            super.onRotate(angle);
+        } else {
+            this.annPosPoint.onRotate(angle);
+            this.redrawByPosPoint();
+        }
     }
 
     onDrag(deltaX: number, deltaY: number) {
-        if (this.focusedObj === this.annRectangle) {
+        if (this.focusedObj === this.annRectangle || this.focusedObj === this.annBaseText) {
             this.annBaseText.onDrag(deltaX, deltaY);
             this.redrawByText();
         } else if (this.focusedObj === this.annAdjustPoint) {
+            this.annAdjustPoint.setVisible(false);
+            this.annAdjustPoint.onDrag(deltaX, deltaY);
+            this.redrawByAdjustPoint();
+        }
+    }
 
+    onDragEnded(pos: Point) {
+        if (this.focusedObj === this.annAdjustPoint) {
+            this.annAdjustPoint.setVisible(true);
+            this.focusedObj = this.annRectangle;
+            this.redrawByText();
+            this.imageViewer.refresh();
         }
     }
 
     onMove(point: Point) {
-        this.annPosPoint.onMove(point);
-        this.redrawByPosPoint();
+        this.annBaseText.onMove(point);
+        this.redrawByText();
     }
 
     getPosition(): Point {
@@ -110,7 +152,7 @@ export class AnnText extends AnnExtendObject {
 
     setText(text: string) {
         this.annBaseText.setText(text);
-        this.redrawByPosPoint();
+        this.redrawByText();
     }
 
     getRect(): Rectangle {
@@ -125,6 +167,7 @@ export class AnnText extends AnnExtendObject {
         this.annRectangle.redraw(rect);
         this.annBaseText.onLevelUp();
 
+        
         const adjustPoint = { x: rect.x + rect.width, y: rect.y + rect.height };
         const adjustAnn = AnnTool.annLabelLayerToAnnLayer(adjustPoint, this.imageViewer);
         this.annAdjustPoint.onMove(adjustAnn);
@@ -134,12 +177,36 @@ export class AnnText extends AnnExtendObject {
         const rect = this.annBaseText.getRect();
         this.annRectangle.redraw(rect);
 
+        if (!this.forTextIndicator) {
+            const posPoint = { x: rect.x, y: rect.y + rect.height };
+            const posAnn = AnnTool.annLabelLayerToAnnLayer(posPoint, this.imageViewer);
+            this.annPosPoint.onMove(posAnn);
+
+            const adjustPoint = { x: rect.x + rect.width, y: rect.y + rect.height };
+            const adjustAnn = AnnTool.annLabelLayerToAnnLayer(adjustPoint, this.imageViewer);
+            this.annAdjustPoint.onMove(adjustAnn);
+        }
+    }
+
+    private redrawByAdjustPoint() {
+        const adjustPoint = this.annAdjustPoint.getPosition();
+        const newBottomRight = AnnTool.annLayerToAnnLabelLayer(adjustPoint, this.imageViewer);
+        const pos = this.annRectangle.getPosition();
+        const oldHeight = this.annRectangle.getHeight();
+        const fontSize = this.annBaseText.getCreateFontSize();
+
+        const newFontSize = fontSize * (newBottomRight.y - pos.y) / oldHeight;
+        if (newFontSize < 0) {
+            return;
+        }
+
+        this.annBaseText.setFontSize(newFontSize);
+
+        const rect = this.annBaseText.getRect();
+        this.annRectangle.redraw(rect);
+
         const posPoint = { x: rect.x, y: rect.y + rect.height };
         const posAnn = AnnTool.annLabelLayerToAnnLayer(posPoint, this.imageViewer);
         this.annPosPoint.onMove(posAnn);
-
-        const adjustPoint = { x: rect.x + rect.width, y: rect.y + rect.height };
-        const adjustAnn = AnnTool.annLabelLayerToAnnLayer(adjustPoint, this.imageViewer);
-        this.annAdjustPoint.onMove(adjustAnn);
     }
 }

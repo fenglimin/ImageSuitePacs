@@ -1,0 +1,103 @@
+/* You can add global styles to this file, and also import other style files */
+@import './carestream-orange.less';
+@import './themes.less';
+
+.mat-dialog-container {
+    background-color: @container-background-color;
+    border: 1px solid @border-color;
+}
+
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+    will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 1000px;
+}
+
+#bodyLayout .navbar-fixed-top {
+    border-width: 0 0 2px 0;
+    border-color: @border-color;
+    border-style: solid;
+    height: 40px;
+    /*-webkit-border-image: -webkit-linear-gradient(left, #ff9900, #5c492c) 100% 1;
+    border-image: linear-gradient(left, #ff9900, #5c492c) 100% 1;*/
+}
+
+@media (max-width:768px) {
+    #bodyLayout .navbar-fixed-top {
+        display: none;
+    }
+}
+
+#bodyLayout .navbar-brand {
+    height: 40px;
+    padding: 10px 5px;
+}
+
+#bodyLayout .navbar-nav > li > a {
+    padding: 10px;
+}
+
+#bodyLayout .navbar-toggle {
+    padding: 0px;
+}
+
+#bodyLayout .navbar-fixed-bottom {
+    background-color: #333;
+    color: @font-color;
+    height: 30px;
+    padding: 5px 10px;
+}
+
+.navbar-brand img {
+    width: 100px;
+}
+
+#bodyLayout #spanCompanyMarker {
+    margin-right: 30px;
+}
+
+#logoutForm .navbar-right {
+    margin-right: 0px;
+}
+
+#bodyLayout .navbar {
+    min-height: 30px;
+}
+
+.div-flex-column {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    /*height:100%;*/
+}
+
+.div-flex-row {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    /*height:100%;*/
+}
+
+.black-header {
+    background: @background-color;
+}
+
