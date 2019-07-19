@@ -14,6 +14,7 @@ export class ViewerGroupData {
     imageCount = 0;
     imageMatrix: LayoutMatrix;
     imageDataList = new Array<ViewerImageData>();
+    empty = false;
 
     constructor(viewerShellData: ViewerShellData,
         imageHangingProtocol: ImageHangingProtocol,
@@ -44,12 +45,12 @@ export class ViewerGroupData {
         this.imageCount = 0;
     }
 
-    getImage(rowIndex: number, colIndex: number): ViewerImageData {
+    getImage(pageIndex: number, rowIndex: number, colIndex: number): ViewerImageData {
         if (this.imageDataList.length === 0) {
             return null;
         }
 
-        const imageIndex = rowIndex * this.imageMatrix.colCount + colIndex;
+        const imageIndex = pageIndex * this.imageMatrix.rowCount * this.imageMatrix.colCount + rowIndex * this.imageMatrix.colCount + colIndex;
         if (imageIndex >= this.imageDataList.length) {
             alert(`getImage() => Invalid image index : ${imageIndex}`);
             return null;
@@ -58,8 +59,8 @@ export class ViewerGroupData {
         return this.imageDataList[imageIndex];
     }
 
-    addImage(imageIndex: number, image: Image) {
-        const imageData = new ViewerImageData(this, LayoutPosition.fromNumber(imageIndex, this.imageMatrix.colCount));
+    addImage(image: Image) {
+        const imageData = new ViewerImageData(this, LayoutPosition.fromNumber(this.imageDataList.length, this.imageMatrix));
         imageData.setImage(image);
         this.imageDataList.push(imageData);
     }
@@ -70,13 +71,40 @@ export class ViewerGroupData {
             return;
         }
 
-        this.imageDataList[imageIndex].setPosition(LayoutPosition.fromNumber(imageIndex, this.imageMatrix.colCount));
+        this.imageDataList[imageIndex].setPosition(LayoutPosition.fromNumber(imageIndex, this.imageMatrix));
     }
 
     setEmpty() {
+        this.empty = true;
         this.imageCount = 1;
         this.imageMatrix = new LayoutMatrix(1, 1);
         this.imageDataList = new Array<ViewerImageData>();
-        this.addImage(0, null);
+        this.addImage(null);
+    }
+
+    isEmpty() {
+        return this.empty;
+    }
+
+    getPageCount(): number {
+        return Math.ceil(this.imageDataList.length / (this.imageMatrix.rowCount * this.imageMatrix.colCount));
+    }
+
+    removeAllEmptyImage() {
+        while (this.imageDataList[this.imageDataList.length - 1].isEmpty()) {
+            this.imageDataList.pop();
+        }
+    }
+
+    normalizeImageList() {
+        // Need to add some empty images to make sure the total image (include empty image) is valid.
+        // For example, if the image count is 5(not empty), and the layout matrix is 2x2, need to add
+        // 3 empty images to make sure total image number(8) is multiple of the matrix size(4)
+
+        const matrixSize = this.imageMatrix.rowCount * this.imageMatrix.colCount;
+        const totalSize = this.getPageCount() * matrixSize;
+        for (let i = this.imageDataList.length; i < totalSize; i++) {
+            this.addImage(null);
+        }
     }
 }

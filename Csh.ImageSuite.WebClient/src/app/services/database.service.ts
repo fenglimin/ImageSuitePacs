@@ -104,6 +104,11 @@ export class DatabaseService {
             );
     }
 
+    getStudy(id: number): Observable<Study> {
+        const url = `${this.pssiUrl}/details/${id}`;
+        return this.http.get<Study>(url);
+    }
+
     setRead(id: string): Observable<boolean> {
         const url = `${this.pssiUrl}/setread/`;
         let jsonId = { id: id };
@@ -208,7 +213,7 @@ export class DatabaseService {
             );
     }
 
-  /** GET study from the server */
+    /** GET study from the server */
     getStudiesForDcmViewer(ids: number[], showHistoryStudies, showKeyImage): Observable<Study[]> {
         const url = `${this.pssiUrl}/GetStudiesForDcmViewer/`;
         let data = { ids: ids, showHistoryStudies: showHistoryStudies, showKeyImage: showKeyImage};
@@ -217,6 +222,21 @@ export class DatabaseService {
             .pipe(
                 tap(recWorklistData => this.log('fetched recWorklistData')),
             catchError(this.handleError<Study[]>('getRecWorklistData'))
+            );
+    }
+
+    //getThumbnailFiles(study: Study): Observable<Blob> {
+    //    const url = `${this.pssiUrl}/GetThumbnails/`;
+    //    return this.http.post(url, study, { responseType: 'blob' });
+    //}
+
+    /** Set Key Image */
+    transferStudy(study: Study): Observable<boolean> {
+        const url = `${this.pssiUrl}/transferStudy/`;
+
+        return this.http.post<boolean>(url, study, httpOptions)
+            .pipe(
+            catchError(this.handleError<boolean>('transferStudy'))
             );
     }
 

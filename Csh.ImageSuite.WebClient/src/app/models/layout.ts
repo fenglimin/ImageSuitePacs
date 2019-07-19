@@ -6,10 +6,12 @@
 }
 
 export class LayoutPosition {
+    pageIndex: number;
     rowIndex: number;
     colIndex: number;
 
-    constructor(rowIndex: number, colIndex: number) {
+    constructor(pageIndex: number, rowIndex: number, colIndex: number) {
+        this.pageIndex = pageIndex;
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;
     }
@@ -18,15 +20,15 @@ export class LayoutPosition {
         return `${this.rowIndex}${this.colIndex}`;
     }
 
-    static fromNumber(positionNumber: number, colCount: number): LayoutPosition {
-        const layoutPosition = new LayoutPosition(0, 0);
-        layoutPosition.rowIndex = Math.trunc(positionNumber / colCount);
-        layoutPosition.colIndex = positionNumber % colCount;
-        return layoutPosition;
+    static fromNumber(groupIndex: number, layoutMatrix: LayoutMatrix): LayoutPosition {
+        const pageSize = layoutMatrix.rowCount * layoutMatrix.colCount;
+        const pageIndex = Math.floor(groupIndex / pageSize);
+        groupIndex = groupIndex % pageSize; 
+        return new LayoutPosition(pageIndex, Math.floor(groupIndex / layoutMatrix.colCount), groupIndex % layoutMatrix.colCount);
     }
 
     equal(layoutPosition: LayoutPosition): boolean {
-        return this.rowIndex === layoutPosition.rowIndex && this.colIndex === layoutPosition.colIndex;
+        return this.pageIndex === layoutPosition.rowIndex && this.rowIndex === layoutPosition.rowIndex && this.colIndex === layoutPosition.colIndex;
     }
 }
 

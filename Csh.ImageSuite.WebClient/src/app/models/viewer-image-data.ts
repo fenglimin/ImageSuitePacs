@@ -28,4 +28,8 @@ export class ViewerImageData {
     setImage(image: Image) {
         this.image = image;
     }
+
+    isEmpty(): boolean {
+        return this.image === null;
+    }
 }

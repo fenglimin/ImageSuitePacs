@@ -6,13 +6,12 @@
 </h1>
 <mat-dialog-content>
     <div id="body-content">
-
         <div id="multi-study-instance" [hidden]="studyNumber==1">
-            <div>
-                <table>
+            <table>
+                <thead>
                     <tr>
                         <th id="checkbox-row">
-                            <input type="checkbox" (click)="onAllStudyChecked($event)" />
+                            <input type="checkbox" disabled="disabled" checked="checked"/>
                         </th>
                         <th>
                             Patient ID
@@ -34,40 +33,147 @@
                         </th>
 
                     </tr>
-                    <tr *ngFor="let study of studies">
+                </thead>
+                <tbody>
+                    <tr *ngFor="let value of studies">
                         <td>
-                            <input type="checkbox"/>
+                            <input type="checkbox" disabled="disabled" checked="checked"/>
                         </td>
-                        <td>{{study.patient.patientId}}</td>
+                        <td>{{value.patient.patientId}}</td>
 
-                        <td>{{study.patient.patientName}}</td>
+                        <td>{{value.patient.patientName}}</td>
 
                         <td></td>
 
-                        <td>{{study.accessionNo}}</td>
+                        <td>{{value.accessionNo}}</td>
 
-                        <td>{{study.studyDate}}</td>
-                        
-                        <td>{{study.studyTime}}</td>
+                        <td>{{value.studyDate}}</td>
 
-
+                        <td>{{value.studyTime}}</td>
                     </tr>
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
         <div id="single-study-instance" [hidden]="studyNumber!=1">
-
+            <table>
+                <tr>
+                    <td id="single-study-info">
+                        <div id="human-license">
+                            <div>
+                                Patient Name : {{study.patient.patientName}}
+                            </div>
+                            <div>
+                                Patient ID : {{study.patient.patientId}}
+                            </div>
+                            <div>
+                                Accession Number : {{study.accessionNo}}
+                            </div>
+                            <div>
+                                Study Date : {{study.studyDate}}
+                            </div>
+                            <div>
+                                Study Time : {{study.studyTime}}
+                            </div>
+                        </div>
+                    </td>
+                    <td id="container">
+                        <div *ngFor="let thumbnail of thumbnails">
+                            <table>
+                                <tr>
+                                    <td width="20px">
+                                        <input type="checkbox" />
+                                    </td>
+                                    <td class="td-image">
+                                        <img [src]="thumbnail" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" />
+                                Check All
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
-
-        <!--<div id="multi-study-instance" [style.visibility]="studyNumber!=1 ? 'visible' : 'hidden'">
-
-        </div>
-        <div id="single-study-instance" [style.visibility]="studyNumber==1 ? 'visible' : 'hidden'">
-
-        </div>-->
     </div>
-    <div>
+    <mat-divider></mat-divider><br>
+    <div id="transfer-content">
+        <div id="icon-container">
+            <button id="pacs-button" class="pacs-icon icon-button" (click)="onPacsIconClick()"></button>
+            <button id="media-button" class="media-icon icon-button" (click)="onMediaIconClick()"></button>
+        </div>
+        <div id="tab-mask-content">
+            <div id="pacs-tab">
 
+            </div>
+            <div id="media-tab">
+                <div id="export-format-area">
+                    <div>
+                        Export Format :
+                    </div>
+                    <select id="export-format-type">
+                        <option>
+                            DICOM
+                        </option>
+                        <option>
+                            JPEG
+                        </option>
+                        <option>
+                            PDF
+                        </option>
+                    </select>
+                </div>
+                <div>
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" />
+                                        Remove Patient Info
+                                    </label>
+                                </div>
+                            </td>
+                            <td class="second-td">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" />
+                                        Remove Institution Name
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" />
+                                        Include CD Viewer
+                                    </label>
+                                </div>
+                            </td>
+                            <td class="second-td">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" />
+                                        Include CD Burning Tool
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
 

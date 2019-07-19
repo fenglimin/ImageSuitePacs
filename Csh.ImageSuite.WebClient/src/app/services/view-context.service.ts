@@ -8,9 +8,9 @@ export enum ViewContextEnum {
     WL = 3,
     Zoom = 4,
     Magnify = 5,
-    ROIZoom = 6,
+    RoiZoom = 6,
     CreateAnn = 7,
-    ROIWL = 8,
+    RoiWl = 8,
     SelectAnn
 }
 

@@ -1,6 +1,16 @@
 <table>
     <tr>
         <td>
+            <button class="prevGroup" role="button" title="Previous Group" (click)="onNavigateGroup(-1)" [disabled]="disablePrev"></button>
+        </td>
+        <td>
+            {{getGroupStatus()}}
+        </td>
+        <td>
+            <button class="nextGroup" role="button" title="Next Group" (click)="onNavigateGroup(1)" [disabled]="disableNext"></button>
+        </td>
+        
+        <td>
             <button class="saveImage" role="button" title="Save Image" (click)="onSaveImage()"></button>
         </td>
     </tr>

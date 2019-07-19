@@ -17,7 +17,8 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
     Arr = Array; //Array type captured in a variable
 
     viewerShellData: ViewerShellData;
-    groupDataList: ViewerGroupData[];
+    pageIndex = 0;
+    pageCount: number;
 
     subscriptionShellNavigated: Subscription;
 
@@ -60,7 +61,8 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
         }
 
         this.hangingProtocolService.applyGroupHangingProtocol(this.viewerShellData, groupHangingProtocolNumber);
-        this.groupDataList = this.viewerShellData.groupDataList;
+        this.pageIndex = 0;
+        this.pageCount = this.viewerShellData.getPageCount();
         this.onResize();
     }
 
@@ -83,9 +85,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
     }
 
     getGroupData(rowIndex: number, colIndex: number): ViewerGroupData {
-        const groupIndex = rowIndex * this.viewerShellData.groupMatrix.colCount + colIndex;
-        return this.groupDataList[groupIndex];
-        //return this.viewerShellData.getGroup(rowIndex, colIndex);
+        return this.viewerShellData.getGroup(this.pageIndex, rowIndex, colIndex);
     }
 
     onSaveImage(event) {
@@ -94,5 +94,9 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
                 groupViewer.saveSelectedImage();
             }
         });
+    }
+
+    onNavigateGroup(delta) {
+        this.pageIndex += delta;
     }
 }

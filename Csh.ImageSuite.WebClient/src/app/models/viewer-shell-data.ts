@@ -9,7 +9,7 @@ export class ViewerShellData {
     hide: boolean;
     patientList = new Array<Patient>();
 
-    groupCount = 0; // The count of groups that contain image
+    groupCount = 0; // The count of groups that contain image, NOT including empty groups
     groupMatrix = new LayoutMatrix(1, 1);
     groupDataList = new Array<ViewerGroupData>(); // Must contains all group even if its an empty group
 
@@ -107,29 +107,26 @@ export class ViewerShellData {
         this.groupCount = 0;
     }
 
-    getGroup(rowIndex: number, colIndex: number): ViewerGroupData {
-        const groupIndex = rowIndex * this.groupMatrix.colCount + colIndex;
+    getGroup(pageIndex: number, rowIndex: number, colIndex: number): ViewerGroupData {
+        const groupIndex = pageIndex * this.groupMatrix.rowCount * this.groupMatrix.colCount + rowIndex * this.groupMatrix.colCount + colIndex;
         if (groupIndex >= this.groupDataList.length) {
             alert(`Invalid group index : ${groupIndex}`);
             return null;
         }
 
-        ViewerShellData.logService.debug("ViewData: Get group for " + this.getId() + rowIndex + colIndex);
+        //ViewerShellData.logService.debug("ViewData: Get group for " + this.getId() + rowIndex + colIndex);
         return this.groupDataList[groupIndex];
     }
 
-    addGroup(groupIndex: number) {
-        const groupData = new ViewerGroupData(this,
-            this.defaultImageHangingProtocol,
-            LayoutPosition.fromNumber(groupIndex, this.groupMatrix.colCount));
-        this.groupDataList.push(groupData);
-    }
+    addGroup(isEmpty: boolean) {
+        const groupIndex = this.groupDataList.length;
+        const groupData = new ViewerGroupData(this, this.defaultImageHangingProtocol,
+            LayoutPosition.fromNumber(groupIndex, this.groupMatrix));
 
-    addEmptyGroup(groupIndex: number) {
-        const groupData = new ViewerGroupData(this,
-            this.defaultImageHangingProtocol,
-            LayoutPosition.fromNumber(groupIndex, this.groupMatrix.colCount));
-        groupData.setEmpty();
+        if (isEmpty) {
+            groupData.setEmpty();
+        }
+
         this.groupDataList.push(groupData);
     }
 
@@ -139,7 +136,29 @@ export class ViewerShellData {
             return;
         }
 
-        this.groupDataList[groupIndex].setPosition(LayoutPosition.fromNumber(groupIndex, this.groupMatrix.colCount));
+        this.groupDataList[groupIndex].setPosition(LayoutPosition.fromNumber(groupIndex, this.groupMatrix));
+    }
+
+    getPageCount(): number {
+        return Math.ceil(this.groupDataList.length / (this.groupMatrix.rowCount * this.groupMatrix.colCount));
+    }
+
+    removeAllEmptyGroup() {
+        while (this.groupDataList[this.groupDataList.length - 1].isEmpty()) {
+            this.groupDataList.pop();
+        }
+    }
+
+    normalizeGroupList() {
+        // Need to add some empty groups to make sure the total group (include empty group) is valid.
+        // For example, if the group count is 5(not empty), and the layout matrix is 2x2, need to add
+        // 3 empty groups to make sure total group number(8) is multiple of the matrix size(4)
+
+        const matrixSize = this.groupMatrix.rowCount * this.groupMatrix.colCount;
+        const totalSize = this.getPageCount() * matrixSize;
+        for (let i = this.groupDataList.length; i < totalSize; i++) {
+            this.addGroup(true);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

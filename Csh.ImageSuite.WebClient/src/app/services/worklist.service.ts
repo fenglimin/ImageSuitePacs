@@ -60,7 +60,6 @@ export class WorklistService {
         return this._shortcut;
     }
 
-
     private _showHistoryStudies = true;
 
     set showHistoryStudies(value: boolean) {
@@ -225,6 +224,15 @@ export class WorklistService {
             this.databaseService.setUnread(study.studyInstanceUid)
                 .subscribe(() => this.refreshShortcuts());
         }
+    }
+
+    //onGetThumbnailFiles(study: Study) {
+    //    this.databaseService.getThumbnailFiles(study)
+    //        .subscribe(() => this.refreshShortcuts());
+    //}
+
+    onTransferStudy(study: Study) {
+        this.databaseService.transferStudy(study).subscribe(() => this.refreshShortcuts());
     }
 
     onCheckStudyChanged(study: Study = null) {

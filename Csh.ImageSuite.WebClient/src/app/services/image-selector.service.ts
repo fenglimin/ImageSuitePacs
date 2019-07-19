@@ -14,8 +14,11 @@ export class ImageSelectorService {
     // Observable number sources
     private imageLayoutChangedSource = new Subject<number>();
 
-    // Observable string sources
+    // Observable Image sources
     private thumbnailSelectedSource = new Subject<Image>();
+
+    // Observable boolean sources
+    private imagePageNavigatedSource = new Subject<boolean>();
 
     // Observable string streams
     imageSelected$ = this.imageSelectedSource.asObservable();
@@ -23,7 +26,11 @@ export class ImageSelectorService {
     // Observable number streams
     imageLayoutChanged$ = this.imageLayoutChangedSource.asObservable();
 
+    // Observable Image sources
     thumbnailSelected$ = this.thumbnailSelectedSource.asObservable();
+
+    // Observable boolean sources
+    imagePageNavigated$ = this.imagePageNavigatedSource.asObservable();
 
     // Service string commands
     selectImage(viewerImageData: ViewerImageData) {
@@ -37,5 +44,9 @@ export class ImageSelectorService {
 
     selectThumbnail(image: Image) {
         this.thumbnailSelectedSource.next(image);
+    }
+
+    navigateImagePage(up: boolean) {
+        this.imagePageNavigatedSource.next(up);
     }
 }

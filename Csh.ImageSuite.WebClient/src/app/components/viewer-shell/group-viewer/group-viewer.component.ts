@@ -18,6 +18,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     Arr = Array; //Array type captured in a variable
     _groupData: ViewerGroupData;
     logPrefix: string;
+    pageIndex = 0;
+    pageCount: number;
 
     imageDataList: ViewerImageData[];
 
@@ -51,6 +53,11 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
             viewerImageData => {
                 this.doSelectGroup(viewerImageData);
+            });
+
+        this.subscriptionImageSelection = imageSelectorService.imagePageNavigated$.subscribe(
+            up => {
+                this.doNavigate(up);
             });
 
         this.subscriptionThumbnailSelection = imageSelectorService.thumbnailSelected$.subscribe(
@@ -126,6 +133,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         
         this.hangingProtocolService.applyImageHangingProtocol(this.groupData, imageLayoutStyle);
         this.imageDataList = this.groupData.imageDataList;
+        this.pageIndex = 0;
+        this.pageCount = this.groupData.getPageCount();
         this.onResize();
     }
 
@@ -146,9 +155,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     }
 
     getImageData(rowIndex: number, colIndex: number): ViewerImageData {
-        const imageIndex = rowIndex * this.groupData.imageMatrix.colCount + colIndex;
-        return this.imageDataList[imageIndex];
-       // return this.groupData.getImage(rowIndex, colIndex);
+        return this.groupData.getImage(this.pageIndex, rowIndex, colIndex);
     }
 
     setHeight(height: number) {
@@ -169,5 +176,21 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
                 imageViewer.saveImage();
             }
         });
+    }
+
+    doNavigate(up: boolean) {
+        if (!this.selected) {
+            return;
+        }
+
+        if (up) {
+            if (this.pageIndex > 0) {
+                this.pageIndex--;
+            }
+        } else {
+            if (this.pageIndex < this.pageCount - 1) {
+                this.pageIndex++;
+            }
+        }
     }
 }

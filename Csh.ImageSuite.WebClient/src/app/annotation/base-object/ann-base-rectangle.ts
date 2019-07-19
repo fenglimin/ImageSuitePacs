@@ -31,7 +31,7 @@ export class AnnBaseRectangle extends AnnBaseObject {
         annSerialize.writeInteger(0, 4);
         annSerialize.writeInteger(0, 1);
 
-        const topLeftPoint = this.getPosition()
+        const topLeftPoint = this.getPosition();
         const rect = new Rectangle(topLeftPoint.x, topLeftPoint.y, this.getWidth(), this.getHeight());
         const pointList = AnnTool.pointListFromRect(rect);
 

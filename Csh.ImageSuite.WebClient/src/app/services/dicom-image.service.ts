@@ -7,6 +7,8 @@ import { ConfigurationService } from "../services/configuration.service";
 import { TextOverlayData, TextOverlayDisplayGroup, TextOverlayDisplayItem, GraphicOverlayData } from '../models/overlay';
 import { LogService } from "../services/log.service";
 import { FontData } from "../models/misc-data";
+import { WindowLevelData } from "../models/dailog-data/image-process";
+import { Point, MouseEventType, AnnType, Rectangle } from "../models/annotation";
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': "application/json" })
@@ -87,6 +89,32 @@ export class DicomImageService {
         }
 
         return graphicOverlayList;
+    }
+
+    getRoiWlValue(image: Image, imagePointList: Point[]): WindowLevelData {
+
+        const imageWidth = image.width();
+        const startX = imagePointList.reduce((min, p) => p.x < min ? p.x : min, imagePointList[0].x);
+        const startY = imagePointList.reduce((min, p) => p.y < min ? p.y : min, imagePointList[0].y);
+        const endX = imagePointList.reduce((max, p) => p.x > max ? p.x : max, imagePointList[0].x);
+        const endY = imagePointList.reduce((max, p) => p.y > max ? p.y : max, imagePointList[0].y);
+
+        const pixelData = image.cornerStoneImage.getPixelData();
+
+        let maxValue = -4096;
+        let minValue = 4096;
+
+        for (let i = startX; i <= endX; i ++) {
+            for (let j = startY; j <= endY; j ++) {
+                const index = imageWidth * j + i;
+                maxValue = Math.max(maxValue, pixelData[index]);
+                minValue = Math.min(minValue, pixelData[index]);
+            }
+        }
+
+        const windowWidth = maxValue - minValue;
+        const windowCenter = minValue + windowWidth / 2;
+        return { windowCenter: Math.round(windowCenter), windowWidth: windowWidth };
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Text overlay functions

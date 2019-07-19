@@ -5,7 +5,6 @@ import { SelectedButtonData } from "../../../models/dropdown-button-menu-data";
 import { ConfigurationService } from "../../../services/configuration.service";
 import { AnnType } from "../../../models/annotation";
 
-
 @Component({
     selector: "app-viewer-toolbar",
     templateUrl: "./viewer-toolbar.component.html",
@@ -28,7 +27,7 @@ export class ViewerToolbarComponent implements OnInit {
 
     zoomButtonMenuList: SelectedButtonData[] = [
         { name: "Zoom", tip: "Zoom", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.Zoom } },
-        { name: "rectzoom", tip: "ROI Zoom", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.ROIZoom } }
+        { name: "rectzoom", tip: "ROI Zoom", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.RoiZoom } }
     ];
 
     magnifyButtonMenuList: SelectedButtonData[] = [
@@ -46,7 +45,7 @@ export class ViewerToolbarComponent implements OnInit {
 
     wlButtonMenuList: SelectedButtonData[] = [
         { name: "WL", tip: "W/L", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.WL } },
-        { name: "ROI", tip: "ROI W/L", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.ROIWL } },
+        { name: "ROI", tip: "ROI W/L", operationData: { type: OperationEnum.SetContext, data: ViewContextEnum.RoiWl } },
         { name: "ManualWL", tip: "Manual W/L", operationData: { type: OperationEnum.ManualWL, data: null } },
         { name: "Invert", tip: "Invert", operationData: { type: OperationEnum.Invert, data: null } }
     ];

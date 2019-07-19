@@ -1,0 +1,1 @@
+ng build & xcopy ..\Csh.ImageSuite.WebHost\AngularDist\* C:\ImageViewPacs /E /Y

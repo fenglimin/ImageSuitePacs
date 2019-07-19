@@ -8,12 +8,7 @@
     <i *ngIf="content.messageType === 2" class="glyphicon glyphicon-warning-sign" style="color: #F90; padding-right: 8px;"></i>
     <i *ngIf="content.messageType === 3" class="glyphicon glyphicon-remove" style="color: #F90; padding-right: 8px;"></i>
     <span id="span-message-text" *ngIf="content.messageType !== 4" style="color: white">{{content.messageText}}</span>
-    <mat-form-field *ngIf="content.messageType === 4">
-        <input matInput
-               placeholder="{{content.messageText}}"
-               formControlName="valueInput"
-               (input)="onInput($event)">
-    </mat-form-field>
+    <input *ngIf="content.messageType === 4" (input)="onInput($event)">
 </mat-dialog-content>
 
 <mat-dialog-actions>

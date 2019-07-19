@@ -84,18 +84,14 @@ export class HangingProtocolService {
         if (groupHangingProtocol >= GroupHangingProtocol.FreeHang) {
             const groupMatrix = LayoutMatrix.fromNumber(groupHangingProtocol);
             if (!groupMatrix.equal(viewerShellData.groupMatrix)) {
-                const oldMatrixSize = viewerShellData.groupMatrix.rowCount * viewerShellData.groupMatrix.colCount;
+
                 viewerShellData.groupMatrix = groupMatrix;
 
-                // For the exsiting group, only change its position
-                for (let i = 0; i < viewerShellData.groupDataList.length; i++) {
-                    viewerShellData.updateGroupPositionFromIndex(i);
-                }
+                viewerShellData.removeAllEmptyGroup();
 
-                // Add empty group if matrix size becomes bigger
-                const matrixSize = viewerShellData.groupMatrix.rowCount * viewerShellData.groupMatrix.colCount;
-                for (let i = viewerShellData.groupDataList.length; i < matrixSize; i++) {
-                    viewerShellData.addEmptyGroup(i);
+                // For the existing group, only change its position
+                for (let i = 0; i < viewerShellData.groupDataList.length; i++) {
+                    viewerShellData.updateGroupPositionFromIndex(i); 
                 }
             }
         } else {
@@ -121,56 +117,48 @@ export class HangingProtocolService {
                 viewerShellData.groupCount = groupCount;
                 viewerShellData.groupMatrix = this.getGroupLayoutMatrixFromCount(groupCount);
 
-                const matrixSize = viewerShellData.groupMatrix.rowCount * viewerShellData.groupMatrix.colCount;
-                for (let i = 0; i < matrixSize; i++) {
-                    viewerShellData.addGroup(i);
+                for (let i = 0; i < groupCount; i++) {
+                    viewerShellData.addGroup(false);
                 }
             }
         }
+
+        viewerShellData.normalizeGroupList();
     }
 
     applyImageHangingProtocol(groupData: ViewerGroupData, imageHangingProtocol: ImageHangingProtocol) {
 
         this.logService.info("HP service: applyImageHangingProtocol to Group" + groupData.getId() + ", protocol is " + ImageHangingProtocol[imageHangingProtocol]);
 
-        if (groupData.imageCount === 0) {
-            // This is the first time to apply 
-            groupData.imageHangingProtocol = imageHangingProtocol;
-            this.createImageDataListOfGroup(groupData);
-            return;
-        }
-
         groupData.imageHangingProtocol = imageHangingProtocol;
 
-        if (imageHangingProtocol >= ImageHangingProtocol.FreeHang) {
-            const imageMatrix = LayoutMatrix.fromNumber(imageHangingProtocol);
+        if (groupData.imageCount === 0) {
+            // This is the first time to apply 
+            this.createImageDataListOfGroup(groupData);
+            groupData.normalizeImageList();
+        } else {
+            let imageMatrix: LayoutMatrix;
+            if (imageHangingProtocol >= ImageHangingProtocol.FreeHang) {
+                imageMatrix = LayoutMatrix.fromNumber(imageHangingProtocol);
+            } else {
+                if (imageHangingProtocol !== ImageHangingProtocol.Auto) {
+                    alert(`applyImageHangingProtocol() => Invalid Image Hanging Protocol : ${imageHangingProtocol}`);
+                    return;
+                }
+
+                imageMatrix = this.getImageLayoutMatrixFromCount(groupData.imageCount);
+            }
+
             if (!imageMatrix.equal(groupData.imageMatrix)) {
                 groupData.imageMatrix = imageMatrix;
+                groupData.removeAllEmptyImage();
 
                 // For the image cell that contains image, only change its position
                 for (let i = 0; i < groupData.imageDataList.length; i++) {
                     groupData.updateImagePositionFromIndex(i);
                 }
 
-                // Add empty image if matrix size becomes bigger
-                const matrixSize = groupData.imageMatrix.rowCount * groupData.imageMatrix.colCount;
-                for (let i = groupData.imageDataList.length; i < matrixSize; i++) {
-                    groupData.addImage(i, null);
-                }
-            }
-        } else {
-
-            if (imageHangingProtocol !== ImageHangingProtocol.Auto) {
-                alert(`applyImageHangingProtocol() => Invalid Image Hanging Protocol : ${imageHangingProtocol}`);
-                return;
-            }
-
-
-            groupData.imageMatrix = this.getImageLayoutMatrixFromCount(groupData.imageCount);
-
-            // For the image cell that contains image, only change its position
-            for (let i = 0; i < groupData.imageDataList.length; i++) {
-                groupData.updateImagePositionFromIndex(i);
+                groupData.normalizeImageList();
             }
         }
     }
@@ -185,8 +173,10 @@ export class HangingProtocolService {
             // GroupIndex is the patient index
             ret = this.createImageDataListByPatient(groupData, groupIndex);
         } else if (groupHangingProtocol === GroupHangingProtocol.ByStudy) {
+            // GroupIndex is the study index
             ret = this.createImageDataListByStudy(groupData, groupIndex);
         } else if (groupHangingProtocol === GroupHangingProtocol.BySeries) {
+            // GroupIndex is the series index
             ret = this.createImageDataListBySeries(groupData, groupIndex);
         } else {
             alert(`createImageListOfGroup() => Invalid Group Hanging Protocol : ${groupHangingProtocol}`);
@@ -238,10 +228,8 @@ export class HangingProtocolService {
         groupData.imageCount = imageList.length;
         groupData.imageMatrix = this.getImageLayoutMatrixFromCount(groupData.imageCount);
 
-        const matrixSize = groupData.imageMatrix.rowCount * groupData.imageMatrix.colCount;
-        for (let i = 0; i < matrixSize; i++) {
-            const image = i < groupData.imageCount ? imageList[i] : null;
-            groupData.addImage(i, image);
+        for (let i = 0; i < imageList.length; i++) {
+            groupData.addImage(imageList[i]);
         }
 
         return true;
