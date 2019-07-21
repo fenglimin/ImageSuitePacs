@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, AfterContentInit, ViewChildren, QueryList } from "@angular/core";
-import { ImageSelectorService } from "../../../services/image-selector.service";
+import { ImageSelectorService, ImageInterationData, ImageInteractionEnum } from "../../../services/image-selector.service";
 import { ImageHangingProtocol } from "../../../models/hanging-protocol";
 import { HangingProtocolService } from "../../../services/hanging-protocol.service";
 import { Subscription } from "rxjs";
@@ -46,6 +46,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     subscriptionThumbnailSelection: Subscription;
     subscriptionImageSelection: Subscription;
     subscriptionImageLayoutChange: Subscription;
+    subscriptionImageInteraction: Subscription;
 
     constructor(private imageSelectorService: ImageSelectorService,
         private hangingProtocolService: HangingProtocolService,
@@ -55,9 +56,9 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
                 this.doSelectGroup(viewerImageData);
             });
 
-        this.subscriptionImageSelection = imageSelectorService.imagePageNavigated$.subscribe(
-            up => {
-                this.doNavigate(up);
+        this.subscriptionImageInteraction = imageSelectorService.imageInteraction$.subscribe(
+            imageInterationData => {
+                this.doImageInteration(imageInterationData);
             });
 
         this.subscriptionThumbnailSelection = imageSelectorService.thumbnailSelected$.subscribe(
@@ -191,6 +192,19 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
             if (this.pageIndex < this.pageCount - 1) {
                 this.pageIndex++;
             }
+        }
+    }
+
+    doImageInteration(imageInterationData: ImageInterationData) {
+        const itsMe = imageInterationData.viewerImageData.groupData === this.groupData;
+
+        switch(imageInterationData.interactionType) {
+            case ImageInteractionEnum.NavigationImageInGroup:
+                if (itsMe) {
+                    this.doNavigate(imageInterationData.interactionPara);
+                }
+                
+                break;
         }
     }
 }
