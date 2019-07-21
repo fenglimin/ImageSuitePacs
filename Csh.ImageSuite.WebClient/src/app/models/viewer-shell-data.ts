@@ -41,6 +41,13 @@ export class ViewerShellData {
                 series.imageList[j].hide = false;
                 series.imageList[j].series = series;
             }
+
+            // Sort the images in series by ImageNo. We already query the image by ImageNo order in backend,
+            // but ImageNo is saved in DB with string format, so "10" is prior than "2",
+            // Need to adjust it by sort by number type
+            series.imageList.sort((n1, n2) => {
+                return (Number(n1.imageNo) < Number(n2.imageNo)) ? -1 : 1;
+            });
         }
 
 

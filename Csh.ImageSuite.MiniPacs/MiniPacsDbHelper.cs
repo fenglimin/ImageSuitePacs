@@ -599,7 +599,7 @@ namespace Csh.ImageSuite.MiniPacs
         public Study GetStudy(int serialNo, bool showKeyImage)
         {
             var sbSql = new StringBuilder();
-            sbSql.Append("select Image.SerialNo ID_Image, Image.SOPInstanceUID, Image.ImageColumns, Image.ImageRows, Image.ObjectFile, ");//4
+            sbSql.Append("select Image.SerialNo ID_Image, Image.SOPInstanceUID, Image.ImageNo, Image.ImageColumns, Image.ImageRows, Image.ObjectFile, ");//4
             sbSql.Append("Image.ImageDate, Image.ImageTime, Image.AcquisitionDate, Image.AcquisitionTime, Image.KeyImage, Image.BitsAllocated, ");//4
             sbSql.Append("Series.SerialNo ID_Series, Series.SeriesInstanceUID, Series.BodyPart, Series.ViewPosition, Series.Modality,  Series.ImageCount IC_Series, ");//9
             sbSql.Append("Series.ContrastBolus, Series.LocalBodyPart, Series.SeriesDescription, Series.OperatorName, Series.ReferHospital,  Series.PatientPosition, Series.LocalViewPosition, ");//9

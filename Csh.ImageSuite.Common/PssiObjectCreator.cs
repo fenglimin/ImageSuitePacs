@@ -98,6 +98,7 @@ namespace Csh.ImageSuite.Common
             var image = new Image(_commonTool.GetSafeStringDbValue(row, "SOPInstanceUID"))
             {
                 Id = _commonTool.GetSafeIntDbValue(row, "ID_Image"),
+                ImageNo = _commonTool.GetSafeStringDbValue(row, "ImageNo"),
                 ImageColumns = _commonTool.GetSafeIntDbValue(row, "ImageColumns"),
                 ImageRows = _commonTool.GetSafeIntDbValue(row, "ImageRows"),
                 FilePath = _commonTool.GetSafeStringDbValue(row, "ObjectFile"),
