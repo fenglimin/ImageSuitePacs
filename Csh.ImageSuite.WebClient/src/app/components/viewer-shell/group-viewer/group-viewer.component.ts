@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, AfterContentInit, ViewChildren, QueryList } from "@angular/core";
-import { ImageSelectorService, ImageInterationData, ImageInteractionEnum } from "../../../services/image-selector.service";
+import { ImageSelectorService } from "../../../services/image-selector.service";
+import { ImageInteractionService } from "../../../services/image-interaction.service";
+import { ImageInteractionData, ImageInteractionEnum } from "../../../models/image-operation";
 import { ImageHangingProtocol } from "../../../models/hanging-protocol";
 import { HangingProtocolService } from "../../../services/hanging-protocol.service";
 import { Subscription } from "rxjs";
@@ -49,6 +51,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     subscriptionImageInteraction: Subscription;
 
     constructor(private imageSelectorService: ImageSelectorService,
+        private imageInteractionService: ImageInteractionService,
         private hangingProtocolService: HangingProtocolService,
         private logService: LogService) {
         this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
@@ -56,9 +59,9 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
                 this.doSelectGroup(viewerImageData);
             });
 
-        this.subscriptionImageInteraction = imageSelectorService.imageInteraction$.subscribe(
-            imageInterationData => {
-                this.doImageInteration(imageInterationData);
+        this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(
+            imageInteractionData => {
+                this.doImageInteraction(imageInteractionData);
             });
 
         this.subscriptionThumbnailSelection = imageSelectorService.thumbnailSelected$.subscribe(
@@ -195,13 +198,13 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         }
     }
 
-    doImageInteration(imageInterationData: ImageInterationData) {
-        const itsMe = imageInterationData.viewerImageData.groupData === this.groupData;
+    doImageInteraction(imageInteractionData: ImageInteractionData) {
+        const itsMe = imageInteractionData.sameGroup(this.groupData);
 
-        switch(imageInterationData.interactionType) {
+        switch (imageInteractionData.getType()) {
             case ImageInteractionEnum.NavigationImageInGroup:
                 if (itsMe) {
-                    this.doNavigate(imageInterationData.interactionPara);
+                    this.doNavigate(imageInteractionData.getPara());
                 }
                 
                 break;

@@ -3,27 +3,6 @@ import { Subject } from "rxjs";
 import { ViewerImageData } from "../models/viewer-image-data";
 import { Image } from "../models/pssi";
 
-export class ImageInterationData {
-    viewerImageData: ViewerImageData;
-    interactionType: ImageInteractionEnum;
-    interactionPara: any;
-
-    constructor(viewerImageData: ViewerImageData, interactionType: ImageInteractionEnum, interactionPara: any) {
-        this.viewerImageData = viewerImageData;
-        this.interactionType = interactionType;
-        this.interactionPara = interactionPara;
-    }
-}
-
-export enum ImageInteractionEnum {
-    NavigationImageInGroup = 0,
-    SelectImageInGroup,
-    SelectThumbnailInNavigator,
-    ChangeImageLayoutForGroup,
-
-
-}
-
 @Injectable({
     providedIn: "root"
 })
@@ -41,9 +20,6 @@ export class ImageSelectorService {
     // Observable boolean sources
     private imagePageNavigatedSource = new Subject<boolean>();
 
-    // Observable ImageInterationData source
-    private imageInteractionSource = new Subject<ImageInterationData>();
-
     // Observable string streams
     imageSelected$ = this.imageSelectedSource.asObservable();
 
@@ -55,9 +31,6 @@ export class ImageSelectorService {
 
     // Observable boolean sources
     imagePageNavigated$ = this.imagePageNavigatedSource.asObservable();
-
-    // Observable ImageInterationData sources
-    imageInteraction$ = this.imageInteractionSource.asObservable();
 
     // Service string commands
     selectImage(viewerImageData: ViewerImageData) {
@@ -75,9 +48,5 @@ export class ImageSelectorService {
 
     navigateImagePage(up: boolean) {
         this.imagePageNavigatedSource.next(up);
-    }
-
-    doImageInteraction(imageInterationData: ImageInterationData) {
-        this.imageInteractionSource.next(imageInterationData);
     }
 }

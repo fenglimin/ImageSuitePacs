@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, AfterContentInit, ViewChild, ElementRef, NgZone } from "@angular/core";
 import { Location, LocationStrategy, PathLocationStrategy } from "@angular/common";
-import { ImageSelectorService, ImageInterationData, ImageInteractionEnum } from "../../../../services/image-selector.service";
+import { ImageSelectorService } from "../../../../services/image-selector.service";
+import { ImageInteractionService } from "../../../../services/image-interaction.service";
+import { ImageInteractionData, ImageInteractionEnum } from "../../../../models/image-operation";
 import { DicomImageService } from "../../../../services/dicom-image.service";
 import { AnnotationService } from "../../../../services/annotation.service";
 import { ViewContextEnum, ViewContext, OperationEnum, OperationData, ViewContextService } from "../../../../services/view-context.service"
@@ -133,6 +135,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     constructor(private imageSelectorService: ImageSelectorService,
+        private imageInteractionService: ImageInteractionService,
         private dicomImageService: DicomImageService,
         private configurationService: ConfigurationService,
         private viewContext: ViewContextService,
@@ -1474,8 +1477,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private onCanvasMouseWheel(evt) {
         const wheelUp = evt.originalEvent.wheelDelta > 0;
-        this.imageSelectorService.doImageInteraction(
-            new ImageInterationData(this.imageData, ImageInteractionEnum.NavigationImageInGroup, wheelUp));
+        this.imageInteractionService.onNavigationImageInGroup(this.imageData, wheelUp);
     }
 
     private onCanvasMouseDown(evt) {
