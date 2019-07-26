@@ -88,8 +88,8 @@
                 <div *ngFor="let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index"
                      [style.visibility]="getPssiVisibility(series)" [style.height]="getPssiHeight(series)">
                     <div class="image-button">
-                        <app-thumbnail [image]="series.imageList[imageIndex*2]"></app-thumbnail>
-                        <app-thumbnail *ngIf="imageIndex*2+1 < series.imageList.length" [image]="series.imageList[imageIndex*2+1]"></app-thumbnail>
+                        <app-thumbnail [image]="series.imageList[imageIndex*2]" [viewerShellData]="viewerShellData"></app-thumbnail>
+                        <app-thumbnail *ngIf="imageIndex*2+1 < series.imageList.length" [image]="series.imageList[imageIndex*2+1]" [viewerShellData]="viewerShellData"></app-thumbnail>
                     </div>
                 </div>
             </div>

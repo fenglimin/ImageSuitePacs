@@ -12,14 +12,14 @@ import { LogService } from "./log.service";
     providedIn: "root"
 })
 export class HangingProtocolService {
-    defaultGroupHangingProtocol = GroupHangingProtocol.ByStudy;
-    defaultImageHangingPrococal = ImageHangingProtocol.Auto;
+    defaultGroupHangingProtocol = GroupHangingProtocol.BySeries;
+    defaultImageHangingProtocol = ImageHangingProtocol.FreeHang_1X1;
 
     groupLayoutNumberList = [11, 11, 12, 22, 22];
     imageLayoutNumberList = [11, 11, 12, 22, 22, 23, 23, 33];
 
     groupHangingDataList: GroupHangingData[] = [
-        { groupHangingProtocol: GroupHangingProtocol.ByPatent, name: "Patient", tip: "Group Image by Paitient" },
+        { groupHangingProtocol: GroupHangingProtocol.ByPatent, name: "Patient", tip: "Group Image by Patient" },
         { groupHangingProtocol: GroupHangingProtocol.ByStudy, name: "Study", tip: "Group Image by Study" },
         { groupHangingProtocol: GroupHangingProtocol.BySeries, name: "Series", tip: "Group Image by Series" },
         { groupHangingProtocol: GroupHangingProtocol.FreeHang, name: "FreeHang", tip: "Free Hang" }
@@ -50,8 +50,8 @@ export class HangingProtocolService {
         return this.defaultGroupHangingProtocol;
     }
 
-    getDefaultImageHangingPrococal(): ImageHangingProtocol {
-        return this.defaultImageHangingPrococal;
+    getDefaultImageHangingProtocol(): ImageHangingProtocol {
+        return this.defaultImageHangingProtocol;
     }
 
     getGroupHangingDataList(): GroupHangingData[] {
@@ -59,7 +59,7 @@ export class HangingProtocolService {
     }
 
     getDefaultGroupHangingData(): GroupHangingData {
-        return this.groupHangingDataList[1];
+        return this.groupHangingDataList[2];
     }
 
     getGroupLayoutDataList(): GroupHangingData[] {
@@ -76,6 +76,14 @@ export class HangingProtocolService {
 
     getDefaultImageLayoutData(): ImageHangingData {
         return this.imageLayoutDataList[0];
+    }
+
+    getGroupLayoutDataByMatrix(groupMatrix: LayoutMatrix) {
+        return this.getLayoutDataByMatrix(true, groupMatrix);
+    }
+
+    getImageLayoutDataByMatrix(imageMatrix: LayoutMatrix) {
+        return this.getLayoutDataByMatrix(false, imageMatrix);
     }
 
     applyGroupHangingProtocol(viewerShellData: ViewerShellData, groupHangingProtocol: GroupHangingProtocol) {
@@ -226,7 +234,7 @@ export class HangingProtocolService {
 
         groupData.imageDataList = new Array<ViewerImageData>();
         groupData.imageCount = imageList.length;
-        groupData.imageMatrix = this.getImageLayoutMatrixFromCount(groupData.imageCount);
+        groupData.imageMatrix = LayoutMatrix.fromNumber(groupData.imageHangingProtocol);
 
         for (let i = 0; i < imageList.length; i++) {
             groupData.addImage(imageList[i]);
@@ -252,4 +260,20 @@ export class HangingProtocolService {
         return LayoutMatrix.fromNumber(matrixNumber);
     }
 
+    private getLayoutDataByMatrix(groupLayout: boolean, matrix: LayoutMatrix): any {
+        const hangingProtocol = matrix.toNumber();
+        const result = groupLayout ? this.groupLayoutDataList.filter(groupLayoutData => groupLayoutData.groupHangingProtocol === hangingProtocol) : 
+            this.imageLayoutDataList.filter(imageLayoutData => imageLayoutData.imageHangingProtocol === hangingProtocol);;
+
+        const layoutType = groupLayout ? "group" : "image";
+        if (result.length === 0) {
+            alert(`HangingProtocolService.getLayoutDataByMatrix() => Can NOT find ${layoutType} layer data in ${layoutType} layout data list!`);
+        } else if (result.length > 1) {
+            alert(`HangingProtocolService.getLayoutDataByMatrix() => Find same ${layoutType} layer data in ${layoutType} layout data list!`);
+        } else {
+            return result[0];
+        }
+
+        return undefined;
+    }
 }

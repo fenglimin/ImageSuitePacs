@@ -32,4 +32,16 @@ export class ViewerImageData {
     isEmpty(): boolean {
         return this.image === null;
     }
+
+    sameImage(image: Image): boolean {
+        return this.image === image;
+    }
+
+    sameGroup(image: Image): boolean {
+        return this.groupData.getViewerImageDataByImage(image) !== undefined;
+    }
+
+    sameShell(image: Image): boolean {
+        return this.groupData.viewerShellData.getViewerImageDataByImage(image) !== undefined;
+    }
 }

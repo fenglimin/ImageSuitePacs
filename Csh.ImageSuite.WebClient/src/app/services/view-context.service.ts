@@ -166,7 +166,7 @@ export class ViewContextService {
 
     }
 
-    setContext(context: ViewContextEnum, data: any = undefined) {
+    setContext(context: ViewContextEnum, shellId: string, data: any = undefined) {
         const curContext = new ViewContext(context, data);
         this._previousContext = this._curContext;
         this._curContext = curContext;
@@ -179,36 +179,36 @@ export class ViewContextService {
         }
     }
 
-    isImageToolBarButtonChecked(buttonData: SelectedButtonData): boolean {
-        switch (buttonData.operationData.type) {
-            case OperationEnum.ShowAnnotation:
-                return this._showAnnotation;
-            case OperationEnum.ShowOverlay:
-                return this._showOverlay;
-            case OperationEnum.ShowRuler:
-                return this._showRuler;
-            case OperationEnum.ShowGraphicOverlay:
-                return this._showGraphicOverlay;
-            case OperationEnum.ToggleKeyImage:
-                return this._keyImage;
+    //isImageToolBarButtonChecked(buttonData: SelectedButtonData): boolean {
+    //    switch (buttonData.operationData.type) {
+    //        case OperationEnum.ShowAnnotation:
+    //            return this._showAnnotation;
+    //        case OperationEnum.ShowOverlay:
+    //            return this._showOverlay;
+    //        case OperationEnum.ShowRuler:
+    //            return this._showRuler;
+    //        case OperationEnum.ShowGraphicOverlay:
+    //            return this._showGraphicOverlay;
+    //        case OperationEnum.ToggleKeyImage:
+    //            return this._keyImage;
 
-            default:
-                return buttonData.operationData.data === this._curContext.action;
-        }
-    }
+    //        default:
+    //            return buttonData.operationData.data === this._curContext.action;
+    //    }
+    //}
 
-    isImageToolBarButtonCheckStyle(buttonData: SelectedButtonData): boolean {
-        switch (buttonData.operationData.type) {
-            case OperationEnum.ShowAnnotation:
-            case OperationEnum.ShowOverlay:
-            case OperationEnum.ShowRuler:
-            case OperationEnum.ShowGraphicOverlay:
-            case OperationEnum.SetContext:
-            case OperationEnum.ToggleKeyImage:
-                return true;
-            default:
-                return false;
-        }
-    }
+    //isImageToolBarButtonCheckStyle(buttonData: SelectedButtonData): boolean {
+    //    switch (buttonData.operationData.type) {
+    //        case OperationEnum.ShowAnnotation:
+    //        case OperationEnum.ShowOverlay:
+    //        case OperationEnum.ShowRuler:
+    //        case OperationEnum.ShowGraphicOverlay:
+    //        case OperationEnum.SetContext:
+    //        case OperationEnum.ToggleKeyImage:
+    //            return true;
+    //        default:
+    //            return false;
+    //    }
+    //}
 
 }

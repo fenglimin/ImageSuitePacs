@@ -1,15 +1,17 @@
 ﻿import { ViewerImageData } from "../models/viewer-image-data";
 import { ViewerGroupData } from "../models/viewer-group-data";
 import { ViewerShellData } from "../models/viewer-shell-data";
+import { Image } from "../models/pssi";
 
 export enum ImageInteractionEnum {
     NavigationImageInGroup = 0,
     SelectImageInGroup,
     SelectThumbnailInNavigator,
-    ChangeImageLayoutForGroup,
+    ChangeImageLayoutForSelectedGroup,
 }
 
 export class ImageInteractionData {
+    private image: Image;
     private viewerImageData: ViewerImageData;
     private viewerGroupData: ViewerGroupData;
     private viewerShellData: ViewerShellData;
@@ -21,30 +23,62 @@ export class ImageInteractionData {
         this.interactionPara = interactionPara;
     }
 
-    setImage(viewerImageData: ViewerImageData) {
+    getPssiImage(): Image {
+        return this.image;
+    }
+
+    setPssiImage(image: Image) {
+        this.image = image;
+    }
+
+    setImageData(viewerImageData: ViewerImageData) {
         this.viewerImageData = viewerImageData;
-        this.setGroup(viewerImageData.groupData);
+        this.setPssiImage(viewerImageData.image);
+        this.setGroupData(viewerImageData.groupData);
     }
 
-    setGroup(viewerGroupData: ViewerGroupData) {
+    getImageData(): ViewerImageData {
+        return this.viewerImageData;
+    }
+
+    setGroupData(viewerGroupData: ViewerGroupData) {
         this.viewerGroupData = viewerGroupData;
-        this.setShell(viewerGroupData.viewerShellData);
+        this.setShellData(viewerGroupData.viewerShellData);
     }
 
-    setShell(viewerShellData: ViewerShellData) {
+    getGroupData(): ViewerGroupData {
+        return this.viewerGroupData;
+    }
+
+    setShellData(viewerShellData: ViewerShellData) {
         this.viewerShellData = viewerShellData;
     }
 
-    sameImage(viewerImageData: ViewerImageData): boolean {
+    getShellData(): ViewerShellData {
+        return this.viewerShellData;
+    }
+
+    sameImageData(viewerImageData: ViewerImageData): boolean {
         return this.viewerImageData === viewerImageData;
     }
 
-    sameGroup(viewerGroupData: ViewerGroupData): boolean {
+    sameGroupData(viewerGroupData: ViewerGroupData): boolean {
         return this.viewerGroupData === viewerGroupData;
     }
 
-    sameShell(viewerShellData: ViewerShellData): boolean {
+    sameShellData(viewerShellData: ViewerShellData): boolean {
         return this.viewerShellData === viewerShellData;
+    }
+
+    sameShellByPssiImage(image: Image): boolean {
+        if (!image) return false;
+
+        if (!this.viewerShellData) {
+            alert("ImageInteractionData.sameShellByPssiImage() => Internal error, viewerShellData must NOT be undefined");
+            return false;
+        }
+
+        return this.viewerShellData.sameShell(image);
     }
 
     getType(): ImageInteractionEnum {
@@ -56,3 +90,80 @@ export class ImageInteractionData {
     }
 }
 
+export enum ImageOperationTargetEnum {
+    ForAllImages = 1,
+    ForSelectedImages = 10,
+    ForClickedImage = 20
+}
+
+export enum ImageOperationEnum {
+    // Operation takes effect for all images
+    SetContext = 1,
+    ShowAnnotation,
+    ShowOverlay,
+    ShowRuler,
+    ShowGraphicOverlay,
+
+    // Operation takes effect for all selected images
+    RotateCwSelectedImage = 10,
+    RotateCcwSelectedImage,
+    FlipHorizontalSelectedImage,
+    FlipVerticalSelectedImage,
+    InvertSelectedImage,
+    SaveSelectedImage,
+    FitHeightSelectedImage,
+    FitWidthSelectedImage,
+    FitWindowSelectedImage,
+    FitOriginalSelectedImage,
+    
+    // Operation takes effect for clicked image
+    ManualWl = 20,
+    DeleteAnnotation,
+    Reset,
+    ToggleKeyImage,
+    AddMarker
+}
+
+export enum ImageContextEnum {
+    Select = 1,
+    Pan,
+    Wl,
+    Zoom,
+    Magnify,
+    RoiZoom,
+    CreateAnn,
+    RoiWl,
+    SelectAnn
+}
+
+export class ImageOperationData {
+    // The viewer shell ID for the operation
+    shellId: string;
+
+    // The operation type
+    operationType: ImageOperationEnum;
+
+    // The context type if the operation is SetContext
+    contextType: ImageContextEnum;
+
+    // The parameters for setting context
+    contextPara: any;
+
+    // The operation target
+    operationTarget: ImageOperationTargetEnum;
+
+    constructor(shellId: string, operationType: ImageOperationEnum, contextType: ImageContextEnum = undefined, contextPara: any = undefined) {
+        this.shellId = shellId;
+        this.operationType = operationType;
+        this.contextType = contextType;
+        this.contextPara = contextPara;
+
+        if (operationType >= ImageOperationEnum.ManualWl) {
+            this.operationTarget = ImageOperationTargetEnum.ForClickedImage;
+        } else if (operationType >= ImageOperationEnum.RotateCwSelectedImage) {
+            this.operationTarget = ImageOperationTargetEnum.ForSelectedImages;
+        } else {
+            this.operationTarget = ImageOperationTargetEnum.ForAllImages;
+        }
+    }
+}

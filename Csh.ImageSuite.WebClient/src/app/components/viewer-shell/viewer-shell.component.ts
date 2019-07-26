@@ -90,7 +90,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
 
     onSaveImage(event) {
         this.childGroups.forEach(groupViewer => {
-            if (groupViewer.selected) {
+            if (groupViewer.isSelected()) {
                 groupViewer.saveSelectedImage();
             }
         });

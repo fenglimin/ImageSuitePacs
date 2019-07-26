@@ -1,5 +1,6 @@
 ﻿import { Patient, Study, Series, Image } from "../models/pssi";
 import { ViewerGroupData } from "../models/viewer-group-data";
+import { ViewerImageData } from "../models/viewer-image-data";
 import { GroupHangingProtocol, ImageHangingProtocol } from "../models/hanging-protocol";
 import { LayoutPosition, LayoutMatrix } from "../models/layout";
 import { LogService } from "../services/log.service";
@@ -214,6 +215,21 @@ export class ViewerShellData {
         }
 
         return seriesList[seriesIndex];
+    }
+
+    getViewerImageDataByImage(image: Image): ViewerImageData {
+        for (let i = 0; i < this.groupDataList.length; i++) {
+            const imageData = this.groupDataList[i].getViewerImageDataByImage(image);
+            if (imageData) {
+                return imageData;
+            }
+        }
+
+        return undefined;
+    }
+
+    sameShell(image: Image): boolean {
+        return this.getViewerImageDataByImage(image) !== undefined;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

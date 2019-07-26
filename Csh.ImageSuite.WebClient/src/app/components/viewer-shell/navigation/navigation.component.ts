@@ -5,8 +5,8 @@ import { ViewerShellData } from "../../../models/viewer-shell-data";
 import { Series, Pssi } from "../../../models/pssi";
 import { GroupHangingData, ImageHangingData } from "../../../models/hanging-protocol";
 import { HangingProtocolService } from "../../../services/hanging-protocol.service";
-import { ImageSelectorService } from "../../../services/image-selector.service";
 import { LogService } from "../../../services/log.service";
+import { ImageInteractionService } from "../../../services/image-interaction.service";
 
 @Component({
     selector: "app-navigation",
@@ -33,7 +33,7 @@ export class NavigationComponent implements OnInit {
     imageLayout = "1X1";
 
     constructor(public hangingProtocolService: HangingProtocolService,
-        private imageSelectorService: ImageSelectorService,
+        private imageInteractionService: ImageInteractionService,
         private locationStrategy: LocationStrategy,
         private logService: LogService) {
         this.selectedGroupHangingData = this.hangingProtocolService.getDefaultGroupHangingData();
@@ -43,6 +43,8 @@ export class NavigationComponent implements OnInit {
 
     ngOnInit() {
         this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
+        this.selectedGroupLayoutData = this.hangingProtocolService.getGroupLayoutDataByMatrix(this.viewerShellData.groupMatrix);
+        //this.selectedImageLayoutData = this.hangingProtocolService.getImageLayoutDataByMatrix(this.viewerShellData.groupDataList[0].imageMatrix);
     }
 
     onClickPssi(pssi: Pssi) {
@@ -110,6 +112,6 @@ export class NavigationComponent implements OnInit {
         this.logService.seperator();
         this.logService.info("User: " + imageLayoutData.tip);
         this.selectedImageLayoutData = imageLayoutData;
-        this.imageSelectorService.changeImageLayout(this.selectedImageLayoutData.imageHangingProtocol);
+        this.imageInteractionService.onChangeImageLayoutForSelectedGroup(this.viewerShellData, this.selectedImageLayoutData.imageHangingProtocol);
     }
 }

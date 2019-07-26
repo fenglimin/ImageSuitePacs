@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, AfterContentInit, ViewChild, ElementRef, NgZone } from "@angular/core";
 import { Location, LocationStrategy, PathLocationStrategy } from "@angular/common";
-import { ImageSelectorService } from "../../../../services/image-selector.service";
 import { ImageInteractionService } from "../../../../services/image-interaction.service";
 import { ImageInteractionData, ImageInteractionEnum } from "../../../../models/image-operation";
 import { DicomImageService } from "../../../../services/dicom-image.service";
@@ -20,7 +19,6 @@ import { FontData } from "../../../../models/misc-data"
 import { MessageBoxType, MessageBoxContent, DialogResult } from "../../../../models/messageBox";
 import { IImageViewer } from "../../../../interfaces/image-viewer-interface";
 import { Point, MouseEventType, AnnType, Rectangle } from "../../../../models/annotation";
-import { GraphicOverlayData } from "../../../../models/overlay";
 import { AnnObject } from "../../../../annotation/ann-object";
 import { AnnTool } from "../../../../annotation/ann-tool";
 import { AnnText } from "../../../../annotation/extend-object/ann-text";
@@ -51,11 +49,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private baseUrl: string;
     private isViewInited: boolean;
 
-    private subscriptionThumbnailSelection: Subscription;
-    private subscriptionImageSelection: Subscription;
     private subscriptionImageLayoutChange: Subscription;
     private subscriptionViewContextChange: Subscription;
     private subscriptionOperation: Subscription;
+    private subscriptionImageInteraction: Subscription;
 
     @ViewChild("viewerCanvas")
     private canvasRef: ElementRef;
@@ -134,8 +131,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this._imageData;
     }
 
-    constructor(private imageSelectorService: ImageSelectorService,
-        private imageInteractionService: ImageInteractionService,
+    constructor(private imageInteractionService: ImageInteractionService,
         private dicomImageService: DicomImageService,
         private configurationService: ConfigurationService,
         private viewContext: ViewContextService,
@@ -144,16 +140,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         private logService: LogService,
         private ngZone: NgZone,
         private annotationService: AnnotationService) {
-
-        this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(
-            viewerImageData => {
-                this.doSelectImage(viewerImageData);
-            });
-
-        this.subscriptionThumbnailSelection = imageSelectorService.thumbnailSelected$.subscribe(
-            image => {
-                this.doSelectImageByThumbnail(image);
-            });
 
         this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(
             context => {
@@ -165,6 +151,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.subscriptionOperation = viewContext.onOperation$.subscribe(
             operation => {
                 this.onOperation(operation);
+            });
+
+        this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(
+            imageInteractionData => {
+                this.doImageInteraction(imageInteractionData);
             });
 
         this.logService.debug("Image: a new ImageViewerComponent is created!");
@@ -386,7 +377,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.updateImageTransform();
         this.syncAnnLabelLayerTransform();
-        this.viewContext.setContext(ViewContextEnum.SelectAnn);
+        this.viewContext.setContext(ViewContextEnum.SelectAnn, this.imageData.groupData.viewerShellData.getId());
         this.annSerialize = new AnnSerialize(this.image.annData, this);
         this.deleteAllAnnotation();
         if (!this.annSerialize.createAnn()) {
@@ -538,7 +529,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annObjList.push(annObj);
         if (!annObj.isLoadedFromTag()) {
             this.curSelectObj = annObj;
-            this.viewContext.setContext(ViewContextEnum.SelectAnn);
+            this.viewContext.setContext(ViewContextEnum.SelectAnn, this.imageData.groupData.viewerShellData.getId());
         }
     }
 
@@ -556,7 +547,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annGuide.stepTo(0);
 
         if (!needRecreate) {
-            this.viewContext.setContext(ViewContextEnum.SelectAnn);
+            this.viewContext.setContext(ViewContextEnum.SelectAnn, this.imageData.groupData.viewerShellData.getId());
         }
     }
 
@@ -731,7 +722,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     onSelected() {
-        this.imageSelectorService.selectImage(this.imageData);
+        this.imageInteractionService.onSelectImageInGroup(this.imageData);
         this.canvas.focus();
     }
 
@@ -739,11 +730,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.selected ? "1px solid #F90" : "1px solid #555555";
     }
 
-    doSelectImage(viewerImageData: ViewerImageData) {
-        this.selected = (this._imageData === viewerImageData);
-    }
-
-    doSelectImageByThumbnail(image: DicomImage) {
+    private doSelectImage(image: DicomImage) {
         this.selected = (this.image === image);
     }
 
@@ -1504,7 +1491,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 this.cancelCreate(true);
             } else {
                 this.mouseEventHelper._lastContext = this.viewContext.curContext;
-                this.viewContext.setContext(ViewContextEnum.WL);
+                this.viewContext.setContext(ViewContextEnum.WL, this.imageData.groupData.viewerShellData.getId());
             }
 
         } else if (this.mouseEventHelper._mouseWhich === 1) {
@@ -1616,9 +1603,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
             if (curContext.action === ViewContextEnum.WL) {
                 if (self.mouseEventHelper._lastContext.action === ViewContextEnum.CreateAnn) { //cancel create
-                    this.viewContext.setContext(ViewContextEnum.Select);
+                    this.viewContext.setContext(ViewContextEnum.Select, this.imageData.groupData.viewerShellData.getId());
                 } else {
-                    this.viewContext.setContext(self.mouseEventHelper._lastContext.action,
+                    this.viewContext.setContext(self.mouseEventHelper._lastContext.action, this.imageData.groupData.viewerShellData.getId(),
                         self.mouseEventHelper._lastContext.data);
                 }
             }
@@ -1936,5 +1923,19 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
         const wlData = this.dicomImageService.getRoiWlValue(this.image, imagePointList);
         this.doWlByValue(wlData.windowCenter, wlData.windowWidth);
+    }
+
+    private doImageInteraction(imageInteractionData: ImageInteractionData) {
+        if (!imageInteractionData.sameShellData(this.imageData.groupData.viewerShellData)) {
+            return;
+        }
+
+        switch (imageInteractionData.getType()) {
+            case ImageInteractionEnum.SelectThumbnailInNavigator:
+            case ImageInteractionEnum.SelectImageInGroup:
+                this.doSelectImage(imageInteractionData.getPssiImage());
+                break;
+
+        }
     }
 }

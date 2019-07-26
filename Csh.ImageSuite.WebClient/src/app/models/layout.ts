@@ -51,4 +51,8 @@ export class LayoutMatrix {
     equal(layoutMatrix: LayoutMatrix): boolean {
         return this.rowCount === layoutMatrix.rowCount && this.colCount === layoutMatrix.colCount;
     }
+
+    toNumber(): number {
+        return this.rowCount * 10 + this.colCount;
+    }
 }

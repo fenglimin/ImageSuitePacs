@@ -1,9 +1,11 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { Subscription } from "rxjs";
 import { Image } from "../../../../models/pssi";
+import { ViewerShellData } from "../../../../models/viewer-shell-data";
 import { WorklistService } from "../../../../services/worklist.service";
-import { ImageSelectorService } from "../../../../services/image-selector.service";
 import { DicomImageService } from "../../../../services/dicom-image.service";
+import { ImageInteractionService } from "../../../../services/image-interaction.service";
+import { ImageInteractionData, ImageInteractionEnum } from "../../../../models/image-operation";
 
 @Component({
     selector: "app-thumbnail",
@@ -11,17 +13,18 @@ import { DicomImageService } from "../../../../services/dicom-image.service";
     styleUrls: ["./thumbnail.component.css"]
 })
 export class ThumbnailComponent implements OnInit {
+    @Input()
+    viewerShellData: ViewerShellData;
 
     thumbnailToShow: any;
     isImageLoading: boolean;
     selected = false;
-    subscriptionImage: Subscription;
-    subscriptionThumbnail: Subscription;
+
+    subscriptionImageInteraction: Subscription;
 
     borderStyle = "1px solid #555";
 
-    _image: Image;
-
+    private _image: Image;
     @Input()
     set image(Image: Image) {
         if (this._image !== Image) {
@@ -34,14 +37,15 @@ export class ThumbnailComponent implements OnInit {
         return this._image;
     }
 
-    constructor(private imageSelectorService: ImageSelectorService,
+    constructor(private imageInteractionService: ImageInteractionService,
         private dicomImageService: DicomImageService,
         private worklistService: WorklistService) {
-        this.subscriptionImage = imageSelectorService.imageSelected$.subscribe(
-            viewerImageData => { this.doSelectImage(viewerImageData.image); });
 
-        this.subscriptionImage = imageSelectorService.thumbnailSelected$.subscribe(
-            image => { this.doSelectImage(image); });
+        this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(
+            imageInteractionData => {
+                this.doImageInteraction(imageInteractionData);
+            }
+        );
     }
 
 
@@ -52,13 +56,8 @@ export class ThumbnailComponent implements OnInit {
         return this.borderStyle;
     }
 
-    doSelectImage(image: Image) {
-        this.selected = (this.image === image);
-        this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
-    }
-
     onSelected() {
-        this.imageSelectorService.selectThumbnail(this.image);
+        this.imageInteractionService.onSelectThumbnailInNavigator(this.viewerShellData, this.image);
     }
 
     onMouseOver(event) {
@@ -69,21 +68,7 @@ export class ThumbnailComponent implements OnInit {
         this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
     }
 
-    /*
-    setSelectState(selected: boolean): void {
-        var o = document.getElementById("thumbnail" + this.imageSop);
-        if (o !== null) {
-            o.style.color = selected ? 'red' : 'white';
-        }
-    }
-  
-    onClick() {
-        this.setSelectState(true);
-        this.imageSelectorService.selectImage(this.imageSop);
-    }
-    */
-
-    refreshImage() {
+    private refreshImage() {
         if (this._image !== null) {
             if (this.worklistService.isUsingLocalTestData()) {
                 this.thumbnailToShow =
@@ -91,33 +76,27 @@ export class ThumbnailComponent implements OnInit {
             } else {
                 this.getImageFromService(this._image);
             }
-
-
         }
     }
 
-    createImageFromBlob(image: Blob) {
+    private createImageFromBlob(image: Blob) {
         const reader = new FileReader();
         reader.addEventListener("load",
             () => {
                 this.thumbnailToShow = reader.result;
-            },
-            false);
+            }, false);
 
         if (image) {
             reader.readAsDataURL(image);
         }
     }
 
-    getImageFromService(image: Image) {
-
+    private getImageFromService(image: Image) {
         if (image === null) {
             return;
         }
 
         this.isImageLoading = true;
-
-
         this.dicomImageService.getThumbnailFile(image).subscribe(data => {
                 this.createImageFromBlob(data);
                 this.isImageLoading = false;
@@ -125,7 +104,25 @@ export class ThumbnailComponent implements OnInit {
             error => {
                 this.isImageLoading = false;
                 console.log(error);
-            });
+            }
+        );
     }
 
+    private doSelectImage(image: Image) {
+        this.selected = (this.image === image);
+        this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
+    }
+
+    private doImageInteraction(imageInteractionData: ImageInteractionData) {
+        if (!imageInteractionData.sameShellData(this.viewerShellData)) {
+            return;
+        }
+
+        switch (imageInteractionData.getType()) {
+            case ImageInteractionEnum.SelectThumbnailInNavigator:
+            case ImageInteractionEnum.SelectImageInGroup:
+                this.doSelectImage(imageInteractionData.getPssiImage());
+                break;
+        }
+    }
 }

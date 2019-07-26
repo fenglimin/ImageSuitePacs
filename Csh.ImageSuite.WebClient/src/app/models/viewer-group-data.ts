@@ -107,4 +107,21 @@ export class ViewerGroupData {
             this.addImage(null);
         }
     }
+
+    getViewerImageDataByImage(image: Image): ViewerImageData {
+        const result = this.imageDataList.filter(imageData => imageData.sameImage(image));
+        if (result.length > 1) {
+            alert("ViewerGroupData.findViewerImageDataByImage() => Find same images in group data!");
+        }
+
+        return result.length === 0 ? undefined : result[0];
+    }
+
+    sameGroup(image: Image): boolean {
+        return this.getViewerImageDataByImage(image) !== undefined;
+    }
+
+    sameShell(image: Image): boolean {
+        return this.viewerShellData.getViewerImageDataByImage(image) !== undefined;
+    }
 }
