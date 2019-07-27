@@ -6,7 +6,8 @@ import { Subscription } from "rxjs";
 import { ViewerShellData } from "../../models/viewer-shell-data";
 import { ViewerGroupData } from "../../models/viewer-group-data";
 import { LogService } from "../../services/log.service";
-
+import { ImageOperationData, ImageOperationEnum, ImageContextEnum } from "../../models/image-operation";
+import { ImageOperationService } from "../../services/image-operation.service";
 
 @Component({
     selector: "app-viewer-shell",
@@ -21,6 +22,7 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
     pageCount: number;
 
     subscriptionShellNavigated: Subscription;
+    private subscriptionImageOperation: Subscription;
 
     viewerGroupData: ViewerGroupData;
 
@@ -28,12 +30,18 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
     childGroups: QueryList<GroupViewerComponent>;
 
     constructor(private shellNavigatorService: ShellNavigatorService,
+        private imageOperationService: ImageOperationService,
         private hangingProtocolService: HangingProtocolService,
         private logService: LogService) {
         this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(
             viewerShellData => {
                 this.viewerShellData.hide =
                     (viewerShellData === null || viewerShellData.getId() !== this.viewerShellData.getId());
+            });
+
+        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(
+            imageOperationData => {
+                this.onImageOperation(imageOperationData);
             });
     }
 
@@ -98,5 +106,22 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
 
     onNavigateGroup(delta) {
         this.pageIndex += delta;
+    }
+
+    private onImageOperation(imageOperationData: ImageOperationData) {
+        if (!imageOperationData.needResponse(this.viewerShellData.getId(), true))
+            return;
+
+        switch (imageOperationData.operationType) {
+            case ImageOperationEnum.SelectAllImages:
+                this.doSelectAllGroupImage(true);
+                break;
+        }
+    }
+
+    private doSelectAllGroupImage(selected: boolean) {
+        this.childGroups.forEach(groupViewer => {
+            groupViewer.setSelected(selected);
+        });
     }
 }

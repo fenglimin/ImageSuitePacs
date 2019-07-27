@@ -128,6 +128,13 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         });
     }
 
+    setSelected(selected: boolean) {
+        this.selected = selected;
+        this.childImages.forEach(imageViewer => {
+            imageViewer.setSelected(selected);
+        });
+    }
+
     private onChangeImageLayout(imageLayoutStyle: number): void {
         if (this.selected) {
             this.setImageLayout(imageLayoutStyle);
@@ -200,10 +207,10 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         if (!imageOperationData.needResponse(this.groupData.viewerShellData.getId(), this.selected))
             return;
 
-        switch (imageOperationData.operationType) {
-        case ImageOperationEnum.SelectAllImages:
-            this.doSelectGroup(this.groupData);
-            break;
-        }
+        //switch (imageOperationData.operationType) {
+        //case ImageOperationEnum.SelectAllImages:
+        //    this.doSelectGroup(this.groupData);
+        //    break;
+        //}
     }
 }

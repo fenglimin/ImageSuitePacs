@@ -750,6 +750,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
     }
 
+    setSelected(selected: boolean) {
+        this.selected = selected;
+    }
+
     private setContext(context: ViewContext) {
         if (!this.isImageLoaded) {
             return;
@@ -829,9 +833,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 this.doToggleKeyImage();
                 break;
 
-            case ImageOperationEnum.SelectAllImages:
-                this.doSelectImage(this.image);
-                break;
+            //case ImageOperationEnum.SelectAllImages:
+            //    this.doSelectImage(this.image);
+            //    break;
 
             case ImageOperationEnum.SelectOneImageInSelectedGroup:
                 this.doSelectFirstImageInFirstGroup();
