@@ -159,7 +159,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(
             imageInteractionData => {
-                this.doImageInteraction(imageInteractionData);
+                this.onImageInteraction(imageInteractionData);
             });
 
         this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(
@@ -827,6 +827,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
             case ImageOperationEnum.ToggleKeyImageSelectedImage:
                 this.doToggleKeyImage();
+                break;
+
+            case ImageOperationEnum.SelectAllImages:
+                this.doSelectImage(this.image);
                 break;
         }
 
@@ -1998,7 +2002,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.doWlByValue(wlData.windowCenter, wlData.windowWidth);
     }
 
-    private doImageInteraction(imageInteractionData: ImageInteractionData) {
+    private onImageInteraction(imageInteractionData: ImageInteractionData) {
         if (!imageInteractionData.sameShellData(this.imageData.groupData.viewerShellData)) {
             return;
         }

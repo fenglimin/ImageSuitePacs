@@ -34,6 +34,14 @@ export class ViewerToolbarComponent implements OnInit {
             { name: "Pan", tip: "Pan", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.Pan) }
         ];
 
+        const multiSelectButtonMenuList: SelectedButtonData[] = [
+            { name: "selection_cell", tip: "Select One Image in Group", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SelectOneImageInSelectedGroup) },
+            { name: "selection_group_all", tip: "Select All Images in Group", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SelectAllImagesInSelectedGroup) },
+            { name: "selection_group_visible", tip: "Select All Visible Images in Group", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SelectAllVisibleImagesInSelectedGroup) },
+            { name: "selection_visible", tip: "Select All Visible Images", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SelectAllVisibleImages) },
+            { name: "selection_all", tip: "Select All Images", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SelectAllImages) },
+        ];
+
         const rotateFlipButtonMenuList: SelectedButtonData[] = [
             { name: "FlipH", tip: "Flip Horizontal", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.FlipHorizontalSelectedImage) },
             { name: "FlipV", tip: "Flip Vertical", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.FlipVerticalSelectedImage) },
@@ -125,6 +133,7 @@ export class ViewerToolbarComponent implements OnInit {
         };
 
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, selectPanButtonMenuList));
+        this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, multiSelectButtonMenuList));
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, zoomButtonMenuList));
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, magnifyButtonMenuList));
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, wlButtonMenuList));

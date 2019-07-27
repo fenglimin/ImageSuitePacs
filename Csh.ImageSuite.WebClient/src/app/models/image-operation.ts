@@ -92,8 +92,8 @@ export class ImageInteractionData {
 
 export enum ImageOperationTargetEnum {
     ForAllImages = 1,
-    ForSelectedImages = 10,
-    ForClickedImage = 30
+    ForSelectedImages = 20,
+    ForClickedImage = 50
 }
 
 export enum ImageOperationEnum {
@@ -103,9 +103,14 @@ export enum ImageOperationEnum {
     ShowTextOverlay,
     ShowRuler,
     ShowGraphicOverlay,
+    SelectOneImageInSelectedGroup,
+    SelectAllImagesInSelectedGroup, // Including images that are NOT visible
+    SelectAllVisibleImagesInSelectedGroup,
+    SelectAllVisibleImages,
+    SelectAllImages, // Including images that are NOT visible
 
     // Operation takes effect for all selected images
-    RotateCwSelectedImage = 10,
+    RotateCwSelectedImage = 20,
     RotateCcwSelectedImage,
     FlipHorizontalSelectedImage,
     FlipVerticalSelectedImage,
@@ -119,7 +124,7 @@ export enum ImageOperationEnum {
     ManualWlSelectedImage,
     ToggleKeyImageSelectedImage,
     // Operation takes effect for clicked image
-    DeleteAnnotation = 30,
+    DeleteAnnotation = 50,
     AddMarker
 }
 

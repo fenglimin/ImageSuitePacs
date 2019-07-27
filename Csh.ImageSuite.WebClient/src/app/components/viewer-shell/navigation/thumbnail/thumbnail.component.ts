@@ -6,6 +6,8 @@ import { WorklistService } from "../../../../services/worklist.service";
 import { DicomImageService } from "../../../../services/dicom-image.service";
 import { ImageInteractionService } from "../../../../services/image-interaction.service";
 import { ImageInteractionData, ImageInteractionEnum } from "../../../../models/image-operation";
+import { ImageOperationData, ImageOperationEnum, ImageContextEnum } from "../../../../models/image-operation";
+import { ImageOperationService } from "../../../../services/image-operation.service";
 
 @Component({
     selector: "app-thumbnail",
@@ -20,7 +22,8 @@ export class ThumbnailComponent implements OnInit {
     isImageLoading: boolean;
     selected = false;
 
-    subscriptionImageInteraction: Subscription;
+    private subscriptionImageInteraction: Subscription;
+    private subscriptionImageOperation: Subscription;
 
     borderStyle = "1px solid #555";
 
@@ -38,12 +41,19 @@ export class ThumbnailComponent implements OnInit {
     }
 
     constructor(private imageInteractionService: ImageInteractionService,
+        private imageOperationService: ImageOperationService,
         private dicomImageService: DicomImageService,
         private worklistService: WorklistService) {
 
         this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(
             imageInteractionData => {
-                this.doImageInteraction(imageInteractionData);
+                this.onImageInteraction(imageInteractionData);
+            }
+        );
+
+        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(
+            imageOperationData => {
+                this.onImageOperation(imageOperationData);
             }
         );
     }
@@ -113,7 +123,7 @@ export class ThumbnailComponent implements OnInit {
         this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
     }
 
-    private doImageInteraction(imageInteractionData: ImageInteractionData) {
+    private onImageInteraction(imageInteractionData: ImageInteractionData) {
         if (!imageInteractionData.sameShellData(this.viewerShellData)) {
             return;
         }
@@ -123,6 +133,17 @@ export class ThumbnailComponent implements OnInit {
             case ImageInteractionEnum.SelectImageInGroup:
                 this.doSelectImage(imageInteractionData.getPssiImage());
                 break;
+        }
+    }
+
+    private onImageOperation(imageOperationData: ImageOperationData) {
+        if (!imageOperationData.needResponse(this.viewerShellData.getId(), this.selected))
+            return;
+
+        switch (imageOperationData.operationType) {
+        case ImageOperationEnum.SelectAllImages:
+                this.doSelectImage(this.image);
+            break;
         }
     }
 }

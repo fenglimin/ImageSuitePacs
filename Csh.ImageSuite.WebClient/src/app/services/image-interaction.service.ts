@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Subject } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 import { ImageInteractionData, ImageInteractionEnum } from "../models/image-operation";
 import { ViewerImageData } from "../models/viewer-image-data";
 import { ViewerGroupData } from "../models/viewer-group-data";
 import { ViewerShellData } from "../models/viewer-shell-data";
 import { Image } from "../models/pssi";
+import { ImageOperationData, ImageOperationEnum, ImageContextEnum } from "../models/image-operation";
+import { ImageOperationService } from "../services/image-operation.service";
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +19,9 @@ export class ImageInteractionService {
     // Observable ImageInteractionData sources
     imageInteraction$ = this.imageInteractionSource.asObservable();
 
-    constructor() {
+    private subscriptionImageOperation: Subscription;
+
+    constructor(private imageOperationService: ImageOperationService) {
 
     }
 
@@ -37,6 +41,9 @@ export class ImageInteractionService {
     }
 
     onSelectThumbnailInNavigator(viewShellData: ViewerShellData, image: Image) {
+        if (this.imageOperationService.getShellImageSelectType(viewShellData.getId()) === ImageOperationEnum.SelectAllImages)
+            return;
+
         const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.SelectThumbnailInNavigator, undefined);
         imageInteractionData.setPssiImage(image);
         imageInteractionData.setShellData(viewShellData);
@@ -44,6 +51,9 @@ export class ImageInteractionService {
     }
 
     onSelectImageInGroup(viewerImageData: ViewerImageData) {
+        if (this.imageOperationService.getShellImageSelectType(viewerImageData.groupData.viewerShellData.getId()) === ImageOperationEnum.SelectAllImages)
+            return;
+
         const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.SelectImageInGroup, undefined);
         imageInteractionData.setImageData(viewerImageData);
         this.doImageInteraction(imageInteractionData);

@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, AfterContentInit, ViewChildren, QueryList } from "@angular/core";
 import { ImageInteractionService } from "../../../services/image-interaction.service";
 import { ImageInteractionData, ImageInteractionEnum } from "../../../models/image-operation";
+import { ImageOperationData, ImageOperationEnum, ImageContextEnum } from "../../../models/image-operation";
+import { ImageOperationService } from "../../../services/image-operation.service";
 import { ImageHangingProtocol } from "../../../models/hanging-protocol";
 import { HangingProtocolService } from "../../../services/hanging-protocol.service";
 import { Subscription } from "rxjs";
@@ -43,14 +45,21 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     private selected = false;
 
     private subscriptionImageInteraction: Subscription;
+    private subscriptionImageOperation: Subscription;
 
     constructor(private imageInteractionService: ImageInteractionService,
+        private imageOperationService: ImageOperationService,
         private hangingProtocolService: HangingProtocolService,
         private logService: LogService) {
 
         this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(
             imageInteractionData => {
-                this.doImageInteraction(imageInteractionData);
+                this.onImageInteraction(imageInteractionData);
+            });
+
+        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(
+            imageOperationData => {
+                this.onImageOperation(imageOperationData);
             });
 
         this.logService.debug("Group: a new GroupViewerComponent is created!");
@@ -136,8 +145,8 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         this.onResize();
     }
 
-    private doSelectGroup(viewerImageData: ViewerImageData) {
-        this.selected = (this._groupData === viewerImageData.groupData);
+    private doSelectGroup(viewerGroupData: ViewerGroupData) {
+        this.selected = (this._groupData === viewerGroupData);
     }
 
     private doSelectGroupByThumbnail(image: Image) {
@@ -161,7 +170,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         }
     }
 
-    private doImageInteraction(imageInteractionData: ImageInteractionData) {
+    private onImageInteraction(imageInteractionData: ImageInteractionData) {
         if (!imageInteractionData.sameShellData(this.groupData.viewerShellData)) {
             return;
         }
@@ -178,12 +187,23 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
                 break;
 
             case ImageInteractionEnum.SelectImageInGroup:
-                this.doSelectGroup(imageInteractionData.getImageData());
+                this.doSelectGroup(imageInteractionData.getImageData().groupData);
                 break;
 
             case ImageInteractionEnum.ChangeImageLayoutForSelectedGroup:
                 this.onChangeImageLayout(imageInteractionData.getPara());
                 break;
+        }
+    }
+
+    private onImageOperation(imageOperationData: ImageOperationData) {
+        if (!imageOperationData.needResponse(this.groupData.viewerShellData.getId(), this.selected))
+            return;
+
+        switch (imageOperationData.operationType) {
+        case ImageOperationEnum.SelectAllImages:
+            this.doSelectGroup(this.groupData);
+            break;
         }
     }
 }
