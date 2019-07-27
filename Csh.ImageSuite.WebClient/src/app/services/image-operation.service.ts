@@ -29,7 +29,7 @@ export class ImageOperationService {
             case ImageOperationEnum.ShowRuler:
             case ImageOperationEnum.ShowGraphicOverlay:
             case ImageOperationEnum.SetContext:
-            case ImageOperationEnum.ToggleKeyImage:
+            case ImageOperationEnum.ToggleKeyImageSelectedImage:
                 return true;
             default:
                 return false;

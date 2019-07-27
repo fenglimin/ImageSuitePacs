@@ -774,29 +774,60 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         switch(imageOperationData.operationType) {
             case ImageOperationEnum.ShowAnnotation:
-                this.toggleLayerDisplay(this.annLayer);
-                this.toggleLayerDisplay(this.annLabelLayer);
+                this.doToggleLayerDisplay(this.annLayer);
+                this.doToggleLayerDisplay(this.annLabelLayer);
                 break;
 
             case ImageOperationEnum.ShowTextOverlay:
-                this.toggleLayerDisplay(this.olLayer);
+                this.doToggleLayerDisplay(this.olLayer);
                 break;
 
             case ImageOperationEnum.ShowRuler:
-                this.toggleLayerDisplay(this.imgRulerLayer);
+                this.doToggleLayerDisplay(this.imgRulerLayer);
                 break;
 
             case ImageOperationEnum.ShowGraphicOverlay:
-                this.toggleLayerDisplay(undefined);
+                this.doToggleLayerDisplay(undefined);
                 break;
 
             case ImageOperationEnum.FitWidthSelectedImage:
             case ImageOperationEnum.FitHeightSelectedImage:
             case ImageOperationEnum.FitOriginalSelectedImage:
-            case ImageOperationEnum.FitWindowSelectedImage: {
+            case ImageOperationEnum.FitWindowSelectedImage:
                 this.doFit(imageOperationData.operationType);
                 break;
-            }
+
+            case ImageOperationEnum.RotateCwSelectedImage:
+                this.doRotate(90);
+                break;
+
+            case ImageOperationEnum.RotateCcwSelectedImage:
+                this.doRotate(-90);
+                break;
+
+            case ImageOperationEnum.FlipHorizontalSelectedImage:
+                this.doFlip(false);
+                break;
+
+            case ImageOperationEnum.FlipVerticalSelectedImage:
+                this.doFlip(true);
+                break;
+
+            case ImageOperationEnum.InvertSelectedImage:
+                this.doInvert();
+                break;
+
+            case ImageOperationEnum.ResetSelectedImage:
+                this.doReset();
+                break;
+
+            case ImageOperationEnum.ManualWlSelectedImage:
+                this.doManualWl();
+                break;
+
+            case ImageOperationEnum.ToggleKeyImageSelectedImage:
+                this.doToggleKeyImage();
+                break;
         }
 
         this.redraw(1);
@@ -810,69 +841,69 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
 
         switch (operation.type) {
-            case OperationEnum.Rotate: {
-                this.rotate(operation.data.angle);
-                break;
-            }
+            //case OperationEnum.Rotate: {
+            //    this.rotate(operation.data.angle);
+            //    break;
+            //}
 
-            case OperationEnum.Flip: {
-                this.flip(operation.data);
-                break;
-            }
+            //case OperationEnum.Flip: {
+            //    this.flip(operation.data);
+            //    break;
+            //}
 
-            case OperationEnum.Invert: {
-                this.invert();
-                break;
-            }
+            //case OperationEnum.Invert: {
+            //    this.invert();
+            //    break;
+            //}
 
-            case OperationEnum.FitWidth:
-            case OperationEnum.FitHeight:
-            case OperationEnum.FitOriginal:
-            case OperationEnum.FitWindow: {
-                //this.doFit(operation.type);
-                break;
-            }
+            //case OperationEnum.FitWidth:
+            //case OperationEnum.FitHeight:
+            //case OperationEnum.FitOriginal:
+            //case OperationEnum.FitWindow: {
+            //    //this.doFit(operation.type);
+            //    break;
+            //}
 
-            case OperationEnum.ShowOverlay: {
-                this.olLayer.visible(operation.data.show);
-                break;
-            }
+            //case OperationEnum.ShowOverlay: {
+            //    this.olLayer.visible(operation.data.show);
+            //    break;
+            //}
 
-            case OperationEnum.ShowRuler: {
-                this.imgRulerLayer.visible(operation.data.show);
-                break;
-            }
+            //case OperationEnum.ShowRuler: {
+            //    this.imgRulerLayer.visible(operation.data.show);
+            //    break;
+            //}
 
-            case OperationEnum.ShowAnnotation: {
-                this.annLayer.visible(operation.data.show);
-                break;
-            }
+            //case OperationEnum.ShowAnnotation: {
+            //    this.annLayer.visible(operation.data.show);
+            //    break;
+            //}
 
-            case OperationEnum.ShowGraphicOverlay: {
-                this.toggleGraphicOverlay(operation.data.show);
-                break;
-            }
+            //case OperationEnum.ShowGraphicOverlay: {
+            //    this.toggleGraphicOverlay(operation.data.show);
+            //    break;
+            //}
 
-            case OperationEnum.ManualWL: {
-                this.doManualWl();
-                break;
-            }
+            //case OperationEnum.ManualWL: {
+            //    this.doManualWl();
+            //    break;
+            //}
 
-            case OperationEnum.ToggleKeyImage: {
-                if (this.image.keyImage === 'Y') {
-                    this.image.keyImage = 'N';
-                    this.setKeyImage(false);
-                } else {
-                    this.image.keyImage = 'Y';
-                    this.setKeyImage(true);
-                }
-                break;
-            }
+            //case OperationEnum.ToggleKeyImage: {
+            //    if (this.image.keyImage === 'Y') {
+            //        this.image.keyImage = 'N';
+            //        this.setKeyImage(false);
+            //    } else {
+            //        this.image.keyImage = 'Y';
+            //        this.setKeyImage(true);
+            //    }
+            //    break;
+            //}
 
-            case OperationEnum.Reset: {
-                this.doReset();
-                break;
-            }
+            //case OperationEnum.Reset: {
+            //    this.doReset();
+            //    break;
+            //}
         }
 
         this.redraw(1);
@@ -940,7 +971,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
     }
 
-    rotate(angle) {
+    private doRotate(angle) {
         if (angle == 0) //rotate 0 will cause the transform messed
             return;
 
@@ -950,7 +981,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annObjList.forEach(obj => obj.onRotate(angle));
     }
 
-    flip(flipVertical: boolean) {
+    private doFlip(flipVertical: boolean) {
 
         const viewPort = cornerstone.getViewport(this.helpElement);
 
@@ -973,7 +1004,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
     }
 
-    invert() {
+    private doInvert() {
         const viewPort = cornerstone.getViewport(this.helpElement);
         viewPort.invert = !viewPort.invert;
         cornerstone.setViewport(this.helpElement, viewPort);
@@ -1052,7 +1083,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.translate((canvasWidth - width * heightScale) / 2, 0);
         }
 
-        this.rotate(curRotate);
+        this.doRotate(curRotate);
         this.refreshUi();
     }
 
@@ -1146,7 +1177,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
 
 
-        this.rotate(curRotate);
+        this.doRotate(curRotate);
         this.updateZoomRatioTextOverlay(this.getScale());
         this.refreshUi();
     }
@@ -1981,7 +2012,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
     }
 
-    private toggleLayerDisplay(layer: any) {
+    private doToggleLayerDisplay(layer: any) {
         if (layer) {
             const visible = !layer._visible;
             layer.visible(visible);
@@ -1991,5 +2022,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             
         }
         
+    }
+
+    private doToggleKeyImage() {
+        if (this.image.keyImage === 'Y') {
+            this.image.keyImage = 'N';
+            this.setKeyImage(false);
+        } else {
+            this.image.keyImage = 'Y';
+            this.setKeyImage(true);
+        }
     }
 }

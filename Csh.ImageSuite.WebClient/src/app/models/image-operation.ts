@@ -93,7 +93,7 @@ export class ImageInteractionData {
 export enum ImageOperationTargetEnum {
     ForAllImages = 1,
     ForSelectedImages = 10,
-    ForClickedImage = 20
+    ForClickedImage = 30
 }
 
 export enum ImageOperationEnum {
@@ -115,12 +115,11 @@ export enum ImageOperationEnum {
     FitWidthSelectedImage,
     FitWindowSelectedImage,
     FitOriginalSelectedImage,
-    
+    ResetSelectedImage,
+    ManualWlSelectedImage,
+    ToggleKeyImageSelectedImage,
     // Operation takes effect for clicked image
-    ManualWl = 20,
-    DeleteAnnotation,
-    Reset,
-    ToggleKeyImage,
+    DeleteAnnotation = 30,
     AddMarker
 }
 
@@ -158,7 +157,7 @@ export class ImageOperationData {
         this.contextType = contextType;
         this.contextPara = contextPara;
 
-        if (operationType >= ImageOperationEnum.ManualWl) {
+        if (operationType >= ImageOperationEnum.DeleteAnnotation) {
             this.operationTarget = ImageOperationTargetEnum.ForClickedImage;
         } else if (operationType >= ImageOperationEnum.RotateCwSelectedImage) {
             this.operationTarget = ImageOperationTargetEnum.ForSelectedImages;
@@ -168,13 +167,17 @@ export class ImageOperationData {
     }
 
     needResponse(shellId: string, selected: boolean = true, clicked: boolean = true): boolean {
-        if (this.shellId !== shellId) return false;
+        if (this.shellId !== shellId)
+            return false;
 
-        if (this.operationTarget === ImageOperationTargetEnum.ForAllImages) return true;
+        if (this.operationTarget === ImageOperationTargetEnum.ForAllImages)
+            return true;
 
-        if (this.operationTarget === ImageOperationTargetEnum.ForSelectedImages && selected) return true;
+        if (this.operationTarget === ImageOperationTargetEnum.ForSelectedImages && selected)
+            return true;
 
-        if (this.operationTarget === ImageOperationTargetEnum.ForClickedImage && clicked) return true;
+        if (this.operationTarget === ImageOperationTargetEnum.ForClickedImage && clicked)
+            return true;
 
         return false;
     }

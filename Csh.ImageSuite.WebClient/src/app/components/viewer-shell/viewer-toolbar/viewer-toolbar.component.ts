@@ -62,16 +62,16 @@ export class ViewerToolbarComponent implements OnInit {
         const wlButtonMenuList: SelectedButtonData[] = [
             { name: "WL", tip: "W/L", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.Wl) },
             { name: "ROI", tip: "ROI W/L", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.RoiWl) },
-            { name: "ManualWL", tip: "Manual W/L", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.ManualWl) },
+            { name: "ManualWL", tip: "Manual W/L", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.ManualWlSelectedImage) },
             { name: "Invert", tip: "Invert", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.InvertSelectedImage) }
         ];
 
         const keyImageButtonMenu: SelectedButtonData = {
-            name: "SetKeyImage", tip: "Key Image", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.ToggleKeyImage)
+            name: "SetKeyImage", tip: "Key Image", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.ToggleKeyImageSelectedImage)
         };
 
         const resetButtonMenu: SelectedButtonData = {
-            name: "Reset", tip: "Reset", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.Reset)
+            name: "Reset", tip: "Reset", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.ResetSelectedImage)
         };
 
         const showAnnotationButtonMenu: SelectedButtonData = {
