@@ -832,6 +832,10 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             case ImageOperationEnum.SelectAllImages:
                 this.doSelectImage(this.image);
                 break;
+
+            case ImageOperationEnum.SelectOneImageInSelectedGroup:
+                this.doSelectFirstImageInFirstGroup();
+                break;
         }
 
         this.redraw(1);
@@ -2035,6 +2039,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         } else {
             this.image.keyImage = 'Y';
             this.setKeyImage(true);
+        }
+    }
+
+    private doSelectFirstImageInFirstGroup() {
+        const id = this.getId();
+        const index = id.substr(id.length - 4, 4);
+        if (index === "0000") {
+            this.onSelected();
         }
     }
 }
