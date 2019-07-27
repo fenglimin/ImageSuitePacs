@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { SelectedButtonData } from "../../../models/dropdown-button-menu-data";
-import { ViewContextService } from "../../../services/view-context.service";
 
 @Component({
     selector: "app-dropdown-button-menu",
@@ -12,7 +11,7 @@ export class DropdownButtonMenuComponent implements OnInit {
     @Input()
     menuButtonList: SelectedButtonData[];
 
-    constructor(private viewContext: ViewContextService) {
+    constructor() {
     }
 
     ngOnInit() {

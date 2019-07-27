@@ -100,7 +100,7 @@ export enum ImageOperationEnum {
     // Operation takes effect for all images
     SetContext = 1,
     ShowAnnotation,
-    ShowOverlay,
+    ShowTextOverlay,
     ShowRuler,
     ShowGraphicOverlay,
 
@@ -165,5 +165,17 @@ export class ImageOperationData {
         } else {
             this.operationTarget = ImageOperationTargetEnum.ForAllImages;
         }
+    }
+
+    needResponse(shellId: string, selected: boolean = true, clicked: boolean = true): boolean {
+        if (this.shellId !== shellId) return false;
+
+        if (this.operationTarget === ImageOperationTargetEnum.ForAllImages) return true;
+
+        if (this.operationTarget === ImageOperationTargetEnum.ForSelectedImages && selected) return true;
+
+        if (this.operationTarget === ImageOperationTargetEnum.ForClickedImage && clicked) return true;
+
+        return false;
     }
 }

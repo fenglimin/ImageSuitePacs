@@ -22,14 +22,27 @@ export class ImageOperationService {
         this.imageOperationSource.next(imageOperationData);
     }
 
-    isImageToolBarButtonCheckStyle(imageOperationData: ImageOperationData): boolean {
-        switch (imageOperationData.operationType) {
+    isImageToolBarButtonCheckStyle(imageOperationType: ImageOperationEnum): boolean {
+        switch (imageOperationType) {
             case ImageOperationEnum.ShowAnnotation:
-            case ImageOperationEnum.ShowOverlay:
+            case ImageOperationEnum.ShowTextOverlay:
             case ImageOperationEnum.ShowRuler:
             case ImageOperationEnum.ShowGraphicOverlay:
             case ImageOperationEnum.SetContext:
             case ImageOperationEnum.ToggleKeyImage:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    // If the toolbar button is initially checked when open studies
+    isImageToolBarButtonInitChecked(imageOperationType: ImageOperationEnum): boolean {
+        switch (imageOperationType) {
+            case ImageOperationEnum.ShowAnnotation:
+            case ImageOperationEnum.ShowTextOverlay:
+            case ImageOperationEnum.ShowRuler:
+            case ImageOperationEnum.ShowGraphicOverlay:
                 return true;
             default:
                 return false;

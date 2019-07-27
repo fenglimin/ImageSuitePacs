@@ -152,7 +152,7 @@ export class WorklistService {
 
     onShowSingleStudy(study: Study) {
         const viewerShellData = new ViewerShellData(this.hangingProtocolService.getDefaultGroupHangingProtocol(),
-            this.hangingProtocolService.getDefaultImageHangingPrococal());
+            this.hangingProtocolService.getDefaultImageHangingProtocol());
 
         if (this.isUsingLocalTestData()) {
             viewerShellData.addStudy(study);
@@ -167,7 +167,7 @@ export class WorklistService {
     onShowAllCheckedStudy() {
         if (this.isUsingLocalTestData()) {
             const viewerShellData = new ViewerShellData(this.hangingProtocolService.getDefaultGroupHangingProtocol(),
-                this.hangingProtocolService.getDefaultImageHangingPrococal());
+                this.hangingProtocolService.getDefaultImageHangingProtocol());
             this.studies.forEach(study => {
                 if (study.studyChecked) {
                     viewerShellData.addStudy(study);
@@ -508,7 +508,7 @@ export class WorklistService {
         }
 
         const viewerShellData = new ViewerShellData(this.hangingProtocolService.getDefaultGroupHangingProtocol(),
-            this.hangingProtocolService.getDefaultImageHangingPrococal());
+            this.hangingProtocolService.getDefaultImageHangingProtocol());
         this.loadedStudy.forEach(value => {
             value.detailsLoaded = true;
             value.studyChecked = true;

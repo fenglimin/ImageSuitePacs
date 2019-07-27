@@ -79,7 +79,7 @@ export class ViewerToolbarComponent implements OnInit {
         };
 
         const showOverlayButtonMenu: SelectedButtonData = {
-            name: "showoverlay", tip: "Show Overlay", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.ShowOverlay)
+            name: "showoverlay", tip: "Show Overlay", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.ShowTextOverlay)
         };
 
         const showRulerButtonMenu: SelectedButtonData = {

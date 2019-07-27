@@ -4,6 +4,8 @@ import { ImageInteractionService } from "../../../../services/image-interaction.
 import { ImageInteractionData, ImageInteractionEnum } from "../../../../models/image-operation";
 import { DicomImageService } from "../../../../services/dicom-image.service";
 import { AnnotationService } from "../../../../services/annotation.service";
+import { ImageOperationData, ImageOperationEnum, ImageContextEnum } from "../../../../models/image-operation";
+import { ImageOperationService } from "../../../../services/image-operation.service";
 import { ViewContextEnum, ViewContext, OperationEnum, OperationData, ViewContextService } from "../../../../services/view-context.service"
 import { Subscription } from "rxjs";
 import { Image as DicomImage } from "../../../../models/pssi";
@@ -53,6 +55,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private subscriptionViewContextChange: Subscription;
     private subscriptionOperation: Subscription;
     private subscriptionImageInteraction: Subscription;
+    private subscriptionImageOperation: Subscription;
 
     @ViewChild("viewerCanvas")
     private canvasRef: ElementRef;
@@ -132,6 +135,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     constructor(private imageInteractionService: ImageInteractionService,
+        private imageOperationService: ImageOperationService,
         private dicomImageService: DicomImageService,
         private configurationService: ConfigurationService,
         private viewContext: ViewContextService,
@@ -156,6 +160,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(
             imageInteractionData => {
                 this.doImageInteraction(imageInteractionData);
+            });
+
+        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(
+            imageOperationData => {
+                this.onImageOperation(imageOperationData);
             });
 
         this.logService.debug("Image: a new ImageViewerComponent is created!");
@@ -756,6 +765,43 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.setCursorFromContext();
     }
 
+    private onImageOperation(imageOperationData: ImageOperationData) {
+        if (!this.isImageLoaded)
+            return;
+
+        if (!imageOperationData.needResponse(this.imageData.groupData.viewerShellData.getId(), this.selected))
+            return;
+
+        switch(imageOperationData.operationType) {
+            case ImageOperationEnum.ShowAnnotation:
+                this.toggleLayerDisplay(this.annLayer);
+                this.toggleLayerDisplay(this.annLabelLayer);
+                break;
+
+            case ImageOperationEnum.ShowTextOverlay:
+                this.toggleLayerDisplay(this.olLayer);
+                break;
+
+            case ImageOperationEnum.ShowRuler:
+                this.toggleLayerDisplay(this.imgRulerLayer);
+                break;
+
+            case ImageOperationEnum.ShowGraphicOverlay:
+                this.toggleLayerDisplay(undefined);
+                break;
+
+            case ImageOperationEnum.FitWidthSelectedImage:
+            case ImageOperationEnum.FitHeightSelectedImage:
+            case ImageOperationEnum.FitOriginalSelectedImage:
+            case ImageOperationEnum.FitWindowSelectedImage: {
+                this.doFit(imageOperationData.operationType);
+                break;
+            }
+        }
+
+        this.redraw(1);
+    }
+
     private onOperation(operation: OperationData) {
         if (!this.isImageLoaded)
             return;
@@ -783,7 +829,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             case OperationEnum.FitHeight:
             case OperationEnum.FitOriginal:
             case OperationEnum.FitWindow: {
-                this.doFit(operation.type);
+                //this.doFit(operation.type);
                 break;
             }
 
@@ -1058,11 +1104,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.refreshUi();
     }
 
-    doFit(fitType: OperationEnum) {
-
-        if (!this.isImageLoaded)
-            return;
-
+    private doFit(fitType: ImageOperationEnum) {
         const width = this.image.width();
         const height = this.image.height();
         const canvasWidth = this.canvas.width;
@@ -1085,7 +1127,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.imgLayer.transform(1, 0, 0, 1, 0, 0, true);
 
 
-        if (fitType === OperationEnum.FitWindow) {
+        if (fitType === ImageOperationEnum.FitWindowSelectedImage) {
             if (widthScale < heightScale) {
                 this.scale(widthScale);
                 this.translate((canvasWidth - width * widthScale) / 2, (canvasHeight - height * widthScale) / 2);
@@ -1093,13 +1135,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 this.scale(heightScale);
                 this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
             }
-        } else if (fitType === OperationEnum.FitHeight) {
+        } else if (fitType === ImageOperationEnum.FitHeightSelectedImage) {
             this.scale(heightScale);
             this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
-        } else if (fitType === OperationEnum.FitWidth) {
+        } else if (fitType === ImageOperationEnum.FitWidthSelectedImage) {
             this.scale(widthScale);
             this.translate((canvasWidth - width * widthScale) / 2, (canvasHeight - height * widthScale) / 2);
-        } else if (fitType === OperationEnum.FitOriginal) {
+        } else if (fitType === ImageOperationEnum.FitOriginalSelectedImage) {
             this.translate((canvasWidth - width) / 2, (canvasHeight - height) / 2);
         }
 
@@ -1937,5 +1979,17 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 break;
 
         }
+    }
+
+    private toggleLayerDisplay(layer: any) {
+        if (layer) {
+            const visible = !layer._visible;
+            layer.visible(visible);
+        } else {
+            // This is graphic overlay
+
+            
+        }
+        
     }
 }

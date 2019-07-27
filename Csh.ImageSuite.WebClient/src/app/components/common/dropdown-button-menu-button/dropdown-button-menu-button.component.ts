@@ -78,8 +78,8 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.isCheckStyle = this.imageOperationService.isImageToolBarButtonCheckStyle(this.buttonData.operationData);
-        //this.isChecked = this.viewContext.isImageToolBarButtonChecked(this.buttonData);
+        this.isCheckStyle = this.imageOperationService.isImageToolBarButtonCheckStyle(this.buttonData.operationData.operationType);
+        this.isChecked = this.imageOperationService.isImageToolBarButtonInitChecked(this.buttonData.operationData.operationType);
     }
 
     getDefaultStyle(): string {
@@ -166,7 +166,7 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
 
     onImageOperation(imageOperationData: ImageOperationData) {
         // Only handle the image operations of same shell
-        if (this.buttonData.operationData.shellId !== imageOperationData.shellId) return;
+        if (!imageOperationData.needResponse(this.buttonData.operationData.shellId)) return;
 
         if (imageOperationData.operationType === ImageOperationEnum.SetContext) {
             // Current operation is set context, do nothing if it is NOT a context button
