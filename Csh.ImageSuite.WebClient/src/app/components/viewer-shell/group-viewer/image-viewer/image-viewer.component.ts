@@ -45,7 +45,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private image: DicomImage;
     private isImageLoaded: boolean;
     private needResize = false;
-    selected = false;
     private dragging = false;
 
     private baseUrl: string;
@@ -117,8 +116,13 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             // We will start to show a new image in this viewer, need to delete all artifacts already drawn for the old image
             this.deleteAll();
             this.disableCornerstone();
+            if (this._imageData) {
+                this._imageData.hide = true;
+            }
+            
 
             // Save new image data
+            imageData.hide = false
             this._imageData = imageData;
             this.image = this._imageData.image;
 
@@ -147,7 +151,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(
             context => {
-                if (!(this._imageData.groupData.viewerShellData.hide) && this.selected) {
+                if (!(this._imageData.groupData.viewerShellData.hide) && this.imageData.selected) {
                     this.setContext(context);
                 }
             });
@@ -356,7 +360,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         const id = this.getId();
         const index = id.substr(id.length - 4, 4);
-        if (index === "0000" || this.selected) {
+        if (index === "0000" || this.imageData.selected) {
             this.onSelected();
         }
     }
@@ -736,11 +740,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     getBorderStyle(): string {
-        return this.selected ? "1px solid #F90" : "1px solid #555555";
+        return this.imageData.selected ? "1px solid #F90" : "1px solid #555555";
     }
 
     private doSelectImage(image: DicomImage) {
-        this.selected = (this.image === image);
+        this.imageData.selected = (this.image === image);
     }
 
     setHeight(height: number) {
@@ -751,7 +755,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     setSelected(selected: boolean) {
-        this.selected = selected;
+        this.imageData.selected = selected;
+    }
+
+    isSelected(): boolean {
+        return this.imageData.selected;
     }
 
     private setContext(context: ViewContext) {
@@ -773,7 +781,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (!this.isImageLoaded)
             return;
 
-        if (!imageOperationData.needResponse(this.imageData.groupData.viewerShellData.getId(), this.selected))
+        if (!imageOperationData.needResponse(this.imageData.groupData.viewerShellData.getId(), this.imageData.selected))
             return;
 
         switch(imageOperationData.operationType) {
@@ -849,7 +857,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (!this.isImageLoaded)
             return;
 
-        if (!this.selected)
+        if (!this.imageData.selected)
             return;
 
         switch (operation.type) {

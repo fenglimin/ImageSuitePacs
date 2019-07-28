@@ -23,14 +23,14 @@ export class ImageOperationService {
     doImageInteraction(imageOperationData: ImageOperationData) {
 
         switch (imageOperationData.operationType) {
-        case ImageOperationEnum.SelectAllImages:
-        case ImageOperationEnum.SelectAllImagesInSelectedGroup:
-        case ImageOperationEnum.SelectAllVisibleImages:
-        case ImageOperationEnum.SelectAllVisibleImagesInSelectedGroup:
-        case ImageOperationEnum.SelectOneImageInSelectedGroup:
-            this.shellImageSelectTypeList[imageOperationData.shellId] = imageOperationData.operationType;
-            break;
-        }
+            case ImageOperationEnum.SelectAllImages:
+            case ImageOperationEnum.SelectAllImagesInSelectedGroup:
+            case ImageOperationEnum.SelectAllVisibleImages:
+            case ImageOperationEnum.SelectAllVisibleImagesInSelectedGroup:
+            case ImageOperationEnum.SelectOneImageInSelectedGroup:
+                this.shellImageSelectTypeList[imageOperationData.shellId] = imageOperationData.operationType;
+                break;
+            }
 
         this.imageOperationSource.next(imageOperationData);
     }

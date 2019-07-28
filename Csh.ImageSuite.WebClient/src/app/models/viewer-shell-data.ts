@@ -86,6 +86,72 @@ export class ViewerShellData {
         return name.substr(0, name.length - 3);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Select functions
+    isImageInFirstShownAndSelectedGroup(image: Image): boolean {
+        const groupData = this.getFirstShownAndSelectedGroup();
+        if (!groupData) {
+            return false;
+        }
+
+        return groupData.getViewerImageDataByImage(image) !== undefined;
+    }
+
+    getFirstShownAndSelectedGroup(): ViewerGroupData {
+        const len = this.groupDataList.length;
+        for (let i = 0; i < len; i++) {
+            if (!this.groupDataList[i].hide && this.groupDataList[i].isSelected()) {
+                return this.groupDataList[i];
+            }
+        }
+
+        return undefined;
+    }
+
+    selectAllImages() {
+        this.groupDataList.forEach(groupData => {
+            groupData.setSelected(true);
+        });
+    }
+
+    selectAllImagesInSelectedGroup() {
+        // There might be multiple selected and shown groups, choose the first one as the selected group
+        // Other groups will all be set to unselected
+        const firstShownAndSelectedGroup = this.getFirstShownAndSelectedGroup();
+        this.groupDataList.forEach(groupData => {
+            groupData.setSelected(groupData === firstShownAndSelectedGroup);
+        });
+    }
+
+    selectAllVisibleImages() {
+        // All shown groups will be selected and all hidden groups will be unselected
+        // All shown images will be selected and all hidden images will be unselected
+        this.groupDataList.forEach(groupData => {
+            groupData.selected = !groupData.hide;
+            this.syncHideAndSelectForGroup(groupData);
+        });
+    }
+
+    selectAllVisibleImagesInSelectedGroup() {
+        // There might be multiple selected and shown groups, choose the first one as the selected group
+        const firstShownAndSelectedGroup = this.getFirstShownAndSelectedGroup();
+
+        this.groupDataList.forEach(groupData => {
+            groupData.selected = groupData === firstShownAndSelectedGroup;
+            this.syncHideAndSelectForGroup(groupData);
+        });
+    }
+
+    private syncHideAndSelectForGroup(viewerGroupData: ViewerGroupData) {
+        if (viewerGroupData.selected) {
+            // Group is selected, set all shown images selected and all hidden images unselected
+            viewerGroupData.imageDataList.forEach(imageData => imageData.selected = !imageData.hide);
+        } else {
+            // Group is unselected, set all images unselected
+            viewerGroupData.imageDataList.forEach(imageData => imageData.selected = false);
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Get count
     getTotalPatientCount(): number {

@@ -64,4 +64,10 @@ export class ImageInteractionService {
         imageInteractionData.setShellData(viewShellData);
         this.doImageInteraction(imageInteractionData);
     }
+
+    onAddSelectImage(viewerImageData: ViewerImageData) {
+        const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.AddSelectImage, undefined);
+        imageInteractionData.setImageData(viewerImageData);
+        this.doImageInteraction(imageInteractionData);
+    }
 }

@@ -8,6 +8,7 @@ export enum ImageInteractionEnum {
     SelectImageInGroup,
     SelectThumbnailInNavigator,
     ChangeImageLayoutForSelectedGroup,
+    AddSelectImage,
 }
 
 export class ImageInteractionData {
@@ -108,7 +109,8 @@ export enum ImageOperationEnum {
     SelectAllVisibleImagesInSelectedGroup,
     SelectAllVisibleImages,
     SelectAllImages, // Including images that are NOT visible
-
+    DeselectAllImags,
+    
     // Operation takes effect for all selected images
     RotateCwSelectedImage = 20,
     RotateCcwSelectedImage,

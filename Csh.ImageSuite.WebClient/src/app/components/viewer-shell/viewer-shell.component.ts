@@ -114,14 +114,20 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
 
         switch (imageOperationData.operationType) {
             case ImageOperationEnum.SelectAllImages:
-                this.doSelectAllGroupImage(true);
+                this.viewerShellData.selectAllImages();
+                break;
+
+            case ImageOperationEnum.SelectAllImagesInSelectedGroup:
+                this.viewerShellData.selectAllImagesInSelectedGroup();
+                break;
+
+            case ImageOperationEnum.SelectAllVisibleImages:
+                this.viewerShellData.selectAllVisibleImages();
+                break;
+
+            case ImageOperationEnum.SelectAllVisibleImagesInSelectedGroup:
+                this.viewerShellData.selectAllVisibleImagesInSelectedGroup();
                 break;
         }
-    }
-
-    private doSelectAllGroupImage(selected: boolean) {
-        this.childGroups.forEach(groupViewer => {
-            groupViewer.setSelected(selected);
-        });
     }
 }

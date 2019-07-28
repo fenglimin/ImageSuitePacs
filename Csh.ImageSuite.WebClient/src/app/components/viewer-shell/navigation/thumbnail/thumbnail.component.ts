@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from "@angular/core";
 import { Subscription } from "rxjs";
 import { Image } from "../../../../models/pssi";
 import { ViewerShellData } from "../../../../models/viewer-shell-data";
+import { ViewerImageData } from "../../../../models/viewer-image-data";
 import { WorklistService } from "../../../../services/worklist.service";
 import { DicomImageService } from "../../../../services/dicom-image.service";
 import { ImageInteractionService } from "../../../../services/image-interaction.service";
@@ -20,7 +21,7 @@ export class ThumbnailComponent implements OnInit {
 
     thumbnailToShow: any;
     isImageLoading: boolean;
-    selected = false;
+    //selected = false;
 
     private subscriptionImageInteraction: Subscription;
     private subscriptionImageOperation: Subscription;
@@ -29,9 +30,9 @@ export class ThumbnailComponent implements OnInit {
 
     private _image: Image;
     @Input()
-    set image(Image: Image) {
-        if (this._image !== Image) {
-            this._image = Image;
+    set image(image: Image) {
+        if (this._image !== image) {
+            this._image = image;
             this.refreshImage();
         }
     }
@@ -39,6 +40,8 @@ export class ThumbnailComponent implements OnInit {
     get image() {
         return this._image;
     }
+
+    private viewerImageData: ViewerImageData;
 
     constructor(private imageInteractionService: ImageInteractionService,
         private imageOperationService: ImageOperationService,
@@ -60,10 +63,11 @@ export class ThumbnailComponent implements OnInit {
 
 
     ngOnInit() {
+        this.viewerImageData = this.viewerShellData.getViewerImageDataByImage(this.image);
     }
 
     getBorderStyle(): string {
-        return this.borderStyle;
+        return this.viewerImageData.selected ? "2px solid #F90" : "1px solid #555";
     }
 
     onSelected() {
@@ -71,11 +75,11 @@ export class ThumbnailComponent implements OnInit {
     }
 
     onMouseOver(event) {
-        this.borderStyle = "1px solid #F90";
+        //this.borderStyle = "1px solid #F90";
     }
 
     onMouseOut(event) {
-        this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
+        //this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
     }
 
     private refreshImage() {
@@ -118,9 +122,22 @@ export class ThumbnailComponent implements OnInit {
         );
     }
 
-    private doSelectImage(image: Image) {
-        this.selected = (this.image === image);
-        this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
+    private doMutexSelectImage(image: Image) {
+        //this.selected = (this.image === image);
+        //this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
+    }
+
+    private doAddSelectImage(image: Image) {
+        //if (this.image === image) {
+        //    this.selected = true;
+        //}
+
+        //this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
+    }
+
+    private doSelectAllImagesInSelectedGroup() {
+        //this.selected = this.viewerShellData.isImageInFirstShownAndSelectedGroup(this.image);
+        //this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
     }
 
     private onImageInteraction(imageInteractionData: ImageInteractionData) {
@@ -128,22 +145,30 @@ export class ThumbnailComponent implements OnInit {
             return;
         }
 
-        switch (imageInteractionData.getType()) {
-            case ImageInteractionEnum.SelectThumbnailInNavigator:
-            case ImageInteractionEnum.SelectImageInGroup:
-                this.doSelectImage(imageInteractionData.getPssiImage());
-                break;
-        }
+        //switch (imageInteractionData.getType()) {
+        //    case ImageInteractionEnum.SelectThumbnailInNavigator:
+        //    case ImageInteractionEnum.SelectImageInGroup:
+        //        this.doMutexSelectImage(imageInteractionData.getPssiImage());
+        //        break;
+
+        //    case ImageInteractionEnum.AddSelectImage:
+        //        this.doAddSelectImage(imageInteractionData.getPssiImage());
+        //        break;
+        //}
     }
 
     private onImageOperation(imageOperationData: ImageOperationData) {
-        if (!imageOperationData.needResponse(this.viewerShellData.getId(), this.selected))
-            return;
+        //if (!imageOperationData.needResponse(this.viewerShellData.getId(), this.selected))
+        //    return;
 
-        switch (imageOperationData.operationType) {
-        case ImageOperationEnum.SelectAllImages:
-                this.doSelectImage(this.image);
-            break;
-        }
+        //switch (imageOperationData.operationType) {
+        //    case ImageOperationEnum.SelectAllImages:
+        //        this.doAddSelectImage(this.image);
+        //        break;
+
+        //    case ImageOperationEnum.SelectAllImagesInSelectedGroup:
+        //        this.doSelectAllImagesInSelectedGroup();
+        //        break;
+        //}
     }
 }

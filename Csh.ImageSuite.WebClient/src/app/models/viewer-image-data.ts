@@ -8,6 +8,9 @@ export class ViewerImageData {
     groupData: ViewerGroupData;
     position: LayoutPosition;
 
+    selected = false;
+    hide = true;
+
     image: Image;
 
     constructor(viewerGroupData: ViewerGroupData, position: LayoutPosition) {

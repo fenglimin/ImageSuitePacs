@@ -16,6 +16,9 @@ export class ViewerGroupData {
     imageDataList = new Array<ViewerImageData>();
     empty = false;
 
+    selected = false;
+    hide = true;
+
     constructor(viewerShellData: ViewerShellData,
         imageHangingProtocol: ImageHangingProtocol,
         position: LayoutPosition) {
@@ -123,5 +126,14 @@ export class ViewerGroupData {
 
     sameShell(image: Image): boolean {
         return this.viewerShellData.getViewerImageDataByImage(image) !== undefined;
+    }
+
+    setSelected(selected: boolean) {
+        this.selected = selected;
+        this.imageDataList.forEach(imageData => imageData.selected = selected);
+    }
+
+    isSelected(): boolean {
+        return this.selected;
     }
 }

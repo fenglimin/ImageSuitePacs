@@ -33,6 +33,11 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         const log = this.logPrefix + "set groupData, protocol is " + ImageHangingProtocol[groupData.imageHangingProtocol];
         this.logService.debug(log);
 
+        if (this._groupData) {
+            this._groupData.hide = true;
+        }
+
+        groupData.hide = false;
         this._groupData = groupData;    
         
         this.setImageLayout(this.groupData.imageHangingProtocol);
@@ -41,8 +46,6 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     get groupData() {
         return this._groupData;
     }
-
-    private selected = false;
 
     private subscriptionImageInteraction: Subscription;
     private subscriptionImageOperation: Subscription;
@@ -81,11 +84,11 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     }
 
     isSelected() {
-        return this.selected;
+        return this._groupData.selected;
     }
 
     getBorderStyle(): string {
-        return this.selected ? "1px solid green" : "1px solid #555555";
+        return this._groupData.selected ? "1px solid green" : "1px solid #555555";
     }
 
     getId(): string {
@@ -122,21 +125,21 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
 
     saveSelectedImage() {
         this.childImages.forEach(imageViewer => {
-            if (imageViewer.selected) {
+            if (imageViewer.isSelected()) {
                 imageViewer.saveImage();
             }
         });
     }
 
-    setSelected(selected: boolean) {
-        this.selected = selected;
-        this.childImages.forEach(imageViewer => {
-            imageViewer.setSelected(selected);
-        });
-    }
+    //setSelected(selected: boolean) {
+    //    this._groupData.selected = selected;
+    //    this.childImages.forEach(imageViewer => {
+    //        imageViewer.setSelected(selected);
+    //    });
+    //}
 
     private onChangeImageLayout(imageLayoutStyle: number): void {
-        if (this.selected) {
+        if (this._groupData.selected) {
             this.setImageLayout(imageLayoutStyle);
         }
     }
@@ -153,16 +156,16 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     }
 
     private doSelectGroup(viewerGroupData: ViewerGroupData) {
-        this.selected = (this._groupData === viewerGroupData);
+        this._groupData.selected = (this._groupData === viewerGroupData);
     }
 
     private doSelectGroupByThumbnail(image: Image) {
         const result = this._groupData.getViewerImageDataByImage(image);
-        this.selected = (result !== undefined);
+        this._groupData.selected = (result !== undefined);
     }
 
     private doNavigate(up: boolean) {
-        if (!this.selected) {
+        if (!this._groupData.selected) {
             return;
         }
 
@@ -204,7 +207,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     }
 
     private onImageOperation(imageOperationData: ImageOperationData) {
-        if (!imageOperationData.needResponse(this.groupData.viewerShellData.getId(), this.selected))
+        if (!imageOperationData.needResponse(this.groupData.viewerShellData.getId(), this._groupData.selected))
             return;
 
         //switch (imageOperationData.operationType) {
