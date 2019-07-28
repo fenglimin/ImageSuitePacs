@@ -136,4 +136,15 @@ export class ViewerGroupData {
     isSelected(): boolean {
         return this.selected;
     }
+
+    getFirstShownImage(): ViewerImageData {
+        const len = this.imageDataList.length;
+        for (let i = 0; i < len; i++) {
+            if (!this.imageDataList[i].hide) {
+                return this.imageDataList[i];
+            }
+        }
+
+        return undefined;
+    }
 }

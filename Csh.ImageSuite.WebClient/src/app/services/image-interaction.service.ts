@@ -41,7 +41,8 @@ export class ImageInteractionService {
     }
 
     onSelectThumbnailInNavigator(viewShellData: ViewerShellData, image: Image) {
-        if (this.imageOperationService.getShellImageSelectType(viewShellData.getId()) === ImageOperationEnum.SelectAllImages)
+        const imageSelectType = this.imageOperationService.getShellImageSelectType(viewShellData.getId());
+        if (imageSelectType === ImageOperationEnum.SelectAllImages || imageSelectType === ImageOperationEnum.SelectAllVisibleImages)
             return;
 
         const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.SelectThumbnailInNavigator, undefined);

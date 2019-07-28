@@ -114,11 +114,11 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
 
         switch (imageOperationData.operationType) {
             case ImageOperationEnum.SelectAllImages:
-                this.viewerShellData.selectAllImages();
+                this.viewerShellData.selectAllImages(true);
                 break;
 
             case ImageOperationEnum.SelectAllImagesInSelectedGroup:
-                this.viewerShellData.selectAllImagesInSelectedGroup();
+                this.viewerShellData.selectAllImagesInFirstShownAndSelectedGroup();
                 break;
 
             case ImageOperationEnum.SelectAllVisibleImages:
@@ -126,7 +126,11 @@ export class ViewerShellComponent implements OnInit, AfterViewInit {
                 break;
 
             case ImageOperationEnum.SelectAllVisibleImagesInSelectedGroup:
-                this.viewerShellData.selectAllVisibleImagesInSelectedGroup();
+                this.viewerShellData.selectAllVisibleImagesInFirstShownAndSelectedGroup();
+                break;
+
+            case ImageOperationEnum.SelectOneImageInSelectedGroup:
+                this.viewerShellData.selectFirstShowImageInFirstShownGroup();
                 break;
         }
     }

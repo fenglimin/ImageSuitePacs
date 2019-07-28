@@ -108,13 +108,24 @@ export class ViewerShellData {
         return undefined;
     }
 
-    selectAllImages() {
+    getFirstShownGroup(): ViewerGroupData {
+        const len = this.groupDataList.length;
+        for (let i = 0; i < len; i++) {
+            if (!this.groupDataList[i].hide) {
+                return this.groupDataList[i];
+            }
+        }
+
+        return undefined;
+    }
+
+    selectAllImages(selected: boolean) {
         this.groupDataList.forEach(groupData => {
-            groupData.setSelected(true);
+            groupData.setSelected(selected);
         });
     }
 
-    selectAllImagesInSelectedGroup() {
+    selectAllImagesInFirstShownAndSelectedGroup() {
         // There might be multiple selected and shown groups, choose the first one as the selected group
         // Other groups will all be set to unselected
         const firstShownAndSelectedGroup = this.getFirstShownAndSelectedGroup();
@@ -132,7 +143,7 @@ export class ViewerShellData {
         });
     }
 
-    selectAllVisibleImagesInSelectedGroup() {
+    selectAllVisibleImagesInFirstShownAndSelectedGroup() {
         // There might be multiple selected and shown groups, choose the first one as the selected group
         const firstShownAndSelectedGroup = this.getFirstShownAndSelectedGroup();
 
@@ -140,6 +151,17 @@ export class ViewerShellData {
             groupData.selected = groupData === firstShownAndSelectedGroup;
             this.syncHideAndSelectForGroup(groupData);
         });
+    }
+
+    selectFirstShowImageInFirstShownGroup() {
+
+        const firstShownGroup = this.getFirstShownGroup();
+        const firstShownImage = firstShownGroup.getFirstShownImage();
+
+        this.selectAllImages(false);
+
+        firstShownGroup.selected = true;
+        firstShownImage.selected = true;
     }
 
     private syncHideAndSelectForGroup(viewerGroupData: ViewerGroupData) {
