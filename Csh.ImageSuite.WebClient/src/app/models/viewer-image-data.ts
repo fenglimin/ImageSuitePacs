@@ -21,7 +21,7 @@ export class ViewerImageData {
     }
 
     getId(): string {
-        return this.groupData.getId() + this.position.getId();
+        return (this.groupData && this.position)? this.groupData.getId() + this.position.getId() : "Temp";
     }
 
     setPosition(position: LayoutPosition) {

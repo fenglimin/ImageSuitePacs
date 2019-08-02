@@ -6,6 +6,7 @@ export class AnnGraphicOverlay {
 
     private annGraphicOverlayList = new Array<AnnBaseGraphicOverlay>();
     private mgLayerDrawn = false;
+    private visible = false;
 
     constructor(private graphicOverlayDataList: GraphicOverlayData[], private imageViewer: IImageViewer) {
         this.graphicOverlayDataList.forEach(
@@ -20,6 +21,7 @@ export class AnnGraphicOverlay {
     }
 
     setVisible(visible: boolean) {
+        this.visible = visible;
         this.annGraphicOverlayList.forEach(annObj => annObj.setVisible(visible));
     }
 
@@ -39,6 +41,10 @@ export class AnnGraphicOverlay {
         }
 
         this.mgLayerDrawn = true;
+    }
+
+    isVisible(): boolean {
+        return this.visible;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Private functions

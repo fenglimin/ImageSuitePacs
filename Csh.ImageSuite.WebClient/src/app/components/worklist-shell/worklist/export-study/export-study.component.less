@@ -1,14 +1,12 @@
 @import "../../../../../themes.less";
 
 #body-content {
-    width: 750px;
+    width: 700px;
     min-height : 200px;
-    max-height : 300px;
+    max-height : 350px;
 }
 
-#multi-study-instance {
-    width: 750px;
-    max-height: 290px;
+.table-list-style {
     overflow:auto;
 
     th {
@@ -38,9 +36,18 @@
     }
 }
 
+#single-study-table td{
+    vertical-align:top;
+    padding: 5px;
+}
 
-#single-study-instance {
-    width: 700px;
+#single-study-info {
+    top: 5px;
+}
+
+#single-study-info td{
+    border: 1px solid @border-color;
+    padding: 5px;
 }   
 
 .mat-dialog-title {
@@ -55,7 +62,7 @@
 .mat-dialog-content {
     color: @font-color;
     font-size: 15px;
-    height: 800px;
+    min-height: 600px;
     min-width: 650px;
     padding: 10px 10px;
 }
@@ -124,11 +131,13 @@ select {
     width: 300px;
 }
 
-#container {
+#image-container {
     left:350px;
     display:flex;
     flex-wrap: wrap;
-    width: 500px;
+    width: 350px;
+    max-height: 220px;
+    overflow-y: auto;
 }
 
 #human-license {
@@ -160,8 +169,6 @@ select {
     border:none;
     width:60px;
     height:40px;
-
-
 }
 
 .icon-button:focus {
@@ -188,4 +195,24 @@ select {
 
 .second-td {
     padding-left:50px;
+}
+
+.thumbnail-type {
+    border : 1px solid @container-background-color;
+    max-width:100%;
+    max-height:100%;
+    margin: auto auto;
+}
+
+.selected-image {
+    border : 1px dotted @underline-color;
+}
+
+.rect-img {
+    height: 100px;
+    width: 100px;
+}
+
+#tab-mask-content {
+    margin-top: 5px;
 }

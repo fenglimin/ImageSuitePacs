@@ -126,7 +126,7 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
             this.selected.emit(this.buttonData);
         }
 
-        this.imageOperationService.doImageInteraction(this.buttonData.operationData);
+        this.imageOperationService.doImageOperation(this.buttonData.operationData);
 
         if (this.buttonData.operationData.operationType !== ImageOperationEnum.SetContext) {
             if (this.isCheckStyle && this.isTopButton && !this.showArrow) {
@@ -172,8 +172,8 @@ export class DropdownButtonMenuButtonComponent implements OnInit {
             // Current operation is set context, do nothing if it is NOT a context button
             if (this.buttonData.operationData.operationType !== ImageOperationEnum.SetContext) return;
 
-            this.isChecked = this.buttonData.operationData.contextType === imageOperationData.contextType &&
-                this.buttonData.operationData.contextPara === imageOperationData.contextPara;
+            this.isChecked = this.buttonData.operationData.operationPara.imageContextType === imageOperationData.operationPara.imageContextType &&
+                this.buttonData.operationData.operationPara.imageContextPara === imageOperationData.operationPara.imageContextPara;
         }
     }
 }

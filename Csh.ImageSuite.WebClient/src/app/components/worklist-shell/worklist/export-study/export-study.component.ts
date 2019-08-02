@@ -1,12 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChildren, QueryList } from '@angular/core';
 import { DialogService } from "../../../../services/dialog.service";
 import { MAT_DIALOG_DATA, MatDialogRef, MatDatepickerInputEvent } from "@angular/material";
 import { MessageBoxType, MessageBoxContent } from "../../../../models/messageBox";
-import { Study, Series, Image, StudyTemp, WorklistColumn } from "../../../../models/pssi";
+import { Study, Series, Image, StudyTemp, WorklistColumn, OtherPacs } from "../../../../models/pssi";
 import { WorklistService } from "../../../../services/worklist.service";
 import { DatabaseService } from "../../../../services/database.service";
 import { DicomImageService } from "../../../../services/dicom-image.service";
-
+import { ThumbnailComponent } from "../../../viewer-shell/navigation/thumbnail/thumbnail.component";
 
 
 @Component({
@@ -23,6 +23,30 @@ export class ExportStudyComponent {
     thumbnailToShow: any;
     _image: Image;
     thumbnails: any[];
+    checkedImages: Image[];
+    checkedOtherPacs: OtherPacs[];
+    isCheckAll: boolean = true;
+    isCheckedAllModel: boolean = true;
+    isCompression: boolean = false;
+    isNoCheckedImage: boolean = true;
+    isNoCheckedPacs: boolean = true;
+
+
+    isRemovePatientInfo: boolean = true;
+    isRemoveInstitutionName: boolean = true;
+    isIncludeCdViewer: boolean = true;
+    isIncludeCdBurningTool: boolean = true;
+
+    isShowPacs: boolean = true;
+    isCreateNewGuid: boolean = true;
+
+    transferCompressList: any;
+    selectedTransferCompress : string;
+
+    pacsList: OtherPacs[];
+
+    @ViewChildren(ThumbnailComponent)
+    childImages: QueryList<ThumbnailComponent>;
 
     constructor(
         public worklistService: WorklistService,
@@ -37,8 +61,6 @@ export class ExportStudyComponent {
             this.study = studies[0];
             this.seriesList = new Array<Series>();
             this.seriesList = this.study.seriesList;
-            this.imageList = new Array<Image>();
-            this.imageList = this.seriesList[0].imageList;
             this._image = new Image();
             this._image.id = this.seriesList[0].seriesNo;
             this.thumbnails = new Array<any>();
@@ -51,9 +73,23 @@ export class ExportStudyComponent {
             }
 
             this.refreshImage();
+
+            this.getPacsList();
+
+            this.databaseService.getTransferCompress().subscribe(ret => {
+                this.transferCompressList = ret;
+                this.selectedTransferCompress = "1";
+
+            });
+
     }
 
     ngOnInit() {
+        
+    }
+
+    ngAfterViewInit() {
+        this.checkAllImages();
     }
 
     onCancelClick(): void {
@@ -61,16 +97,65 @@ export class ExportStudyComponent {
     }
 
     onOkClick(): void {
-        this.worklistService.onTransferStudy(this.study);
+        
+        if (this.isShowPacs) {
+            this.checkedImages = new Array<Image>();
+            this.checkedOtherPacs = new Array<OtherPacs>();
 
+            this.childImages.forEach(child => {
+                if (child.isSelected()) {
+                    this.checkedImages.push(child.image);
+                }
+            });
+
+            for (let pacs of this.pacsList) {
+                if (pacs.pacsChecked === true) {
+                    this.checkedOtherPacs.push(pacs);
+                }
+            }
+
+            let compressType: string;
+            if (!this.isCompression) {
+                compressType = "-1";
+            } else {
+                compressType = this.selectedTransferCompress;
+            }
+
+            this.databaseService.doTransfer(this.studies,
+                this.seriesList,
+                this.checkedImages,
+                this.checkedOtherPacs,
+                this.isCheckAll,
+                compressType,
+                this.isCreateNewGuid).subscribe();
+        } else {
+            let strLastExportPatientInfoConfig = "8";
+
+            if (!this.isRemovePatientInfo && !this.isRemoveInstitutionName) {
+                strLastExportPatientInfoConfig = "7";
+            }
+            else if (!this.isRemovePatientInfo && this.isRemoveInstitutionName) {
+                strLastExportPatientInfoConfig = "6";
+            }
+            else if (this.isRemovePatientInfo && !this.isRemoveInstitutionName) {
+                strLastExportPatientInfoConfig = "1";
+            }
+            else if (this.isRemovePatientInfo && this.isRemoveInstitutionName) {
+                strLastExportPatientInfoConfig = "8";
+            }
+
+        }
+
+        
         this.dialogRef.close();
     }
 
     refreshImage() {
         this.databaseService.getStudy(this.study.id).subscribe(data => {
+                this.imageList = new Array<Image>();
                 for (let series of data.seriesList) {
                     for (let image of series.imageList) {
-                        this.getImageFromService(image);
+                        this.imageList.push(image);
                     }
                 }
             },
@@ -79,30 +164,77 @@ export class ExportStudyComponent {
             });
     }
 
-    createImageFromBlob(image: Blob) {
-        const reader = new FileReader();
-        reader.addEventListener("load",
-            () => {
-                this.thumbnailToShow = reader.result;
-                this.thumbnails.push(this.thumbnailToShow);
-            },
-            false);
+    onPacsIconClick() {
+        this.isShowPacs = true;
+    }
 
-        if (image) {
-            reader.readAsDataURL(image);
+    onMediaIconClick() {
+        this.isShowPacs = false;
+    }
+
+    checkAllImages() {
+        this.isCheckAll = !this.isCheckedAllModel;
+
+        if (this.childImages.length === 0) {
+            this.childImages.changes.subscribe(() => {
+                this.setCheckAllImages();
+            });
+        } else {
+            this.setCheckAllImages();
         }
     }
 
-    getImageFromService(image: Image) {
-        this.dicomImageService.getThumbnailFile(image).subscribe(data => {
-                this.createImageFromBlob(data);
-            },
-            error => {
-                console.log(error);
-            });
+    setCheckAllImages() {
+        if (!this.isCheckedAllModel) {
+            this.childImages.forEach(child => child.setSelect(true));
+            this.isCheckedAllModel = true;
+        } else {
+            this.childImages.forEach(child => child.setSelect(false));
+            this.isCheckedAllModel = false;
+        }
+
+        this.setIsCheckedImage();
     }
 
-    onPacsIconClick() {
+    getPacsList() {
+        this.databaseService.getOtherPacs().subscribe(pacsList => {
+            this.pacsList = new Array();
+            this.pacsList = pacsList;
+        });
+    }
 
+    appThumbnailClicked() {
+        this.isCheckedAllModel = true;
+
+        if (this.childImages.length !== 0) {
+            this.childImages.forEach(child => {
+                if (!child.isSelected()) {
+                    this.isCheckedAllModel = false;
+
+                }
+            });
+        }
+
+        this.setIsCheckedImage();
+    }
+
+    setIsCheckedImage() {
+        this.isNoCheckedImage = true;
+        this.childImages.forEach(child => {
+            if (child.isSelected()) {
+                this.isNoCheckedImage = false;
+            } 
+        });
+    }
+
+    onPacsCheckChanged() {
+        this.isNoCheckedPacs = true;
+
+        for (let pacs of this.pacsList) {
+            if (pacs.pacsChecked) {
+                this.isNoCheckedPacs = false;
+                break;
+            }
+        }
     }
 }

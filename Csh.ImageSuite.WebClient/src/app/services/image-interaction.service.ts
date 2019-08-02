@@ -35,31 +35,22 @@ export class ImageInteractionService {
     }
 
     onNavigationImageInGroup(viewerImageData: ViewerImageData, up: boolean) {
-        const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.NavigationImageInGroup, up);
-        imageInteractionData.setImageData(viewerImageData);
-        this.doImageInteraction(imageInteractionData);
+        //const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.NavigationImageInGroup, up);
+        //imageInteractionData.setImageData(viewerImageData);
+        //this.doImageInteraction(imageInteractionData);
     }
 
-    onSelectThumbnailInNavigator(viewShellData: ViewerShellData, image: Image) {
-        const imageSelectType = this.imageOperationService.getShellImageSelectType(viewShellData.getId());
+    onSelectThumbnailInNavigator(viewerShellData: ViewerShellData, image: Image) {
+        const imageSelectType = this.imageOperationService.getShellImageSelectType(viewerShellData.getId());
         if (imageSelectType === ImageOperationEnum.SelectAllImages || imageSelectType === ImageOperationEnum.SelectAllVisibleImages)
             return;
 
         const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.SelectThumbnailInNavigator, undefined);
         imageInteractionData.setPssiImage(image);
-        imageInteractionData.setShellData(viewShellData);
+        imageInteractionData.setShellData(viewerShellData);
         this.doImageInteraction(imageInteractionData);
     }
 
-    onSelectImageInGroup(viewerImageData: ViewerImageData) {
-        if (this.imageOperationService.getShellImageSelectType(viewerImageData.groupData.viewerShellData.getId()) === ImageOperationEnum.SelectAllImages)
-            return;
-
-        const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.SelectImageInGroup, undefined);
-        imageInteractionData.setImageData(viewerImageData);
-        this.doImageInteraction(imageInteractionData);
-    }
-     
     onChangeImageLayoutForSelectedGroup(viewShellData: ViewerShellData, imageLayoutStyle: number) {
         const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.ChangeImageLayoutForSelectedGroup, imageLayoutStyle);
         imageInteractionData.setShellData(viewShellData);

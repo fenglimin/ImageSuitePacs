@@ -169,6 +169,8 @@ export class HangingProtocolService {
                 groupData.normalizeImageList();
             }
         }
+
+        groupData.resetPageInfo();
     }
 
     createImageDataListOfGroup(groupData: ViewerGroupData) {

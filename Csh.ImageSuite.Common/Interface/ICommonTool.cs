@@ -21,5 +21,15 @@ namespace Csh.ImageSuite.Common.Interface
         int GetSafeIntDbValue(DataRow row, string fieldName);
 
         string GetSafeStringDbValue(DataRow row, string fieldName);
+
+        string GetGUIDsByList(List<string> GUIDList);
+
+        string GeneraterRuleJobName(int ruleJobNameIndex);
+
+        string GenerateUID();
+
+        string MKLinkToWebURLStudyImagesByStorageAEName(string storageAEName, string imageFileName);
+
+
     }
 }

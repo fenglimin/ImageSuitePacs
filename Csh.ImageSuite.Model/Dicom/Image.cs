@@ -6,10 +6,10 @@ namespace Csh.ImageSuite.Model.Dicom
 {
     public class Image
     {
-        public Image(string sopUid)
-        {
-            SopInstanceUid = sopUid;
-        }
+        //public Image(string sopUid)
+        //{
+        //    SopInstanceUid = sopUid;
+        //}
 
         public int Id { get; set; }
 

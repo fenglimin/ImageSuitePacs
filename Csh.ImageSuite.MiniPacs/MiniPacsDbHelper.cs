@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Csh.ImageSuite.Common;
 using Csh.ImageSuite.Common.Database;
 using Csh.ImageSuite.Common.Interface;
 using Csh.ImageSuite.Model.Dicom;
@@ -12,6 +13,7 @@ using System.Data.SqlClient;
 using System.Diagnostics.Eventing.Reader;
 using System.Xml;
 using System.IO;
+using Csh.ImageSuite.Model.Common;
 using Csh.ImageSuite.Model.Config;
 using Csh.ImageSuite.Model.Enum;
 
@@ -1529,33 +1531,67 @@ namespace Csh.ImageSuite.MiniPacs
             return SqlHelper.ExecuteNonQuery(sqlWrapper, _connectionString);
         }
 
-        //public string GetStudyInstanceUID(string seriesInstanceUID)
-        //{
-        //    if (String.IsNullOrEmpty(seriesInstanceUID))
-        //        return String.Empty;
+        public bool SaveExportJob(string strLastExportFormat, string strLastExportIncludeCDViewer, string strLastExportJPGCompressRate, string strLastExportPatientInfoConfig, string strLastExportVerifyCDDVD, string userId, string roleID)
+        {
+            bool doExport = false;
+            // SQL Tran
+            List<SqlWrapper> lstSql = new List<SqlWrapper>();
+            try
+            {
+                BatchSetProfileProperty(ref lstSql, userId, roleID, "TransferPanel", "LastExportFormat", strLastExportFormat);
+                BatchSetProfileProperty(ref lstSql, userId, roleID, "TransferPanel", "LastExportIncludeCDViewer", strLastExportIncludeCDViewer);
+                BatchSetProfileProperty(ref lstSql, userId, roleID, "TransferPanel", "LastExportJPGCompressRate", strLastExportJPGCompressRate);
+                //CommonDAL.BatchSetProfileProperty(ref lstSql, userId, roleID, GlobalConstant.TransferPanel, "LastExportPatientInfoConfig", "8");
+                BatchSetProfileProperty(ref lstSql, userId, roleID, "TransferPanel", "LastExportPatientInfoConfig", strLastExportPatientInfoConfig);
+                BatchSetProfileProperty(ref lstSql, userId, roleID, "TransferPanel", "LastExportVerifyCDDVD", strLastExportVerifyCDDVD);
 
-        //    string studyInstanceUID = String.Empty;
-        //    string strSQL = "SELECT StudyInstanceUID FROM Series WHERE SeriesInstanceUID='" + QueryFormater.ReplaceSingleQuotes(seriesInstanceUID) + "'";
-        //    try
-        //    {
-        //        DataSet dataset = SqlHelper.ExecuteAdapter(strSQL, "Series", _connectionString);
-        //        DataTable table = dataset.Tables["Series"];
-        //        if (table.Rows.Count > 0)
-        //        {
-        //            studyInstanceUID = table.Rows[0]["StudyInstanceUID"].ToString().Trim();
-        //        }
-        //        else
-        //        {
-        //            //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_SeriesDAL, GXLogLevel.Warn, GXLogCode.DEFAULT, "series \"" + seriesInstanceUID + "\" does not exist in database.");
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_SeriesDAL, GXLogLevel.Error, GXLogCode.DEFAULT, "at Carestream.GXWeb.Server.SQLServerDAL.SeriesDAL.GetStudyInstanceUID");
-        //    }
+                SqlHelper.ExecuteNonQuery(lstSql, _connectionString);
+                doExport = true;
+            }
+            catch (Exception ex)
+            {
+                doExport = false;
+                throw ex;
+            }
+            return doExport;
+        }
 
-        //    return studyInstanceUID;
-        //}
+        public static void BatchSetProfileProperty(ref List<SqlWrapper> lstSql, string UserName, string RoleName, string ModuleName, string PropertyName, string PropertyValue)
+        {
+            try
+            {
+                SqlWrapper sql;
+                SqlParameter[] parameters;
+                sql = new SqlWrapper();
+                sql.SqlString = @"delete FROM UserProfile 
+                                  where UserName=@UserName and RoleName=@RoleName and ModuleName=@ModuleName and PropertyName=@PropertyName";
+                parameters = new SqlParameter[]{
+                    new SqlParameter("@UserName", UserName),
+                    new SqlParameter("@RoleName", RoleName),
+                    new SqlParameter("@ModuleName", ModuleName),
+                    new SqlParameter("@PropertyName", PropertyName)};
+                sql.Parameter = parameters;
+                lstSql.Add(sql);
+
+
+                sql = new SqlWrapper();
+                sql.SqlString = @"insert into UserProfile(UserName, RoleName, ModuleName, PropertyName, PropertyValue)
+                                  values(@UserName, @RoleName, @ModuleName, @PropertyName, @PropertyValue)";
+                parameters = new SqlParameter[]{
+                    new SqlParameter("@UserName", UserName),
+                    new SqlParameter("@RoleName", RoleName),
+                    new SqlParameter("@ModuleName", ModuleName),
+                    new SqlParameter("@PropertyName", PropertyName),
+                    new SqlParameter("@PropertyValue", PropertyValue)};
+                sql.Parameter = parameters;
+                lstSql.Add(sql);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
 
         public bool InsertCDJobList(List<string> studyUidList, ref List<string> logMsgList)
         {
@@ -1687,5 +1723,718 @@ namespace Csh.ImageSuite.MiniPacs
             }
         }
 
+        public DataTable GetTableNetAE()
+        {
+            DataTable tb = null;
+            string strSQL = " SELECT RTRIM(NetAEName) AS NetAEName, AETitle, IPAddress, StorageCommitment FROM NetAE   WHERE (NodeType = '3PARTYPACS' OR NodeType = 'OTHERWGGC') AND NetAERole = 'SSCP'     ";
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+            }
+            return tb;
+        }
+
+
+        public bool SaveTransferJob(List<OtherPacs> otherPacses, TransferJobCommandType commandType, TransferJobTableMdl model, bool m_bWholeStudy,
+           bool m_bUpdateUID, int m_iCheckCompress, string ddlTransferCompressRateSelectIndex, string ddlTransferCompressRateSelectValue, string userId, string roleID)
+        {
+            bool result = false;
+
+            string strCommand = string.Empty;
+            string strCommandSC = string.Empty;
+
+            List<string> jobNameList = new List<string>();
+            string m_strUIDType = TransferOutputTypeConstant.SERIES;
+            // SQL Tran
+            List<SqlWrapper> lstSql = new List<SqlWrapper>();
+            SqlWrapper sql;
+            SqlParameter[] parameters;
+
+            List<string> newUidList = new List<string>();
+            int ruleJobNameIndex = 0;
+            try
+            {
+                #region DoTransfer
+
+                foreach (OtherPacs otherPacs in otherPacses)
+                {
+                    int nItemTotalNumber = 0;
+
+                    string strCompress = "";
+                    string strJobUID = string.Empty;
+                    string strJobUIDSC = string.Empty;
+
+                    if (m_iCheckCompress == 1)
+                    {
+                        strCompress = "Compress:" + ddlTransferCompressRateSelectValue + "&";
+                    }
+
+                    DataRow[] drNetAEs = model.TableNetAE.Select(" NetAEName ='" + otherPacs.NetAEName + "'");
+                    if (drNetAEs.Length > 0)
+                    {
+                        string storageCommitment = drNetAEs[0]["StorageCommitment"].ToString();
+                        int iStorageCommit = Convert.ToInt32(storageCommitment);
+                        if (iStorageCommit > 0 && !m_bUpdateUID)
+                        {
+                            strCommandSC = strCompress + "PushSC:" + otherPacs.NetAEName;
+                        }
+                    }
+
+                    if (commandType == TransferJobCommandType.ID_COMMAND_PUSHIMAGES)
+                    {
+                        strCommand = strCompress + "PushImage:" + otherPacs.NetAEName;
+                    }
+
+                    // CommandType is Push Images
+                    if (commandType == TransferJobCommandType.ID_COMMAND_PUSHIMAGES)
+                    {
+
+                        foreach (DataRow drStudy in model.TableStudy.Rows)
+                        {
+                            string studyGUID = drStudy["StudyInstanceUID"].ToString().Trim();
+                            string strPatientUID = drStudy["PatientID"].ToString().Trim();
+                            string strPatientName = this.handlePatientName(drStudy["PatientName"].ToString().Trim());
+                            string strComments = strPatientUID + ":" + strPatientName;
+                            nItemTotalNumber = 0;
+
+                            bool bStudyNeedManualSend = drStudy["Send"].ToString() == "4" ? true : false;
+                            bool m_bForceSendAll = drStudy["Send"].ToString() == "2" ? true : false;
+
+                            bool ruleJobNameExist = true;
+
+                            string strRuleJobName = _commonTool.GeneraterRuleJobName(ruleJobNameIndex);
+
+                            DataTable _dtRuleJob = GetTableRuleJob(strRuleJobName);
+                            if (_dtRuleJob.Rows.Count > 0)
+                            {
+                                ruleJobNameIndex++;
+                                strRuleJobName = _commonTool.GeneraterRuleJobName(ruleJobNameIndex);
+                            }
+
+                            while (ruleJobNameExist == true)
+                            {
+                                ruleJobNameExist = jobNameList.Contains(strRuleJobName);
+
+                                if (ruleJobNameExist == false)
+                                {
+                                    jobNameList.Add(strRuleJobName);
+                                }
+                                else
+                                {
+                                    ruleJobNameIndex++;
+                                    strRuleJobName = _commonTool.GeneraterRuleJobName(ruleJobNameIndex);
+                                }
+                            }
+
+                            //generate UID for Job and Job item
+                            strJobUID = Guid.NewGuid().ToString();
+                            strJobUIDSC = Guid.NewGuid().ToString();
+
+                            if (m_bUpdateUID)
+                            {
+                                sql = new SqlWrapper();
+                                sql.SqlString = "update study set QCStatus = 1 where StudyInstanceUID = @StudyInstanceUID ";
+                                parameters = new SqlParameter[] {
+                                        new SqlParameter("@StudyInstanceUID", studyGUID)};
+                                sql.Parameter = parameters;
+                                lstSql.Add(sql);
+                            }
+
+                            bool hasReport = HasReport(studyGUID);
+                            // Report 操作
+                            // Only transfer report for study mode 
+                            //if (string.Compare(m_strUIDType, TransferOutputTypeConstant.IMAGE) == 0 || m_bWholeStudy)
+                            if (m_bWholeStudy)
+                            {
+                                // Add rule item for report
+                                // IReport2DicomPtr pRpt2Dcm(__uuidof(Report2Dicom));
+                                // If the study has a report
+                                // VARIANT_BOOL hasReport = pRpt2Dcm->HasReport(_bstr_t(strCurrentStudyUID));
+                                if (hasReport)
+                                {
+                                    //should update the fields for send in WebReport table, MR3
+                                    if (m_bUpdateUID)
+                                    {
+                                        string strSeriesInstUIDForSend = GenerateUID();
+                                        string strSOPInstUIDForSend = GenerateUID();
+
+                                        sql = new SqlWrapper();
+                                        sql.SqlString = "UPDATE WebReport SET SeriesInstUIDForSend= @SeriesInstUIDForSend, SOPInstUIDForSend= @SOPInstUIDForSend WHERE StudyInstanceUID=@StudyInstanceUID ";
+                                        parameters = new SqlParameter[]{
+                                        new SqlParameter("@SeriesInstUIDForSend", strSeriesInstUIDForSend),
+                                        new SqlParameter("@SOPInstUIDForSend", strSOPInstUIDForSend),
+                                        new SqlParameter("@StudyInstanceUID", studyGUID)};
+                                        sql.Parameter = parameters;
+                                        lstSql.Add(sql);
+                                    }
+                                    else
+                                    {
+                                        sql = new SqlWrapper();
+                                        sql.SqlString = "UPDATE WebReport SET SeriesInstUIDForSend=SeriesInstanceUID, SOPInstUIDForSend=SOPInstanceUID WHERE StudyInstanceUID=@StudyInstanceUID ";
+                                        parameters = new SqlParameter[]{
+                                        new SqlParameter("@StudyInstanceUID", studyGUID)};
+                                        sql.Parameter = parameters;
+                                        lstSql.Add(sql);
+                                    }
+
+                                    sql = new SqlWrapper();
+                                    sql.SqlString = "INSERT INTO [RuleJobItem] (JobUID,UIDType,UID,Command,Comments) Values (@JobUID,@UIDType, @UID,@Command,@Comments)";
+                                    parameters = new SqlParameter[]{
+                                new SqlParameter("@JobUID", strJobUID),
+                                new SqlParameter("@UIDType", "REPORT"),
+                                new SqlParameter("@UID", studyGUID),
+                                new SqlParameter("@Command", strCommand),
+                                new SqlParameter("@Comments", strComments) };
+                                    sql.Parameter = parameters;
+                                    lstSql.Add(sql);
+
+                                    // total item number should plus 1
+                                    nItemTotalNumber++;
+
+                                }
+                            }
+
+                            DataRow[] drSerials = model.TableSerial.Select("StudyInstanceUID = '" + studyGUID + "' AND AcceptStatus = 2 AND HideSeries = 0  ");
+                            foreach (DataRow drSerial in drSerials)
+                            {
+                                string strSerialGUID = drSerial["SeriesInstanceUID"].ToString().Trim();
+                                string strSeriesForwardStatus = drSerial["ForwardStatus"].ToString();
+
+                                // send these modified series
+                                // 0: FORWARD_STATUS_UNSENT
+                                // 4: FORWARD_STATUS_NEED_MANUALLY_SEND
+                                //	int SEND_STAT_NOTSEND		= 0;
+                                //	int SEND_STAT_SENDING		= 1;
+                                //	int SEND_STAT_SENT			= 2;
+                                //	int SEND_STAT_COMMIT		= 3;
+                                //	int SEND_STAT_MANUALSEND	= 4;
+                                //	int SEND_STAT_PARTSEND		= 5;
+                                //	int SEND_STAT_SENDERROR		= 6;
+                                // if (!m_bForceSendAll && bStudyNeedManualSend && !(strSeriesForwardStatus == "0" || strSeriesForwardStatus == "4"))
+                                if (!m_bForceSendAll && bStudyNeedManualSend && !(strSeriesForwardStatus == "0" || strSeriesForwardStatus == "4" || strSeriesForwardStatus == "3" || strSeriesForwardStatus == "6"))
+                                {
+                                    continue;
+                                }
+
+                                // Only when the check box is checked and Manual Transfer
+                                //
+                                if (m_bUpdateUID)
+                                {
+                                    // write uid to element table
+                                    UpdateElementUID(ref lstSql, strSerialGUID, 1, ref newUidList);		// qc edit the series id					
+                                }
+
+                                DataRow[] drImages = model.TableImage.Select("SeriesInstanceUID = '" + strSerialGUID + "' ");
+                                foreach (DataRow drImage in drImages)
+                                {
+                                    string strImageUID = drImage["SOPInstanceUID"].ToString().Trim();
+                                    // Only when the check box is checked and Manual Transfer
+                                    if (m_bUpdateUID)
+                                    {
+                                        UpdateElementUID(ref lstSql, strImageUID, 0, ref newUidList);		// qc edit the sop instance uid
+                                    }
+                                    string strSSIUIDs = studyGUID + "," + strSerialGUID + "," + strImageUID + "," + drImage["ObjectFile"].ToString();
+                                    sql = new SqlWrapper();
+                                    sql.SqlString = "INSERT INTO RuleJobItem(JobUID,UIDType,UID,SeriesInstanceUID,Command,Comments) values (@JobUID,@UIDType, @UID,@SeriesInstanceUID,@Command,@Comments)";
+                                    parameters = new SqlParameter[]{
+                                        new SqlParameter("@JobUID", strJobUID),
+                                        new SqlParameter("@UIDType", m_strUIDType),
+                                        new SqlParameter("@UID", strSSIUIDs),
+                                        new SqlParameter("@SeriesInstanceUID", strSerialGUID),
+                                        new SqlParameter("@Command", strCommand),
+                                        new SqlParameter("@Comments", strComments) };
+                                    sql.Parameter = parameters;
+                                    lstSql.Add(sql);
+
+                                    if (strCommandSC != "")
+                                    {
+                                        sql = new SqlWrapper();
+                                        sql.SqlString = "INSERT INTO RuleJobItem(JobUID,UIDType,UID,SeriesInstanceUID,Command,Comments) values (@JobUID,@UIDType, @UID,@SeriesInstanceUID,@Command,@Comments)";
+                                        parameters = new SqlParameter[]{
+                                            new SqlParameter("@JobUID", strJobUIDSC),
+                                            new SqlParameter("@UIDType", m_strUIDType),
+                                            new SqlParameter("@UID", strSSIUIDs),
+                                            new SqlParameter("@SeriesInstanceUID", strSerialGUID),
+                                            new SqlParameter("@Command", strCommandSC),
+                                            new SqlParameter("@Comments", strComments) };
+                                        sql.Parameter = parameters;
+                                        lstSql.Add(sql);
+                                    }
+
+                                    nItemTotalNumber++;
+                                }
+
+                                sql = new SqlWrapper();
+                                sql.SqlString = " update series set ForwardStatus = 1 where SeriesInstanceUID = @SeriesInstanceUID ";
+                                parameters = new SqlParameter[] {
+                                        new SqlParameter("@SeriesInstanceUID", strSerialGUID)};
+                                sql.Parameter = parameters;
+                                lstSql.Add(sql);
+                            }
+
+                            //2016/12/13 - Scott Wu - Defect EK_HI00223523: After user click "Transfer" button of one study on web/PACS, there will nothing happened on this study on Finland system.
+                            string sCreateDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                            sql = new SqlWrapper();
+                            sql.SqlString = "insert into RuleJob(JobUID,JobName, Submitter,ItemTotalNumber,CreateDateTime, StudyInstanceUID) values(@JobUID,@JobName,@Submitter,@ItemTotalNumber,@CreateDateTime,@StudyInstanceUID)";
+                            parameters = new SqlParameter[]{
+                                new SqlParameter("@JobUID", strJobUID),
+                                new SqlParameter("@JobName", strRuleJobName),
+                                new SqlParameter("@Submitter", Constant.TransferPanel),
+                                new SqlParameter("@ItemTotalNumber", nItemTotalNumber),
+                                new SqlParameter("@CreateDateTime", sCreateDate),
+                                new SqlParameter("@StudyInstanceUID", studyGUID) };
+                            sql.Parameter = parameters;
+                            lstSql.Add(sql);
+
+
+                            if (nItemTotalNumber < 1)
+                            {
+                                sql = new SqlWrapper();
+                                sql.SqlString = "delete from  RuleJobItem where JobUID = @JobUID";
+                                parameters = new SqlParameter[]{
+                                new SqlParameter("@JobUID", strJobUID)};
+                                sql.Parameter = parameters;
+                                lstSql.Add(sql);
+                                continue;
+                            }
+
+                            if (strCommandSC != "")
+                            {
+                                //2016/12/13 - Scott Wu - Defect EK_HI00223523: After user click "Transfer" button of one study on web/PACS, there will nothing happened on this study on Finland system.
+                                string strExpectExecTime = DateTime.Now.AddMinutes(2).ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                                int itemtotalNumber = nItemTotalNumber;
+                                //if (hasReport && m_bWholeStudy)
+                                if (m_bWholeStudy)
+                                {
+                                    itemtotalNumber = itemtotalNumber - 1;
+                                }
+                                sql = new SqlWrapper();
+                                sql.SqlString = "insert into RuleJob(JobUID,JobName, Submitter,ItemTotalNumber,CreateDateTime, StudyInstanceUID, ExpectExecTime) values(@JobUID,@JobName,@Submitter,@ItemTotalNumber, @CreateDateTime, @StudyInstanceUID, @ExpectExecTime)";
+                                parameters = new SqlParameter[]{
+                                    new SqlParameter("@JobUID", strJobUIDSC),
+                                    new SqlParameter("@JobName", strRuleJobName + "_SC"),
+                                    new SqlParameter("@Submitter", Constant.TransferPanel),
+                                    new SqlParameter("@ItemTotalNumber", itemtotalNumber),
+                                    new SqlParameter("@CreateDateTime", sCreateDate),
+                                    new SqlParameter("@StudyInstanceUID", studyGUID),
+                                    new SqlParameter("@ExpectExecTime", strExpectExecTime)};
+                                sql.Parameter = parameters;
+                                lstSql.Add(sql);
+                            }
+                            //if (m_strUIDType.CompareNoCase(IDS_UIDTYPE_IMAGE) == 0)
+                            sql = new SqlWrapper();
+                            sql.SqlString = "update Study set Send = 1 where StudyInstanceUID = @StudyInstanceUID ";
+                            parameters = new SqlParameter[]{
+                            new SqlParameter("@StudyInstanceUID", studyGUID)};
+                            sql.Parameter = parameters;
+                            lstSql.Add(sql);
+                        }
+                    }
+                }
+
+                #endregion
+
+                if (model.NetAEList.Count > 0)
+                {
+                    BatchSetProfileProperty(ref lstSql, userId, roleID, Constant.TransferPanel, "LastDeliveryCompress", m_iCheckCompress.ToString());
+                    BatchSetProfileProperty(ref lstSql, userId, roleID, Constant.TransferPanel, "LastDeliveryCompressRate", ddlTransferCompressRateSelectIndex);
+                    string lastDeliveryDest = string.Join("\\", model.NetAEList);
+                    BatchSetProfileProperty(ref lstSql, userId, roleID, Constant.TransferPanel, "LastDeliveryDest", lastDeliveryDest);
+                    string strCreateNewGUID = "0";
+                    if (m_bUpdateUID)
+                    {
+                        strCreateNewGUID = "1";
+                    }
+                    BatchSetProfileProperty(ref lstSql, userId, roleID, Constant.TransferPanel, "LastDeliveryRenewUID", strCreateNewGUID);
+
+                    SqlHelper.ExecuteNonQuery(lstSql, _connectionString);
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+                //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_TransferJobDAL, GXLogLevel.Error, GXLogCode.DEFAULT, ex.Message);
+                throw ex;
+            }
+            return result;
+        }
+
+        public void UpdateElementUID(ref List<SqlWrapper> lstSql, string strOldUID, int iLevel, ref List<string> newUidList)
+        {
+            SqlWrapper sql;
+            SqlParameter[] parameters;
+            int group = 32;
+            int element = 14;
+            int step = 0;
+            if (iLevel == 1)
+            {
+                group = 32;
+                element = 14;
+            }
+            else if (iLevel == 0)
+            {
+                group = 8;
+                element = 24;
+            }
+
+            bool elementPrimaryKeyExist = false;
+
+            string elementPrimaryKey = strOldUID + "-" + element.ToString() + "-" + group.ToString() + "-" + step.ToString();
+            if (!newUidList.Contains(elementPrimaryKey))
+            {
+                newUidList.Add(elementPrimaryKey);
+            }
+            else
+            {
+                elementPrimaryKeyExist = true;
+            }
+
+            sql = new SqlWrapper();
+            sql.SqlString = @"select [Group], Element, UID, Step from element where [Group] = @Group and Element= @Element and UID = @UID and Step = 0 ";
+            parameters = new SqlParameter[] {
+                    new SqlParameter("@Group", group),
+                    new SqlParameter("@Element", element),
+                    new SqlParameter("@UID", strOldUID)
+                };
+            sql.Parameter = parameters;
+            DataSet ds = SqlHelper.ExecuteQuery(sql, _connectionString);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                sql = new SqlWrapper();
+                sql.SqlString = @"update Element set Value = @ElementValue where [Group] = @Group and Element= @Element and UID = @UID and Step = 0 ";
+                parameters = new SqlParameter[] {
+                    new SqlParameter("@ElementValue", _commonTool.GenerateUID()),
+                    new SqlParameter("@Group", group),
+                    new SqlParameter("@Element", element),
+                    new SqlParameter("@UID", strOldUID)
+                };
+                sql.Parameter = parameters;
+                lstSql.Add(sql);
+            }
+            else
+            {
+                if (elementPrimaryKeyExist)
+                {
+                    sql = new SqlWrapper();
+                    sql.SqlString = @"update Element set Value = @ElementValue where [Group] = @Group and Element= @Element and UID = @UID and Step = 0 ";
+                    parameters = new SqlParameter[] {
+                        new SqlParameter("@ElementValue", _commonTool.GenerateUID()),
+                        new SqlParameter("@Group", group),
+                        new SqlParameter("@Element", element),
+                        new SqlParameter("@UID", strOldUID)
+                    };
+                    sql.Parameter = parameters;
+                    lstSql.Add(sql);
+                }
+                else
+                {
+                    sql = new SqlWrapper();
+                    sql.SqlString = @"Insert into Element ([Group],[Element],[UID],[VR],[Value],[Level],[Step]) values( @Group, @Element,@UID,@VR,@ElementValue,@Level,@Step )";
+                    parameters = new SqlParameter[] {
+                        new SqlParameter("@Group", group),
+                        new SqlParameter("@Element", element),
+                        new SqlParameter("@UID", strOldUID),
+                        new SqlParameter("@VR", "UI"),
+                        new SqlParameter("@ElementValue", _commonTool.GenerateUID()),
+                        new SqlParameter("@Level", iLevel),
+                        new SqlParameter("@Step", step)
+                    };
+                    sql.Parameter = parameters;
+                    lstSql.Add(sql);
+                }
+            }
+        }
+
+        public DataTable GetTableRuleJob(string strRuleJobNames)
+        {
+            DataTable tb = null;
+
+            string ruleJobs = strRuleJobNames.Trim();
+            StringBuilder sb = new StringBuilder();
+            sb.Append(" SELECT * FROM RuleJob WHERE 1 = 1 ");
+
+            if (ruleJobs.Trim().Length > 0)
+            {
+                sb.Append(" AND JobName = '" + ruleJobs + "'");
+            }
+            string strSQL = sb.ToString();
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+            }
+            return tb;
+        }
+
+        public string handlePatientName(string strPatName)
+        {
+            try
+            {
+                string strLocalPatientName = GetLocalPatientName(strPatName);
+
+                if (strLocalPatientName.Length > 0)
+                    return strLocalPatientName;
+
+                 
+                if (strPatName.IndexOf("^") > -1)
+                {
+                    if (System.Text.Encoding.UTF8.GetBytes(strPatName).Length != strPatName.Length)
+                    {
+                        //including chinese words, just remove the character "^" 
+                        strPatName = strPatName.Replace("^", "");
+                    }
+                    else
+                    {
+                        //not contain chinese words, replace the character "^" with space
+                        strPatName = strPatName.Replace("^", " ");
+                    }
+                }
+
+            }
+            catch { }
+            return strPatName.Trim();
+        }
+
+        public DataTable GetTableImage(string studyGUIDs, string serialGUIDs, string imageGUIDs)
+        {
+            DataTable tb = null;
+            string guids = studyGUIDs;
+            string serials = serialGUIDs;
+            string images = imageGUIDs;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("select Image.SerialNo AS ImageKey,dbo.WGGC_FUN_STRING_GetStudyStorageAEName_ByUID(Series.StudyInstanceUID,3) AS ImageStorageAEName");
+            sb.Append(" , Replace(Image.ObjectFile,'.dcm','.bmp') AS ImagePath,'' AS StudyImagePath, '' AS ObjectFilePath,Study.StudyInstanceUID, Image.* , Patient.PatientGUID,Patient.PatientName ");
+            sb.Append(" from Study inner join Series on Study.StudyInstanceUID = Series.StudyInstanceUID inner join Image on Image.SeriesInstanceUID = Series.SeriesInstanceUID");
+            sb.Append(" inner join Patient on Study.PatientGUID = Patient.PatientGUID where 1= 1");
+            if (guids.Trim().Length > 0)
+            {
+                sb.Append(" AND Study.StudyInstanceUID in (" + guids + ")");
+            }
+            if (serials.Trim().Length > 0)
+            {
+                sb.Append(" AND Series.SeriesInstanceUID in (" + serials + ")");
+            }
+            if (images.Trim().Length > 0)
+            {
+                sb.Append(" AND Image.SOPInstanceUID in (" + images + ")");
+            }
+            sb.Append(" ORDER BY Series.SeriesNo ASC,Image.SeriesNo ASC ");
+            string strSQL = sb.ToString();
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+                foreach (DataRow dr in tb.Rows)
+                {
+                    string studyImagePath = _commonTool.MKLinkToWebURLStudyImagesByStorageAEName(dr["ImageStorageAEName"].ToString(), dr["ImagePath"].ToString());
+                    dr["StudyImagePath"] = studyImagePath;
+
+                    string objFilePath = _commonTool.MKLinkToWebURLStudyImagesByStorageAEName(dr["ImageStorageAEName"].ToString(), dr["ObjectFile"].ToString());
+                    dr["ObjectFilePath"] = objFilePath;
+                }
+            }
+
+            return tb;
+        }
+
+        public TransferJobTableMdl GetTransferJobTableMdl(List<string> netAEList, string studyGUIDs, string seriesGUIDs, string imageGUIDs)
+        {
+            TransferJobTableMdl transferJobTableMdl = new TransferJobTableMdl();
+
+            DataTable dtStudy = null;
+            DataTable dtSerial = null;
+            DataTable dtImage = null;
+
+            DataTable dtNetAE = null;
+            dtNetAE = GetTableNetAE();
+
+            string studyWhere = " AND S.Hide <> 1";
+            dtStudy = GetTableStudyByCondiation(studyGUIDs, studyWhere);
+
+            string seriesWhere = " AND A.AcceptStatus = 2 AND A.HideSeries = 0 ";
+            dtSerial = GetTableSeriesByCondiation(studyGUIDs, seriesGUIDs, seriesWhere);
+
+            string imageWhere = " AND A.AcceptStatus = 2 AND A.HideSeries = 0 ";
+            dtImage = GetTableImageByCondiation(studyGUIDs, seriesGUIDs, imageGUIDs, imageWhere);
+
+            transferJobTableMdl.NetAEList = netAEList;
+            transferJobTableMdl.TableStudy = dtStudy;
+            transferJobTableMdl.TableSerial = dtSerial;
+            transferJobTableMdl.TableImage = dtImage;
+            transferJobTableMdl.TableNetAE = dtNetAE;
+
+            return transferJobTableMdl;
+        }
+
+        public DataTable GetTableStudyByCondiation(string studyGUIDs, string strWhere)
+        {
+            DataTable tb = null;
+
+            string guids = studyGUIDs;
+            StringBuilder sb = new StringBuilder();
+            sb.Append(" SELECT '' AS StudyDateTime, [dbo].[WGGC_FUN_GetStudyExamType](S.StudyInstanceUID) AS ExamType,P.*,S.* FROM Study S INNER JOIN Patient P ON S.PatientGUID = P.PatientGUID WHERE 1 = 1 ");
+
+            if (guids.Trim().Length > 0)
+            {
+                sb.Append(" AND S.StudyInstanceUID in (" + guids + ")");
+            }
+            if (strWhere.Trim().Length > 0)
+            {
+                sb.Append(" " + strWhere + " ");
+            }
+            string strSQL = sb.ToString();
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+            }
+            return tb;
+        }
+
+        public DataTable GetTableSeriesByCondiation(string studyGUIDs, string serialGUIDs, string strWhere)
+        {
+            DataTable tb = null;
+            string guids = studyGUIDs;
+            string serials = serialGUIDs;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT '' AS StudyImagePath, dbo.WGGC_FUN_STRING_GetStudyStorageAEName_ByUID(A.StudyInstanceUID,3) AS ImageStorageAEName , A.SerialNo AS SeriesNumber, A.LocalBodypart AS BodyPartExamined ");
+            sb.Append(",(SELECT TOP 1 B.ObjectFile FROM Image B where B.SeriesInstanceUID = A.SeriesInstanceUID order by B.SerialNo) as ImagePath ");
+            sb.Append(",(SELECT TOP 1 B.SerialNo FROM Image B where B.SeriesInstanceUID = A.SeriesInstanceUID order by B.SerialNo) as ImageKey ");
+            sb.Append(", A.* FROM Series A WHERE 1 = 1 ");
+
+            if (guids.Trim().Length > 0)
+            {
+                sb.Append(" AND A.StudyInstanceUID in (" + guids + ")");
+            }
+            if (serials.Trim().Length > 0)
+            {
+                sb.Append(" AND A.SeriesInstanceUID in (" + serials + ")");
+            }
+            if (strWhere.Trim().Length > 0)
+            {
+                sb.Append(" " + strWhere);
+            }
+            sb.Append(" ORDER BY A.SeriesNo ASC ");
+            string strSQL = sb.ToString();
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+            }
+            //string studyImage = "~/" + WebConfigWrapper.ReadConfiguration("MSLinkStudyImages") + "/";
+            foreach (DataRow dr in tb.Rows)
+            {
+                string studyImagePath = _commonTool.MKLinkToWebURLStudyImagesByStorageAEName(dr["ImageStorageAEName"].ToString(), dr["ImagePath"].ToString().Replace(".dcm", ".bmp"));
+                dr["StudyImagePath"] = studyImagePath;
+            }
+            return tb;
+        }
+
+        public DataTable GetTableImageByCondiation(string studyGUIDs, string serialGUIDs, string imageGUIDs, string strWhere)
+        {
+            DataTable tb = null;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("select B.SerialNo AS ImageKey, dbo.WGGC_FUN_STRING_GetStudyStorageAEName_ByUID(A.StudyInstanceUID,3) AS ImageStorageAEName, Replace(B.ObjectFile,'.dcm','.bmp') AS ImagePath ");
+            sb.Append(" ,'' AS StudyImagePath, '' AS ObjectFilePath, B.*, A.StudyInstanceUID, A.seriesNo AS _seriesNo from Image B inner join Series A ON A.SeriesInstanceUID = B.SeriesInstanceUID WHERE 1 = 1 ");
+
+            if (studyGUIDs.Trim().Length > 0)
+            {
+                sb.Append(" AND A.StudyInstanceUID in (" + studyGUIDs + ")");
+            }
+            if (serialGUIDs.Trim().Length > 0)
+            {
+                sb.Append(" AND A.SeriesInstanceUID in (" + serialGUIDs + ")");
+            }
+            if (imageGUIDs.Trim().Length > 0)
+            {
+                sb.Append(" AND B.SOPInstanceUID in (" + imageGUIDs + ")");
+            }
+            if (strWhere.Trim().Length > 0)
+            {
+                sb.Append(" " + strWhere);
+            }
+            sb.Append(" ORDER BY A.SeriesNo ASC,B.SeriesNo ASC ");
+            string strSQL = sb.ToString();
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+                foreach (DataRow dr in tb.Rows)
+                {
+                    string studyImagePath = _commonTool.MKLinkToWebURLStudyImagesByStorageAEName(dr["ImageStorageAEName"].ToString(), dr["ImagePath"].ToString());
+                    dr["StudyImagePath"] = studyImagePath;
+
+                    string objFilePath = _commonTool.MKLinkToWebURLStudyImagesByStorageAEName(dr["ImageStorageAEName"].ToString(), dr["ObjectFile"].ToString());
+                    dr["ObjectFilePath"] = objFilePath;
+                }
+            }
+            return tb;
+
+        }
+
+        public bool HasReport(string StudyInstanceUID)
+        {
+            try
+            {
+                string strSQL = @"SELECT StudyInstanceUID FROM WebReport Where [StudyInstanceUID]=@StudyInstanceUID";
+                SqlParameter[] paras = new SqlParameter[] {
+                    new SqlParameter("@StudyInstanceUID", StudyInstanceUID)
+                };
+
+                DataSet ds = SqlHelper.ExecuteQuery(strSQL, paras, _connectionString);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_WebReportDAL, GXLogLevel.Error, GXLogCode.DEFAULT, ex);
+                return false;
+            }
+        }
+
+        public string GenerateUID()
+        {
+            System.Threading.Thread.Sleep(100);
+            int randomNumber = 1000;
+            string strRetValue = string.Format("1.2.840.113564.50.{0}.{1}{2}{3}{4}{5}{6}{7}.{8}",
+                new string[] {
+                    System.Threading.Thread.CurrentThread.ManagedThreadId.ToString(),
+                    DateTime.Now.ToString("yyyy"),
+                    DateTime.Now.ToString("MM"),
+                    DateTime.Now.ToString("dd"),
+                    DateTime.Now.ToString("HH"),
+                    DateTime.Now.ToString("mm"),
+                    DateTime.Now.ToString("ss"),
+                    DateTime.Now.Millisecond.ToString(),
+                    (randomNumber++).ToString()});
+
+            if (randomNumber >= 9999)
+                randomNumber = 1000;
+
+            if (strRetValue.Length % 2 == 1)
+                strRetValue = strRetValue + "0";
+
+            return strRetValue;
+        }
+
+        public DataTable GetTableTransferCompress()
+        {
+            DataTable tb = null;
+            string strSQL = " SELECT * FROM [SystemProfile] where ModuleName = 'global' and Exportable = 'Compress' and PropertyName like '%CompRatioList_%' AND PropertyName <> 'CompRatioListCount' ";
+            DataSet ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+            if (ds.Tables.Count > 0)
+            {
+                tb = ds.Tables[0];
+            }
+            return tb;
+        }
     }
 }

@@ -1,10 +1,9 @@
 import { Component, OnInit, EventEmitter, Output, Input } from "@angular/core";
 import { ViewerShellData } from "../../../models/viewer-shell-data";
-import { OperationEnum, ViewContextEnum, ViewContext, ViewContextService } from "../../../services/view-context.service";
 import { SelectedButtonData, ToolbarButtonTypeEnum, ToolbarButtonData } from "../../../models/dropdown-button-menu-data";
 import { ConfigurationService } from "../../../services/configuration.service";
 import { AnnType } from "../../../models/annotation";
-import { ImageOperationData, ImageOperationEnum, ImageContextEnum } from "../../../models/image-operation";
+import { ImageOperationData, ImageOperationEnum, ImageContextEnum, ImageContextData } from "../../../models/image-operation";
 
 @Component({
     selector: "app-viewer-toolbar",
@@ -21,8 +20,7 @@ export class ViewerToolbarComponent implements OnInit {
     @Input()
     viewerShellData: ViewerShellData;
 
-    constructor(private viewContext: ViewContextService,
-        private configurationService: ConfigurationService) {
+    constructor(private configurationService: ConfigurationService) {
         this.buttonDivideSrc = this.configurationService.getBaseUrl() + "assets/img/DicomViewer/fenge2.png";
     }
 
@@ -30,8 +28,8 @@ export class ViewerToolbarComponent implements OnInit {
         this.shellId = this.viewerShellData.getId();
 
         const selectPanButtonMenuList: SelectedButtonData[] = [
-            { name: "selection", tip: "Select", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.Select) },
-            { name: "Pan", tip: "Pan", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.Pan) }
+            { name: "selection", tip: "Select", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.Select) ) },
+            { name: "Pan", tip: "Pan", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.Pan) ) }
         ];
 
         const multiSelectButtonMenuList: SelectedButtonData[] = [
@@ -50,14 +48,14 @@ export class ViewerToolbarComponent implements OnInit {
         ];
 
         const zoomButtonMenuList: SelectedButtonData[] = [
-            { name: "Zoom", tip: "Zoom", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.Zoom ) },
-            { name: "rectzoom", tip: "ROI Zoom", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.RoiZoom ) }
+            { name: "Zoom", tip: "Zoom", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.Zoom)) },
+            { name: "rectzoom", tip: "ROI Zoom", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.RoiZoom) ) }
         ];
 
         const magnifyButtonMenuList: SelectedButtonData[] = [
-            { name: "magnify2", tip: "Magnify X 2", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.Magnify, 2) },
-            { name: "magnify4", tip: "Magnify X 4", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.Magnify, 4) },
-            { name: "magnify8", tip: "Magnify X 8", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.Magnify, 8) }
+            { name: "magnify2", tip: "Magnify X 2", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.Magnify, 2)) },
+            { name: "magnify4", tip: "Magnify X 4", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.Magnify, 4)) },
+            { name: "magnify8", tip: "Magnify X 8", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.Magnify, 8)) }
         ];
 
         const fitButtonMenuList: SelectedButtonData[] = [
@@ -68,8 +66,8 @@ export class ViewerToolbarComponent implements OnInit {
         ];
 
         const wlButtonMenuList: SelectedButtonData[] = [
-            { name: "WL", tip: "W/L", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.Wl) },
-            { name: "ROI", tip: "ROI W/L", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.RoiWl) },
+            { name: "WL", tip: "W/L", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.Wl)) },
+            { name: "ROI", tip: "ROI W/L", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.RoiWl)) },
             { name: "ManualWL", tip: "Manual W/L", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.ManualWlSelectedImage) },
             { name: "Invert", tip: "Invert", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.InvertSelectedImage) }
         ];
@@ -99,37 +97,37 @@ export class ViewerToolbarComponent implements OnInit {
         };
 
         const selectAnnotationButtonMenu: SelectedButtonData = {
-            name: "ann_selection", tip: "Select Annotation", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.SelectAnn)
+            name: "ann_selection", tip: "Select Annotation", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.SelectAnn))
         };
 
         const simpleAnnotation1ButtonMenu: SelectedButtonData[] = [
-            { name: "ann_line", tip: "Line", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.LineExt) },
-            { name: "ann_angle", tip: "Angle", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.Protractor) },
-            { name: "ann_arrow", tip: "Arrow", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.Arrow) },
-            { name: "ann_vaxis", tip: "Vertical Axis", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.Vaxis) },
-            { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.MarkSpot) },
-            { name: "ann_freearea", tip: "Free Area", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.FreeArea) },
-            { name: "ann_text", tip: "Text", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.Text) }
+            { name: "ann_line", tip: "Line", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.LineExt)) },
+            { name: "ann_angle", tip: "Angle", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Protractor)) },
+            { name: "ann_arrow", tip: "Arrow", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Arrow)) },
+            { name: "ann_vaxis", tip: "Vertical Axis", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Vaxis)) },
+            { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.MarkSpot)) },
+            { name: "ann_freearea", tip: "Free Area", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.FreeArea)) },
+            { name: "ann_text", tip: "Text", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Text)) }
         ];
 
         const simpleAnnotation2ButtonMenu: SelectedButtonData[] = [
-            { name: "ann_ellipse", tip: "Eclipse", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.Ellipse) },
-            { name: "ann_polygon", tip: "Polygon", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.Polygon) },
-            { name: "ann_rectangle", tip: "Rectangle", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.Rect) },
-            { name: "ann_ruler", tip: "Ruler", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.Ruler) }
+            { name: "ann_ellipse", tip: "Eclipse", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Ellipse)) },
+            { name: "ann_polygon", tip: "Polygon", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Polygon)) },
+            { name: "ann_rectangle", tip: "Rectangle", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Rect)) },
+            { name: "ann_ruler", tip: "Ruler", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Ruler)) }
         ];
 
         const extendAnnotation1ButtonMenu: SelectedButtonData[] = [
-            { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.CervicalCurve) },
-            { name: "ann_lumbarcurve", tip: "Lumbar Curve", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.LumbarCurve) }
+            { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.CervicalCurve)) },
+            { name: "ann_lumbarcurve", tip: "Lumbar Curve", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.LumbarCurve)) }
         ];
 
         const extendAnnotation2ButtonMenu: SelectedButtonData[] = [
-            { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.HeartChestRatio) }
+            { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.HeartChestRatio)) }
         ];
 
         const markerButtonMenu: SelectedButtonData = {
-            name: "ann_stamp", tip: "Markers", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, ImageContextEnum.CreateAnn, AnnType.Stamp)
+            name: "ann_stamp", tip: "Markers", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Stamp))
         };
 
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, selectPanButtonMenuList));

@@ -1,3 +1,3 @@
-<div class="thumbnail" [style.border]="getBorderStyle()" (click)="onSelected()" (mouseover)="onMouseOver($event)" (mouseout)="onMouseOut($event)">
-    <img [src]="thumbnailToShow"/>
+<div class="thumbnail" [style.border]="getBorderStyle()" (click)="onClick()" (mouseover)="onMouseOver($event)" (mouseout)="onMouseOut($event)">
+    <img class="img-type" [src]="thumbnailToShow"/>
 </div>

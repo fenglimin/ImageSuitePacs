@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\WorklistModel.cs" />
     <Compile Include="Dicom\Image.cs" />
     <Compile Include="Config\MarkerConfig.cs" />
     <Compile Include="Config\OverlayItemConfig.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Dicom\Study.cs" />
     <Compile Include="Config\WorklistColumn.cs" />
     <Compile Include="Enum\PacsType.cs" />
+    <Compile Include="Enum\WorklistEnum.cs" />
     <Compile Include="JsonWrapper\DicomImageJson.cs" />
     <Compile Include="JsonWrapper\PssiJson.cs" />
     <Compile Include="JsonWrapper\ShortcutJson.cs" />

@@ -5,10 +5,8 @@ import { ViewerShellData } from "../../../../models/viewer-shell-data";
 import { ViewerImageData } from "../../../../models/viewer-image-data";
 import { WorklistService } from "../../../../services/worklist.service";
 import { DicomImageService } from "../../../../services/dicom-image.service";
-import { ImageInteractionService } from "../../../../services/image-interaction.service";
 import { ImageInteractionData, ImageInteractionEnum } from "../../../../models/image-operation";
 import { ImageOperationData, ImageOperationEnum, ImageContextEnum } from "../../../../models/image-operation";
-import { ImageOperationService } from "../../../../services/image-operation.service";
 
 @Component({
     selector: "app-thumbnail",
@@ -19,13 +17,10 @@ export class ThumbnailComponent implements OnInit {
     @Input()
     viewerShellData: ViewerShellData;
 
+    @Input()
+    isExportStudy: boolean = false;
+
     thumbnailToShow: any;
-    isImageLoading: boolean;
-    //selected = false;
-
-    private subscriptionImageInteraction: Subscription;
-    private subscriptionImageOperation: Subscription;
-
     borderStyle = "1px solid #555";
 
     private _image: Image;
@@ -40,46 +35,55 @@ export class ThumbnailComponent implements OnInit {
     get image() {
         return this._image;
     }
-
+    
+    private isImageLoading: boolean;
     private viewerImageData: ViewerImageData;
 
-    constructor(private imageInteractionService: ImageInteractionService,
-        private imageOperationService: ImageOperationService,
-        private dicomImageService: DicomImageService,
-        private worklistService: WorklistService) {
-
-        this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(
-            imageInteractionData => {
-                this.onImageInteraction(imageInteractionData);
-            }
-        );
-
-        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(
-            imageOperationData => {
-                this.onImageOperation(imageOperationData);
-            }
-        );
+    constructor(private dicomImageService: DicomImageService, private worklistService: WorklistService) {
     }
 
 
     ngOnInit() {
-        this.viewerImageData = this.viewerShellData.getViewerImageDataByImage(this.image);
+        this.viewerImageData = this.isExportStudy? new ViewerImageData(undefined, undefined) : this.viewerShellData.getViewerImageDataByImage(this.image);
     }
 
     getBorderStyle(): string {
-        return this.viewerImageData.selected ? "2px solid #F90" : "1px solid #555";
+        return this.viewerImageData.selected ? "1px solid #F90" : "1px solid #555";
     }
 
-    onSelected() {
-        this.imageInteractionService.onSelectThumbnailInNavigator(this.viewerShellData, this.image);
+    doSelectImage(image: Image, isCheckAll: string = "") {
+        if (this.isExportStudy) {
+            if (isCheckAll === "checked") {
+                this.viewerImageData.selected = true;
+            }
+            else if (isCheckAll === "notChecked") {
+                this.viewerImageData.selected = false;
+            } else {
+                if (this.image === image) {
+                    this.viewerImageData.selected = !this.viewerImageData.selected;
+                }
+            }
+        }
+    }
+
+    onClick() {
+        if (this.isExportStudy) {
+            this.viewerImageData.selected = !this.viewerImageData.selected;
+        }
+    }
+
+    setSelect(selected: boolean) {
+        this.viewerImageData.selected = selected;
     }
 
     onMouseOver(event) {
-        //this.borderStyle = "1px solid #F90";
     }
 
     onMouseOut(event) {
-        //this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
+    }
+
+    isSelected(): boolean {
+        return this.viewerImageData.selected;
     }
 
     private refreshImage() {
@@ -120,55 +124,5 @@ export class ThumbnailComponent implements OnInit {
                 console.log(error);
             }
         );
-    }
-
-    private doMutexSelectImage(image: Image) {
-        //this.selected = (this.image === image);
-        //this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
-    }
-
-    private doAddSelectImage(image: Image) {
-        //if (this.image === image) {
-        //    this.selected = true;
-        //}
-
-        //this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
-    }
-
-    private doSelectAllImagesInSelectedGroup() {
-        //this.selected = this.viewerShellData.isImageInFirstShownAndSelectedGroup(this.image);
-        //this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
-    }
-
-    private onImageInteraction(imageInteractionData: ImageInteractionData) {
-        if (!imageInteractionData.sameShellData(this.viewerShellData)) {
-            return;
-        }
-
-        //switch (imageInteractionData.getType()) {
-        //    case ImageInteractionEnum.SelectThumbnailInNavigator:
-        //    case ImageInteractionEnum.SelectImageInGroup:
-        //        this.doMutexSelectImage(imageInteractionData.getPssiImage());
-        //        break;
-
-        //    case ImageInteractionEnum.AddSelectImage:
-        //        this.doAddSelectImage(imageInteractionData.getPssiImage());
-        //        break;
-        //}
-    }
-
-    private onImageOperation(imageOperationData: ImageOperationData) {
-        //if (!imageOperationData.needResponse(this.viewerShellData.getId(), this.selected))
-        //    return;
-
-        //switch (imageOperationData.operationType) {
-        //    case ImageOperationEnum.SelectAllImages:
-        //        this.doAddSelectImage(this.image);
-        //        break;
-
-        //    case ImageOperationEnum.SelectAllImagesInSelectedGroup:
-        //        this.doSelectAllImagesInSelectedGroup();
-        //        break;
-        //}
     }
 }

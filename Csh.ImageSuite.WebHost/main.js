@@ -323,7 +323,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AnnObject", function() { return AnnObject; });
 /* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/annotation */ "./src/app/models/annotation.ts");
 /* harmony import */ var _ann_tool__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ann-tool */ "./src/app/annotation/ann-tool.ts");
-/* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/view-context.service */ "./src/app/services/view-context.service.ts");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/image-operation */ "./src/app/models/image-operation.ts");
 
 
 
@@ -508,7 +508,7 @@ var AnnObject = /** @class */ (function () {
             stop: function (arg) {
                 console.log(parentObj.constructor.name + " on drag stop");
                 child._lastPos = {};
-                if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn && parentObj.dragging) {
+                if (_this.imageViewer.getContext().imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageContextEnum"].SelectAnn && parentObj.dragging) {
                     parentObj.dragging = false;
                     var point = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
                     if (parentObj.onChildDragEnded) {
@@ -517,7 +517,7 @@ var AnnObject = /** @class */ (function () {
                 }
             },
             drag: function (arg) {
-                if (_this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn && _this.imageViewer.isDragging()) {
+                if (_this.imageViewer.getContext().imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageContextEnum"].SelectAnn && _this.imageViewer.isDragging()) {
                     var point = _ann_tool__WEBPACK_IMPORTED_MODULE_1__["AnnTool"].screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
                     parentObj.dragging = true;
                     if (typeof (child._lastPos.x) != "undefined") {
@@ -576,7 +576,7 @@ var AnnObject = /** @class */ (function () {
         };
     };
     AnnObject.prototype.needResponseToChildMouseEvent = function () {
-        return !this.dragging && this.imageViewer.getContext().action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn;
+        return !this.dragging && this.imageViewer.getContext().imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageContextEnum"].SelectAnn;
     };
     return AnnObject;
 }());
@@ -3856,9 +3856,10 @@ var AnnImage = /** @class */ (function (_super) {
             }
         }
     };
-    AnnImage.prototype.onCreate = function (imageFileName, topLeftPoint, bottomRightPoint) {
+    AnnImage.prototype.onCreate = function (imageFileName, topLeftPoint, bottomRightPoint, drawEndAfterLoad) {
         var _this = this;
         if (bottomRightPoint === void 0) { bottomRightPoint = undefined; }
+        if (drawEndAfterLoad === void 0) { drawEndAfterLoad = false; }
         this.imageFileName = imageFileName;
         var imageData = new Image();
         imageData.onload = function (ev) {
@@ -3878,7 +3879,7 @@ var AnnImage = /** @class */ (function (_super) {
             if (bottomRightPoint) {
                 _this.onRectangleChanged();
             }
-            if (_this.loadedFromTag) {
+            if (_this.loadedFromTag || drawEndAfterLoad) {
                 _this.focusedObj = _this.annBaseImage;
                 _this.onSelect(_this.selected, _this.selected);
                 if (!_this.parentObj) {
@@ -5370,6 +5371,7 @@ var AnnGraphicOverlay = /** @class */ (function () {
         this.imageViewer = imageViewer;
         this.annGraphicOverlayList = new Array();
         this.mgLayerDrawn = false;
+        this.visible = false;
         this.graphicOverlayDataList.forEach(function (graphicOverlayData) { return _this.annGraphicOverlayList.push(new _base_object_ann_base_graphic_overlay__WEBPACK_IMPORTED_MODULE_0__["AnnBaseGraphicOverlay"](undefined, graphicOverlayData, imageViewer, imageViewer.getImageLayerId())); });
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -5378,6 +5380,7 @@ var AnnGraphicOverlay = /** @class */ (function () {
         this.annGraphicOverlayList.forEach(function (annObj) { return annObj.onFlip(vertical); });
     };
     AnnGraphicOverlay.prototype.setVisible = function (visible) {
+        this.visible = visible;
         this.annGraphicOverlayList.forEach(function (annObj) { return annObj.setVisible(visible); });
     };
     AnnGraphicOverlay.prototype.onReset = function () {
@@ -5392,6 +5395,9 @@ var AnnGraphicOverlay = /** @class */ (function () {
             this.graphicOverlayDataList.forEach(function (graphicOverlayData) { return _this.annGraphicOverlayList.push(new _base_object_ann_base_graphic_overlay__WEBPACK_IMPORTED_MODULE_0__["AnnBaseGraphicOverlay"](undefined, graphicOverlayData, _this.imageViewer, _this.imageViewer.getMgLayer().id)); });
         }
         this.mgLayerDrawn = true;
+    };
+    AnnGraphicOverlay.prototype.isVisible = function () {
+        return this.visible;
     };
     return AnnGraphicOverlay;
 }());
@@ -6261,7 +6267,7 @@ var AnnTextOverlay = /** @class */ (function () {
             _this.jcTextOverlayList.push(label);
             if (overlay.id === "9003") {
                 _this.windowCenterIndex = index;
-                _this.updateWindowCenter(_this.image.cornerStoneImage.windowWidth, _this.image.cornerStoneImage.windowCenter);
+                _this.updateWindowCenter(_this.image.cornerStoneImageList[0].windowWidth, _this.image.cornerStoneImageList[0].windowCenter);
             }
             else if (overlay.id === "9004") {
                 _this.zoomRatioIndex = index;
@@ -6519,12 +6525,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_viewer_shell_viewer_bottombar_viewer_bottombar_component__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./components/viewer-shell/viewer-bottombar/viewer-bottombar.component */ "./src/app/components/viewer-shell/viewer-bottombar/viewer-bottombar.component.ts");
 /* harmony import */ var _components_worklist_shell_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./components/worklist-shell/worklist/patient-edit/patient-edit.component */ "./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.ts");
 /* harmony import */ var _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./components/worklist-shell/worklist/export-study/export-study.component */ "./src/app/components/worklist-shell/worklist/export-study/export-study.component.ts");
+/* harmony import */ var _components_common_video_player_video_player_component__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./components/common/video-player/video-player.component */ "./src/app/components/common/video-player/video-player.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -6588,7 +6596,8 @@ var AppModule = /** @class */ (function () {
                 _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectMarkerDialogComponent"],
                 _components_viewer_shell_viewer_bottombar_viewer_bottombar_component__WEBPACK_IMPORTED_MODULE_32__["ViewerBottombarComponent"],
                 _components_worklist_shell_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_33__["PatientEditComponent"],
-                _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__["ExportStudyComponent"]
+                _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__["ExportStudyComponent"],
+                _components_common_video_player_video_player_component__WEBPACK_IMPORTED_MODULE_35__["VideoPlayerComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -6661,8 +6670,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DropdownButtonMenuButtonComponent", function() { return DropdownButtonMenuButtonComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../models/dropdown-button-menu-data */ "./src/app/models/dropdown-button-menu-data.ts");
-/* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
-/* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
+/* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../models/image-operation */ "./src/app/models/image-operation.ts");
+/* harmony import */ var _services_image_operation_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../services/image-operation.service */ "./src/app/services/image-operation.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6676,16 +6686,17 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var DropdownButtonMenuButtonComponent = /** @class */ (function () {
-    function DropdownButtonMenuButtonComponent(viewContext, configurationService) {
+    function DropdownButtonMenuButtonComponent(imageOperationService, configurationService) {
         var _this = this;
-        this.viewContext = viewContext;
+        this.imageOperationService = imageOperationService;
         this.configurationService = configurationService;
         this.selected = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
         this.buttonStyleToken = { normal: "normal", over: "focus", down: "down", disable: "disable" };
         this.baseUrl = this.configurationService.getBaseUrl();
-        this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(function (context) {
-            _this.setContext(context);
+        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(function (imageOperationData) {
+            _this.onImageOperation(imageOperationData);
         });
         this.defaultStyle = this.buttonStyleToken.normal;
     }
@@ -6696,7 +6707,7 @@ var DropdownButtonMenuButtonComponent = /** @class */ (function () {
         set: function (value) {
             this._buttonData = value;
             if (this.isTopButton && this.isCheckStyle) {
-                if (this._buttonData.operationData.type === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext) {
+                if (this._buttonData.operationData.operationType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SetContext) {
                     this.defaultStyle = this.buttonStyleToken.down;
                 }
                 else {
@@ -6723,8 +6734,8 @@ var DropdownButtonMenuButtonComponent = /** @class */ (function () {
         configurable: true
     });
     DropdownButtonMenuButtonComponent.prototype.ngOnInit = function () {
-        this.isCheckStyle = this.viewContext.isImageToolBarButtonCheckStyle(this.buttonData);
-        this.isChecked = this.viewContext.isImageToolBarButtonChecked(this.buttonData);
+        this.isCheckStyle = this.imageOperationService.isImageToolBarButtonCheckStyle(this.buttonData.operationData.operationType);
+        this.isChecked = this.imageOperationService.isImageToolBarButtonInitChecked(this.buttonData.operationData.operationType);
     };
     DropdownButtonMenuButtonComponent.prototype.getDefaultStyle = function () {
         return this.isChecked ? this.buttonStyleToken.down : this.buttonStyleToken.normal;
@@ -6761,31 +6772,46 @@ var DropdownButtonMenuButtonComponent = /** @class */ (function () {
         if (!this.isTopButton) {
             this.selected.emit(this.buttonData);
         }
-        if (this.buttonData.operationData.type === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext) {
-            if (this.buttonData.operationData.data instanceof _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"]) {
-                var viewContext = this.buttonData.operationData.data;
-                this.viewContext.setContext(viewContext.action, viewContext.data);
-            }
-            else {
-                this.viewContext.setContext(this.buttonData.operationData.data, null);
-            }
-        }
-        else {
-            this.viewContext.onOperation(this.buttonData.operationData);
+        this.imageOperationService.doImageOperation(this.buttonData.operationData);
+        if (this.buttonData.operationData.operationType !== _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SetContext) {
             if (this.isCheckStyle && this.isTopButton && !this.showArrow) {
                 this.isChecked = !this.isChecked;
             }
         }
+        //if (this.buttonData.operationData.type === OperationEnum.SetContext) {
+        //    if (this.buttonData.operationData.data instanceof ViewContext) {
+        //        const viewContext = this.buttonData.operationData.data as ViewContext;
+        //        this.viewContext.setContext(viewContext.action, viewContext.data);
+        //    } else {
+        //        this.viewContext.setContext(this.buttonData.operationData.data, null);
+        //    }
+        //} else {
+        //    this.viewContext.onOperation(this.buttonData.operationData);
+        //    if (this.isCheckStyle && this.isTopButton && !this.showArrow) {
+        //        this.isChecked = !this.isChecked;
+        //    }
+        //}
     };
-    DropdownButtonMenuButtonComponent.prototype.setContext = function (viewContext) {
-        if (this.buttonData.operationData.type === _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext) {
-            if (this.buttonData.operationData.data instanceof _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"]) {
-                var myViewContext = this.buttonData.operationData.data;
-                this.isChecked = (viewContext.action === myViewContext.action && viewContext.data === myViewContext.data);
-            }
-            else {
-                this.isChecked = (viewContext.action === this.buttonData.operationData.data);
-            }
+    //setContext(viewContext) {
+    //if (this.buttonData.operationData.type === OperationEnum.SetContext) {
+    //    if (this.buttonData.operationData.data instanceof ViewContext) {
+    //        const myViewContext = this.buttonData.operationData.data as ViewContext;
+    //        this.isChecked = (viewContext.action === myViewContext.action && viewContext.data === myViewContext.data);
+    //    } else {
+    //        this.isChecked = (viewContext.action === this.buttonData.operationData.data);
+    //    }
+    //}
+    //}
+    DropdownButtonMenuButtonComponent.prototype.onImageOperation = function (imageOperationData) {
+        // Only handle the image operations of same shell
+        if (!imageOperationData.needResponse(this.buttonData.operationData.shellId))
+            return;
+        if (imageOperationData.operationType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SetContext) {
+            // Current operation is set context, do nothing if it is NOT a context button
+            if (this.buttonData.operationData.operationType !== _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SetContext)
+                return;
+            this.isChecked = this.buttonData.operationData.operationPara.imageContextType === imageOperationData.operationPara.imageContextType &&
+                this.buttonData.operationData.operationPara.imageContextPara === imageOperationData.operationPara.imageContextPara;
         }
     };
     __decorate([
@@ -6816,7 +6842,8 @@ var DropdownButtonMenuButtonComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./dropdown-button-menu-button.component.html */ "./src/app/components/common/dropdown-button-menu-button/dropdown-button-menu-button.component.html"),
             styles: [__webpack_require__(/*! ./dropdown-button-menu-button.component.css */ "./src/app/components/common/dropdown-button-menu-button/dropdown-button-menu-button.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextService"], _services_configuration_service__WEBPACK_IMPORTED_MODULE_3__["ConfigurationService"]])
+        __metadata("design:paramtypes", [_services_image_operation_service__WEBPACK_IMPORTED_MODULE_4__["ImageOperationService"],
+            _services_configuration_service__WEBPACK_IMPORTED_MODULE_2__["ConfigurationService"]])
     ], DropdownButtonMenuButtonComponent);
     return DropdownButtonMenuButtonComponent;
 }());
@@ -6858,7 +6885,6 @@ module.exports = "<li class=\"dropdown\">\r\n    <a class=\"dropdown-toggle nav 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DropdownButtonMenuComponent", function() { return DropdownButtonMenuComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -6869,10 +6895,8 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
-
 var DropdownButtonMenuComponent = /** @class */ (function () {
-    function DropdownButtonMenuComponent(viewContext) {
-        this.viewContext = viewContext;
+    function DropdownButtonMenuComponent() {
     }
     DropdownButtonMenuComponent.prototype.ngOnInit = function () {
         this.selectedButton = this.menuButtonList[0];
@@ -6898,7 +6922,7 @@ var DropdownButtonMenuComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./dropdown-button-menu.component.html */ "./src/app/components/common/dropdown-button-menu/dropdown-button-menu.component.html"),
             styles: [__webpack_require__(/*! ./dropdown-button-menu.component.css */ "./src/app/components/common/dropdown-button-menu/dropdown-button-menu.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_view_context_service__WEBPACK_IMPORTED_MODULE_1__["ViewContextService"]])
+        __metadata("design:paramtypes", [])
     ], DropdownButtonMenuComponent);
     return DropdownButtonMenuComponent;
 }());
@@ -6925,7 +6949,7 @@ module.exports = ".mat-dialog-title {\r\n    border-bottom: 1px solid #FF9900;\r
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h5 mat-dialog-title>{{content.title}}</h5>\r\n\r\n\r\n<mat-dialog-content [formGroup]=\"form\">\r\n\r\n    <i *ngIf=\"content.messageType === 0\" class=\"glyphicon glyphicon-info-sign\" style=\"padding-right: 8px\"></i>\r\n    <i *ngIf=\"content.messageType === 1\" class=\"glyphicon glyphicon-question-sign\" style=\"padding-right: 8px\"></i>\r\n    <i *ngIf=\"content.messageType === 2\" class=\"glyphicon glyphicon-warning-sign\" style=\"color: #F90; padding-right: 8px;\"></i>\r\n    <i *ngIf=\"content.messageType === 3\" class=\"glyphicon glyphicon-remove\" style=\"color: #F90; padding-right: 8px;\"></i>\r\n    <span id=\"span-message-text\" *ngIf=\"content.messageType !== 4\" style=\"color: white\">{{content.messageText}}</span>\r\n    <input *ngIf=\"content.messageType === 4\" (input)=\"onInput($event)\">\r\n</mat-dialog-content>\r\n\r\n<mat-dialog-actions>\r\n\r\n    <button *ngIf=\"needShowYesNoButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onNo()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>No\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowYesNoButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onYes()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Yes\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowCancelButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onCancel()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowOkButton()\" class=\"mat-raised-button\" [disabled]=\"needDisableYesButton\"\r\n            (click)=\"onOk()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n\r\n</mat-dialog-actions>\r\n"
+module.exports = "<h5 mat-dialog-title>{{content.title}}</h5>\r\n\r\n\r\n<mat-dialog-content [formGroup]=\"form\">\r\n\r\n    <i *ngIf=\"content.messageType === 0\" class=\"glyphicon glyphicon-info-sign\" style=\"padding-right: 8px\"></i>\r\n    <i *ngIf=\"content.messageType === 1\" class=\"glyphicon glyphicon-question-sign\" style=\"padding-right: 8px\"></i>\r\n    <i *ngIf=\"content.messageType === 2\" class=\"glyphicon glyphicon-warning-sign\" style=\"color: #F90; padding-right: 8px;\"></i>\r\n    <i *ngIf=\"content.messageType === 3\" class=\"glyphicon glyphicon-remove\" style=\"color: #F90; padding-right: 8px;\"></i>\r\n    <span id=\"span-message-text\" *ngIf=\"content.messageType !== 4\" style=\"color: white\">{{content.messageText}}</span>\r\n    <mat-form-field *ngIf=\"content.messageType === 4\">\r\n        <input matInput\r\n               placeholder=\"{{content.messageText}}\"\r\n               formControlName=\"valueInput\"\r\n               (input)=\"onInput($event)\">\r\n    </mat-form-field>\r\n</mat-dialog-content>\r\n\r\n<mat-dialog-actions>\r\n\r\n    <button *ngIf=\"needShowYesNoButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onNo()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>No\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowYesNoButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onYes()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Yes\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowCancelButton()\" class=\"mat-raised-button\"\r\n            (click)=\"onCancel()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n\r\n    <button *ngIf=\"needShowOkButton()\" class=\"mat-raised-button\" [disabled]=\"needDisableYesButton\"\r\n            (click)=\"onOk()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n\r\n</mat-dialog-actions>\r\n"
 
 /***/ }),
 
@@ -7035,6 +7059,174 @@ var MessageBoxComponent = /** @class */ (function () {
             _models_messageBox__WEBPACK_IMPORTED_MODULE_3__["MessageBoxContent"]])
     ], MessageBoxComponent);
     return MessageBoxComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/components/common/video-player/video-player.component.css":
+/*!***************************************************************************!*\
+  !*** ./src/app/components/common/video-player/video-player.component.css ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".prevImage, .playVideo, .pauseVideo, .nextImage, .stopVideo {\r\n    border: none;\r\n    height: 30px;\r\n    outline: none;\r\n    width: 30px;\r\n    background-repeat: no-repeat; \r\n    background-size: 100% auto;\r\n    padding-left: 10px;\r\n}\r\n\r\n.prevImage { background-image: url('Prev_image.bmp'); }\r\n\r\n.playVideo { background-image: url('playBlue.png'); }\r\n\r\n.pauseVideo { background-image: url('pauseBlue.png'); }\r\n\r\n.stopVideo { background-image: url('stopBlue.png'); }\r\n\r\n.nextImage { background-image: url('Next_image.bmp'); }\r\n\r\n.prevImage:hover, .playVideo:hover, .pauseVideo:hover, .nextImage:hover, .stopVideo:hover{\r\n    border: 1px solid #F90;\r\n}\r\n\r\n.slider {\r\n    -webkit-appearance: none;  /* Override default CSS styles */\r\n    -moz-appearance: none;\r\n         appearance: none;\r\n    width: 100%; /* Full-width */\r\n    height: 25px; /* Specified height */\r\n    background: #d3d3d3; /* Grey background */\r\n    outline: none; /* Remove outline */\r\n    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */ /* 0.2 seconds transition on hover */\r\n    transition: opacity .2s;\r\n}\r\n\r\n/* Mouse-over effects */\r\n\r\n.slider:hover {\r\n    opacity: 1; /* Fully shown on mouse-over */\r\n}\r\n\r\n/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */\r\n\r\n.slider::-webkit-slider-thumb {\r\n    -webkit-appearance: none; /* Override default look */\r\n    appearance: none;\r\n    width: 20px; /* Set a specific slider handle width */\r\n    height: 25px; /* Slider handle height */\r\n    background: #F90; /* Green background */\r\n    cursor: pointer; /* Cursor on hover */\r\n}\r\n\r\n.slider::-moz-range-thumb {\r\n    width: 20px; /* Set a specific slider handle width */\r\n    height: 25px; /* Slider handle height */\r\n    background: #F90; /* Green background */\r\n    cursor: pointer; /* Cursor on hover */\r\n}\r\n\r\n#table, tr, td {\r\n    padding-left: 5px;\r\n}\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9jb21tb24vdmlkZW8tcGxheWVyL3ZpZGVvLXBsYXllci5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksWUFBWTtJQUNaLFlBQVk7SUFDWixhQUFhO0lBQ2IsV0FBVztJQUNYLDRCQUE0QjtJQUM1QiwwQkFBMEI7SUFDMUIsa0JBQWtCO0FBQ3RCOztBQUVBLGFBQWEsdUNBQW1FLEVBQUU7O0FBQ2xGLGFBQWEscUNBQWlFLEVBQUU7O0FBQ2hGLGNBQWMsc0NBQWtFLEVBQUU7O0FBQ2xGLGFBQWEscUNBQWlFLEVBQUU7O0FBQ2hGLGFBQWEsdUNBQW1FLEVBQUU7O0FBRWxGO0lBQ0ksc0JBQXNCO0FBQzFCOztBQUVBO0lBQ0ksd0JBQXdCLEdBQUcsZ0NBQWdDO0lBQzNELHFCQUFnQjtTQUFoQixnQkFBZ0I7SUFDaEIsV0FBVyxFQUFFLGVBQWU7SUFDNUIsWUFBWSxFQUFFLHFCQUFxQjtJQUNuQyxtQkFBbUIsRUFBRSxvQkFBb0I7SUFDekMsYUFBYSxFQUFFLG1CQUFtQjtJQUNsQyxZQUFZLEVBQUUsdURBQXVELEVBQzVDLG9DQUFvQztJQUM3RCx1QkFBdUI7QUFDM0I7O0FBRUEsdUJBQXVCOztBQUN2QjtJQUNJLFVBQVUsRUFBRSw4QkFBOEI7QUFDOUM7O0FBRUEsZ0hBQWdIOztBQUNoSDtJQUNJLHdCQUF3QixFQUFFLDBCQUEwQjtJQUNwRCxnQkFBZ0I7SUFDaEIsV0FBVyxFQUFFLHVDQUF1QztJQUNwRCxZQUFZLEVBQUUseUJBQXlCO0lBQ3ZDLGdCQUFnQixFQUFFLHFCQUFxQjtJQUN2QyxlQUFlLEVBQUUsb0JBQW9CO0FBQ3pDOztBQUVBO0lBQ0ksV0FBVyxFQUFFLHVDQUF1QztJQUNwRCxZQUFZLEVBQUUseUJBQXlCO0lBQ3ZDLGdCQUFnQixFQUFFLHFCQUFxQjtJQUN2QyxlQUFlLEVBQUUsb0JBQW9CO0FBQ3pDOztBQUVBO0lBQ0ksaUJBQWlCO0FBQ3JCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9jb21tb24vdmlkZW8tcGxheWVyL3ZpZGVvLXBsYXllci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnByZXZJbWFnZSwgLnBsYXlWaWRlbywgLnBhdXNlVmlkZW8sIC5uZXh0SW1hZ2UsIC5zdG9wVmlkZW8ge1xyXG4gICAgYm9yZGVyOiBub25lO1xyXG4gICAgaGVpZ2h0OiAzMHB4O1xyXG4gICAgb3V0bGluZTogbm9uZTtcclxuICAgIHdpZHRoOiAzMHB4O1xyXG4gICAgYmFja2dyb3VuZC1yZXBlYXQ6IG5vLXJlcGVhdDsgXHJcbiAgICBiYWNrZ3JvdW5kLXNpemU6IDEwMCUgYXV0bztcclxuICAgIHBhZGRpbmctbGVmdDogMTBweDtcclxufVxyXG5cclxuLnByZXZJbWFnZSB7IGJhY2tncm91bmQtaW1hZ2U6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9QcmV2X2ltYWdlLmJtcCk7IH1cclxuLnBsYXlWaWRlbyB7IGJhY2tncm91bmQtaW1hZ2U6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9wbGF5Qmx1ZS5wbmcpOyB9XHJcbi5wYXVzZVZpZGVvIHsgYmFja2dyb3VuZC1pbWFnZTogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3BhdXNlQmx1ZS5wbmcpOyB9XHJcbi5zdG9wVmlkZW8geyBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc3RvcEJsdWUucG5nKTsgfVxyXG4ubmV4dEltYWdlIHsgYmFja2dyb3VuZC1pbWFnZTogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL05leHRfaW1hZ2UuYm1wKTsgfVxyXG5cclxuLnByZXZJbWFnZTpob3ZlciwgLnBsYXlWaWRlbzpob3ZlciwgLnBhdXNlVmlkZW86aG92ZXIsIC5uZXh0SW1hZ2U6aG92ZXIsIC5zdG9wVmlkZW86aG92ZXJ7XHJcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjRjkwO1xyXG59XHJcblxyXG4uc2xpZGVyIHtcclxuICAgIC13ZWJraXQtYXBwZWFyYW5jZTogbm9uZTsgIC8qIE92ZXJyaWRlIGRlZmF1bHQgQ1NTIHN0eWxlcyAqL1xyXG4gICAgYXBwZWFyYW5jZTogbm9uZTtcclxuICAgIHdpZHRoOiAxMDAlOyAvKiBGdWxsLXdpZHRoICovXHJcbiAgICBoZWlnaHQ6IDI1cHg7IC8qIFNwZWNpZmllZCBoZWlnaHQgKi9cclxuICAgIGJhY2tncm91bmQ6ICNkM2QzZDM7IC8qIEdyZXkgYmFja2dyb3VuZCAqL1xyXG4gICAgb3V0bGluZTogbm9uZTsgLyogUmVtb3ZlIG91dGxpbmUgKi9cclxuICAgIG9wYWNpdHk6IDAuNzsgLyogU2V0IHRyYW5zcGFyZW5jeSAoZm9yIG1vdXNlLW92ZXIgZWZmZWN0cyBvbiBob3ZlcikgKi9cclxuICAgIC13ZWJraXQtdHJhbnNpdGlvbjogLjJzOyAvKiAwLjIgc2Vjb25kcyB0cmFuc2l0aW9uIG9uIGhvdmVyICovXHJcbiAgICB0cmFuc2l0aW9uOiBvcGFjaXR5IC4ycztcclxufVxyXG5cclxuLyogTW91c2Utb3ZlciBlZmZlY3RzICovXHJcbi5zbGlkZXI6aG92ZXIge1xyXG4gICAgb3BhY2l0eTogMTsgLyogRnVsbHkgc2hvd24gb24gbW91c2Utb3ZlciAqL1xyXG59XHJcblxyXG4vKiBUaGUgc2xpZGVyIGhhbmRsZSAodXNlIC13ZWJraXQtIChDaHJvbWUsIE9wZXJhLCBTYWZhcmksIEVkZ2UpIGFuZCAtbW96LSAoRmlyZWZveCkgdG8gb3ZlcnJpZGUgZGVmYXVsdCBsb29rKSAqLyBcclxuLnNsaWRlcjo6LXdlYmtpdC1zbGlkZXItdGh1bWIge1xyXG4gICAgLXdlYmtpdC1hcHBlYXJhbmNlOiBub25lOyAvKiBPdmVycmlkZSBkZWZhdWx0IGxvb2sgKi9cclxuICAgIGFwcGVhcmFuY2U6IG5vbmU7XHJcbiAgICB3aWR0aDogMjBweDsgLyogU2V0IGEgc3BlY2lmaWMgc2xpZGVyIGhhbmRsZSB3aWR0aCAqL1xyXG4gICAgaGVpZ2h0OiAyNXB4OyAvKiBTbGlkZXIgaGFuZGxlIGhlaWdodCAqL1xyXG4gICAgYmFja2dyb3VuZDogI0Y5MDsgLyogR3JlZW4gYmFja2dyb3VuZCAqL1xyXG4gICAgY3Vyc29yOiBwb2ludGVyOyAvKiBDdXJzb3Igb24gaG92ZXIgKi9cclxufVxyXG5cclxuLnNsaWRlcjo6LW1vei1yYW5nZS10aHVtYiB7XHJcbiAgICB3aWR0aDogMjBweDsgLyogU2V0IGEgc3BlY2lmaWMgc2xpZGVyIGhhbmRsZSB3aWR0aCAqL1xyXG4gICAgaGVpZ2h0OiAyNXB4OyAvKiBTbGlkZXIgaGFuZGxlIGhlaWdodCAqL1xyXG4gICAgYmFja2dyb3VuZDogI0Y5MDsgLyogR3JlZW4gYmFja2dyb3VuZCAqL1xyXG4gICAgY3Vyc29yOiBwb2ludGVyOyAvKiBDdXJzb3Igb24gaG92ZXIgKi9cclxufVxyXG5cclxuI3RhYmxlLCB0ciwgdGQge1xyXG4gICAgcGFkZGluZy1sZWZ0OiA1cHg7XHJcbn0iXX0= */"
+
+/***/ }),
+
+/***/ "./src/app/components/common/video-player/video-player.component.html":
+/*!****************************************************************************!*\
+  !*** ./src/app/components/common/video-player/video-player.component.html ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<table *ngIf=\"visible\">\r\n    <tr style=\"padding-left: 10px;\">\r\n        <td>\r\n            <button class=\"prevImage\" role=\"button\" title=\"Previous Image\" (click)=\"onNavigateImage(true)\" [disabled]=\"disablePrev\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"playVideo\" role=\"button\" title=\"Play\" (click)=\"onPlay()\" [disabled]=\"disablePlay\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"pauseVideo\" role=\"button\" title=\"Pause\" (click)=\"onPause()\" [disabled]=\"disablePause\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"stopVideo\" role=\"button\" title=\"Stop\" (click)=\"onStop()\" [disabled]=\"disableStop\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"nextImage\" role=\"button\" title=\"Next Image\" (click)=\"onNavigateImage(false)\" [disabled]=\"disableNext\"></button>\r\n        </td>\r\n        <td>\r\n            <input type=\"range\" min=\"1\" [max]=\"count\" [value]=\"index+1\" (input)=\"sliderChanged($event)\" class=\"slider\" id=\"myRange\">\r\n        </td>\r\n        <td>\r\n            {{getPlayStatus()}}\r\n        </td>\r\n    </tr>\r\n</table>"
+
+/***/ }),
+
+/***/ "./src/app/components/common/video-player/video-player.component.ts":
+/*!**************************************************************************!*\
+  !*** ./src/app/components/common/video-player/video-player.component.ts ***!
+  \**************************************************************************/
+/*! exports provided: VideoPlayerComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VideoPlayerComponent", function() { return VideoPlayerComponent; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../models/viewer-shell-data */ "./src/app/models/viewer-shell-data.ts");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/image-operation */ "./src/app/models/image-operation.ts");
+/* harmony import */ var _services_image_operation_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/image-operation.service */ "./src/app/services/image-operation.service.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+var VideoPlayerComponent = /** @class */ (function () {
+    function VideoPlayerComponent(imageOperationService) {
+        var _this = this;
+        this.imageOperationService = imageOperationService;
+        this.disablePrev = true;
+        this.disablePlay = false;
+        this.disablePause = true;
+        this.disableStop = true;
+        this.disableNext = false;
+        this.visible = false;
+        this.playing = false;
+        this.index = 0;
+        this.count = 1;
+        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(function (imageOperationData) {
+            _this.onImageOperation(imageOperationData);
+        });
+    }
+    VideoPlayerComponent.prototype.ngOnInit = function () {
+    };
+    VideoPlayerComponent.prototype.onNavigateImage = function (up) {
+        if (this.visible) {
+            this.viewerImageData.image.series.modality === "US"
+                ? this.imageOperationService.onNavigateFramesInClickedImage(this.viewerImageData, up)
+                : this.imageOperationService.onNavigateImageInGroup(this.viewerImageData, up);
+        }
+    };
+    VideoPlayerComponent.prototype.onPlay = function () {
+        this.playing = true;
+        this.playVideo();
+    };
+    VideoPlayerComponent.prototype.onPause = function () {
+        this.playing = false;
+        this.setButtonStatus();
+    };
+    VideoPlayerComponent.prototype.onStop = function () {
+        this.playing = false;
+        this.imageOperationService.onDisplayImageInGroup(this.viewerImageData, 0);
+    };
+    VideoPlayerComponent.prototype.getPlayStatus = function () {
+        return this.index + 1 + "/" + this.count;
+    };
+    VideoPlayerComponent.prototype.sliderChanged = function (value) {
+        var index = Number(value.currentTarget.value) - 1;
+        this.onDisplayImage(index);
+    };
+    VideoPlayerComponent.prototype.onImageOperation = function (imageOperationData) {
+        if (!imageOperationData.needResponse(this.viewerShellData.getId(), true))
+            return;
+        switch (imageOperationData.operationType) {
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ClickImageInViewer:
+                this.onClickImageInViewer(imageOperationData.operationPara);
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].DisplayImageInGroup:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].DisplayFramesInClickedImage:
+                this.index = imageOperationData.operationPara.index;
+                this.setButtonStatus();
+                break;
+        }
+    };
+    VideoPlayerComponent.prototype.onClickImageInViewer = function (viewerImageData) {
+        this.viewerImageData = viewerImageData;
+        var modality = viewerImageData.image.series.modality;
+        if (modality === "US") {
+            this.visible = true;
+            this.index = this.viewerImageData.image.frameIndex;
+            this.count = this.viewerImageData.image.frameCount;
+        }
+        else if (modality === "CT") {
+            var matrix = viewerImageData.groupData.imageMatrix;
+            this.visible = matrix.rowCount === 1 && matrix.colCount === 1 && viewerImageData.groupData.imageCount > 1;
+            if (this.visible) {
+                this.index = this.viewerImageData.groupData.pageIndex;
+                this.count = this.viewerImageData.groupData.pageCount;
+            }
+        }
+        else {
+            this.visible = false;
+        }
+    };
+    VideoPlayerComponent.prototype.playVideo = function () {
+        var _this = this;
+        if (this.playing && this.index < this.count - 1) {
+            this.onNavigateImage(false);
+            setTimeout(function () { _this.playVideo(); }, 100);
+        }
+    };
+    VideoPlayerComponent.prototype.onDisplayImage = function (index) {
+        if (this.visible) {
+            this.viewerImageData.image.series.modality === "US"
+                ? this.imageOperationService.onDisplayFramesInClickedImage(this.viewerImageData, index)
+                : this.imageOperationService.onDisplayImageInGroup(this.viewerImageData, index);
+        }
+    };
+    VideoPlayerComponent.prototype.setButtonStatus = function () {
+        this.disablePrev = this.index === 0;
+        this.disableNext = this.index === this.count - 1;
+        this.disablePlay = this.playing;
+        this.disableStop = !this.playing;
+        this.disablePause = !this.playing;
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_1__["ViewerShellData"])
+    ], VideoPlayerComponent.prototype, "viewerShellData", void 0);
+    VideoPlayerComponent = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
+            selector: 'app-video-player',
+            template: __webpack_require__(/*! ./video-player.component.html */ "./src/app/components/common/video-player/video-player.component.html"),
+            styles: [__webpack_require__(/*! ./video-player.component.css */ "./src/app/components/common/video-player/video-player.component.css")]
+        }),
+        __metadata("design:paramtypes", [_services_image_operation_service__WEBPACK_IMPORTED_MODULE_3__["ImageOperationService"]])
+    ], VideoPlayerComponent);
+    return VideoPlayerComponent;
 }());
 
 
@@ -7469,7 +7661,7 @@ module.exports = ".DivLayoutViewer {\r\n    background-color: #555555;\r\n    /*
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"DivLayoutViewer\" [id]=\"getId()\" (click)=\"onSelected()\" [style.border]=\"getBorderStyle()\">\r\n    <div class=\"div-flex-column\" *ngFor=\"let a of Arr(groupData.imageMatrix.colCount).fill(1); let colIndex = index\">\r\n        <div class=\"div-flex-row\" *ngFor=\"let a of Arr(groupData.imageMatrix.rowCount).fill(1); let rowIndex = index\">\r\n            <app-image-viewer [imageData]=\"getImageData(rowIndex,colIndex)\" class=\"div-flex-row\">\r\n            </app-image-viewer>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
+module.exports = "<div class=\"DivLayoutViewer\" [id]=\"getId()\" [style.border]=\"getBorderStyle()\">\r\n    <div class=\"div-flex-column\" *ngFor=\"let a of Arr(groupData.imageMatrix.colCount).fill(1); let colIndex = index\">\r\n        <div class=\"div-flex-row\" *ngFor=\"let a of Arr(groupData.imageMatrix.rowCount).fill(1); let rowIndex = index\">\r\n            <app-image-viewer [imageData]=\"getImageData(rowIndex,colIndex)\" class=\"div-flex-row\">\r\n            </app-image-viewer>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -7484,12 +7676,14 @@ module.exports = "<div class=\"DivLayoutViewer\" [id]=\"getId()\" (click)=\"onSe
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GroupViewerComponent", function() { return GroupViewerComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_image_selector_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/image-selector.service */ "./src/app/services/image-selector.service.ts");
-/* harmony import */ var _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/hanging-protocol */ "./src/app/models/hanging-protocol.ts");
-/* harmony import */ var _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
-/* harmony import */ var _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../models/viewer-group-data */ "./src/app/models/viewer-group-data.ts");
-/* harmony import */ var _image_viewer_image_viewer_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./image-viewer/image-viewer.component */ "./src/app/components/viewer-shell/group-viewer/image-viewer/image-viewer.component.ts");
-/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../services/log.service */ "./src/app/services/log.service.ts");
+/* harmony import */ var _services_image_interaction_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/image-interaction.service */ "./src/app/services/image-interaction.service.ts");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/image-operation */ "./src/app/models/image-operation.ts");
+/* harmony import */ var _services_image_operation_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/image-operation.service */ "./src/app/services/image-operation.service.ts");
+/* harmony import */ var _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../models/hanging-protocol */ "./src/app/models/hanging-protocol.ts");
+/* harmony import */ var _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../services/hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
+/* harmony import */ var _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../models/viewer-group-data */ "./src/app/models/viewer-group-data.ts");
+/* harmony import */ var _image_viewer_image_viewer_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./image-viewer/image-viewer.component */ "./src/app/components/viewer-shell/group-viewer/image-viewer/image-viewer.component.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../services/log.service */ "./src/app/services/log.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7506,26 +7700,21 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
 var GroupViewerComponent = /** @class */ (function () {
-    function GroupViewerComponent(imageSelectorService, hangingProtocolService, logService) {
+    function GroupViewerComponent(imageInteractionService, imageOperationService, hangingProtocolService, logService) {
         var _this = this;
-        this.imageSelectorService = imageSelectorService;
+        this.imageInteractionService = imageInteractionService;
+        this.imageOperationService = imageOperationService;
         this.hangingProtocolService = hangingProtocolService;
         this.logService = logService;
         this.Arr = Array; //Array type captured in a variable
-        this.pageIndex = 0;
-        this.selected = false;
-        this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(function (viewerImageData) {
-            _this.doSelectGroup(viewerImageData);
+        this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(function (imageInteractionData) {
+            _this.onImageInteraction(imageInteractionData);
         });
-        this.subscriptionImageSelection = imageSelectorService.imagePageNavigated$.subscribe(function (up) {
-            _this.doNavigate(up);
-        });
-        this.subscriptionThumbnailSelection = imageSelectorService.thumbnailSelected$.subscribe(function (image) {
-            _this.doSelectGroupByThumbnail(image);
-        });
-        this.subscriptionImageLayoutChange = imageSelectorService.imageLayoutChanged$.subscribe(function (imageLayoutStyle) {
-            _this.onChangeImageLayout(imageLayoutStyle);
+        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(function (imageOperationData) {
+            _this.onImageOperation(imageOperationData);
         });
         this.logService.debug("Group: a new GroupViewerComponent is created!");
     }
@@ -7535,8 +7724,12 @@ var GroupViewerComponent = /** @class */ (function () {
         },
         set: function (groupData) {
             this.logPrefix = "Group" + groupData.getId() + ": ";
-            var log = this.logPrefix + "set groupData, protocol is " + _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["ImageHangingProtocol"][groupData.imageHangingProtocol];
+            var log = this.logPrefix + "set groupData, protocol is " + _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_4__["ImageHangingProtocol"][groupData.imageHangingProtocol];
             this.logService.debug(log);
+            if (this._groupData) {
+                this._groupData.hide = true;
+            }
+            groupData.hide = false;
             this._groupData = groupData;
             this.setImageLayout(this.groupData.imageHangingProtocol);
         },
@@ -7548,37 +7741,56 @@ var GroupViewerComponent = /** @class */ (function () {
     GroupViewerComponent.prototype.ngAfterContentInit = function () {
     };
     GroupViewerComponent.prototype.ngAfterViewChecked = function () {
-        if (this.childImages) {
+        if (this.childImages.length !== 0) {
             this.setHeight(this.childImages.first.canvas.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.clientHeight);
             this.childImages.forEach(function (child) { return child.adjustHeight(); });
+            //this.logService.debug("Group:  ngAfterViewChecked");
         }
     };
-    GroupViewerComponent.prototype.onSelected = function () {
-    };
-    GroupViewerComponent.prototype.doSelectGroup = function (viewerImageData) {
-        this.selected = (this._groupData === viewerImageData.groupData);
-    };
-    GroupViewerComponent.prototype.doSelectGroupByThumbnail = function (image) {
-        var find = this._groupData.imageDataList.find(function (imageData) { return imageData.image === image; });
-        this.selected = (find !== undefined);
+    GroupViewerComponent.prototype.isSelected = function () {
+        return this._groupData.selected;
     };
     GroupViewerComponent.prototype.getBorderStyle = function () {
-        return this.selected ? "1px solid green" : "1px solid #555555";
+        return this._groupData.selected ? "1px solid green" : "1px solid #555555";
     };
-    //doSelectById(id: string, selected: boolean): void {
-    //  const o = document.getElementById(id);
-    //  if (o !== undefined && o !== null) {
-    //    o.style.border = selected ? '1px solid yellow' : '1px solid #555555';
-    //  }
-    //}
-    //doSelectByImageViewerId(imageViewerId: string): void {
-    //  const id = this.groupData.getId();
-    //  this.selected = imageViewerId.startsWith(id);
-    //  var divId = 'DivLayoutViewer' + id;
-    //  this.doSelectById(divId, this.selected);
+    GroupViewerComponent.prototype.getId = function () {
+        return "DivLayoutViewer" + this.groupData.getId();
+    };
+    GroupViewerComponent.prototype.onResize = function () {
+        if (!this.childImages || this.childImages.length === 0)
+            return;
+        this.logService.debug("Group: onResize()");
+        this.childImages.forEach(function (imageViewer, index) {
+            imageViewer.onResize();
+        });
+    };
+    GroupViewerComponent.prototype.getImageData = function (rowIndex, colIndex) {
+        return this.groupData.getImage(rowIndex, colIndex);
+    };
+    GroupViewerComponent.prototype.setHeight = function (height) {
+        var o = document.getElementById(this.getId());
+        if (o !== undefined && o !== null) {
+            if (this.childImages.length !== 0) {
+                this.childImages.forEach(function (child) { return child.setHeight(0); });
+            }
+            o.style.height = height.toString() + "px";
+        }
+    };
+    GroupViewerComponent.prototype.saveSelectedImage = function () {
+        this.childImages.forEach(function (imageViewer) {
+            if (imageViewer.isSelected()) {
+                imageViewer.saveImage();
+            }
+        });
+    };
+    //setSelected(selected: boolean) {
+    //    this._groupData.selected = selected;
+    //    this.childImages.forEach(imageViewer => {
+    //        imageViewer.setSelected(selected);
+    //    });
     //}
     GroupViewerComponent.prototype.onChangeImageLayout = function (imageLayoutStyle) {
-        if (this.selected) {
+        if (this._groupData.selected) {
             this.setImageLayout(imageLayoutStyle);
         }
     };
@@ -7587,64 +7799,50 @@ var GroupViewerComponent = /** @class */ (function () {
             this.childImages.forEach(function (child) { return child.setHeight(0); });
         }
         this.hangingProtocolService.applyImageHangingProtocol(this.groupData, imageLayoutStyle);
-        this.imageDataList = this.groupData.imageDataList;
-        this.pageIndex = 0;
-        this.pageCount = this.groupData.getPageCount();
         this.onResize();
     };
-    GroupViewerComponent.prototype.getId = function () {
-        return "DivLayoutViewer" + this.groupData.getId();
+    GroupViewerComponent.prototype.doSelectGroup = function (viewerGroupData) {
+        this._groupData.selected = (this._groupData === viewerGroupData);
     };
-    GroupViewerComponent.prototype.onResize = function () {
-        if (!this.childImages)
-            return;
-        this.logService.debug("Group: onResize()");
-        this.childImages.forEach(function (imageViewer, index) {
-            imageViewer.onResize();
-        });
+    GroupViewerComponent.prototype.doSelectGroupByThumbnail = function (image) {
+        var result = this._groupData.getViewerImageDataByImage(image);
+        this._groupData.selected = (result !== undefined);
     };
-    GroupViewerComponent.prototype.getImageData = function (rowIndex, colIndex) {
-        return this.groupData.getImage(this.pageIndex, rowIndex, colIndex);
-    };
-    GroupViewerComponent.prototype.setHeight = function (height) {
-        var o = document.getElementById(this.getId());
-        if (o !== undefined && o !== null) {
-            if (this.childImages) {
-                this.childImages.forEach(function (child) { return child.setHeight(0); });
-            }
-            o.style.height = height.toString() + "px";
-        }
-    };
-    GroupViewerComponent.prototype.saveSelectedImage = function () {
-        this.childImages.forEach(function (imageViewer) {
-            if (imageViewer.selected) {
-                imageViewer.saveImage();
-            }
-        });
-    };
-    GroupViewerComponent.prototype.doNavigate = function (up) {
-        if (!this.selected) {
+    GroupViewerComponent.prototype.onImageInteraction = function (imageInteractionData) {
+        if (!imageInteractionData.sameShellData(this.groupData.viewerShellData)) {
             return;
         }
-        if (up) {
-            if (this.pageIndex > 0) {
-                this.pageIndex--;
-            }
+        switch (imageInteractionData.getType()) {
+            //case ImageInteractionEnum.NavigationImageInGroup:
+            //    if (imageInteractionData.sameGroupData(this.groupData)) {
+            //        this.doNavigate(imageInteractionData.getPara());
+            //    }
+            //    break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageInteractionEnum"].SelectThumbnailInNavigator:
+                this.doSelectGroupByThumbnail(imageInteractionData.getPssiImage());
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageInteractionEnum"].ChangeImageLayoutForSelectedGroup:
+                this.onChangeImageLayout(imageInteractionData.getPara());
+                break;
         }
-        else {
-            if (this.pageIndex < this.pageCount - 1) {
-                this.pageIndex++;
-            }
-        }
+    };
+    GroupViewerComponent.prototype.onImageOperation = function (imageOperationData) {
+        if (!imageOperationData.needResponse(this.groupData.viewerShellData.getId(), this._groupData.selected))
+            return;
+        //switch (imageOperationData.operationType) {
+        //case ImageOperationEnum.SelectAllImages:
+        //    this.doSelectGroup(this.groupData);
+        //    break;
+        //}
     };
     __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_image_viewer_image_viewer_component__WEBPACK_IMPORTED_MODULE_5__["ImageViewerComponent"]),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_image_viewer_image_viewer_component__WEBPACK_IMPORTED_MODULE_7__["ImageViewerComponent"]),
         __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["QueryList"])
     ], GroupViewerComponent.prototype, "childImages", void 0);
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
-        __metadata("design:type", _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_4__["ViewerGroupData"]),
-        __metadata("design:paramtypes", [_models_viewer_group_data__WEBPACK_IMPORTED_MODULE_4__["ViewerGroupData"]])
+        __metadata("design:type", _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_6__["ViewerGroupData"]),
+        __metadata("design:paramtypes", [_models_viewer_group_data__WEBPACK_IMPORTED_MODULE_6__["ViewerGroupData"]])
     ], GroupViewerComponent.prototype, "groupData", null);
     GroupViewerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -7652,9 +7850,10 @@ var GroupViewerComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./group-viewer.component.html */ "./src/app/components/viewer-shell/group-viewer/group-viewer.component.html"),
             styles: [__webpack_require__(/*! ./group-viewer.component.css */ "./src/app/components/viewer-shell/group-viewer/group-viewer.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_image_selector_service__WEBPACK_IMPORTED_MODULE_1__["ImageSelectorService"],
-            _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__["HangingProtocolService"],
-            _services_log_service__WEBPACK_IMPORTED_MODULE_6__["LogService"]])
+        __metadata("design:paramtypes", [_services_image_interaction_service__WEBPACK_IMPORTED_MODULE_1__["ImageInteractionService"],
+            _services_image_operation_service__WEBPACK_IMPORTED_MODULE_3__["ImageOperationService"],
+            _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_5__["HangingProtocolService"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_8__["LogService"]])
     ], GroupViewerComponent);
     return GroupViewerComponent;
 }());
@@ -7697,30 +7896,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageViewerComponent", function() { return ImageViewerComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
-/* harmony import */ var _services_image_selector_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../services/image-selector.service */ "./src/app/services/image-selector.service.ts");
-/* harmony import */ var _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../services/dicom-image.service */ "./src/app/services/dicom-image.service.ts");
-/* harmony import */ var _services_annotation_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/annotation.service */ "./src/app/services/annotation.service.ts");
-/* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
-/* harmony import */ var _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../models/viewer-image-data */ "./src/app/models/viewer-image-data.ts");
-/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
-/* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
-/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
-/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../../services/log.service */ "./src/app/services/log.service.ts");
-/* harmony import */ var _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../../models/dailog-data/image-process */ "./src/app/models/dailog-data/image-process.ts");
-/* harmony import */ var _dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../dialog/manual-wl-dialog/manual-wl-dialog.component */ "./src/app/components/dialog/manual-wl-dialog/manual-wl-dialog.component.ts");
-/* harmony import */ var _dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
-/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../../models/messageBox */ "./src/app/models/messageBox.ts");
-/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../models/annotation */ "./src/app/models/annotation.ts");
-/* harmony import */ var _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../../annotation/ann-tool */ "./src/app/annotation/ann-tool.ts");
-/* harmony import */ var _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-text */ "./src/app/annotation/extend-object/ann-text.ts");
-/* harmony import */ var _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-guide */ "./src/app/annotation/layer-object/ann-guide.ts");
-/* harmony import */ var _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-image-ruler */ "./src/app/annotation/layer-object/ann-image-ruler.ts");
-/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
-/* harmony import */ var _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../../../annotation/ann-serialize */ "./src/app/annotation/ann-serialize.ts");
-/* harmony import */ var _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-graphic-overlay */ "./src/app/annotation/layer-object/ann-graphic-overlay.ts");
-/* harmony import */ var _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-text-overlay */ "./src/app/annotation/layer-object/ann-text-overlay.ts");
-/* harmony import */ var _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-magnify */ "./src/app/annotation/layer-object/ann-magnify.ts");
-/* harmony import */ var _annotation_base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ../../../../annotation/base-object/ann-base-rectangle */ "./src/app/annotation/base-object/ann-base-rectangle.ts");
+/* harmony import */ var _services_image_interaction_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../services/image-interaction.service */ "./src/app/services/image-interaction.service.ts");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../models/image-operation */ "./src/app/models/image-operation.ts");
+/* harmony import */ var _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/dicom-image.service */ "./src/app/services/dicom-image.service.ts");
+/* harmony import */ var _services_annotation_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../services/annotation.service */ "./src/app/services/annotation.service.ts");
+/* harmony import */ var _services_image_operation_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../services/image-operation.service */ "./src/app/services/image-operation.service.ts");
+/* harmony import */ var _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../../models/viewer-image-data */ "./src/app/models/viewer-image-data.ts");
+/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
+/* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
+/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../../services/log.service */ "./src/app/services/log.service.ts");
+/* harmony import */ var _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../../models/dailog-data/image-process */ "./src/app/models/dailog-data/image-process.ts");
+/* harmony import */ var _dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../dialog/manual-wl-dialog/manual-wl-dialog.component */ "./src/app/components/dialog/manual-wl-dialog/manual-wl-dialog.component.ts");
+/* harmony import */ var _dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
+/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../models/messageBox */ "./src/app/models/messageBox.ts");
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../../../annotation/ann-tool */ "./src/app/annotation/ann-tool.ts");
+/* harmony import */ var _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-text */ "./src/app/annotation/extend-object/ann-text.ts");
+/* harmony import */ var _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-guide */ "./src/app/annotation/layer-object/ann-guide.ts");
+/* harmony import */ var _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-image-ruler */ "./src/app/annotation/layer-object/ann-image-ruler.ts");
+/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
+/* harmony import */ var _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../../../../annotation/ann-serialize */ "./src/app/annotation/ann-serialize.ts");
+/* harmony import */ var _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-graphic-overlay */ "./src/app/annotation/layer-object/ann-graphic-overlay.ts");
+/* harmony import */ var _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-text-overlay */ "./src/app/annotation/layer-object/ann-text-overlay.ts");
+/* harmony import */ var _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-magnify */ "./src/app/annotation/layer-object/ann-magnify.ts");
+/* harmony import */ var _annotation_base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ../../../../annotation/base-object/ann-base-rectangle */ "./src/app/annotation/base-object/ann-base-rectangle.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7756,38 +7956,31 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
 var ImageViewerComponent = /** @class */ (function () {
-    function ImageViewerComponent(imageSelectorService, dicomImageService, configurationService, viewContext, worklistService, dialogService, logService, ngZone, annotationService) {
+    function ImageViewerComponent(imageInteractionService, imageOperationService, dicomImageService, configurationService, worklistService, dialogService, logService, ngZone, annotationService) {
         var _this = this;
-        this.imageSelectorService = imageSelectorService;
+        this.imageInteractionService = imageInteractionService;
+        this.imageOperationService = imageOperationService;
         this.dicomImageService = dicomImageService;
         this.configurationService = configurationService;
-        this.viewContext = viewContext;
         this.worklistService = worklistService;
         this.dialogService = dialogService;
         this.logService = logService;
         this.ngZone = ngZone;
         this.annotationService = annotationService;
         this.needResize = false;
-        this.selected = false;
         this.dragging = false;
         this.mouseEventHelper = {};
         this.eventHandlers = {};
         this.ctrlKeyPressed = false;
         this.annObjList = [];
-        this.subscriptionImageSelection = imageSelectorService.imageSelected$.subscribe(function (viewerImageData) {
-            _this.doSelectImage(viewerImageData);
+        this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(function (imageInteractionData) {
+            _this.onImageInteraction(imageInteractionData);
         });
-        this.subscriptionThumbnailSelection = imageSelectorService.thumbnailSelected$.subscribe(function (image) {
-            _this.doSelectImageByThumbnail(image);
-        });
-        this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(function (context) {
-            if (!(_this._imageData.groupData.viewerShellData.hide) && _this.selected) {
-                _this.setContext(context);
-            }
-        });
-        this.subscriptionOperation = viewContext.onOperation$.subscribe(function (operation) {
-            _this.onOperation(operation);
+        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(function (imageOperationData) {
+            _this.onImageOperation(imageOperationData);
         });
         this.logService.debug("Image: a new ImageViewerComponent is created!");
     }
@@ -7803,13 +7996,18 @@ var ImageViewerComponent = /** @class */ (function () {
                 // We will start to show a new image in this viewer, need to delete all artifacts already drawn for the old image
                 this.deleteAll();
                 this.disableCornerstone();
+                if (this._imageData) {
+                    this._imageData.hide = true;
+                }
                 // Save new image data
+                imageData.hide = false;
                 this._imageData = imageData;
-                this.image = this._imageData.image;
+                this.image = imageData.image;
+                this.shellId = imageData.groupData.viewerShellData.getId();
                 // If the view is NOT inited, will load image after view inited ( in ngAfterViewInit )
                 // If the view is already inited, which means this component is created before, load image here
                 if (this.isViewInited) {
-                    this.loadImage();
+                    this.loadImage(0);
                 }
             }
         },
@@ -7837,9 +8035,9 @@ var ImageViewerComponent = /** @class */ (function () {
         if (this.image) {
             this.showWaitingText();
         }
-        this.loadImage();
-        this.annGuide = new _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_18__["AnnGuide"](this);
-        this.annImageRuler = new _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_19__["AnnImageRuler"](this);
+        this.loadImage(0);
+        this.annGuide = new _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_19__["AnnGuide"](this);
+        this.annImageRuler = new _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_20__["AnnImageRuler"](this);
         this.isViewInited = true;
     };
     ImageViewerComponent.prototype.ngAfterViewChecked = function () {
@@ -7874,14 +8072,14 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.enableCornerstone = function () {
         var _this = this;
         if (this.cornerstoneEnabled) {
-            alert("Internal error in enableCornerstone() - Cornerstone was already enabled!");
+            //alert("Internal error in enableCornerstone() - Cornerstone was already enabled!");
             return;
         }
         if (!this.helpElement) {
             alert("Internal error in enableCornerstone() - Help element NOT assigned!");
             return;
         }
-        if (!this.image || !this.image.cornerStoneImage) {
+        if (!this.image || this.image.cornerStoneImageList.length === 0) {
             alert("Internal error in enableCornerstone() - Image or Image.cornerstoneImage is NULL!");
             return;
         }
@@ -7893,7 +8091,7 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.disableCornerstone = function () {
         var _this = this;
-        if (this.image && this.image.cornerStoneImage && this.cornerstoneEnabled) {
+        if (this.image && this.image.cornerStoneImageList.length !== 0 && this.cornerstoneEnabled) {
             if (!this.helpElement) {
                 alert("Internal error in disableCornerstone() - Help element NOT assigned!");
                 return;
@@ -7922,52 +8120,57 @@ var ImageViewerComponent = /** @class */ (function () {
         this.jcanvas.height(this.canvas.height);
         this.jcanvas.restart();
     };
-    ImageViewerComponent.prototype.loadImage = function () {
+    ImageViewerComponent.prototype.loadImage = function (frameIndex) {
         //// Make sure this function is called after view is inited.
         //if (!this.isViewInited) {
         //    alert("Internal error : Must load image after view is inited");
         //    return;
         //}
         var _this = this;
+        this.isImageLoaded = false;
         // The image is null, which means to clear the image viewer
         if (!this.image) {
             this.redraw(1);
             return;
         }
-        if (this.image.cornerStoneImage) {
+        if (this.image.cornerStoneImageList[frameIndex]) {
             // The image is already downloaded, show the image
-            this.showImage();
+            this.showImage(frameIndex);
         }
         else {
             // The image is NOT downloaded, get the image from server and show it after download
-            this.dicomImageService.getCornerStoneImage(this.image).then(function (ctImage) { return _this.onImageDownloaded(ctImage); });
+            this.dicomImageService.getCornerStoneImage(this.image, frameIndex).then(function (ctImage) { return _this.onImageDownloaded(ctImage, frameIndex); });
         }
     };
     // Call back functions when image is loaded by CornerStone
-    ImageViewerComponent.prototype.onImageDownloaded = function (ctImage) {
+    ImageViewerComponent.prototype.onImageDownloaded = function (ctImage, frameIndex) {
         this.logService.info(this.logPrefix + "Image is downloaded from server. Start to show it by cornerstone.");
-        this.image.setCornerStoneImage(ctImage);
+        this.image.setCornerStoneImage(ctImage, frameIndex);
         this.image.graphicOverlayDataList = this.dicomImageService.getGraphicOverlayList(this.image);
-        this.showImage();
+        this.showImage(frameIndex);
     };
     // Show image when image is loaded
-    ImageViewerComponent.prototype.showImage = function () {
-        if (this.image.cornerStoneImage) {
+    ImageViewerComponent.prototype.showImage = function (frameIndex) {
+        if (this.image.cornerStoneImageList[frameIndex]) {
             this.enableCornerstone();
-            this.restartJCanvas();
+            // Frame index is same, means we are switching from different images
+            // If NOT same, means we are switching from different frames of the same image, so no need to restart jCanvas
+            if (frameIndex === this.image.frameIndex)
+                this.restartJCanvas();
             this.logService.debug(this.logPrefix + 'showImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
             this.isImageLoaded = false;
-            cornerstone.displayImage(this.helpElement, this.image.cornerStoneImage);
+            cornerstone.displayImage(this.helpElement, this.image.cornerStoneImageList[frameIndex]);
+            this.image.frameIndex = frameIndex;
             this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
         }
         else {
             this.logService.debug(this.logPrefix + 'local test data, no image to show.');
         }
-        var id = this.getId();
-        var index = id.substr(id.length - 4, 4);
-        if (index === "0000" || this.selected) {
-            this.onSelected();
-        }
+        //const id = this.getId();
+        //const index = id.substr(id.length - 4, 4);
+        //if (index === "0000" || this.imageData.selected) {
+        //    this.onSelected();
+        //}
     };
     ImageViewerComponent.prototype.onImageRendered = function (e, data) {
         this.logService.debug(this.logPrefix + 'onImageRendered() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
@@ -7981,17 +8184,19 @@ var ImageViewerComponent = /** @class */ (function () {
         //fit window
         this.fitWindow();
         // Save the original window center/width for later reset.
-        this.originalWindowCenter = this.image.cornerStoneImage.windowCenter;
-        this.originalWindowWidth = this.image.cornerStoneImage.windowWidth;
+        this.originalWindowCenter = this.image.cornerStoneImageList[0].windowCenter;
+        this.originalWindowWidth = this.image.cornerStoneImageList[0].windowWidth;
         this.hideWaitingText();
         this.showTextOverlay();
         this.updateImageTransform();
         this.syncAnnLabelLayerTransform();
-        this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn);
-        this.annSerialize = new _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_21__["AnnSerialize"](this.image.annData, this);
+        // Set the default context to Select
+        this.imageOperationService.setShellContextType(this.shellId, new _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].SelectAnn));
+        this.annSerialize = new _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_22__["AnnSerialize"](this.image.annData, this);
         this.deleteAllAnnotation();
         if (!this.annSerialize.createAnn()) {
-            this.setContext(this.viewContext.curContext);
+            // Todo
+            //this.setContext(this.viewContext.curContext);
         }
         this.redraw(2);
     };
@@ -8044,7 +8249,7 @@ var ImageViewerComponent = /** @class */ (function () {
         return cornerstone.getEnabledElement(this.helpElement).canvas;
     };
     ImageViewerComponent.prototype.getContext = function () {
-        return this.viewContext.curContext;
+        return this.imageOperationService.getShellContextType(this.shellId);
     };
     ImageViewerComponent.prototype.getBaseUrl = function () {
         return this.baseUrl;
@@ -8114,7 +8319,7 @@ var ImageViewerComponent = /** @class */ (function () {
         this.annObjList.push(annObj);
         if (!annObj.isLoadedFromTag()) {
             this.curSelectObj = annObj;
-            this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn);
+            this.imageOperationService.setShellContextType(this.shellId, new _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].SelectAnn));
         }
     };
     ImageViewerComponent.prototype.stepGuide = function () {
@@ -8128,7 +8333,7 @@ var ImageViewerComponent = /** @class */ (function () {
         this.curSelectObj = undefined;
         this.annGuide.stepTo(0);
         if (!needRecreate) {
-            this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn);
+            this.imageOperationService.setShellContextType(this.shellId, new _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].SelectAnn));
         }
     };
     ImageViewerComponent.prototype.selectChildByStepIndex = function (stepIndex) {
@@ -8215,7 +8420,7 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.showTextOverlay = function () {
         this.olLayer.visible(true);
         if (!this.annTextOverlay) {
-            this.annTextOverlay = new _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_23__["AnnTextOverlay"](this, this.dicomImageService);
+            this.annTextOverlay = new _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_24__["AnnTextOverlay"](this, this.dicomImageService);
         }
         this.annTextOverlay.redraw();
         this.redraw(1);
@@ -8273,17 +8478,11 @@ var ImageViewerComponent = /** @class */ (function () {
         this.annLabelLayer.scale(1);
     };
     ImageViewerComponent.prototype.onSelected = function () {
-        this.imageSelectorService.selectImage(this.imageData);
+        this.imageOperationService.onClickImageInViewer(this.imageData);
         this.canvas.focus();
     };
     ImageViewerComponent.prototype.getBorderStyle = function () {
-        return this.selected ? "1px solid #F90" : "1px solid #555555";
-    };
-    ImageViewerComponent.prototype.doSelectImage = function (viewerImageData) {
-        this.selected = (this._imageData === viewerImageData);
-    };
-    ImageViewerComponent.prototype.doSelectImageByThumbnail = function (image) {
-        this.selected = (this.image === image);
+        return (this.isImageLoaded && this.imageData.selected) ? "1px solid #F90" : "1px solid #555555";
     };
     ImageViewerComponent.prototype.setHeight = function (height) {
         var o = document.getElementById(this.getId());
@@ -8291,108 +8490,121 @@ var ImageViewerComponent = /** @class */ (function () {
             o.style.height = height.toString() + "px";
         }
     };
-    ImageViewerComponent.prototype.setContext = function (context) {
+    ImageViewerComponent.prototype.setSelected = function (selected) {
+        this.imageData.selected = selected;
+    };
+    ImageViewerComponent.prototype.isSelected = function () {
+        return this.imageData.selected;
+    };
+    //private setContext(context: ViewContext) {
+    //    if (!this.isImageLoaded) {
+    //        return;
+    //    }
+    //    const draggable = context.action === ViewContextEnum.Pan;
+    //    this.draggable(draggable);
+    //    //each time context changed, we should unselect cur selected object
+    //    this.selectAnnotation(undefined);
+    //    this.annGuide.hide();
+    //    this.setCursorFromContext();
+    //}
+    ImageViewerComponent.prototype.setContext = function (imageContextData) {
         if (!this.isImageLoaded) {
             return;
         }
-        var draggable = context.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Pan;
+        var draggable = imageContextData.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Pan;
         this.draggable(draggable);
         //each time context changed, we should unselect cur selected object
         this.selectAnnotation(undefined);
         this.annGuide.hide();
         this.setCursorFromContext();
     };
-    ImageViewerComponent.prototype.onOperation = function (operation) {
+    ImageViewerComponent.prototype.onImageOperation = function (imageOperationData) {
         if (!this.isImageLoaded)
             return;
-        if (!this.selected)
+        if (!imageOperationData.needResponse(this.shellId, this.imageData.selected))
             return;
-        switch (operation.type) {
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].Rotate: {
-                this.rotate(operation.data.angle);
+        switch (imageOperationData.operationType) {
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SetContext:
+                this.setContext(imageOperationData.operationPara);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].Flip: {
-                this.flip(operation.data);
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].ShowAnnotation:
+                this.doToggleLayerDisplay(this.annLayer);
+                this.doToggleLayerDisplay(this.annLabelLayer);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].Invert: {
-                this.invert();
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].ShowTextOverlay:
+                this.doToggleLayerDisplay(this.olLayer);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitWidth:
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitHeight:
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitOriginal:
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitWindow: {
-                this.doFit(operation.type);
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].ShowRuler:
+                this.doToggleLayerDisplay(this.imgRulerLayer);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ShowOverlay: {
-                this.olLayer.visible(operation.data.show);
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].ShowGraphicOverlay:
+                this.doToggleLayerDisplay(undefined);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ShowRuler: {
-                this.imgRulerLayer.visible(operation.data.show);
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FitWidthSelectedImage:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FitHeightSelectedImage:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FitOriginalSelectedImage:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FitWindowSelectedImage:
+                this.doFit(imageOperationData.operationType);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ShowAnnotation: {
-                this.annLayer.visible(operation.data.show);
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].RotateCwSelectedImage:
+                this.doRotate(90);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ShowGraphicOverlay: {
-                this.toggleGraphicOverlay(operation.data.show);
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].RotateCcwSelectedImage:
+                this.doRotate(-90);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ManualWL: {
-                this.doManualWl();
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FlipHorizontalSelectedImage:
+                this.doFlip(false);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].ToggleKeyImage: {
-                if (this.image.keyImage === 'Y') {
-                    this.image.keyImage = 'N';
-                    this.setKeyImage(false);
-                }
-                else {
-                    this.image.keyImage = 'Y';
-                    this.setKeyImage(true);
-                }
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FlipVerticalSelectedImage:
+                this.doFlip(true);
                 break;
-            }
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].Reset: {
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].InvertSelectedImage:
+                this.doInvert();
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].ResetSelectedImage:
                 this.doReset();
                 break;
-            }
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].ToggleKeyImageSelectedImage:
+                this.doToggleKeyImage();
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].DisplayFramesInClickedImage:
+                if (imageOperationData.operationPara.viewerImageData === this.imageData) {
+                    this.displayFramesInImage(imageOperationData.operationPara.index);
+                }
+                break;
+            default:
+                return;
         }
         this.redraw(1);
     };
     ImageViewerComponent.prototype.getCursorFromContext = function () {
-        var curContext = this.viewContext.curContext;
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
         var cursorUrl = "url(" + this.baseUrl + "/assets/img/cursor/{0}.cur),move";
         var cursor = "default";
-        switch (curContext.action) {
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL:
+        switch (curContext.imageContextType) {
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Wl:
                 cursor = cursorUrl.format("adjustwl");
                 break;
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Pan:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Pan:
                 cursor = cursorUrl.format("hand");
                 break;
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Zoom:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Zoom:
                 cursor = cursorUrl.format("zoom");
                 break;
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Magnify:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Magnify:
                 cursor = cursorUrl.format("magnify");
                 break;
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].RoiZoom:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiZoom:
                 cursor = cursorUrl.format("rectzoom");
                 break;
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].RoiWl:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiWl:
                 cursor = cursorUrl.format("rectwl");
                 break;
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].SelectAnn:
                 cursor = cursorUrl.format("select");
                 break;
-            case _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn:
-                var cursorName = this.annotationService.getCursorNameByType(curContext.data);
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn:
+                var cursorName = this.annotationService.getCursorNameByType(curContext.imageContextPara);
                 cursor = cursorUrl.format(cursorName);
                 break;
         }
@@ -8401,28 +8613,26 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.setCursorFromContext = function () {
         var cursor = this.getCursorFromContext();
         this.setCursor(cursor);
-        var curContext = this.viewContext.curContext;
-        if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
-            var annDefData = this.annotationService.getAnnDefDataByType(curContext.data);
-            if (!annDefData)
-                return;
-            if (annDefData.needGuide) {
-                this.annGuide.show(annDefData.className);
-                this.redraw(1);
-            }
-            else if (annDefData.cursorName === "ann_stamp") {
-                this.selectMarker();
-            }
-        }
+        //const curContext = this.viewContext.curContext;
+        //if (curContext.action === ViewContextEnum.CreateAnn) {
+        //    const annDefData = this.annotationService.getAnnDefDataByType(curContext.data);
+        //    if (!annDefData) return;
+        //    if (annDefData.needGuide) {
+        //        this.annGuide.show(annDefData.className);
+        //        this.redraw(1);
+        //    } else if (annDefData.cursorName === "ann_stamp") {
+        //        this.selectMarker();
+        //    }
+        //}
     };
-    ImageViewerComponent.prototype.rotate = function (angle) {
+    ImageViewerComponent.prototype.doRotate = function (angle) {
         if (angle == 0) //rotate 0 will cause the transform messed
             return;
         this.imgLayer.rotate(angle, "center");
         this.updateImageTransform();
         this.annObjList.forEach(function (obj) { return obj.onRotate(angle); });
     };
-    ImageViewerComponent.prototype.flip = function (flipVertical) {
+    ImageViewerComponent.prototype.doFlip = function (flipVertical) {
         var viewPort = cornerstone.getViewport(this.helpElement);
         var rotateAngle = this.getRotate();
         if (Math.abs(rotateAngle % 180) === 90) {
@@ -8440,7 +8650,7 @@ var ImageViewerComponent = /** @class */ (function () {
             this.annGraphicOverlay.onFlip(flipVertical);
         }
     };
-    ImageViewerComponent.prototype.invert = function () {
+    ImageViewerComponent.prototype.doInvert = function () {
         var viewPort = cornerstone.getViewport(this.helpElement);
         viewPort.invert = !viewPort.invert;
         cornerstone.setViewport(this.helpElement, viewPort);
@@ -8502,7 +8712,7 @@ var ImageViewerComponent = /** @class */ (function () {
             this.scale(heightScale);
             this.translate((canvasWidth - width * heightScale) / 2, 0);
         }
-        this.rotate(curRotate);
+        this.doRotate(curRotate);
         this.refreshUi();
     };
     ImageViewerComponent.prototype.doReset = function () {
@@ -8524,8 +8734,8 @@ var ImageViewerComponent = /** @class */ (function () {
             this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
         }
         // Reset W/L
-        this.image.cornerStoneImage.windowWidth = this.originalWindowWidth;
-        this.image.cornerStoneImage.windowCenter = this.originalWindowCenter;
+        this.image.cornerStoneImageList[0].windowWidth = this.originalWindowWidth;
+        this.image.cornerStoneImageList[0].windowCenter = this.originalWindowCenter;
         var viewPort = cornerstone.getViewport(this.helpElement);
         viewPort.voi.windowCenter = this.originalWindowCenter;
         viewPort.voi.windowWidth = this.originalWindowWidth;
@@ -8543,8 +8753,6 @@ var ImageViewerComponent = /** @class */ (function () {
         this.refreshUi();
     };
     ImageViewerComponent.prototype.doFit = function (fitType) {
-        if (!this.isImageLoaded)
-            return;
         var width = this.image.width();
         var height = this.image.height();
         var canvasWidth = this.canvas.width;
@@ -8560,7 +8768,7 @@ var ImageViewerComponent = /** @class */ (function () {
             heightScale = canvasHeight / width;
         }
         this.imgLayer.transform(1, 0, 0, 1, 0, 0, true);
-        if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitWindow) {
+        if (fitType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FitWindowSelectedImage) {
             if (widthScale < heightScale) {
                 this.scale(widthScale);
                 this.translate((canvasWidth - width * widthScale) / 2, (canvasHeight - height * widthScale) / 2);
@@ -8570,18 +8778,18 @@ var ImageViewerComponent = /** @class */ (function () {
                 this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
             }
         }
-        else if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitHeight) {
+        else if (fitType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FitHeightSelectedImage) {
             this.scale(heightScale);
             this.translate((canvasWidth - width * heightScale) / 2, (canvasHeight - height * heightScale) / 2);
         }
-        else if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitWidth) {
+        else if (fitType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FitWidthSelectedImage) {
             this.scale(widthScale);
             this.translate((canvasWidth - width * widthScale) / 2, (canvasHeight - height * widthScale) / 2);
         }
-        else if (fitType === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["OperationEnum"].FitOriginal) {
+        else if (fitType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].FitOriginalSelectedImage) {
             this.translate((canvasWidth - width) / 2, (canvasHeight - height) / 2);
         }
-        this.rotate(curRotate);
+        this.doRotate(curRotate);
         this.updateZoomRatioTextOverlay(this.getScale());
         this.refreshUi();
     };
@@ -8614,59 +8822,66 @@ var ImageViewerComponent = /** @class */ (function () {
         this.imgRulerLayer.visible(visible);
     };
     ImageViewerComponent.prototype.draggable = function (draggable) {
-        var self = this;
-        if (!self.isImageLoaded) {
+        var _this = this;
+        if (!this.isImageLoaded) {
             return;
         }
         var canvas = this.canvas;
-        var curContext = this.viewContext.curContext;
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
         this.imgLayer.draggable({
             disabled: !draggable,
             start: function (arg) {
-                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
+                if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Select || curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
                     canvas.style.cursor = "move";
                 }
+                _this.imageDragStart = arg;
             },
             stop: function (arg) {
-                if (curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Select || curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
+                if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Select || curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
                     canvas.style.cursor = "auto";
                 }
             },
             drag: function (arg) {
+                _this.logService.debug(_this.logPrefix + "dragging  x: " + arg.x + ", y: " + arg.y);
+                _this.imageOperationService.onMoveAllSelectedImage(_this.imageData, arg.x - _this.imageDragStart.x, arg.y - _this.imageDragStart.y);
+                _this.imageDragStart = arg;
             }
         });
     };
     ImageViewerComponent.prototype.saveImage = function () {
         var _this = this;
         var annString = this.annSerialize.getAnnString(this.annObjList);
-        this.image.cornerStoneImage.data.elements["x0011101d"] = this.annSerialize.annData;
+        this.image.cornerStoneImageList[0].data.elements["x0011101d"] = this.annSerialize.annData;
         this.dicomImageService.saveImageAnn(this.image.id, annString).subscribe(function (ret) {
-            var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxContent"]();
+            var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxContent"]();
             content.title = "Save Image";
             if (ret) {
                 content.messageText = "Save image failed! " + ret;
-                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxType"].Error;
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxType"].Error;
             }
             else {
                 content.messageText = "Save image successfully!";
-                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxType"].Info;
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxType"].Info;
             }
             _this.dialogService.showMessageBox(content);
         });
     };
-    ImageViewerComponent.prototype.doWL = function (deltaX, deltaY) {
+    ImageViewerComponent.prototype.doWl = function (deltaX, deltaY, needNotify) {
+        if (needNotify === void 0) { needNotify = true; }
         if (!this.isImageLoaded)
             return;
-        var self = this;
-        var dcmImg = self.image.cornerStoneImage;
-        if (deltaX != 0 || deltaY != 0) {
-            var maxVOI = dcmImg.maxPixelValue * dcmImg.slope + dcmImg.intercept;
-            var minVOI = dcmImg.minPixelValue * dcmImg.slope + dcmImg.intercept;
-            var imageDynamicRange = maxVOI - minVOI;
+        var dcmImg = this.image.cornerStoneImageList[0];
+        if (deltaX !== 0 || deltaY !== 0) {
+            var maxVoi = dcmImg.maxPixelValue * dcmImg.slope + dcmImg.intercept;
+            var minVoi = dcmImg.minPixelValue * dcmImg.slope + dcmImg.intercept;
+            var imageDynamicRange = maxVoi - minVoi;
             var multiplier = imageDynamicRange / 1024;
             var width = dcmImg.windowWidth + Math.round(deltaX * multiplier);
             var center = dcmImg.windowCenter + Math.round(deltaY * multiplier);
             this.doWlByValue(center, width);
+            if (needNotify) {
+                this.imageOperationService.onWlAllSelectedImage(this.imageData, deltaX, deltaY);
+            }
         }
     };
     ImageViewerComponent.prototype.refreshUi = function () {
@@ -8703,45 +8918,41 @@ var ImageViewerComponent = /** @class */ (function () {
             return;
         }
         this.logService.debug("Image Layer - onMouseDown");
-        var viewContext = self.viewContext;
-        //log('viwer mouse down: ' + this.canvasId);
-        //if in select context, and not click any object, will unselect all objects.
-        if (viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Select) {
-            if (!evt.event.cancelBubble) {
-                //if (self.curSelectObj && self.curSelectObj.select) {
-                //    self.curSelectObj.onSelect(false);
-                //    self.curSelectObj = undefined;
-                //}
-                self.selectAnnotation(null);
-                self.draggable(true);
-            }
-            else { //an annobject has been selected
-                self.draggable(false);
-            }
-        }
-        else if (viewContext.curContext.action == _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
-            var parm = viewContext.curContext.data;
-            if (parm && parm.type && !parm.objCreated) {
-                var newObj = new parm.type();
-                //               self.createAnnObject(newObj, parm);
-                parm.objCreated = true; //stop create the annObject again
-            }
-        }
-        self.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseDown, "onMouseDown");
+        //const viewContext = self.viewContext;
+        ////log('viwer mouse down: ' + this.canvasId);
+        ////if in select context, and not click any object, will unselect all objects.
+        //if (viewContext.curContext.action == ViewContextEnum.Select) {
+        //    if (!evt.event.cancelBubble) {
+        //        //if (self.curSelectObj && self.curSelectObj.select) {
+        //        //    self.curSelectObj.onSelect(false);
+        //        //    self.curSelectObj = undefined;
+        //        //}
+        //        self.selectAnnotation(null);
+        //        self.draggable(true);
+        //    } else { //an annobject has been selected
+        //        self.draggable(false);
+        //    }
+        //} else if (viewContext.curContext.action == ViewContextEnum.CreateAnn) {
+        //    const parm = viewContext.curContext.data;
+        //    if (parm && parm.type && !parm.objCreated) {
+        //        const newObj: AnnObject = new parm.type();
+        //        //               self.createAnnObject(newObj, parm);
+        //        parm.objCreated = true; //stop create the annObject again
+        //    }
+        //}
+        self.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseDown, "onMouseDown");
     };
     ImageViewerComponent.prototype.onMouseMove = function (evt) {
         //this.logService.debug("Image Layer - onMouseMove");
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseMove, "onMouseMove");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseMove, "onMouseMove");
     };
     ImageViewerComponent.prototype.onMouseOut = function (evt) {
         this.logService.debug("Image Layer - onMouseOut");
-        //log('viwer mouse out: ' + this.canvasId);
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseOut, "onMouseOut");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseOut, "onMouseOut");
     };
     ImageViewerComponent.prototype.onMouseUp = function (evt) {
         this.logService.debug("Image Layer - onMouseUp");
-        //log('viwer mouse up: ' +this.canvasId);
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseUp, "onMouseUp");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseUp, "onMouseUp");
     };
     //image layer events
     ImageViewerComponent.prototype.registerEvent = function (obj, type) {
@@ -8786,7 +8997,7 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         //covert screen point to image point
         if (arg.x) {
-            arg = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].screenToImage(arg, this.imgLayer.transform());
+            arg = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(arg, this.imgLayer.transform());
         }
         handlers.forEach(function (obj) {
             if (obj[handler]) {
@@ -8854,10 +9065,11 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
         this.mouseEventHelper._mouseDownPosCvs = point;
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
         if (this.mouseEventHelper._mouseWhich === 1) {
-            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
+            if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
                 if (this.curSelectObj && !this.curSelectObj.isCreated()) {
-                    this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].DblClick, point, null);
+                    this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].DblClick, point, null);
                 }
             }
         }
@@ -8876,7 +9088,11 @@ var ImageViewerComponent = /** @class */ (function () {
         evt.preventDefault();
     };
     ImageViewerComponent.prototype.onCanvasMouseWheel = function (evt) {
-        this.imageSelectorService.navigateImagePage(evt.originalEvent.wheelDelta > 0);
+        this.logService.debug("onCanvasMouseWheel");
+        var wheelUp = evt.originalEvent.wheelDelta > 0;
+        (this.isImageLoaded && this.image.series.modality === "US")
+            ? this.imageOperationService.onNavigateFramesInClickedImage(this.imageData, wheelUp)
+            : this.imageOperationService.onNavigateImageInGroup(this.imageData, wheelUp);
     };
     ImageViewerComponent.prototype.onCanvasMouseDown = function (evt) {
         this.logService.debug("onCanvasMouseDown");
@@ -8891,26 +9107,34 @@ var ImageViewerComponent = /** @class */ (function () {
         this.dragging = true;
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
         this.mouseEventHelper._mouseDownPosCvs = point;
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
         if (this.mouseEventHelper._mouseWhich === 3) { //right mouse
-            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
+            if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
                 // Right click to cancel the creation of an annotation.
                 this.cancelCreate(true);
             }
             else {
-                this.mouseEventHelper._lastContext = this.viewContext.curContext;
-                this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL);
+                this.mouseEventHelper._lastContext = curContext;
+                this.imageOperationService.setShellContextType(this.shellId, new _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Wl));
             }
         }
         else if (this.mouseEventHelper._mouseWhich === 1) {
-            if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Magnify) {
+            if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Magnify) {
                 this.startMagnify(point);
             }
-            else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
+            else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
+                if (curContext.imageContextPara === _models_annotation__WEBPACK_IMPORTED_MODULE_16__["AnnType"].Stamp) {
+                    var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_21__["AnnImage"](undefined, this);
+                    var imageFileName = this.imageOperationService.getShellStampFileName(this.shellId);
+                    annImage.onCreate(imageFileName, _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(point, this.image.transformMatrix), undefined, true);
+                    this.curSelectObj = annImage;
+                    return;
+                }
                 if (this.curSelectObj) {
                     // There is annotation selected
                     if (!this.curSelectObj.isCreated()) {
                         // The selected annotation is creating
-                        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseDown, point, null);
+                        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseDown, point, null);
                     }
                     else {
                         // The selected annotation is created
@@ -8924,58 +9148,56 @@ var ImageViewerComponent = /** @class */ (function () {
                     this.startCreateAnnAtPoint(point);
                 }
             }
-            else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].SelectAnn) {
+            else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].SelectAnn) {
             }
-            else if (this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].RoiZoom || this.viewContext.curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].RoiWl) {
+            else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiZoom || curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiWl) {
                 if (!this.annRoiRectangle) {
-                    var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].screenToImage(point, this.getImageLayer().transform());
-                    this.annRoiRectangle = new _annotation_base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_25__["AnnBaseRectangle"](undefined, imagePoint, 0, 0, this);
+                    var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(point, this.getImageLayer().transform());
+                    this.annRoiRectangle = new _annotation_base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_26__["AnnBaseRectangle"](undefined, imagePoint, 0, 0, this);
                 }
             }
         }
         this.redraw(1);
     };
     ImageViewerComponent.prototype.onCanvasMouseMove = function (evt) {
-        var self = this;
         if (!this.isImageLoaded) {
             return;
         }
         var point = { x: evt.offsetX, y: evt.offsetY };
-        //console.log(evt.offsetX + "," + evt.offsetY);
-        var curContext = this.viewContext.curContext;
-        if (!self.mouseEventHelper._lastPosCvs) {
-            self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
+        if (!this.mouseEventHelper._lastPosCvs) {
+            this.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
         }
-        var deltaX = evt.offsetX - self.mouseEventHelper._lastPosCvs.x;
-        var deltaY = evt.offsetY - self.mouseEventHelper._lastPosCvs.y;
-        if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) {
+        var deltaX = evt.offsetX - this.mouseEventHelper._lastPosCvs.x;
+        var deltaY = evt.offsetY - this.mouseEventHelper._lastPosCvs.y;
+        if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
             if (this.curSelectObj && !this.curSelectObj.isCreated()) {
-                this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseMove, point, null);
+                this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseMove, point, null);
             }
         }
         else {
-            if (self.mouseEventHelper._mouseWhich === 3) {
-                if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL) {
-                    self.doWL(deltaX, deltaY);
+            if (this.mouseEventHelper._mouseWhich === 3) {
+                if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Wl) {
+                    this.doWl(deltaX, deltaY);
                 }
             }
-            else if (self.mouseEventHelper._mouseWhich === 1) {
-                if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Magnify) {
+            else if (this.mouseEventHelper._mouseWhich === 1) {
+                if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Magnify) {
                     this.magnifyAtPoint(point);
                 }
-                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL) {
-                    self.doWL(deltaX, deltaY);
+                else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Wl) {
+                    this.doWl(deltaX, deltaY);
                 }
-                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Zoom) {
+                else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Zoom) {
                     var delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
                     if (Math.abs(delta) > 0) {
-                        self.doZoom(delta);
+                        this.doZoom(delta > 0, this.mouseEventHelper._mouseDownPosCvs);
                     }
                 }
-                else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].RoiZoom || curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].RoiWl) {
+                else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiZoom || curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiWl) {
                     if (this.annRoiRectangle) {
                         var topLeft = this.annRoiRectangle.getPosition();
-                        var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].screenToImage(point, this.getImageLayer().transform());
+                        var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(point, this.getImageLayer().transform());
                         this.annRoiRectangle.setWidth(imagePoint.x - topLeft.x);
                         this.annRoiRectangle.setHeight(imagePoint.y - topLeft.y);
                     }
@@ -8983,7 +9205,7 @@ var ImageViewerComponent = /** @class */ (function () {
             }
         }
         this.redraw(this.dragging ? 2 : 1);
-        self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
+        this.mouseEventHelper._lastPosCvs = point;
     };
     ImageViewerComponent.prototype.onCanvasMouseUp = function (evt) {
         this.logService.debug("onCanvasMouseUp");
@@ -8997,25 +9219,25 @@ var ImageViewerComponent = /** @class */ (function () {
             return;
         }
         this.dragging = false;
-        var curContext = this.viewContext.curContext;
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
         if (self.mouseEventHelper._mouseWhich === 3) {
-            if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].WL) {
-                if (self.mouseEventHelper._lastContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].CreateAnn) { //cancel create
-                    this.viewContext.setContext(_services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Select);
+            if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Wl) {
+                if (self.mouseEventHelper._lastContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) { //cancel create
+                    this.imageOperationService.setShellContextType(this.shellId, new _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Select));
                 }
                 else {
-                    this.viewContext.setContext(self.mouseEventHelper._lastContext.action, self.mouseEventHelper._lastContext.data);
+                    this.imageOperationService.setShellContextType(this.shellId, self.mouseEventHelper._lastContext);
                 }
             }
         }
         else if (self.mouseEventHelper._mouseWhich === 1) {
-            if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].Magnify) {
+            if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].Magnify) {
                 this.endMagnify();
             }
-            else if (curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].RoiZoom || curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].RoiWl) {
+            else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiZoom || curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiWl) {
                 if (this.annRoiRectangle && this.annRoiRectangle.getWidth() !== 0 && this.annRoiRectangle.getHeight() !== 0) {
                     var pointList = this.annRoiRectangle.getSurroundPointList();
-                    curContext.action === _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextEnum"].RoiZoom ? this.doRoiZoom(pointList) : this.doRoiWl(pointList);
+                    curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiZoom ? this.doRoiZoom(pointList) : this.doRoiWl(pointList);
                     this.annRoiRectangle.onDeleteChildren();
                     this.annRoiRectangle = undefined;
                 }
@@ -9026,20 +9248,39 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.onCanvasMouseOut = function (evt) {
         this.logService.debug("onCanvasMouseOut");
-        var self = this;
-        if (!self.isImageLoaded) {
+        if (!this.isImageLoaded) {
             return;
         }
-        self.canvas.onmouseup(evt); //cause jc to trigger mouseup event, which will stop the drag (imglayer)
-        if (self.mouseEventHelper._mouseWhich !== 0) {
-            self.onCanvasMouseUp(evt); //call mouseup to end the action
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
+        if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
+            if (!this.curSelectObj || this.curSelectObj.isCreated()) {
+                if (!this.annGuide.isHidden()) {
+                    this.annGuide.hide();
+                    this.redraw(1);
+                }
+            }
+        }
+        this.canvas.onmouseup(evt); //cause jc to trigger mouseup event, which will stop the drag (imglayer)
+        if (this.mouseEventHelper._mouseWhich !== 0) {
+            this.onCanvasMouseUp(evt); //call mouseup to end the action
         }
     };
     ImageViewerComponent.prototype.onCanvasMouseOver = function (evt) {
         this.logService.debug("onCanvasMouseOver");
-        var self = this;
-        if (!self.isImageLoaded) {
+        if (!this.isImageLoaded) {
             return;
+        }
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
+        if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
+            if (!this.curSelectObj || this.curSelectObj.isCreated()) {
+                var annDefData = this.annotationService.getAnnDefDataByType(curContext.imageContextPara);
+                if (!annDefData)
+                    return;
+                if (annDefData.needGuide && this.annGuide.isHidden()) {
+                    this.annGuide.show(annDefData.className);
+                    this.redraw(1);
+                }
+            }
         }
     };
     ImageViewerComponent.prototype.deleteAllAnnotation = function () {
@@ -9066,10 +9307,10 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.doManualWl = function () {
         var _this = this;
-        var windowLevelData = new _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_11__["WindowLevelData"]();
-        windowLevelData.windowCenter = this.image.cornerStoneImage.windowCenter;
-        windowLevelData.windowWidth = this.image.cornerStoneImage.windowWidth;
-        this.dialogService.showDialog(_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_12__["ManualWlDialogComponent"], windowLevelData).subscribe(function (val) {
+        var windowLevelData = new _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_12__["WindowLevelData"]();
+        windowLevelData.windowCenter = this.image.cornerStoneImageList[0].windowCenter;
+        windowLevelData.windowWidth = this.image.cornerStoneImageList[0].windowWidth;
+        this.dialogService.showDialog(_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_13__["ManualWlDialogComponent"], windowLevelData).subscribe(function (val) {
             if (val) {
                 _this.doWlByValue(val.windowCenter, val.windowWidth);
             }
@@ -9080,8 +9321,8 @@ var ImageViewerComponent = /** @class */ (function () {
         viewPort.voi.windowCenter = center;
         viewPort.voi.windowWidth = width;
         cornerstone.setViewport(this.helpElement, viewPort);
-        this.image.cornerStoneImage.windowWidth = width;
-        this.image.cornerStoneImage.windowCenter = center;
+        this.image.cornerStoneImageList[0].windowWidth = width;
+        this.image.cornerStoneImageList[0].windowCenter = center;
         this.updateWlTextOverlay(width, center);
     };
     ImageViewerComponent.prototype.updateWlTextOverlay = function (width, center) {
@@ -9096,10 +9337,11 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.startCreateAnnAtPoint = function (point) {
         this.updateImageTransform();
-        var annDefData = this.annotationService.getAnnDefDataByType(this.viewContext.curContext.data);
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
+        var annDefData = this.annotationService.getAnnDefDataByType(curContext.imageContextPara);
         if (!annDefData)
             return;
-        if (annDefData.imageSuiteAnnType === _models_annotation__WEBPACK_IMPORTED_MODULE_15__["AnnType"].Text) {
+        if (annDefData.imageSuiteAnnType === _models_annotation__WEBPACK_IMPORTED_MODULE_16__["AnnType"].Text) {
             this.createFreeText(point);
         }
         else {
@@ -9107,7 +9349,7 @@ var ImageViewerComponent = /** @class */ (function () {
             if (annDefData.needGuide) {
                 this.annGuide.setGuideTargetObj(this.curSelectObj);
             }
-            this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_15__["MouseEventType"].MouseDown, point, null);
+            this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseDown, point, null);
         }
     };
     ImageViewerComponent.prototype.deleteSelectedAnnotation = function () {
@@ -9117,11 +9359,11 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.selectMarker = function () {
         var _this = this;
-        this.dialogService.showDialog(_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_13__["SelectMarkerDialogComponent"], undefined).subscribe(function (val) {
+        this.dialogService.showDialog(_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_14__["SelectMarkerDialogComponent"], undefined).subscribe(function (val) {
             if (val) {
                 _this.updateImageTransform();
-                var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_20__["AnnImage"](undefined, _this);
-                annImage.onCreate(val, new _models_annotation__WEBPACK_IMPORTED_MODULE_15__["Point"](0, 0));
+                var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_21__["AnnImage"](undefined, _this);
+                annImage.onCreate(val, new _models_annotation__WEBPACK_IMPORTED_MODULE_16__["Point"](0, 0));
                 _this.curSelectObj = annImage;
             }
         });
@@ -9165,7 +9407,7 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         if (show) {
             if (!this.annGraphicOverlay) {
-                this.annGraphicOverlay = new _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_22__["AnnGraphicOverlay"](this.image.graphicOverlayDataList, this);
+                this.annGraphicOverlay = new _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_23__["AnnGraphicOverlay"](this.image.graphicOverlayDataList, this);
             }
             this.annGraphicOverlay.setVisible(true);
         }
@@ -9177,9 +9419,10 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.startMagnify = function (point) {
         if (!this.annMagnify) {
-            this.annMagnify = new _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_24__["AnnMagnify"](this);
+            this.annMagnify = new _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_25__["AnnMagnify"](this);
         }
-        this.annMagnify.start(point, this.viewContext.curContext.data);
+        var curContext = this.imageOperationService.getShellContextType(this.shellId);
+        this.annMagnify.start(point, curContext.imageContextPara);
         this.canvas.style.cursor = "none";
         if (this.annGraphicOverlay) {
             this.annGraphicOverlay.drawToMgLayer();
@@ -9200,14 +9443,14 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.createFreeText = function (point) {
         var _this = this;
-        var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxContent"]();
+        var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxContent"]();
         content.title = "Text";
         content.messageText = "Please input the text:";
-        content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["MessageBoxType"].Input;
+        content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxType"].Input;
         this.dialogService.showMessageBox(content).subscribe(function (val) {
-            if (val.dialogResult === _models_messageBox__WEBPACK_IMPORTED_MODULE_14__["DialogResult"].Ok) {
-                var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].screenToImage(point, _this.image.transformMatrix);
-                var annObj = new _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_17__["AnnText"](undefined, _this);
+            if (val.dialogResult === _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["DialogResult"].Ok) {
+                var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(point, _this.image.transformMatrix);
+                var annObj = new _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_18__["AnnText"](undefined, _this);
                 annObj.onCreate(imagePoint, val.valueInput, false);
                 annObj.onDrawEnded();
                 _this.curSelectObj = annObj;
@@ -9215,28 +9458,32 @@ var ImageViewerComponent = /** @class */ (function () {
             }
         });
     };
-    ImageViewerComponent.prototype.doZoom = function (delta) {
+    ImageViewerComponent.prototype.doZoom = function (zoomOut, zoomPoint, needNotify) {
+        if (needNotify === void 0) { needNotify = true; }
         if (!this.isImageLoaded)
             return;
-        var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].screenToImage(this.mouseEventHelper._mouseDownPosCvs, this.image.transformMatrix);
-        var scaleValue = delta > 0 ? 1.05 : 0.95;
+        var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(zoomPoint, this.image.transformMatrix);
+        var scaleValue = zoomOut ? 1.05 : 0.95;
         this.scale(scaleValue);
-        var mouseDownPosCvsAfter = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].imageToScreen(imagePoint, this.image.transformMatrix);
-        this.translate(this.mouseEventHelper._mouseDownPosCvs.x - mouseDownPosCvsAfter.x, this.mouseEventHelper._mouseDownPosCvs.y - mouseDownPosCvsAfter.y);
+        var mouseDownPosCvsAfter = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].imageToScreen(imagePoint, this.image.transformMatrix);
+        this.translate(zoomPoint.x - mouseDownPosCvsAfter.x, zoomPoint.y - mouseDownPosCvsAfter.y);
         this.updateZoomRatioTextOverlay(this.getScale());
         this.refreshUi();
+        if (needNotify) {
+            this.imageOperationService.onZoomAllSelectedImage(this.imageData, zoomOut, zoomPoint);
+        }
     };
     ImageViewerComponent.prototype.doRoiZoom = function (imagePointList) {
         var _a;
-        var imageRect = new _models_annotation__WEBPACK_IMPORTED_MODULE_15__["Rectangle"](0, 0, this.image.width(), this.image.height());
+        var imageRect = new _models_annotation__WEBPACK_IMPORTED_MODULE_16__["Rectangle"](0, 0, this.image.width(), this.image.height());
         for (var i = 0; i < 4; i++) {
-            if (!_annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].pointInRect(imagePointList[i], imageRect)) {
+            if (!_annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].pointInRect(imagePointList[i], imageRect)) {
                 return;
             }
         }
         var width = imagePointList[2].x - imagePointList[0].x;
         var height = imagePointList[2].y - imagePointList[0].y;
-        var imageCenterPoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_15__["Point"](imagePointList[0].x + width / 2, imagePointList[0].y + height / 2);
+        var imageCenterPoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_16__["Point"](imagePointList[0].x + width / 2, imagePointList[0].y + height / 2);
         var rotateAngle = this.getRotate();
         if (Math.abs(rotateAngle % 180) === 90) {
             _a = [height, width], width = _a[0], height = _a[1];
@@ -9245,7 +9492,7 @@ var ImageViewerComponent = /** @class */ (function () {
         var scaleY = this.canvas.height / Math.abs(height);
         var newScale = Math.min(scaleX, scaleY) / this.image.getScaleValue();
         this.scale(newScale);
-        var screenRectCenterPointAfter = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].imageToScreen(imageCenterPoint, this.getImageLayer().transform());
+        var screenRectCenterPointAfter = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].imageToScreen(imageCenterPoint, this.getImageLayer().transform());
         var deltaX = this.canvas.width / 2 - screenRectCenterPointAfter.x;
         var deltaY = this.canvas.height / 2 - screenRectCenterPointAfter.y;
         this.imgLayer.translate(deltaX, deltaY);
@@ -9253,9 +9500,9 @@ var ImageViewerComponent = /** @class */ (function () {
         this.refreshUi();
     };
     ImageViewerComponent.prototype.doRoiWl = function (imagePointList) {
-        var imageRect = new _models_annotation__WEBPACK_IMPORTED_MODULE_15__["Rectangle"](0, 0, this.image.width(), this.image.height());
+        var imageRect = new _models_annotation__WEBPACK_IMPORTED_MODULE_16__["Rectangle"](0, 0, this.image.width(), this.image.height());
         for (var i = 0; i < 4; i++) {
-            if (!_annotation_ann_tool__WEBPACK_IMPORTED_MODULE_16__["AnnTool"].pointInRect(imagePointList[i], imageRect)) {
+            if (!_annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].pointInRect(imagePointList[i], imageRect)) {
                 return;
             }
             imagePointList[i].x = Math.round(imagePointList[i].x);
@@ -9263,6 +9510,43 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         var wlData = this.dicomImageService.getRoiWlValue(this.image, imagePointList);
         this.doWlByValue(wlData.windowCenter, wlData.windowWidth);
+    };
+    ImageViewerComponent.prototype.onImageInteraction = function (imageInteractionData) {
+        if (!imageInteractionData.sameShellData(this.imageData.groupData.viewerShellData)) {
+            return;
+        }
+        switch (imageInteractionData.getType()) {
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageInteractionEnum"].SelectThumbnailInNavigator:
+                //this.doSelectImage(imageInteractionData.getPssiImage());
+                break;
+        }
+    };
+    ImageViewerComponent.prototype.doToggleLayerDisplay = function (layer) {
+        if (layer) {
+            var visible = !layer._visible;
+            layer.visible(visible);
+        }
+        else {
+            // This is graphic overlay
+            this.toggleGraphicOverlay(!this.annGraphicOverlay.isVisible());
+        }
+    };
+    ImageViewerComponent.prototype.doToggleKeyImage = function () {
+        if (this.image.keyImage === 'Y') {
+            this.image.keyImage = 'N';
+            this.setKeyImage(false);
+        }
+        else {
+            this.image.keyImage = 'Y';
+            this.setKeyImage(true);
+        }
+    };
+    ImageViewerComponent.prototype.displayFramesInImage = function (index) {
+        if (!this.image.isValidFrameIndex(index)) {
+            alert("Internal error in ImageViewerComponent.displayFramesInImage()");
+            return;
+        }
+        this.loadImage(index);
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])("viewerCanvas"),
@@ -9274,8 +9558,8 @@ var ImageViewerComponent = /** @class */ (function () {
     ], ImageViewerComponent.prototype, "helpElementRef", void 0);
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
-        __metadata("design:type", _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_6__["ViewerImageData"]),
-        __metadata("design:paramtypes", [_models_viewer_image_data__WEBPACK_IMPORTED_MODULE_6__["ViewerImageData"]])
+        __metadata("design:type", _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_7__["ViewerImageData"]),
+        __metadata("design:paramtypes", [_models_viewer_image_data__WEBPACK_IMPORTED_MODULE_7__["ViewerImageData"]])
     ], ImageViewerComponent.prototype, "imageData", null);
     ImageViewerComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -9284,15 +9568,15 @@ var ImageViewerComponent = /** @class */ (function () {
             providers: [_angular_common__WEBPACK_IMPORTED_MODULE_1__["Location"], { provide: _angular_common__WEBPACK_IMPORTED_MODULE_1__["LocationStrategy"], useClass: _angular_common__WEBPACK_IMPORTED_MODULE_1__["PathLocationStrategy"] }],
             styles: [__webpack_require__(/*! ./image-viewer.component.css */ "./src/app/components/viewer-shell/group-viewer/image-viewer/image-viewer.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_image_selector_service__WEBPACK_IMPORTED_MODULE_2__["ImageSelectorService"],
-            _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_3__["DicomImageService"],
-            _services_configuration_service__WEBPACK_IMPORTED_MODULE_8__["ConfigurationService"],
-            _services_view_context_service__WEBPACK_IMPORTED_MODULE_5__["ViewContextService"],
-            _services_worklist_service__WEBPACK_IMPORTED_MODULE_7__["WorklistService"],
-            _services_dialog_service__WEBPACK_IMPORTED_MODULE_9__["DialogService"],
-            _services_log_service__WEBPACK_IMPORTED_MODULE_10__["LogService"],
+        __metadata("design:paramtypes", [_services_image_interaction_service__WEBPACK_IMPORTED_MODULE_2__["ImageInteractionService"],
+            _services_image_operation_service__WEBPACK_IMPORTED_MODULE_6__["ImageOperationService"],
+            _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_4__["DicomImageService"],
+            _services_configuration_service__WEBPACK_IMPORTED_MODULE_9__["ConfigurationService"],
+            _services_worklist_service__WEBPACK_IMPORTED_MODULE_8__["WorklistService"],
+            _services_dialog_service__WEBPACK_IMPORTED_MODULE_10__["DialogService"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_11__["LogService"],
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"],
-            _services_annotation_service__WEBPACK_IMPORTED_MODULE_4__["AnnotationService"]])
+            _services_annotation_service__WEBPACK_IMPORTED_MODULE_5__["AnnotationService"]])
     ], ImageViewerComponent);
     return ImageViewerComponent;
 }());
@@ -9319,7 +9603,7 @@ module.exports = "#main-nav { margin-left: 1px; }\r\n\r\n.hangingProtocol-div {\
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row hangingProtocol-div\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedGroupHangingData.name)\" role=\"button\" [title]=\"selectedGroupHangingData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let groupHangingData of hangingProtocolService.getGroupHangingDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(groupHangingData.name)\" role=\"button\" [title]=\"groupHangingData.tip\"\r\n                                        (click)=\"onSelectGroupHangingProtocol(groupHangingData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedGroupLayoutData.name)\" role=\"button\" [title]=\"selectedGroupLayoutData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let groupLayoutData of hangingProtocolService.getGroupLayoutDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(groupLayoutData.name)\" role=\"button\" [title]=\"groupLayoutData.tip\"\r\n                                        (click)=\"onSelectGroupLayout(groupLayoutData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedImageLayoutData.name)\" role=\"button\" [title]=\"selectedImageLayoutData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let imageLayoutData of hangingProtocolService.getImageLayoutDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(imageLayoutData.name)\" role=\"button\" [title]=\"imageLayoutData.tip\"\r\n                                        (click)=\"onSelectImageLayout(imageLayoutData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n    <div *ngFor=\"let patient of viewerShellData.patientList\" class=\"row patient-div\">\r\n        <div class=\"patient-header\">\r\n            <div>\r\n                <button class=\"patient-button\" (click)=\"onClickPssi(patient)\" title=\"Toggle to show/hide patient images\"></button>\r\n            </div>\r\n            <table class=\"patient-info\">\r\n                <tr>{{patient.patientName}}</tr>\r\n                <tr>{{patient.patientId}}</tr>\r\n            </table>\r\n        </div>\r\n        <div *ngFor=\"let study of patient.studyList\"\r\n             [style.visibility]=\"getPssiVisibility(patient)\" [style.height]=\"getPssiHeight(patient)\">\r\n            <div class=\"study-header\">\r\n                <div>\r\n                    <button class=\"study-button\" (click)=\"onClickPssi(study)\" title=\"Toggle to show/hide study images\"></button>\r\n                </div>\r\n                <table class=\"study-info\">\r\n                    <tr>{{study.studyDate}}</tr>\r\n                    <tr>{{study.studyDescription}}</tr>\r\n                </table>\r\n            </div>\r\n            <div *ngFor=\"let series of study.seriesList\"\r\n                 [style.visibility]=\"getPssiVisibility(study)\" [style.height]=\"getPssiHeight(study)\">\r\n                <div class=\"series-header\">\r\n                    <div>\r\n                        <button class=\"series-button\" (click)=\"onClickPssi(series)\" title=\"Toggle to show/hide series images\"></button>\r\n                    </div>\r\n                    <table class=\"series-info\">\r\n                        <tr>{{series.modality}}</tr>\r\n                        <tr>{{series.imageCount}} image</tr>\r\n                    </table>\r\n                </div>\r\n                <div *ngFor=\"let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index\"\r\n                     [style.visibility]=\"getPssiVisibility(series)\" [style.height]=\"getPssiHeight(series)\">\r\n                    <div class=\"image-button\">\r\n                        <app-thumbnail [image]=\"series.imageList[imageIndex*2]\"></app-thumbnail>\r\n                        <app-thumbnail *ngIf=\"imageIndex*2+1 < series.imageList.length\" [image]=\"series.imageList[imageIndex*2+1]\"></app-thumbnail>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
+module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row hangingProtocol-div\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedGroupHangingData.name)\" role=\"button\" [title]=\"selectedGroupHangingData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let groupHangingData of hangingProtocolService.getGroupHangingDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(groupHangingData.name)\" role=\"button\" [title]=\"groupHangingData.tip\"\r\n                                        (click)=\"onSelectGroupHangingProtocol(groupHangingData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedGroupLayoutData.name)\" role=\"button\" [title]=\"selectedGroupLayoutData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let groupLayoutData of hangingProtocolService.getGroupLayoutDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(groupLayoutData.name)\" role=\"button\" [title]=\"groupLayoutData.tip\"\r\n                                        (click)=\"onSelectGroupLayout(groupLayoutData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n                <td>\r\n                    <li class=\"dropdown\">\r\n                        <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                            <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(selectedImageLayoutData.name)\" role=\"button\" [title]=\"selectedImageLayoutData.tip\" style=\"margin-top: -20px;\"\r\n                                    (mouseover)=\"onMouseOver($event, true)\" (mouseout)=\"onMouseOut($event)\">\r\n                            </button>\r\n                        </a>\r\n                        <ul class=\"dropdown-menu hangingProtocol-menu\">\r\n                            <li *ngFor=\"let imageLayoutData of hangingProtocolService.getImageLayoutDataList()\">\r\n                                <button class=\"hangingProtocol-menu-button\" [style.background-image]=\"getHpMenuBackground(imageLayoutData.name)\" role=\"button\" [title]=\"imageLayoutData.tip\"\r\n                                        (click)=\"onSelectImageLayout(imageLayoutData)\" (mouseover)=\"onMouseOver($event, false)\" (mouseout)=\"onMouseOut($event)\" (mousedown)=\"onMouseDown($event)\" (mouseup)=\"onMouseUp($event)\">\r\n                                </button>\r\n                            </li>\r\n                        </ul>\r\n                    </li>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n    <div *ngFor=\"let patient of viewerShellData.patientList\" class=\"row patient-div\">\r\n        <div class=\"patient-header\">\r\n            <div>\r\n                <button class=\"patient-button\" (click)=\"onClickPssi(patient)\" title=\"Toggle to show/hide patient images\"></button>\r\n            </div>\r\n            <table class=\"patient-info\">\r\n                <tr>{{patient.patientName}}</tr>\r\n                <tr>{{patient.patientId}}</tr>\r\n            </table>\r\n        </div>\r\n        <div *ngFor=\"let study of patient.studyList\"\r\n             [style.visibility]=\"getPssiVisibility(patient)\" [style.height]=\"getPssiHeight(patient)\">\r\n            <div class=\"study-header\">\r\n                <div>\r\n                    <button class=\"study-button\" (click)=\"onClickPssi(study)\" title=\"Toggle to show/hide study images\"></button>\r\n                </div>\r\n                <table class=\"study-info\">\r\n                    <tr>{{study.studyDate}}</tr>\r\n                    <tr>{{study.studyDescription}}</tr>\r\n                </table>\r\n            </div>\r\n            <div *ngFor=\"let series of study.seriesList\"\r\n                 [style.visibility]=\"getPssiVisibility(study)\" [style.height]=\"getPssiHeight(study)\">\r\n                <div class=\"series-header\">\r\n                    <div>\r\n                        <button class=\"series-button\" (click)=\"onClickPssi(series)\" title=\"Toggle to show/hide series images\"></button>\r\n                    </div>\r\n                    <table class=\"series-info\">\r\n                        <tr>{{series.modality}}</tr>\r\n                        <tr>{{series.imageCount}} image</tr>\r\n                    </table>\r\n                </div>\r\n                <div *ngFor=\"let a of Arr(getThumbnailListRowCount(series)).fill(1); let imageIndex = index\"\r\n                     [style.visibility]=\"getPssiVisibility(series)\" [style.height]=\"getPssiHeight(series)\">\r\n                    <div class=\"image-button\">\r\n                        <app-thumbnail [image]=\"series.imageList[imageIndex*2]\" [viewerShellData]=\"viewerShellData\"></app-thumbnail>\r\n                        <app-thumbnail *ngIf=\"imageIndex*2+1 < series.imageList.length\" [image]=\"series.imageList[imageIndex*2+1]\" [viewerShellData]=\"viewerShellData\"></app-thumbnail>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -9337,8 +9621,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
 /* harmony import */ var _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/viewer-shell-data */ "./src/app/models/viewer-shell-data.ts");
 /* harmony import */ var _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
-/* harmony import */ var _services_image_selector_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../services/image-selector.service */ "./src/app/services/image-selector.service.ts");
-/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../services/log.service */ "./src/app/services/log.service.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../services/log.service */ "./src/app/services/log.service.ts");
+/* harmony import */ var _services_image_interaction_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../services/image-interaction.service */ "./src/app/services/image-interaction.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9355,9 +9639,9 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 var NavigationComponent = /** @class */ (function () {
-    function NavigationComponent(hangingProtocolService, imageSelectorService, locationStrategy, logService) {
+    function NavigationComponent(hangingProtocolService, imageInteractionService, locationStrategy, logService) {
         this.hangingProtocolService = hangingProtocolService;
-        this.imageSelectorService = imageSelectorService;
+        this.imageInteractionService = imageInteractionService;
         this.locationStrategy = locationStrategy;
         this.logService = logService;
         this.Arr = Array; //Array type captured in a variable
@@ -9372,6 +9656,8 @@ var NavigationComponent = /** @class */ (function () {
     }
     NavigationComponent.prototype.ngOnInit = function () {
         this.baseUrl = window.location.origin + this.locationStrategy.getBaseHref();
+        this.selectedGroupLayoutData = this.hangingProtocolService.getGroupLayoutDataByMatrix(this.viewerShellData.groupMatrix);
+        //this.selectedImageLayoutData = this.hangingProtocolService.getImageLayoutDataByMatrix(this.viewerShellData.groupDataList[0].imageMatrix);
     };
     NavigationComponent.prototype.onClickPssi = function (pssi) {
         var hide = !pssi.hide;
@@ -9428,7 +9714,7 @@ var NavigationComponent = /** @class */ (function () {
         this.logService.seperator();
         this.logService.info("User: " + imageLayoutData.tip);
         this.selectedImageLayoutData = imageLayoutData;
-        this.imageSelectorService.changeImageLayout(this.selectedImageLayoutData.imageHangingProtocol);
+        this.imageInteractionService.onChangeImageLayoutForSelectedGroup(this.viewerShellData, this.selectedImageLayoutData.imageHangingProtocol);
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
@@ -9445,9 +9731,9 @@ var NavigationComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./navigation.component.css */ "./src/app/components/viewer-shell/navigation/navigation.component.css")]
         }),
         __metadata("design:paramtypes", [_services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__["HangingProtocolService"],
-            _services_image_selector_service__WEBPACK_IMPORTED_MODULE_4__["ImageSelectorService"],
+            _services_image_interaction_service__WEBPACK_IMPORTED_MODULE_5__["ImageInteractionService"],
             _angular_common__WEBPACK_IMPORTED_MODULE_1__["LocationStrategy"],
-            _services_log_service__WEBPACK_IMPORTED_MODULE_5__["LogService"]])
+            _services_log_service__WEBPACK_IMPORTED_MODULE_4__["LogService"]])
     ], NavigationComponent);
     return NavigationComponent;
 }());
@@ -9463,7 +9749,7 @@ var NavigationComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".thumbnail {\r\n    background-color: black;\r\n    border: solid 1px #888;\r\n    height: 70px;\r\n    margin-right: 4px;\r\n    overflow: hidden;\r\n    padding: 2px;\r\n    width: 70px;\r\n}\r\n\r\n.thumbnail:hover { border: solid 2px #F90; }\r\n\r\n.img {\r\n    background-color: black;\r\n    height: 70px;\r\n  \r\n    margin-right: 4px;\r\n    overflow: hidden;\r\n    width: 70px;\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy92aWV3ZXItc2hlbGwvbmF2aWdhdGlvbi90aHVtYm5haWwvdGh1bWJuYWlsLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSx1QkFBdUI7SUFDdkIsc0JBQXNCO0lBQ3RCLFlBQVk7SUFDWixpQkFBaUI7SUFDakIsZ0JBQWdCO0lBQ2hCLFlBQVk7SUFDWixXQUFXO0FBQ2Y7O0FBRUEsbUJBQW1CLHNCQUFzQixFQUFFOztBQUczQztJQUNJLHVCQUF1QjtJQUN2QixZQUFZOztJQUVaLGlCQUFpQjtJQUNqQixnQkFBZ0I7SUFDaEIsV0FBVztBQUNmIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy92aWV3ZXItc2hlbGwvbmF2aWdhdGlvbi90aHVtYm5haWwvdGh1bWJuYWlsLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIudGh1bWJuYWlsIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IGJsYWNrO1xyXG4gICAgYm9yZGVyOiBzb2xpZCAxcHggIzg4ODtcclxuICAgIGhlaWdodDogNzBweDtcclxuICAgIG1hcmdpbi1yaWdodDogNHB4O1xyXG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcclxuICAgIHBhZGRpbmc6IDJweDtcclxuICAgIHdpZHRoOiA3MHB4O1xyXG59XHJcblxyXG4udGh1bWJuYWlsOmhvdmVyIHsgYm9yZGVyOiBzb2xpZCAycHggI0Y5MDsgfVxyXG5cclxuXHJcbi5pbWcge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogYmxhY2s7XHJcbiAgICBoZWlnaHQ6IDcwcHg7XHJcbiAgXHJcbiAgICBtYXJnaW4tcmlnaHQ6IDRweDtcclxuICAgIG92ZXJmbG93OiBoaWRkZW47XHJcbiAgICB3aWR0aDogNzBweDtcclxufVxyXG4iXX0= */"
+module.exports = ".thumbnail {\r\n    background-color: black;\r\n    border: solid 1px #888;\r\n    height: 70px;\r\n    margin-right: 4px;\r\n    overflow: hidden;\r\n    padding: 0px;\r\n    width: 70px;\r\n\r\n}\r\n\r\n.thumbnail:hover { border: solid 2px #F90; }\r\n\r\n.img-type {\r\n    max-width:100%;\r\n    max-height:100%;\r\n    margin: auto auto;\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy92aWV3ZXItc2hlbGwvbmF2aWdhdGlvbi90aHVtYm5haWwvdGh1bWJuYWlsLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSx1QkFBdUI7SUFDdkIsc0JBQXNCO0lBQ3RCLFlBQVk7SUFDWixpQkFBaUI7SUFDakIsZ0JBQWdCO0lBQ2hCLFlBQVk7SUFDWixXQUFXOztBQUVmOztBQUVBLG1CQUFtQixzQkFBc0IsRUFBRTs7QUFFM0M7SUFDSSxjQUFjO0lBQ2QsZUFBZTtJQUNmLGlCQUFpQjtBQUNyQiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvdmlld2VyLXNoZWxsL25hdmlnYXRpb24vdGh1bWJuYWlsL3RodW1ibmFpbC5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnRodW1ibmFpbCB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjaztcclxuICAgIGJvcmRlcjogc29saWQgMXB4ICM4ODg7XHJcbiAgICBoZWlnaHQ6IDcwcHg7XHJcbiAgICBtYXJnaW4tcmlnaHQ6IDRweDtcclxuICAgIG92ZXJmbG93OiBoaWRkZW47XHJcbiAgICBwYWRkaW5nOiAwcHg7XHJcbiAgICB3aWR0aDogNzBweDtcclxuXHJcbn1cclxuXHJcbi50aHVtYm5haWw6aG92ZXIgeyBib3JkZXI6IHNvbGlkIDJweCAjRjkwOyB9XHJcblxyXG4uaW1nLXR5cGUge1xyXG4gICAgbWF4LXdpZHRoOjEwMCU7XHJcbiAgICBtYXgtaGVpZ2h0OjEwMCU7XHJcbiAgICBtYXJnaW46IGF1dG8gYXV0bztcclxufVxyXG4iXX0= */"
 
 /***/ }),
 
@@ -9474,7 +9760,7 @@ module.exports = ".thumbnail {\r\n    background-color: black;\r\n    border: so
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"thumbnail\" [style.border]=\"getBorderStyle()\" (click)=\"onSelected()\" (mouseover)=\"onMouseOver($event)\" (mouseout)=\"onMouseOut($event)\">\r\n    <img [src]=\"thumbnailToShow\"/>\r\n</div>\r\n"
+module.exports = "<div class=\"thumbnail\" [style.border]=\"getBorderStyle()\" (click)=\"onClick()\" (mouseover)=\"onMouseOver($event)\" (mouseout)=\"onMouseOut($event)\">\r\n    <img class=\"img-type\" [src]=\"thumbnailToShow\"/>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -9490,9 +9776,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ThumbnailComponent", function() { return ThumbnailComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _models_pssi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../models/pssi */ "./src/app/models/pssi.ts");
-/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
-/* harmony import */ var _services_image_selector_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../services/image-selector.service */ "./src/app/services/image-selector.service.ts");
-/* harmony import */ var _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/dicom-image.service */ "./src/app/services/dicom-image.service.ts");
+/* harmony import */ var _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../models/viewer-shell-data */ "./src/app/models/viewer-shell-data.ts");
+/* harmony import */ var _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../models/viewer-image-data */ "./src/app/models/viewer-image-data.ts");
+/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
+/* harmony import */ var _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../services/dicom-image.service */ "./src/app/services/dicom-image.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9507,24 +9794,21 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var ThumbnailComponent = /** @class */ (function () {
-    function ThumbnailComponent(imageSelectorService, dicomImageService, worklistService) {
-        var _this = this;
-        this.imageSelectorService = imageSelectorService;
+    function ThumbnailComponent(dicomImageService, worklistService) {
         this.dicomImageService = dicomImageService;
         this.worklistService = worklistService;
-        this.selected = false;
+        this.isExportStudy = false;
         this.borderStyle = "1px solid #555";
-        this.subscriptionImage = imageSelectorService.imageSelected$.subscribe(function (viewerImageData) { _this.doSelectImage(viewerImageData.image); });
-        this.subscriptionImage = imageSelectorService.thumbnailSelected$.subscribe(function (image) { _this.doSelectImage(image); });
     }
     Object.defineProperty(ThumbnailComponent.prototype, "image", {
         get: function () {
             return this._image;
         },
-        set: function (Image) {
-            if (this._image !== Image) {
-                this._image = Image;
+        set: function (image) {
+            if (this._image !== image) {
+                this._image = image;
                 this.refreshImage();
             }
         },
@@ -9532,36 +9816,42 @@ var ThumbnailComponent = /** @class */ (function () {
         configurable: true
     });
     ThumbnailComponent.prototype.ngOnInit = function () {
+        this.viewerImageData = this.isExportStudy ? new _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_3__["ViewerImageData"](undefined, undefined) : this.viewerShellData.getViewerImageDataByImage(this.image);
     };
     ThumbnailComponent.prototype.getBorderStyle = function () {
-        return this.borderStyle;
+        return this.viewerImageData.selected ? "1px solid #F90" : "1px solid #555";
     };
-    ThumbnailComponent.prototype.doSelectImage = function (image) {
-        this.selected = (this.image === image);
-        this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
+    ThumbnailComponent.prototype.doSelectImage = function (image, isCheckAll) {
+        if (isCheckAll === void 0) { isCheckAll = ""; }
+        if (this.isExportStudy) {
+            if (isCheckAll === "checked") {
+                this.viewerImageData.selected = true;
+            }
+            else if (isCheckAll === "notChecked") {
+                this.viewerImageData.selected = false;
+            }
+            else {
+                if (this.image === image) {
+                    this.viewerImageData.selected = !this.viewerImageData.selected;
+                }
+            }
+        }
     };
-    ThumbnailComponent.prototype.onSelected = function () {
-        this.imageSelectorService.selectThumbnail(this.image);
+    ThumbnailComponent.prototype.onClick = function () {
+        if (this.isExportStudy) {
+            this.viewerImageData.selected = !this.viewerImageData.selected;
+        }
+    };
+    ThumbnailComponent.prototype.setSelect = function (selected) {
+        this.viewerImageData.selected = selected;
     };
     ThumbnailComponent.prototype.onMouseOver = function (event) {
-        this.borderStyle = "1px solid #F90";
     };
     ThumbnailComponent.prototype.onMouseOut = function (event) {
-        this.borderStyle = this.selected ? "2px solid #F90" : "1px solid #555";
     };
-    /*
-    setSelectState(selected: boolean): void {
-        var o = document.getElementById("thumbnail" + this.imageSop);
-        if (o !== null) {
-            o.style.color = selected ? 'red' : 'white';
-        }
-    }
-  
-    onClick() {
-        this.setSelectState(true);
-        this.imageSelectorService.selectImage(this.imageSop);
-    }
-    */
+    ThumbnailComponent.prototype.isSelected = function () {
+        return this.viewerImageData.selected;
+    };
     ThumbnailComponent.prototype.refreshImage = function () {
         if (this._image !== null) {
             if (this.worklistService.isUsingLocalTestData()) {
@@ -9599,6 +9889,14 @@ var ThumbnailComponent = /** @class */ (function () {
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_2__["ViewerShellData"])
+    ], ThumbnailComponent.prototype, "viewerShellData", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", Boolean)
+    ], ThumbnailComponent.prototype, "isExportStudy", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", _models_pssi__WEBPACK_IMPORTED_MODULE_1__["Image"]),
         __metadata("design:paramtypes", [_models_pssi__WEBPACK_IMPORTED_MODULE_1__["Image"]])
     ], ThumbnailComponent.prototype, "image", null);
@@ -9608,9 +9906,7 @@ var ThumbnailComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./thumbnail.component.html */ "./src/app/components/viewer-shell/navigation/thumbnail/thumbnail.component.html"),
             styles: [__webpack_require__(/*! ./thumbnail.component.css */ "./src/app/components/viewer-shell/navigation/thumbnail/thumbnail.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_image_selector_service__WEBPACK_IMPORTED_MODULE_3__["ImageSelectorService"],
-            _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_4__["DicomImageService"],
-            _services_worklist_service__WEBPACK_IMPORTED_MODULE_2__["WorklistService"]])
+        __metadata("design:paramtypes", [_services_dicom_image_service__WEBPACK_IMPORTED_MODULE_5__["DicomImageService"], _services_worklist_service__WEBPACK_IMPORTED_MODULE_4__["WorklistService"]])
     ], ThumbnailComponent);
     return ThumbnailComponent;
 }());
@@ -9637,7 +9933,7 @@ module.exports = ".saveImage {\r\n    border: none;\r\n    height: 40px;\r\n    
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<table>\r\n    <tr>\r\n        <td>\r\n            <button class=\"prevGroup\" role=\"button\" title=\"Previous Group\" (click)=\"onNavigateGroup(-1)\" [disabled]=\"disablePrev\"></button>\r\n        </td>\r\n        <td>\r\n            {{getGroupStatus()}}\r\n        </td>\r\n        <td>\r\n            <button class=\"nextGroup\" role=\"button\" title=\"Next Group\" (click)=\"onNavigateGroup(1)\" [disabled]=\"disableNext\"></button>\r\n        </td>\r\n        \r\n        <td>\r\n            <button class=\"saveImage\" role=\"button\" title=\"Save Image\" (click)=\"onSaveImage()\"></button>\r\n        </td>\r\n    </tr>\r\n</table>"
+module.exports = "<table>\r\n    <tr>\r\n        <td>\r\n            <button class=\"prevGroup\" role=\"button\" title=\"Previous Group\" (click)=\"onNavigateGroup(-1)\" [disabled]=\"disablePrev\"></button>\r\n        </td>\r\n        <td>\r\n            {{getGroupStatus()}}\r\n        </td>\r\n        <td>\r\n            <button class=\"nextGroup\" role=\"button\" title=\"Next Group\" (click)=\"onNavigateGroup(1)\" [disabled]=\"disableNext\"></button>\r\n        </td>\r\n        \r\n        <td>\r\n            <button class=\"saveImage\" role=\"button\" title=\"Save Image\" (click)=\"onSaveImage()\"></button>\r\n        </td>\r\n        <td>\r\n            <app-video-player [viewerShellData]=\"viewerShellData\"></app-video-player>\r\n        </td>\r\n    </tr>\r\n</table>"
 
 /***/ }),
 
@@ -9652,6 +9948,7 @@ module.exports = "<table>\r\n    <tr>\r\n        <td>\r\n            <button cla
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ViewerBottombarComponent", function() { return ViewerBottombarComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../models/viewer-shell-data */ "./src/app/models/viewer-shell-data.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9661,6 +9958,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 var ViewerBottombarComponent = /** @class */ (function () {
     function ViewerBottombarComponent() {
@@ -9699,6 +9997,10 @@ var ViewerBottombarComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
         __metadata("design:type", Number)
     ], ViewerBottombarComponent.prototype, "pageCount", void 0);
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_1__["ViewerShellData"])
+    ], ViewerBottombarComponent.prototype, "viewerShellData", void 0);
     ViewerBottombarComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-viewer-bottombar',
@@ -9732,7 +10034,7 @@ module.exports = ".DivToolbar {\r\n    background-color: black;\r\n    color: #F
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div [style.visibility]=\"viewerShellData.hide? 'hidden' : 'visible'\" id=\"divContainer\" class=\"sp_panel-container\">\r\n    <div class=\"sp_panel-left\">\r\n        <app-navigation [viewerShellData]=\"viewerShellData\" (layout)=\"onChangeGroupLayout($event)\"></app-navigation>\r\n    </div>\r\n\r\n    <div class=\"sp_splitter\">\r\n    </div>\r\n\r\n    <div class=\"sp_panel-right\">\r\n        <div class=\"DivToolbar\">\r\n            <app-viewer-toolbar></app-viewer-toolbar>\r\n        </div>\r\n\r\n        <div class=\"DivViewerBack\">\r\n            <div class=\"div-flex-column\" *ngFor=\"let b of Arr(viewerShellData.groupMatrix.colCount).fill(1); let colIndex = index\">\r\n                <div class=\"div-flex-row\" *ngFor=\"let a of Arr(viewerShellData.groupMatrix.rowCount).fill(1); let rowIndex = index\">\r\n                    <app-group-viewer [groupData]=\"getGroupData(rowIndex, colIndex)\" class=\"div-flex-row\">\r\n                    </app-group-viewer>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        \r\n        <div class=\"DivOperationBar\">\r\n            <app-viewer-bottombar (save)=\"onSaveImage($event)\" [pageIndex]=\"pageIndex\" [pageCount]=\"pageCount\" (navigateGroup)=\"onNavigateGroup($event)\"></app-viewer-bottombar>\r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n"
+module.exports = "<div [style.visibility]=\"viewerShellData.hide? 'hidden' : 'visible'\" id=\"divContainer\" class=\"sp_panel-container\">\r\n    <div class=\"sp_panel-left\">\r\n        <app-navigation [viewerShellData]=\"viewerShellData\" (layout)=\"onChangeGroupLayout($event)\"></app-navigation>\r\n    </div>\r\n\r\n    <div class=\"sp_splitter\">\r\n    </div>\r\n\r\n    <div class=\"sp_panel-right\">\r\n        <div class=\"DivToolbar\">\r\n            <app-viewer-toolbar [viewerShellData]=\"viewerShellData\"></app-viewer-toolbar>\r\n        </div>\r\n\r\n        <div class=\"DivViewerBack\">\r\n            <div class=\"div-flex-column\" *ngFor=\"let b of Arr(viewerShellData.groupMatrix.colCount).fill(1); let colIndex = index\">\r\n                <div class=\"div-flex-row\" *ngFor=\"let a of Arr(viewerShellData.groupMatrix.rowCount).fill(1); let rowIndex = index\">\r\n                    <app-group-viewer [groupData]=\"getGroupData(rowIndex, colIndex)\" class=\"div-flex-row\">\r\n                    </app-group-viewer>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        \r\n        <div class=\"DivOperationBar\">\r\n            <app-viewer-bottombar [viewerShellData]=\"viewerShellData\" (save)=\"onSaveImage($event)\" [pageIndex]=\"pageIndex\" [pageCount]=\"pageCount\" (navigateGroup)=\"onNavigateGroup($event)\"></app-viewer-bottombar>\r\n        </div>\r\n\r\n    </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -9747,10 +10049,17 @@ module.exports = "<div [style.visibility]=\"viewerShellData.hide? 'hidden' : 'vi
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ViewerShellComponent", function() { return ViewerShellComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _group_viewer_group_viewer_component__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./group-viewer/group-viewer.component */ "./src/app/components/viewer-shell/group-viewer/group-viewer.component.ts");
-/* harmony import */ var _services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/shell-navigator.service */ "./src/app/services/shell-navigator.service.ts");
-/* harmony import */ var _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
-/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/log.service */ "./src/app/services/log.service.ts");
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _group_viewer_group_viewer_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./group-viewer/group-viewer.component */ "./src/app/components/viewer-shell/group-viewer/group-viewer.component.ts");
+/* harmony import */ var _services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/shell-navigator.service */ "./src/app/services/shell-navigator.service.ts");
+/* harmony import */ var _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/hanging-protocol.service */ "./src/app/services/hanging-protocol.service.ts");
+/* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../services/log.service */ "./src/app/services/log.service.ts");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../models/image-operation */ "./src/app/models/image-operation.ts");
+/* harmony import */ var _services_image_operation_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../services/image-operation.service */ "./src/app/services/image-operation.service.ts");
+/* harmony import */ var _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../models/dailog-data/image-process */ "./src/app/models/dailog-data/image-process.ts");
+/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../services/dialog.service */ "./src/app/services/dialog.service.ts");
+/* harmony import */ var _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../components/dialog/manual-wl-dialog/manual-wl-dialog.component */ "./src/app/components/dialog/manual-wl-dialog/manual-wl-dialog.component.ts");
+/* harmony import */ var _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../components/dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9765,17 +10074,29 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
+
+
+
+
+
 var ViewerShellComponent = /** @class */ (function () {
-    function ViewerShellComponent(shellNavigatorService, hangingProtocolService, logService) {
+    function ViewerShellComponent(shellNavigatorService, imageOperationService, hangingProtocolService, dialogService, logService) {
         var _this = this;
         this.shellNavigatorService = shellNavigatorService;
+        this.imageOperationService = imageOperationService;
         this.hangingProtocolService = hangingProtocolService;
+        this.dialogService = dialogService;
         this.logService = logService;
         this.Arr = Array; //Array type captured in a variable
         this.pageIndex = 0;
         this.subscriptionShellNavigated = shellNavigatorService.shellSelected$.subscribe(function (viewerShellData) {
             _this.viewerShellData.hide =
                 (viewerShellData === null || viewerShellData.getId() !== _this.viewerShellData.getId());
+        });
+        this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(function (imageOperationData) {
+            _this.onImageOperation(imageOperationData);
         });
     }
     ViewerShellComponent.prototype.ngOnInit = function () {
@@ -9819,7 +10140,7 @@ var ViewerShellComponent = /** @class */ (function () {
     };
     ViewerShellComponent.prototype.onSaveImage = function (event) {
         this.childGroups.forEach(function (groupViewer) {
-            if (groupViewer.selected) {
+            if (groupViewer.isSelected()) {
                 groupViewer.saveSelectedImage();
             }
         });
@@ -9827,8 +10148,116 @@ var ViewerShellComponent = /** @class */ (function () {
     ViewerShellComponent.prototype.onNavigateGroup = function (delta) {
         this.pageIndex += delta;
     };
+    ViewerShellComponent.prototype.onImageOperation = function (imageOperationData) {
+        if (!imageOperationData.needResponse(this.viewerShellData.getId(), true))
+            return;
+        switch (imageOperationData.operationType) {
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].SelectAllImages:
+                this.viewerShellData.selectAllImages(true);
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].SelectAllImagesInSelectedGroup:
+                this.viewerShellData.selectAllImagesInFirstShownAndSelectedGroup();
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].SelectAllVisibleImages:
+                this.viewerShellData.selectAllVisibleImages();
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].SelectAllVisibleImagesInSelectedGroup:
+                this.viewerShellData.selectAllVisibleImagesInFirstShownAndSelectedGroup();
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].SelectOneImageInSelectedGroup:
+                this.viewerShellData.selectFirstShowImageInFirstShownGroup();
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].ClickImageInViewer:
+                this.viewerShellData.clickImage(this.imageOperationService.getShellImageSelectType(this.viewerShellData.getId()), imageOperationData.operationPara);
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].DisplayImageInGroup:
+                imageOperationData.operationPara.viewerImageData.groupData.displayImage(this.imageOperationService.getShellImageSelectType(this.viewerShellData.getId()), imageOperationData.operationPara.index);
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].ManualWlSelectedImage:
+                this.doManualWl();
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].MoveSelectedImage:
+                this.doMove(imageOperationData.operationPara);
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].ZoomSelectedImage:
+                this.doZoom(imageOperationData.operationPara);
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].WlSelectedImage:
+                this.doWl(imageOperationData.operationPara);
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageOperationEnum"].SetContext:
+                this.setContext(imageOperationData);
+                break;
+        }
+    };
+    ViewerShellComponent.prototype.doManualWl = function () {
+        var _this = this;
+        var windowLevelData = new _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_8__["WindowLevelData"]();
+        windowLevelData.windowCenter = 4096;
+        windowLevelData.windowWidth = 2048;
+        this.dialogService.showDialog(_components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_10__["ManualWlDialogComponent"], windowLevelData).subscribe(function (val) {
+            if (val) {
+                _this.childGroups.forEach(function (groupViewer) {
+                    if (groupViewer.groupData.isSelected()) {
+                        groupViewer.childImages.forEach(function (imageViewer) {
+                            if (imageViewer.imageData.selected) {
+                                imageViewer.doWlByValue(val.windowCenter, val.windowWidth);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    };
+    ViewerShellComponent.prototype.doMove = function (movePara) {
+        this.childGroups.forEach(function (groupViewer) {
+            if (groupViewer.groupData.isSelected()) {
+                groupViewer.childImages.forEach(function (imageViewer) {
+                    if (imageViewer.imageData.selected && imageViewer.imageData !== movePara.viewerImageData) {
+                        imageViewer.translate(movePara.deltaX, movePara.deltaY);
+                        imageViewer.refresh();
+                    }
+                });
+            }
+        });
+    };
+    ViewerShellComponent.prototype.doZoom = function (zoomPara) {
+        this.childGroups.forEach(function (groupViewer) {
+            if (groupViewer.groupData.isSelected()) {
+                groupViewer.childImages.forEach(function (imageViewer) {
+                    if (imageViewer.imageData.selected && imageViewer.imageData !== zoomPara.viewerImageData) {
+                        imageViewer.doZoom(zoomPara.zoomOut, zoomPara.zoomPoint, false);
+                        imageViewer.refresh();
+                    }
+                });
+            }
+        });
+    };
+    ViewerShellComponent.prototype.doWl = function (wlPara) {
+        this.childGroups.forEach(function (groupViewer) {
+            if (groupViewer.groupData.isSelected()) {
+                groupViewer.childImages.forEach(function (imageViewer) {
+                    if (imageViewer.imageData.selected && imageViewer.imageData !== wlPara.viewerImageData) {
+                        imageViewer.doWl(wlPara.deltaX, wlPara.deltaY, false);
+                        imageViewer.refresh();
+                    }
+                });
+            }
+        });
+    };
+    ViewerShellComponent.prototype.setContext = function (imageOperationData) {
+        var _this = this;
+        var imageContextData = imageOperationData.operationPara;
+        if (imageContextData.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_6__["ImageContextEnum"].CreateAnn && imageContextData.imageContextPara === _models_annotation__WEBPACK_IMPORTED_MODULE_1__["AnnType"].Stamp) {
+            this.dialogService.showDialog(_components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_11__["SelectMarkerDialogComponent"], undefined).subscribe(function (stampFileName) {
+                if (stampFileName) {
+                    _this.imageOperationService.setShellStampFileName(imageOperationData.shellId, stampFileName);
+                }
+            });
+        }
+    };
     __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_group_viewer_group_viewer_component__WEBPACK_IMPORTED_MODULE_1__["GroupViewerComponent"]),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_group_viewer_group_viewer_component__WEBPACK_IMPORTED_MODULE_2__["GroupViewerComponent"]),
         __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["QueryList"])
     ], ViewerShellComponent.prototype, "childGroups", void 0);
     ViewerShellComponent = __decorate([
@@ -9837,9 +10266,11 @@ var ViewerShellComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./viewer-shell.component.html */ "./src/app/components/viewer-shell/viewer-shell.component.html"),
             styles: [__webpack_require__(/*! ./viewer-shell.component.css */ "./src/app/components/viewer-shell/viewer-shell.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_2__["ShellNavigatorService"],
-            _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_3__["HangingProtocolService"],
-            _services_log_service__WEBPACK_IMPORTED_MODULE_4__["LogService"]])
+        __metadata("design:paramtypes", [_services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_3__["ShellNavigatorService"],
+            _services_image_operation_service__WEBPACK_IMPORTED_MODULE_7__["ImageOperationService"],
+            _services_hanging_protocol_service__WEBPACK_IMPORTED_MODULE_4__["HangingProtocolService"],
+            _services_dialog_service__WEBPACK_IMPORTED_MODULE_9__["DialogService"],
+            _services_log_service__WEBPACK_IMPORTED_MODULE_5__["LogService"]])
     ], ViewerShellComponent);
     return ViewerShellComponent;
 }());
@@ -9866,7 +10297,7 @@ module.exports = ".imageOperate-div {\r\n    height: 44px;\r\n    margin-left: -
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--<button class=\"image-button\" (click)=\"onRotate(30)\">Rotate</button>\r\n<button class=\"image-button\" (click)=\"onAddRuler()\">Ruler</button>\r\n-->\r\n\r\n<div class=\"container-fluid\">\r\n    <div class=\"row imageOperate-div\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"selectPanButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"zoomButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"magnifyButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"wlButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"selectAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"fitButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"rotateFlipButtonMenuList\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"resetButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"keyImageButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"markerButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"simpleAnnotation1ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"simpleAnnotation2ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"extendAnnotation1ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu [menuButtonList]=\"extendAnnotation2ButtonMenu\"></app-dropdown-button-menu>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\" />\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showAnnotationButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showRulerButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <app-dropdown-button-menu-button [buttonData]=\"showGraphicOverlayButtonMenu\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                </td>\r\n                <td>\r\n                    <img [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n</div>\r\n<!--\r\n<div class=\"collapse navbar-collapse\" id=\"navTopToggle\">\r\n    <ul id=\"navBarGroup\" class=\"nav navbar-nav\">\r\n        <li class=\"\">\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSelect\" alt=\"Select\" title=\"Select\" src=\"../../../../assets/img/Toolbar/selection/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnPan\" alt=\"Pan\" title=\"Pan\" src=\"../../../../assets/img/Toolbar/Pan/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCCW\" title=\"RotateCCW\" src=\"../../../../assets/img/Toolbar/Rotateccw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"RotateCW\" title=\"RotateCW\" src=\"../../../../assets/img/Toolbar/Rotatecw/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"VFlip\" title=\"VFlip\" src=\"../../../../assets/img/Toolbar/FlipV/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnRotate\" alt=\"HFlip\" title=\"HFlip\" src=\"../../../../assets/img/Toolbar/FlipH/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"Zoom\" title=\"Zoom\" src=\"../../../../assets/img/Toolbar/Zoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX2\" title=\"MagnifyX2\" src=\"../../../../assets/img/Toolbar/magnify2/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"MagnifyX4\" title=\"MagnifyX4\" src=\"../../../../assets/img/Toolbar/magnify4/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnZoom\" alt=\"RoiZoom\" title=\"ROI Zoom\" src=\"../../../../assets/img/Toolbar/rectzoom/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"dropdown-toggle nav navbar-collapse\" data-toggle=\"dropdown\" href=\"#\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">\r\n                <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu swith-menu\">\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLine\" title=\"Set ScoutLine\" src=\"../../../../assets/img/Toolbar/scoutline_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineAll\" title=\"Set ScoutLine All\" src=\"../../../../assets/img/Toolbar/scoutline_set_all/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineSrc\" title=\"Set ScoutLine Source\" src=\"../../../../assets/img/Toolbar/scoutline_src_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n                <li>\r\n                    <img class=\"btnScoutLine\" alt=\"ScoutLineDest\" title=\"Set ScoutLine Destination\" src=\"../../../../assets/img/Toolbar/scoutline_dst_set/normal/bitmap_h.gif\" />\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnWL\" alt=\"W/L\" title=\"W/L\" src=\"../../../../assets/img/Toolbar/WL/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnInvert\" alt=\"Invert\" title=\"Invert\" src=\"../../../../assets/img/Toolbar/Invert/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnReset\" alt=\"TrueSize\" title=\"TrueSize\" src=\"../../../../assets/img/Toolbar/Reset/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li class=\"dropdown\">\r\n            <a class=\"nav\">\r\n                <img title=\"Markers\" src=\"../../../../assets/img/Toolbar/ann_stamp/normal/bitmap.gif\" />\r\n            </a>\r\n            <ul class=\"dropdown-menu\">\r\n                <li id=\"liMarkerTab\">\r\n                    <ul class=\"nav nav-tabs nav-justified\">\r\n                        <li class=\"active\"><a id=\"tabMarkerPanel1\" data-toggle=\"tab\" href=\"#divMarkerPanel1\">Favorites</a></li>\r\n                        <li><a id=\"tabMarkerPanel2\" data-toggle=\"tab\" href=\"#divMarkerPanel2\">Panel 2</a></li>\r\n                        <li><a id=\"tabMarkerPanel3\" data-toggle=\"tab\" href=\"#divMarkerPanel3\">Panel 3</a></li>\r\n                    </ul>\r\n                    <div class=\"tab-content\">\r\n                        <div id=\"divMarkerPanel1\" class=\"tab-pane in active\">\r\n                            <div>\r\n                                <table class=\"table table-bordered table-marker\">\r\n                                    <tbody id=\"tblMarkerTable1\"></tbody>\r\n                                </table>\r\n                            </div>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel2\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable2\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                        <div id=\"divMarkerPanel3\" class=\"tab-pane\">\r\n                            <table class=\"table table-bordered table-marker\">\r\n                                <tbody id=\"tblMarkerTable3\"></tbody>\r\n                            </table>\r\n                        </div>\r\n                    </div>\r\n                </li>\r\n            </ul>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnBestFit\" alt=\"BestFit\" title=\"BestFit\" src=\"../../../../assets/img/Toolbar/fitwindow/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRect\" alt=\"annRect\" title=\"Rect\" src=\"../../../../assets/img/Toolbar/ann_rectangle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddRuler\" alt=\"annLine\" title=\"Ruler\" src=\"../../../../assets/img/Toolbar/Ruler/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddCurve\" alt=\"annCurve\" title=\"Curve\" src=\"../../../../assets/img/Toolbar/ann_cervicalcurve/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnAddAngle\" alt=\"annAngle\" title=\"Angle\" src=\"../../../../assets/img/Toolbar/ann_angle/normal/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowOverlay\" alt=\"ShowOverlay\" title=\"Show Overlay\" src=\"../../../../assets/img/Toolbar/showoverlay/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowAnnotation\" alt=\"ShowAnnotation\" title=\"Show Annotation\" src=\"../../../../assets/img/Toolbar/showannotation/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnShowRuler\" alt=\"ShowRuler\" title=\"Show Ruler\" src=\"../../../../assets/img/Toolbar/showruler/down/bitmap.gif\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n    <ul class=\"nav navbar-nav\">\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnDelete\" alt=\"Delete\" title=\"Delete\" src=\"../../../../assets/img/Toolbar/Delete.png\" />\r\n            </a>\r\n        </li>\r\n        <li>\r\n            <a href=\"#\" class=\"nav\">\r\n                <img class=\"btnSave\" alt=\"Save\" title=\"Save\" src=\"../../../../assets/img/Toolbar/Save.png\" />\r\n            </a>\r\n        </li>\r\n    </ul>\r\n</div>\r\n-->\r\n"
+module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"row imageOperate-div\">\r\n        <table>\r\n            <tr>\r\n                <td *ngFor=\"let toolbarButton of toolbarButtonList\">\r\n                    <app-dropdown-button-menu-button *ngIf=\"toolbarButton.buttonType === 0\" [buttonData]=\"toolbarButton.buttonData\" [isTopButton]=\"true\" [showArrow]=\"false\"></app-dropdown-button-menu-button>\r\n                    <app-dropdown-button-menu *ngIf=\"toolbarButton.buttonType === 1\" [menuButtonList]=\"toolbarButton.buttonData\" ></app-dropdown-button-menu>\r\n                    <img *ngIf=\"toolbarButton.buttonType === 2\" [src]=\"getButtonDivideSrc()\" style=\"margin-top: -24px\" />\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n</div>"
 
 /***/ }),
 
@@ -9881,10 +10312,11 @@ module.exports = "<!--<button class=\"image-button\" (click)=\"onRotate(30)\">Ro
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ViewerToolbarComponent", function() { return ViewerToolbarComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_image_selector_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/image-selector.service */ "./src/app/services/image-selector.service.ts");
-/* harmony import */ var _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/view-context.service */ "./src/app/services/view-context.service.ts");
+/* harmony import */ var _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../models/viewer-shell-data */ "./src/app/models/viewer-shell-data.ts");
+/* harmony import */ var _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../models/dropdown-button-menu-data */ "./src/app/models/dropdown-button-menu-data.ts");
 /* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../services/configuration.service */ "./src/app/services/configuration.service.ts");
 /* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../models/image-operation */ "./src/app/models/image-operation.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -9899,104 +10331,141 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
 var ViewerToolbarComponent = /** @class */ (function () {
-    function ViewerToolbarComponent(imageSelectorService, viewContext, configurationService) {
-        this.imageSelectorService = imageSelectorService;
-        this.viewContext = viewContext;
+    function ViewerToolbarComponent(configurationService) {
         this.configurationService = configurationService;
-        this.selectPanButtonMenuList = [
-            { name: "selection", tip: "Select", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Select } },
-            { name: "Pan", tip: "Pan", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Pan } }
-        ];
-        this.rotateFlipButtonMenuList = [
-            { name: "FlipH", tip: "Flip Horizontal", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].Flip, data: false } },
-            { name: "FlipV", tip: "Flip Vertical", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].Flip, data: true } },
-            { name: "Rotatecw", tip: "Rotate CW", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].Rotate, data: { angle: 90 } } },
-            { name: "Rotateccw", tip: "Rotate CCW", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].Rotate, data: { angle: -90 } } }
-        ];
-        this.zoomButtonMenuList = [
-            { name: "Zoom", tip: "Zoom", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Zoom } },
-            { name: "rectzoom", tip: "ROI Zoom", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].RoiZoom } }
-        ];
-        this.magnifyButtonMenuList = [
-            { name: "magnify2", tip: "Magnify X 2", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Magnify, 2) } },
-            { name: "magnify4", tip: "Magnify X 4", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Magnify, 4) } },
-            { name: "magnify8", tip: "Magnify X 8", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].Magnify, 8) } }
-        ];
-        this.fitButtonMenuList = [
-            { name: "fitheight", tip: "Fit Height", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].FitHeight, data: null } },
-            { name: "fitoriginal", tip: "Fit Original", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].FitOriginal, data: null } },
-            { name: "fitwidth", tip: "Fit Width", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].FitWidth, data: null } },
-            { name: "fitwindow", tip: "Scale to Fit", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].FitWindow, data: null } }
-        ];
-        this.wlButtonMenuList = [
-            { name: "WL", tip: "W/L", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].WL } },
-            { name: "ROI", tip: "ROI W/L", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].RoiWl } },
-            { name: "ManualWL", tip: "Manual W/L", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ManualWL, data: null } },
-            { name: "Invert", tip: "Invert", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].Invert, data: null } }
-        ];
-        this.keyImageButtonMenu = {
-            name: "SetKeyImage", tip: "Key Image", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ToggleKeyImage, data: null }
-        };
-        this.resetButtonMenu = {
-            name: "Reset", tip: "Reset", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].Reset, data: null }
-        };
-        this.showAnnotationButtonMenu = {
-            name: "showannotation", tip: "Show Annotation", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowAnnotation, data: null }
-        };
-        this.showOverlayButtonMenu = {
-            name: "showoverlay", tip: "Show Overlay", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowOverlay, data: null }
-        };
-        this.showRulerButtonMenu = {
-            name: "showruler", tip: "Show Ruler", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowRuler, data: null }
-        };
-        this.showGraphicOverlayButtonMenu = {
-            name: "showgraphicoverlay", tip: "Show Graphic Overlay", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].ShowGraphicOverlay, data: null }
-        };
-        this.selectAnnotationButtonMenu = {
-            name: "ann_selection", tip: "Select Annotation", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].SelectAnn }
-        };
-        this.simpleAnnotation1ButtonMenu = [
-            { name: "ann_line", tip: "Line", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].LineExt) } },
-            { name: "ann_angle", tip: "Angle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Protractor) } },
-            { name: "ann_arrow", tip: "Arrow", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Arrow) } },
-            { name: "ann_vaxis", tip: "Vertical Axis", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Vaxis) } },
-            { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].MarkSpot) } },
-            { name: "ann_freearea", tip: "Free Area", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].FreeArea) } },
-            { name: "ann_text", tip: "Text", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Text) } }
-        ];
-        this.simpleAnnotation2ButtonMenu = [
-            { name: "ann_ellipse", tip: "Eclipse", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Ellipse) } },
-            { name: "ann_polygon", tip: "Polygon", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Polygon) } },
-            { name: "ann_rectangle", tip: "Rectangle", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Rect) } },
-            { name: "ann_ruler", tip: "Ruler", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Ruler) } }
-        ];
-        this.extendAnnotation1ButtonMenu = [
-            { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].CervicalCurve) } },
-            { name: "ann_lumbarcurve", tip: "Lumbar Curve", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].LumbarCurve) } }
-        ];
-        this.extendAnnotation2ButtonMenu = [
-            { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].HeartChestRatio) } }
-        ];
-        this.markerButtonMenu = {
-            name: "ann_stamp", tip: "Markers", operationData: { type: _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["OperationEnum"].SetContext, data: new _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContext"](_services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Stamp) }
-        };
+        this.toolbarButtonList = [];
         this.buttonDivideSrc = this.configurationService.getBaseUrl() + "assets/img/DicomViewer/fenge2.png";
     }
     ViewerToolbarComponent.prototype.ngOnInit = function () {
+        this.shellId = this.viewerShellData.getId();
+        var selectPanButtonMenuList = [
+            { name: "selection", tip: "Select", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].Select)) },
+            { name: "Pan", tip: "Pan", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].Pan)) }
+        ];
+        var multiSelectButtonMenuList = [
+            { name: "selection_cell", tip: "Select One Image in Group", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SelectOneImageInSelectedGroup) },
+            { name: "selection_group_all", tip: "Select All Images in Group", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SelectAllImagesInSelectedGroup) },
+            { name: "selection_group_visible", tip: "Select All Visible Images in Group", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SelectAllVisibleImagesInSelectedGroup) },
+            { name: "selection_visible", tip: "Select All Visible Images", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SelectAllVisibleImages) },
+            { name: "selection_all", tip: "Select All Images", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SelectAllImages) },
+        ];
+        var rotateFlipButtonMenuList = [
+            { name: "FlipH", tip: "Flip Horizontal", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].FlipHorizontalSelectedImage) },
+            { name: "FlipV", tip: "Flip Vertical", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].FlipVerticalSelectedImage) },
+            { name: "Rotatecw", tip: "Rotate CW", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].RotateCwSelectedImage) },
+            { name: "Rotateccw", tip: "Rotate CCW", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].RotateCcwSelectedImage) }
+        ];
+        var zoomButtonMenuList = [
+            { name: "Zoom", tip: "Zoom", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].Zoom)) },
+            { name: "rectzoom", tip: "ROI Zoom", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].RoiZoom)) }
+        ];
+        var magnifyButtonMenuList = [
+            { name: "magnify2", tip: "Magnify X 2", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].Magnify, 2)) },
+            { name: "magnify4", tip: "Magnify X 4", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].Magnify, 4)) },
+            { name: "magnify8", tip: "Magnify X 8", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].Magnify, 8)) }
+        ];
+        var fitButtonMenuList = [
+            { name: "fitheight", tip: "Fit Height", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].FitHeightSelectedImage) },
+            { name: "fitoriginal", tip: "Fit Original", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].FitOriginalSelectedImage) },
+            { name: "fitwidth", tip: "Fit Width", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].FitWidthSelectedImage) },
+            { name: "fitwindow", tip: "Scale to Fit", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].FitWindowSelectedImage) }
+        ];
+        var wlButtonMenuList = [
+            { name: "WL", tip: "W/L", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].Wl)) },
+            { name: "ROI", tip: "ROI W/L", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].RoiWl)) },
+            { name: "ManualWL", tip: "Manual W/L", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].ManualWlSelectedImage) },
+            { name: "Invert", tip: "Invert", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].InvertSelectedImage) }
+        ];
+        var keyImageButtonMenu = {
+            name: "SetKeyImage", tip: "Key Image", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].ToggleKeyImageSelectedImage)
+        };
+        var resetButtonMenu = {
+            name: "Reset", tip: "Reset", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].ResetSelectedImage)
+        };
+        var showAnnotationButtonMenu = {
+            name: "showannotation", tip: "Show Annotation", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].ShowAnnotation)
+        };
+        var showOverlayButtonMenu = {
+            name: "showoverlay", tip: "Show Overlay", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].ShowTextOverlay)
+        };
+        var showRulerButtonMenu = {
+            name: "showruler", tip: "Show Ruler", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].ShowRuler)
+        };
+        var showGraphicOverlayButtonMenu = {
+            name: "showgraphicoverlay", tip: "Show Graphic Overlay", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].ShowGraphicOverlay)
+        };
+        var selectAnnotationButtonMenu = {
+            name: "ann_selection", tip: "Select Annotation", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].SelectAnn))
+        };
+        var simpleAnnotation1ButtonMenu = [
+            { name: "ann_line", tip: "Line", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].LineExt)) },
+            { name: "ann_angle", tip: "Angle", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Protractor)) },
+            { name: "ann_arrow", tip: "Arrow", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Arrow)) },
+            { name: "ann_vaxis", tip: "Vertical Axis", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Vaxis)) },
+            { name: "ann_humanmarkspot", tip: "Mark Spot", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].MarkSpot)) },
+            { name: "ann_freearea", tip: "Free Area", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].FreeArea)) },
+            { name: "ann_text", tip: "Text", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Text)) }
+        ];
+        var simpleAnnotation2ButtonMenu = [
+            { name: "ann_ellipse", tip: "Eclipse", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Ellipse)) },
+            { name: "ann_polygon", tip: "Polygon", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Polygon)) },
+            { name: "ann_rectangle", tip: "Rectangle", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Rect)) },
+            { name: "ann_ruler", tip: "Ruler", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Ruler)) }
+        ];
+        var extendAnnotation1ButtonMenu = [
+            { name: "ann_cervicalcurve", tip: "Cervical Curve", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].CervicalCurve)) },
+            { name: "ann_lumbarcurve", tip: "Lumbar Curve", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].LumbarCurve)) }
+        ];
+        var extendAnnotation2ButtonMenu = [
+            { name: "ann_heartchestratio", tip: "Cardiothoracic Ratio", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].HeartChestRatio)) }
+        ];
+        var markerButtonMenu = {
+            name: "ann_stamp", tip: "Markers", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Stamp))
+        };
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, selectPanButtonMenuList));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, multiSelectButtonMenuList));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, zoomButtonMenuList));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, magnifyButtonMenuList));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, wlButtonMenuList));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, selectAnnotationButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].Divider, undefined));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, fitButtonMenuList));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, rotateFlipButtonMenuList));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].Divider, undefined));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, resetButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, keyImageButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].Divider, undefined));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, markerButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, simpleAnnotation1ButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, simpleAnnotation2ButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, extendAnnotation1ButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, extendAnnotation2ButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].Divider, undefined));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, showAnnotationButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, showOverlayButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, showRulerButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, showGraphicOverlayButtonMenu));
+        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].Divider, undefined));
     };
     ViewerToolbarComponent.prototype.getButtonDivideSrc = function () {
         return this.buttonDivideSrc;
     };
+    ViewerToolbarComponent.prototype.getShellId = function () {
+        return this.shellId;
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
+        __metadata("design:type", _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_1__["ViewerShellData"])
+    ], ViewerToolbarComponent.prototype, "viewerShellData", void 0);
     ViewerToolbarComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: "app-viewer-toolbar",
             template: __webpack_require__(/*! ./viewer-toolbar.component.html */ "./src/app/components/viewer-shell/viewer-toolbar/viewer-toolbar.component.html"),
             styles: [__webpack_require__(/*! ./viewer-toolbar.component.css */ "./src/app/components/viewer-shell/viewer-toolbar/viewer-toolbar.component.css")]
         }),
-        __metadata("design:paramtypes", [_services_image_selector_service__WEBPACK_IMPORTED_MODULE_1__["ImageSelectorService"],
-            _services_view_context_service__WEBPACK_IMPORTED_MODULE_2__["ViewContextService"],
-            _services_configuration_service__WEBPACK_IMPORTED_MODULE_3__["ConfigurationService"]])
+        __metadata("design:paramtypes", [_services_configuration_service__WEBPACK_IMPORTED_MODULE_3__["ConfigurationService"]])
     ], ViewerToolbarComponent);
     return ViewerToolbarComponent;
 }());
@@ -10410,7 +10879,7 @@ var WorklistShellComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=\".cdk-overlay-pane\"\r\n    cdkDragHandle>\r\n    Export Study\r\n</h1>\r\n<mat-dialog-content>\r\n    <div id=\"body-content\">\r\n        <div id=\"multi-study-instance\" [hidden]=\"studyNumber==1\">\r\n            <table>\r\n                <thead>\r\n                    <tr>\r\n                        <th id=\"checkbox-row\">\r\n                            <input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"/>\r\n                        </th>\r\n                        <th>\r\n                            Patient ID\r\n                        </th>\r\n                        <th>\r\n                            Patient Name\r\n                        </th>\r\n                        <th>\r\n                            Exam Type\r\n                        </th>\r\n                        <th>\r\n                            Accession No\r\n                        </th>\r\n                        <th>\r\n                            Study Date Time\r\n                        </th>\r\n                        <th>\r\n                            Image Count\r\n                        </th>\r\n\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <tr *ngFor=\"let value of studies\">\r\n                        <td>\r\n                            <input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"/>\r\n                        </td>\r\n                        <td>{{value.patient.patientId}}</td>\r\n\r\n                        <td>{{value.patient.patientName}}</td>\r\n\r\n                        <td></td>\r\n\r\n                        <td>{{value.accessionNo}}</td>\r\n\r\n                        <td>{{value.studyDate}}</td>\r\n\r\n                        <td>{{value.studyTime}}</td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n        <div id=\"single-study-instance\" [hidden]=\"studyNumber!=1\">\r\n            <table>\r\n                <tr>\r\n                    <td id=\"single-study-info\">\r\n                        <div id=\"human-license\">\r\n                            <div>\r\n                                Patient Name : {{study.patient.patientName}}\r\n                            </div>\r\n                            <div>\r\n                                Patient ID : {{study.patient.patientId}}\r\n                            </div>\r\n                            <div>\r\n                                Accession Number : {{study.accessionNo}}\r\n                            </div>\r\n                            <div>\r\n                                Study Date : {{study.studyDate}}\r\n                            </div>\r\n                            <div>\r\n                                Study Time : {{study.studyTime}}\r\n                            </div>\r\n                        </div>\r\n                    </td>\r\n                    <td id=\"container\">\r\n                        <div *ngFor=\"let thumbnail of thumbnails\">\r\n                            <table>\r\n                                <tr>\r\n                                    <td width=\"20px\">\r\n                                        <input type=\"checkbox\" />\r\n                                    </td>\r\n                                    <td class=\"td-image\">\r\n                                        <img [src]=\"thumbnail\" />\r\n                                    </td>\r\n                                </tr>\r\n                            </table>\r\n                        </div>\r\n                    </td>\r\n                </tr>\r\n                <tr>\r\n                    <td></td>\r\n                    <td>\r\n                        <div class=\"checkbox\">\r\n                            <label>\r\n                                <input type=\"checkbox\" />\r\n                                Check All\r\n                            </label>\r\n                        </div>\r\n                    </td>\r\n                </tr>\r\n            </table>\r\n        </div>\r\n    </div>\r\n    <mat-divider></mat-divider><br>\r\n    <div id=\"transfer-content\">\r\n        <div id=\"icon-container\">\r\n            <button id=\"pacs-button\" class=\"pacs-icon icon-button\" (click)=\"onPacsIconClick()\"></button>\r\n            <button id=\"media-button\" class=\"media-icon icon-button\" (click)=\"onMediaIconClick()\"></button>\r\n        </div>\r\n        <div id=\"tab-mask-content\">\r\n            <div id=\"pacs-tab\">\r\n\r\n            </div>\r\n            <div id=\"media-tab\">\r\n                <div id=\"export-format-area\">\r\n                    <div>\r\n                        Export Format :\r\n                    </div>\r\n                    <select id=\"export-format-type\">\r\n                        <option>\r\n                            DICOM\r\n                        </option>\r\n                        <option>\r\n                            JPEG\r\n                        </option>\r\n                        <option>\r\n                            PDF\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n                <div>\r\n                    <table>\r\n                        <tr>\r\n                            <td>\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" />\r\n                                        Remove Patient Info\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                            <td class=\"second-td\">\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" />\r\n                                        Remove Institution Name\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" />\r\n                                        Include CD Viewer\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                            <td class=\"second-td\">\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" />\r\n                                        Include CD Burning Tool\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n    <button class=\"mat-raised-button\" (click)=\"onCancelClick()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n    <button class=\"mat-raised-button\" (click)=\"onOkClick()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n</mat-dialog-actions>\r\n"
+module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=\".cdk-overlay-pane\"\r\n    cdkDragHandle>\r\n    Export Study\r\n</h1>\r\n<mat-dialog-content>\r\n    <div id=\"body-content\">\r\n        <div id=\"multi-study-instance\" class=\"table-list-style\" [hidden]=\"studyNumber==1\">\r\n            <table>\r\n                <thead>\r\n                    <tr>\r\n                        <th id=\"checkbox-row\">\r\n                            <input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"/>\r\n                        </th>\r\n                        <th>\r\n                            Patient ID\r\n                        </th>\r\n                        <th>\r\n                            Patient Name\r\n                        </th>\r\n                        <th>\r\n                            Exam Type\r\n                        </th>\r\n                        <th>\r\n                            Accession No\r\n                        </th>\r\n                        <th>\r\n                            Study Date Time\r\n                        </th>\r\n                        <th>\r\n                            Image Count\r\n                        </th>\r\n\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <tr *ngFor=\"let value of studies\">\r\n                        <td>\r\n                            <input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"/>\r\n                        </td>\r\n                        <td>{{value.patient.patientId}}</td>\r\n\r\n                        <td>{{value.patient.patientName}}</td>\r\n\r\n                        <td></td>\r\n\r\n                        <td>{{value.accessionNo}}</td>\r\n\r\n                        <td>{{value.studyDate}}</td>\r\n\r\n                        <td>{{value.studyTime}}</td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n        <div id=\"single-study-instance\" [hidden]=\"studyNumber!=1\">\r\n            <table id=\"single-study-table\">\r\n                <tr>\r\n                    <td>\r\n                        <table id=\"single-study-info\">\r\n                            <tr>\r\n                                <td>Patient Name\r\n                                </td>\r\n                                <td>\r\n                                    {{study.patient.patientName}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Patient ID\r\n                                </td>\r\n                                <td>\r\n                                    {{study.patient.patientId}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Accession Number\r\n                                </td>\r\n                                <td>\r\n                                    {{study.accessionNo}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Study Date\r\n                                </td>\r\n                                <td>\r\n                                    {{study.studyDate}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Study Time\r\n                                </td>\r\n                                <td>\r\n                                    {{study.patient.studyTime}}\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </td>\r\n                    <td id=\"image-container\">\r\n                        <div *ngFor=\"let image of imageList\">\r\n                            <table>\r\n                                <tr>\r\n                                    <td class=\"td-image\">\r\n                                        <app-thumbnail [image]=\"image\" [isExportStudy]=\"true\" (click)=\"appThumbnailClicked()\"></app-thumbnail>\r\n                                    </td>\r\n                                </tr>\r\n                            </table>\r\n                        </div>\r\n                    </td>\r\n                </tr>\r\n                <tr>\r\n                    <td></td>\r\n                    <td>\r\n                        <div class=\"checkbox\">\r\n                            <label>\r\n                                <input type=\"checkbox\" (click)=\"checkAllImages()\" [checked]=\"isCheckedAllModel\"/>\r\n                                Check All\r\n                            </label>\r\n                        </div>\r\n                    </td>\r\n                </tr>\r\n            </table>\r\n        </div>\r\n    </div>\r\n    <mat-divider></mat-divider><br>\r\n    <div id=\"transfer-content\">\r\n        <div id=\"icon-container\">\r\n            <button id=\"pacs-button\" class=\"pacs-icon icon-button\" (click)=\"onPacsIconClick()\"></button>\r\n            <button id=\"media-button\" class=\"media-icon icon-button\" (click)=\"onMediaIconClick()\"></button>\r\n        </div>\r\n        <div id=\"tab-mask-content\">\r\n            <div id=\"pacs-tab\" [hidden]=\"!isShowPacs\">\r\n                <div class=\"table-list-style\">\r\n                    <table id=\"pacs-table\">\r\n                        <tr>\r\n                            <th>\r\n\r\n                            </th>\r\n                            <th>\r\n                                Desctination\r\n                            </th>\r\n                            <th>\r\n                                AE Title\r\n                            </th>\r\n                            <th>\r\n                                IP Address\r\n                            </th>\r\n                            <th>\r\n                                Storage Commitment\r\n                            </th>\r\n                        </tr>\r\n                        <tr *ngFor=\"let pacs of pacsList\">\r\n                            <td>\r\n                                <input type=\"checkbox\" [(ngModel)]=\"pacs.pacsChecked\" (change)=\"onPacsCheckChanged()\"/>\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.netAEName}}\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.aETitle}}\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.iPAddress}}\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.storageCommitment}}\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </div>\r\n                <table>\r\n                    <tr>\r\n                        <td>\r\n                            <div class=\"checkbox\">\r\n                                <label>\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"isCompression\"/>\r\n                                    Compression\r\n                                </label>\r\n                            </div>\r\n                        </td>\r\n                        <td class=\"second-td\">\r\n                            <select [(ngModel)]=\"selectedTransferCompress\" [disabled]=\"!isCompression\">\r\n                                <option *ngFor=\"let compress of transferCompressList | keyvalue\" [ngValue]=\"compress.key\">\r\n                                    {{compress.value}}\r\n                                </option>\r\n                            </select>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td>\r\n                            <div class=\"checkbox\">\r\n                                <label>\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"isCreateNewGuid\" />\r\n                                    Create New GUID\r\n                                </label>\r\n                            </div>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </div>\r\n            <div id=\"media-tab\" [hidden]=\"isShowPacs\">\r\n                <div id=\"export-format-area\">\r\n                    <div>\r\n                        Export Format :\r\n                    </div>\r\n                    <select id=\"export-format-type\">\r\n                        <option>\r\n                            DICOM\r\n                        </option>\r\n                        <option>\r\n                            JPEG\r\n                        </option>\r\n                        <option>\r\n                            PDF\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n                <div>\r\n                    <table>\r\n                        <tr>\r\n                            <td>\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isRemovePatientInfo\"/>\r\n                                        Remove Patient Info\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                            <td class=\"second-td\">\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isRemoveInstitutionName\"/>\r\n                                        Remove Institution Name\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isIncludeCdViewer\" />\r\n                                        Include CD Viewer\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                            <td class=\"second-td\">\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isIncludeCdBurningTool\"/>\r\n                                        Include CD Burning Tool\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n    <button class=\"mat-raised-button\" (click)=\"onCancelClick()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n    <button class=\"mat-raised-button\" (click)=\"onOkClick()\" [disabled]=\"isNoCheckedImage || isNoCheckedPacs\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n</mat-dialog-actions>\r\n"
 
 /***/ }),
 
@@ -10421,7 +10890,7 @@ module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n#body-content {\n  width: 750px;\n  min-height: 200px;\n  max-height: 300px;\n}\n#multi-study-instance {\n  width: 750px;\n  max-height: 290px;\n  overflow: auto;\n}\n#multi-study-instance th {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  background: #444;\n}\n#multi-study-instance td {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  /*color: @container-background-color;*/\n}\n#multi-study-instance th,\n#multi-study-instance td:first-child {\n  min-width: 20px;\n}\n#multi-study-instance tr:nth-child(odd) {\n  background-color: #181818;\n}\n#multi-study-instance tr:nth-child(even) {\n  background-color: #000;\n}\n#single-study-instance {\n  width: 700px;\n}\n.mat-dialog-title {\n  border-bottom: 1px solid orange;\n  color: orange;\n  font-size: 15px;\n  margin: -24px -24px 0px -24px;\n  min-width: 200px;\n  padding: 1px 10px;\n}\n.mat-dialog-content {\n  color: #fff;\n  font-size: 15px;\n  height: 800px;\n  min-width: 650px;\n  padding: 10px 10px;\n}\n.mat-dialog-actions {\n  margin-right: -12px;\n}\n.mat-form-field {\n  width: 100%;\n}\n.mat-raised-button {\n  background-color: #555;\n  border: 1px solid #777;\n  border-radius: 3px;\n  color: #fff;\n  font-size: 13px;\n  margin-left: 6px;\n  padding: 1px;\n  width: 100px;\n}\n.mat-raised-button:disabled:hover {\n  color: #555;\n}\n.mat-raised-button:hover {\n  color: orange;\n}\n.mat-dialog-actions {\n  flex-direction: row-reverse;\n}\n.matInput {\n  caret-color: orange;\n  color: green;\n}\n.mat-input-element {\n  width: 100%;\n  caret-color: orange;\n}\ninput {\n  background: #000;\n  caret-color: orange;\n  border: 1px solid #000;\n}\ninput:focus {\n  /*outline: none !important;*/\n  border-bottom: 1px solid orange;\n}\ninput:disabled {\n  color: #555;\n}\n/*::-webkit-inner-spin-button { display: none; }*/\nselect {\n  background-color: #000;\n  border: 1px solid #333;\n  width: 100%;\n}\n#single-study-info {\n  width: 300px;\n}\n#container {\n  left: 350px;\n  display: flex;\n  flex-wrap: wrap;\n  width: 500px;\n}\n#human-license {\n  width: 300px;\n}\n#icon-container {\n  display: flex;\n  border-bottom: 1px solid #333;\n}\n.pacs-icon {\n  background: url('Transfer_60_40_All.png') no-repeat left top;\n}\n.pacs-icon:hover {\n  background: url('Transfer_60_40_All.png') no-repeat right top;\n}\n.pacs-icon:active {\n  background: url('Transfer_60_40_All.png') no-repeat left bottom;\n}\n.pacs-icon:disabled {\n  background: url('Transfer_60_40_All.png') no-repeat right bottom;\n}\n.media-icon {\n  background: url('Export_60_40_All.png') no-repeat left top;\n}\n.media-icon:hover {\n  background: url('Export_60_40_All.png') no-repeat right top;\n}\n.media-icon:active {\n  background: url('Export_60_40_All.png') no-repeat left bottom;\n}\n.media-icon:disabled {\n  background: url('Export_60_40_All.png') no-repeat right bottom;\n}\n.icon-button {\n  border: none;\n  width: 60px;\n  height: 40px;\n}\n.icon-button:focus {\n  outline: none;\n}\n#export-format-area {\n  display: flex;\n  margin-top: 20px;\n}\n#export-format-type {\n  width: 100px;\n  margin-left: 100px;\n}\n#transfer-row {\n  display: flex;\n}\n.td-image {\n  padding-right: 5px;\n}\n.second-td {\n  padding-left: 50px;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIiwic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L2V4cG9ydC1zdHVkeS9EOi9Xb3JrL0dpdC9JbWFnZVN1aXRlL1dlYlBhY3MvQ3NoLkltYWdlU3VpdGUuV2ViQ2xpZW50L3NyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7O2NBSWM7QUFDZDs7Ozs7Ozs7Ozs7Ozs7Ozs7OztFQW1CRTtBQ3RCRjtFQUNJLFlBQUE7RUFDQSxpQkFBQTtFQUNBLGlCQUFBO0FEd0JKO0FDckJBO0VBQ0ksWUFBQTtFQUNBLGlCQUFBO0VBQ0EsY0FBQTtBRHVCSjtBQzFCQTtFQU1RLFlBQUE7RUFDQSxzQkFBQTtFQUNBLGdCQUFBO0VBQ0EsZ0JBQUE7QUR1QlI7QUNoQ0E7RUFhUSxZQUFBO0VBQ0Esc0JBQUE7RUFDQSxnQkFBQTtFRHNCTixzQ0FBc0M7QUFDeEM7QUN0Q0E7O0VBb0JRLGVBQUE7QURzQlI7QUMxQ0E7RUF3Qk0seUJBQUE7QURxQk47QUM3Q0E7RUE0Qk0sc0JBQUE7QURvQk47QUNmQTtFQUNJLFlBQUE7QURpQko7QUNkQTtFQUNJLCtCQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7RUFDQSw2QkFBQTtFQUNBLGdCQUFBO0VBQ0EsaUJBQUE7QURnQko7QUNiQTtFQUNJLFdBQUE7RUFDQSxlQUFBO0VBQ0EsYUFBQTtFQUNBLGdCQUFBO0VBQ0Esa0JBQUE7QURlSjtBQ1pBO0VBQXNCLG1CQUFBO0FEZXRCO0FDYkE7RUFDSSxXQUFBO0FEZUo7QUNaQTtFQUNJLHNCQUFBO0VBQ0Esc0JBQUE7RUFDQSxrQkFBQTtFQUNBLFdBQUE7RUFDQSxlQUFBO0VBQ0EsZ0JBQUE7RUFDQSxZQUFBO0VBQ0EsWUFBQTtBRGNKO0FDWEE7RUFBb0MsV0FBQTtBRGNwQztBQ1pBO0VBQTJCLGFBQUE7QURlM0I7QUNiQTtFQUFzQiwyQkFBQTtBRGdCdEI7QUNkQTtFQUNJLG1CQUFBO0VBQ0EsWUFBQTtBRGdCSjtBQ2JBO0VBQ0ksV0FBQTtFQUNBLG1CQUFBO0FEZUo7QUNSQTtFQUNJLGdCQUFBO0VBQ0EsbUJBQUE7RUFDQSxzQkFBQTtBRFVKO0FDUEE7RURTRSw0QkFBNEI7RUNQMUIsK0JBQUE7QURTSjtBQ05BO0VBQ0ksV0FBQTtBRFFKO0FBQ0EsaURBQWlEO0FDSmpEO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLFdBQUE7QURNSjtBQ0hBO0VBQ0ksWUFBQTtBREtKO0FDRkE7RUFDSSxXQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7RUFDQSxZQUFBO0FESUo7QUNEQTtFQUNJLFlBQUE7QURHSjtBQ0FBO0VBQ0ksYUFBQTtFQUNBLDZCQUFBO0FERUo7QUNDQTtFQUFhLDREQUFBO0FERWI7QUNBQTtFQUFtQiw2REFBQTtBREduQjtBQ0RBO0VBQW9CLCtEQUFBO0FESXBCO0FDRkE7RUFBc0IsZ0VBQUE7QURLdEI7QUNIQTtFQUFjLDBEQUFBO0FETWQ7QUNKQTtFQUFvQiwyREFBQTtBRE9wQjtBQ0xBO0VBQXFCLDZEQUFBO0FEUXJCO0FDTkE7RUFBdUIsOERBQUE7QURTdkI7QUNQQTtFQUNJLFlBQUE7RUFDQSxXQUFBO0VBQ0EsWUFBQTtBRFNKO0FDSkE7RUFDSSxhQUFBO0FETUo7QUNIQTtFQUNJLGFBQUE7RUFDQSxnQkFBQTtBREtKO0FDRkE7RUFDSSxZQUFBO0VBQ0Esa0JBQUE7QURJSjtBQ0RBO0VBQ0ksYUFBQTtBREdKO0FDQUE7RUFDSSxrQkFBQTtBREVKO0FDQ0E7RUFDSSxrQkFBQTtBRENKIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIiwic291cmNlc0NvbnRlbnQiOlsiLypAYmxhY2s6ICMwMDA7XG5Ab3JhbmdlOiBvcmFuZ2U7XG5AZ3JheTogIzU1NTtcbkBzaWx2ZXI6ICNhYWE7XG5Ad2hpdGU6ICNmZmY7Ki9cbi8qLnRoZW1lLWRhcmsge1xuICAgIEBiYWNrZ3JvdW5kLWNvbG9yIDogQGJsYWNrO1xuICAgIEB1bmRlcmxpbmUtY29sb3IgOiBAb3JhbmdlO1xuICAgIEBib3JkZXItY29sb3IgOiBAc2lsdmVyO1xuICAgIEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvciA6IEBncmF5O1xuICAgIEBkaXNhYmxlLWNvbG9yIDogQGdyYXk7XG4gICAgQGZvbnQtY29sb3IgOiBAd2hpdGU7XG4gICAgLmNoYW5nZS1kYXJrKEBiYWNrZ3JvdW5kLWNvbG9yKTtcbn1cblxuXG4udGhlbWUtbGlnaHQge1xuICAgIEBiYWNrZ3JvdW5kLWNvbG9yIDogQHdoaXRlO1xuICAgIEB1bmRlcmxpbmUtY29sb3IgOiBAb3JhbmdlO1xuICAgIEBib3JkZXItY29sb3IgOiBAd2hpdGU7XG4gICAgQGRpc2FibGUtY29sb3IgOiBAd2hpdGU7XG4gICAgQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yIDogQHdoaXRlO1xuICAgIEBmb250LWNvbG9yOiBAYmxhY2s7XG4gICAgLmNoYW5nZS1kYXJrKEBiYWNrZ3JvdW5kLWNvbG9yKTtcbn0qL1xuI2JvZHktY29udGVudCB7XG4gIHdpZHRoOiA3NTBweDtcbiAgbWluLWhlaWdodDogMjAwcHg7XG4gIG1heC1oZWlnaHQ6IDMwMHB4O1xufVxuI211bHRpLXN0dWR5LWluc3RhbmNlIHtcbiAgd2lkdGg6IDc1MHB4O1xuICBtYXgtaGVpZ2h0OiAyOTBweDtcbiAgb3ZlcmZsb3c6IGF1dG87XG59XG4jbXVsdGktc3R1ZHktaW5zdGFuY2UgdGgge1xuICBwYWRkaW5nOiAzcHg7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIG1pbi13aWR0aDogMTAwcHg7XG4gIGJhY2tncm91bmQ6ICM0NDQ7XG59XG4jbXVsdGktc3R1ZHktaW5zdGFuY2UgdGQge1xuICBwYWRkaW5nOiAzcHg7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIG1pbi13aWR0aDogMTAwcHg7XG4gIC8qY29sb3I6IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjsqL1xufVxuI211bHRpLXN0dWR5LWluc3RhbmNlIHRoLFxuI211bHRpLXN0dWR5LWluc3RhbmNlIHRkOmZpcnN0LWNoaWxkIHtcbiAgbWluLXdpZHRoOiAyMHB4O1xufVxuI211bHRpLXN0dWR5LWluc3RhbmNlIHRyOm50aC1jaGlsZChvZGQpIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzE4MTgxODtcbn1cbiNtdWx0aS1zdHVkeS1pbnN0YW5jZSB0cjpudGgtY2hpbGQoZXZlbikge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMDAwO1xufVxuI3NpbmdsZS1zdHVkeS1pbnN0YW5jZSB7XG4gIHdpZHRoOiA3MDBweDtcbn1cbi5tYXQtZGlhbG9nLXRpdGxlIHtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIG9yYW5nZTtcbiAgY29sb3I6IG9yYW5nZTtcbiAgZm9udC1zaXplOiAxNXB4O1xuICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcbiAgbWluLXdpZHRoOiAyMDBweDtcbiAgcGFkZGluZzogMXB4IDEwcHg7XG59XG4ubWF0LWRpYWxvZy1jb250ZW50IHtcbiAgY29sb3I6ICNmZmY7XG4gIGZvbnQtc2l6ZTogMTVweDtcbiAgaGVpZ2h0OiA4MDBweDtcbiAgbWluLXdpZHRoOiA2NTBweDtcbiAgcGFkZGluZzogMTBweCAxMHB4O1xufVxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7XG4gIG1hcmdpbi1yaWdodDogLTEycHg7XG59XG4ubWF0LWZvcm0tZmllbGQge1xuICB3aWR0aDogMTAwJTtcbn1cbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XG4gIGJhY2tncm91bmQtY29sb3I6ICM1NTU7XG4gIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XG4gIGJvcmRlci1yYWRpdXM6IDNweDtcbiAgY29sb3I6ICNmZmY7XG4gIGZvbnQtc2l6ZTogMTNweDtcbiAgbWFyZ2luLWxlZnQ6IDZweDtcbiAgcGFkZGluZzogMXB4O1xuICB3aWR0aDogMTAwcHg7XG59XG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIge1xuICBjb2xvcjogIzU1NTtcbn1cbi5tYXQtcmFpc2VkLWJ1dHRvbjpob3ZlciB7XG4gIGNvbG9yOiBvcmFuZ2U7XG59XG4ubWF0LWRpYWxvZy1hY3Rpb25zIHtcbiAgZmxleC1kaXJlY3Rpb246IHJvdy1yZXZlcnNlO1xufVxuLm1hdElucHV0IHtcbiAgY2FyZXQtY29sb3I6IG9yYW5nZTtcbiAgY29sb3I6IGdyZWVuO1xufVxuLm1hdC1pbnB1dC1lbGVtZW50IHtcbiAgd2lkdGg6IDEwMCU7XG4gIGNhcmV0LWNvbG9yOiBvcmFuZ2U7XG59XG5pbnB1dCB7XG4gIGJhY2tncm91bmQ6ICMwMDA7XG4gIGNhcmV0LWNvbG9yOiBvcmFuZ2U7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMwMDA7XG59XG5pbnB1dDpmb2N1cyB7XG4gIC8qb3V0bGluZTogbm9uZSAhaW1wb3J0YW50OyovXG4gIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCBvcmFuZ2U7XG59XG5pbnB1dDpkaXNhYmxlZCB7XG4gIGNvbG9yOiAjNTU1O1xufVxuLyo6Oi13ZWJraXQtaW5uZXItc3Bpbi1idXR0b24geyBkaXNwbGF5OiBub25lOyB9Ki9cbnNlbGVjdCB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMwMDA7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIHdpZHRoOiAxMDAlO1xufVxuI3NpbmdsZS1zdHVkeS1pbmZvIHtcbiAgd2lkdGg6IDMwMHB4O1xufVxuI2NvbnRhaW5lciB7XG4gIGxlZnQ6IDM1MHB4O1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbGV4LXdyYXA6IHdyYXA7XG4gIHdpZHRoOiA1MDBweDtcbn1cbiNodW1hbi1saWNlbnNlIHtcbiAgd2lkdGg6IDMwMHB4O1xufVxuI2ljb24tY29udGFpbmVyIHtcbiAgZGlzcGxheTogZmxleDtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICMzMzM7XG59XG4ucGFjcy1pY29uIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDtcbn1cbi5wYWNzLWljb246aG92ZXIge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDtcbn1cbi5wYWNzLWljb246YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTtcbn1cbi5wYWNzLWljb246ZGlzYWJsZWQge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTtcbn1cbi5tZWRpYS1pY29uIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0V4cG9ydF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7XG59XG4ubWVkaWEtaWNvbjpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDtcbn1cbi5tZWRpYS1pY29uOmFjdGl2ZSB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tO1xufVxuLm1lZGlhLWljb246ZGlzYWJsZWQge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207XG59XG4uaWNvbi1idXR0b24ge1xuICBib3JkZXI6IG5vbmU7XG4gIHdpZHRoOiA2MHB4O1xuICBoZWlnaHQ6IDQwcHg7XG59XG4uaWNvbi1idXR0b246Zm9jdXMge1xuICBvdXRsaW5lOiBub25lO1xufVxuI2V4cG9ydC1mb3JtYXQtYXJlYSB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIG1hcmdpbi10b3A6IDIwcHg7XG59XG4jZXhwb3J0LWZvcm1hdC10eXBlIHtcbiAgd2lkdGg6IDEwMHB4O1xuICBtYXJnaW4tbGVmdDogMTAwcHg7XG59XG4jdHJhbnNmZXItcm93IHtcbiAgZGlzcGxheTogZmxleDtcbn1cbi50ZC1pbWFnZSB7XG4gIHBhZGRpbmctcmlnaHQ6IDVweDtcbn1cbi5zZWNvbmQtdGQge1xuICBwYWRkaW5nLWxlZnQ6IDUwcHg7XG59XG4iLCJAaW1wb3J0IFwiLi4vLi4vLi4vLi4vLi4vdGhlbWVzLmxlc3NcIjtcblxuI2JvZHktY29udGVudCB7XG4gICAgd2lkdGg6IDc1MHB4O1xuICAgIG1pbi1oZWlnaHQgOiAyMDBweDtcbiAgICBtYXgtaGVpZ2h0IDogMzAwcHg7XG59XG5cbiNtdWx0aS1zdHVkeS1pbnN0YW5jZSB7XG4gICAgd2lkdGg6IDc1MHB4O1xuICAgIG1heC1oZWlnaHQ6IDI5MHB4O1xuICAgIG92ZXJmbG93OmF1dG87XG5cbiAgICB0aCB7XG4gICAgICAgIHBhZGRpbmc6IDNweDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICAgICAgbWluLXdpZHRoOiAxMDBweDtcbiAgICAgICAgYmFja2dyb3VuZDogQGhlYWRlci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIH1cblxuICAgIHRkIHtcbiAgICAgICAgcGFkZGluZzogM3B4O1xuICAgICAgICBib3JkZXI6IDFweCBzb2xpZCBAYm9yZGVyLWNvbG9yO1xuICAgICAgICBtaW4td2lkdGg6IDEwMHB4O1xuICAgICAgICAvKmNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7Ki9cbiAgICB9XG5cbiAgICB0aCwgdGQ6Zmlyc3QtY2hpbGQge1xuICAgICAgICBtaW4td2lkdGg6IDIwcHg7XG4gICAgfVxuXG4gICAgdHI6bnRoLWNoaWxkKG9kZCl7XG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAb2RkLXRyLWNvbG9yO1xuICAgIH1cblxuICAgIHRyOm50aC1jaGlsZChldmVuKXtcbiAgICAgIGJhY2tncm91bmQtY29sb3I6IEBiYWNrZ3JvdW5kLWNvbG9yO1xuICAgIH1cbn1cblxuXG4jc2luZ2xlLXN0dWR5LWluc3RhbmNlIHtcbiAgICB3aWR0aDogNzAwcHg7XG59ICAgXG5cbi5tYXQtZGlhbG9nLXRpdGxlIHtcbiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgQHVuZGVybGluZS1jb2xvcjtcbiAgICBjb2xvcjogQHVuZGVybGluZS1jb2xvcjtcbiAgICBmb250LXNpemU6IDE1cHg7XG4gICAgbWFyZ2luOiAtMjRweCAtMjRweCAwcHggLTI0cHg7XG4gICAgbWluLXdpZHRoOiAyMDBweDtcbiAgICBwYWRkaW5nOiAxcHggMTBweDtcbn1cblxuLm1hdC1kaWFsb2ctY29udGVudCB7XG4gICAgY29sb3I6IEBmb250LWNvbG9yO1xuICAgIGZvbnQtc2l6ZTogMTVweDtcbiAgICBoZWlnaHQ6IDgwMHB4O1xuICAgIG1pbi13aWR0aDogNjUwcHg7XG4gICAgcGFkZGluZzogMTBweCAxMHB4O1xufVxuXG4ubWF0LWRpYWxvZy1hY3Rpb25zIHsgbWFyZ2luLXJpZ2h0OiAtMTJweDsgfVxuXG4ubWF0LWZvcm0tZmllbGQge1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG4ubWF0LXJhaXNlZC1idXR0b24ge1xuICAgIGJhY2tncm91bmQtY29sb3I6IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjNzc3O1xuICAgIGJvcmRlci1yYWRpdXM6IDNweDtcbiAgICBjb2xvcjogQGZvbnQtY29sb3I7XG4gICAgZm9udC1zaXplOiAxM3B4O1xuICAgIG1hcmdpbi1sZWZ0OiA2cHg7XG4gICAgcGFkZGluZzogMXB4O1xuICAgIHdpZHRoOiAxMDBweDtcbn1cblxuLm1hdC1yYWlzZWQtYnV0dG9uOmRpc2FibGVkOmhvdmVyIHsgY29sb3I6IEBkaXNhYmxlLWNvbG9yOyB9XG5cbi5tYXQtcmFpc2VkLWJ1dHRvbjpob3ZlciB7IGNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yOyB9XG5cbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBmbGV4LWRpcmVjdGlvbjogcm93LXJldmVyc2U7IH1cblxuLm1hdElucHV0IHtcbiAgICBjYXJldC1jb2xvcjogQHVuZGVybGluZS1jb2xvcjtcbiAgICBjb2xvcjogZ3JlZW47XG59XG5cbi5tYXQtaW5wdXQtZWxlbWVudCB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgY2FyZXQtY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7XG59XG5cbnRhYmxlIHtcblxufVxuXG5pbnB1dCB7XG4gICAgYmFja2dyb3VuZDogQGJhY2tncm91bmQtY29sb3I7XG4gICAgY2FyZXQtY29sb3I6QHVuZGVybGluZS1jb2xvcjtcbiAgICBib3JkZXI6IDFweCBzb2xpZCBAYmFja2dyb3VuZC1jb2xvcjtcbn1cblxuaW5wdXQ6Zm9jdXN7XG4gICAgLypvdXRsaW5lOiBub25lICFpbXBvcnRhbnQ7Ki9cbiAgICBib3JkZXItYm90dG9tOjFweCBzb2xpZCBAdW5kZXJsaW5lLWNvbG9yO1xufVxuXG5pbnB1dDpkaXNhYmxlZHtcbiAgICBjb2xvcjogQGRpc2FibGUtY29sb3I7XG59XG5cbi8qOjotd2Via2l0LWlubmVyLXNwaW4tYnV0dG9uIHsgZGlzcGxheTogbm9uZTsgfSovXG5cbnNlbGVjdCB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICB3aWR0aDogMTAwJTtcbn1cblxuI3NpbmdsZS1zdHVkeS1pbmZvIHtcbiAgICB3aWR0aDogMzAwcHg7XG59XG5cbiNjb250YWluZXIge1xuICAgIGxlZnQ6MzUwcHg7XG4gICAgZGlzcGxheTpmbGV4O1xuICAgIGZsZXgtd3JhcDogd3JhcDtcbiAgICB3aWR0aDogNTAwcHg7XG59XG5cbiNodW1hbi1saWNlbnNlIHtcbiAgICB3aWR0aDogMzAwcHg7XG59XG5cbiNpY29uLWNvbnRhaW5lciB7XG4gICAgZGlzcGxheTpmbGV4O1xuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCBAYm9yZGVyLWNvbG9yO1xufVxuXG4ucGFjcy1pY29uIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDsgfVxuXG4ucGFjcy1pY29uOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IH1cblxuLnBhY3MtaWNvbjphY3RpdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tOyB9XG5cbi5wYWNzLWljb246ZGlzYWJsZWQgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTsgfVxuXG4ubWVkaWEtaWNvbiB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wOyB9XG5cbi5tZWRpYS1pY29uOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0V4cG9ydF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XG5cbi5tZWRpYS1pY29uOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tOyB9XG5cbi5tZWRpYS1pY29uOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0V4cG9ydF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XG5cbi5pY29uLWJ1dHRvbiB7XG4gICAgYm9yZGVyOm5vbmU7XG4gICAgd2lkdGg6NjBweDtcbiAgICBoZWlnaHQ6NDBweDtcblxuXG59XG5cbi5pY29uLWJ1dHRvbjpmb2N1cyB7XG4gICAgb3V0bGluZTogbm9uZTtcbn1cblxuI2V4cG9ydC1mb3JtYXQtYXJlYXtcbiAgICBkaXNwbGF5OmZsZXg7XG4gICAgbWFyZ2luLXRvcDoyMHB4O1xufVxuXG4jZXhwb3J0LWZvcm1hdC10eXBlIHtcbiAgICB3aWR0aDoxMDBweDtcbiAgICBtYXJnaW4tbGVmdDogMTAwcHg7XG59XG5cbiN0cmFuc2Zlci1yb3cge1xuICAgIGRpc3BsYXk6ZmxleDtcbn1cblxuLnRkLWltYWdlIHtcbiAgICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG59XG5cbi5zZWNvbmQtdGQge1xuICAgIHBhZGRpbmctbGVmdDo1MHB4O1xufSJdfQ== */"
+module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n#body-content {\n  width: 700px;\n  min-height: 200px;\n  max-height: 350px;\n}\n.table-list-style {\n  overflow: auto;\n}\n.table-list-style th {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  background: #444;\n}\n.table-list-style td {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  /*color: @container-background-color;*/\n}\n.table-list-style th,\n.table-list-style td:first-child {\n  min-width: 20px;\n}\n.table-list-style tr:nth-child(odd) {\n  background-color: #181818;\n}\n.table-list-style tr:nth-child(even) {\n  background-color: #000;\n}\n#single-study-table td {\n  vertical-align: top;\n  padding: 5px;\n}\n#single-study-info {\n  top: 5px;\n}\n#single-study-info td {\n  border: 1px solid #333;\n  padding: 5px;\n}\n.mat-dialog-title {\n  border-bottom: 1px solid orange;\n  color: orange;\n  font-size: 15px;\n  margin: -24px -24px 0px -24px;\n  min-width: 200px;\n  padding: 1px 10px;\n}\n.mat-dialog-content {\n  color: #fff;\n  font-size: 15px;\n  min-height: 600px;\n  min-width: 650px;\n  padding: 10px 10px;\n}\n.mat-dialog-actions {\n  margin-right: -12px;\n}\n.mat-form-field {\n  width: 100%;\n}\n.mat-raised-button {\n  background-color: #555;\n  border: 1px solid #777;\n  border-radius: 3px;\n  color: #fff;\n  font-size: 13px;\n  margin-left: 6px;\n  padding: 1px;\n  width: 100px;\n}\n.mat-raised-button:disabled:hover {\n  color: #555;\n}\n.mat-raised-button:hover {\n  color: orange;\n}\n.mat-dialog-actions {\n  flex-direction: row-reverse;\n}\n.matInput {\n  caret-color: orange;\n  color: green;\n}\n.mat-input-element {\n  width: 100%;\n  caret-color: orange;\n}\ninput {\n  background: #000;\n  caret-color: orange;\n  border: 1px solid #000;\n}\ninput:focus {\n  /*outline: none !important;*/\n  border-bottom: 1px solid orange;\n}\ninput:disabled {\n  color: #555;\n}\n/*::-webkit-inner-spin-button { display: none; }*/\nselect {\n  background-color: #000;\n  border: 1px solid #333;\n  width: 100%;\n}\n#single-study-info {\n  width: 300px;\n}\n#image-container {\n  left: 350px;\n  display: flex;\n  flex-wrap: wrap;\n  width: 350px;\n  max-height: 220px;\n  overflow-y: auto;\n}\n#human-license {\n  width: 300px;\n}\n#icon-container {\n  display: flex;\n  border-bottom: 1px solid #333;\n}\n.pacs-icon {\n  background: url('Transfer_60_40_All.png') no-repeat left top;\n}\n.pacs-icon:hover {\n  background: url('Transfer_60_40_All.png') no-repeat right top;\n}\n.pacs-icon:active {\n  background: url('Transfer_60_40_All.png') no-repeat left bottom;\n}\n.pacs-icon:disabled {\n  background: url('Transfer_60_40_All.png') no-repeat right bottom;\n}\n.media-icon {\n  background: url('Export_60_40_All.png') no-repeat left top;\n}\n.media-icon:hover {\n  background: url('Export_60_40_All.png') no-repeat right top;\n}\n.media-icon:active {\n  background: url('Export_60_40_All.png') no-repeat left bottom;\n}\n.media-icon:disabled {\n  background: url('Export_60_40_All.png') no-repeat right bottom;\n}\n.icon-button {\n  border: none;\n  width: 60px;\n  height: 40px;\n}\n.icon-button:focus {\n  outline: none;\n}\n#export-format-area {\n  display: flex;\n  margin-top: 20px;\n}\n#export-format-type {\n  width: 100px;\n  margin-left: 100px;\n}\n#transfer-row {\n  display: flex;\n}\n.td-image {\n  padding-right: 5px;\n}\n.second-td {\n  padding-left: 50px;\n}\n.thumbnail-type {\n  border: 1px solid #555;\n  max-width: 100%;\n  max-height: 100%;\n  margin: auto auto;\n}\n.selected-image {\n  border: 1px dotted orange;\n}\n.rect-img {\n  height: 100px;\n  width: 100px;\n}\n#tab-mask-content {\n  margin-top: 5px;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIiwic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L2V4cG9ydC1zdHVkeS9EOi9Xb3JrL0dpdC9JbWFnZVN1aXRlL1dlYlBhY3MvQ3NoLkltYWdlU3VpdGUuV2ViQ2xpZW50L3NyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7O2NBSWM7QUFDZDs7Ozs7Ozs7Ozs7Ozs7Ozs7OztFQW1CRTtBQ3RCRjtFQUNJLFlBQUE7RUFDQSxpQkFBQTtFQUNBLGlCQUFBO0FEd0JKO0FDckJBO0VBQ0ksY0FBQTtBRHVCSjtBQ3hCQTtFQUlRLFlBQUE7RUFDQSxzQkFBQTtFQUNBLGdCQUFBO0VBQ0EsZ0JBQUE7QUR1QlI7QUM5QkE7RUFXUSxZQUFBO0VBQ0Esc0JBQUE7RUFDQSxnQkFBQTtFRHNCTixzQ0FBc0M7QUFDeEM7QUNwQ0E7O0VBa0JRLGVBQUE7QURzQlI7QUN4Q0E7RUFzQk0seUJBQUE7QURxQk47QUMzQ0E7RUEwQk0sc0JBQUE7QURvQk47QUNoQkE7RUFDSSxtQkFBQTtFQUNBLFlBQUE7QURrQko7QUNmQTtFQUNJLFFBQUE7QURpQko7QUNkQTtFQUNJLHNCQUFBO0VBQ0EsWUFBQTtBRGdCSjtBQ2JBO0VBQ0ksK0JBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtFQUNBLDZCQUFBO0VBQ0EsZ0JBQUE7RUFDQSxpQkFBQTtBRGVKO0FDWkE7RUFDSSxXQUFBO0VBQ0EsZUFBQTtFQUNBLGlCQUFBO0VBQ0EsZ0JBQUE7RUFDQSxrQkFBQTtBRGNKO0FDWEE7RUFBc0IsbUJBQUE7QURjdEI7QUNaQTtFQUNJLFdBQUE7QURjSjtBQ1hBO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLGtCQUFBO0VBQ0EsV0FBQTtFQUNBLGVBQUE7RUFDQSxnQkFBQTtFQUNBLFlBQUE7RUFDQSxZQUFBO0FEYUo7QUNWQTtFQUFvQyxXQUFBO0FEYXBDO0FDWEE7RUFBMkIsYUFBQTtBRGMzQjtBQ1pBO0VBQXNCLDJCQUFBO0FEZXRCO0FDYkE7RUFDSSxtQkFBQTtFQUNBLFlBQUE7QURlSjtBQ1pBO0VBQ0ksV0FBQTtFQUNBLG1CQUFBO0FEY0o7QUNQQTtFQUNJLGdCQUFBO0VBQ0EsbUJBQUE7RUFDQSxzQkFBQTtBRFNKO0FDTkE7RURRRSw0QkFBNEI7RUNOMUIsK0JBQUE7QURRSjtBQ0xBO0VBQ0ksV0FBQTtBRE9KO0FBQ0EsaURBQWlEO0FDSGpEO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLFdBQUE7QURLSjtBQ0ZBO0VBQ0ksWUFBQTtBRElKO0FDREE7RUFDSSxXQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7RUFDQSxZQUFBO0VBQ0EsaUJBQUE7RUFDQSxnQkFBQTtBREdKO0FDQUE7RUFDSSxZQUFBO0FERUo7QUNDQTtFQUNJLGFBQUE7RUFDQSw2QkFBQTtBRENKO0FDRUE7RUFBYSw0REFBQTtBRENiO0FDQ0E7RUFBbUIsNkRBQUE7QURFbkI7QUNBQTtFQUFvQiwrREFBQTtBREdwQjtBQ0RBO0VBQXNCLGdFQUFBO0FESXRCO0FDRkE7RUFBYywwREFBQTtBREtkO0FDSEE7RUFBb0IsMkRBQUE7QURNcEI7QUNKQTtFQUFxQiw2REFBQTtBRE9yQjtBQ0xBO0VBQXVCLDhEQUFBO0FEUXZCO0FDTkE7RUFDSSxZQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7QURRSjtBQ0xBO0VBQ0ksYUFBQTtBRE9KO0FDSkE7RUFDSSxhQUFBO0VBQ0EsZ0JBQUE7QURNSjtBQ0hBO0VBQ0ksWUFBQTtFQUNBLGtCQUFBO0FES0o7QUNGQTtFQUNJLGFBQUE7QURJSjtBQ0RBO0VBQ0ksa0JBQUE7QURHSjtBQ0FBO0VBQ0ksa0JBQUE7QURFSjtBQ0NBO0VBQ0ksc0JBQUE7RUFDQSxlQUFBO0VBQ0EsZ0JBQUE7RUFDQSxpQkFBQTtBRENKO0FDRUE7RUFDSSx5QkFBQTtBREFKO0FDR0E7RUFDSSxhQUFBO0VBQ0EsWUFBQTtBRERKO0FDSUE7RUFDSSxlQUFBO0FERkoiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L2V4cG9ydC1zdHVkeS9leHBvcnQtc3R1ZHkuY29tcG9uZW50Lmxlc3MiLCJzb3VyY2VzQ29udGVudCI6WyIvKkBibGFjazogIzAwMDtcbkBvcmFuZ2U6IG9yYW5nZTtcbkBncmF5OiAjNTU1O1xuQHNpbHZlcjogI2FhYTtcbkB3aGl0ZTogI2ZmZjsqL1xuLyoudGhlbWUtZGFyayB7XG4gICAgQGJhY2tncm91bmQtY29sb3IgOiBAYmxhY2s7XG4gICAgQHVuZGVybGluZS1jb2xvciA6IEBvcmFuZ2U7XG4gICAgQGJvcmRlci1jb2xvciA6IEBzaWx2ZXI7XG4gICAgQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yIDogQGdyYXk7XG4gICAgQGRpc2FibGUtY29sb3IgOiBAZ3JheTtcbiAgICBAZm9udC1jb2xvciA6IEB3aGl0ZTtcbiAgICAuY2hhbmdlLWRhcmsoQGJhY2tncm91bmQtY29sb3IpO1xufVxuXG5cbi50aGVtZS1saWdodCB7XG4gICAgQGJhY2tncm91bmQtY29sb3IgOiBAd2hpdGU7XG4gICAgQHVuZGVybGluZS1jb2xvciA6IEBvcmFuZ2U7XG4gICAgQGJvcmRlci1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEB3aGl0ZTtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAd2hpdGU7XG4gICAgQGZvbnQtY29sb3I6IEBibGFjaztcbiAgICAuY2hhbmdlLWRhcmsoQGJhY2tncm91bmQtY29sb3IpO1xufSovXG4jYm9keS1jb250ZW50IHtcbiAgd2lkdGg6IDcwMHB4O1xuICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgbWF4LWhlaWdodDogMzUwcHg7XG59XG4udGFibGUtbGlzdC1zdHlsZSB7XG4gIG92ZXJmbG93OiBhdXRvO1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdGgge1xuICBwYWRkaW5nOiAzcHg7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIG1pbi13aWR0aDogMTAwcHg7XG4gIGJhY2tncm91bmQ6ICM0NDQ7XG59XG4udGFibGUtbGlzdC1zdHlsZSB0ZCB7XG4gIHBhZGRpbmc6IDNweDtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcbiAgbWluLXdpZHRoOiAxMDBweDtcbiAgLypjb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yOyovXG59XG4udGFibGUtbGlzdC1zdHlsZSB0aCxcbi50YWJsZS1saXN0LXN0eWxlIHRkOmZpcnN0LWNoaWxkIHtcbiAgbWluLXdpZHRoOiAyMHB4O1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdHI6bnRoLWNoaWxkKG9kZCkge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMTgxODE4O1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdHI6bnRoLWNoaWxkKGV2ZW4pIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbn1cbiNzaW5nbGUtc3R1ZHktdGFibGUgdGQge1xuICB2ZXJ0aWNhbC1hbGlnbjogdG9wO1xuICBwYWRkaW5nOiA1cHg7XG59XG4jc2luZ2xlLXN0dWR5LWluZm8ge1xuICB0b3A6IDVweDtcbn1cbiNzaW5nbGUtc3R1ZHktaW5mbyB0ZCB7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIHBhZGRpbmc6IDVweDtcbn1cbi5tYXQtZGlhbG9nLXRpdGxlIHtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIG9yYW5nZTtcbiAgY29sb3I6IG9yYW5nZTtcbiAgZm9udC1zaXplOiAxNXB4O1xuICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcbiAgbWluLXdpZHRoOiAyMDBweDtcbiAgcGFkZGluZzogMXB4IDEwcHg7XG59XG4ubWF0LWRpYWxvZy1jb250ZW50IHtcbiAgY29sb3I6ICNmZmY7XG4gIGZvbnQtc2l6ZTogMTVweDtcbiAgbWluLWhlaWdodDogNjAwcHg7XG4gIG1pbi13aWR0aDogNjUwcHg7XG4gIHBhZGRpbmc6IDEwcHggMTBweDtcbn1cbi5tYXQtZGlhbG9nLWFjdGlvbnMge1xuICBtYXJnaW4tcmlnaHQ6IC0xMnB4O1xufVxuLm1hdC1mb3JtLWZpZWxkIHtcbiAgd2lkdGg6IDEwMCU7XG59XG4ubWF0LXJhaXNlZC1idXR0b24ge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1O1xuICBib3JkZXI6IDFweCBzb2xpZCAjNzc3O1xuICBib3JkZXItcmFkaXVzOiAzcHg7XG4gIGNvbG9yOiAjZmZmO1xuICBmb250LXNpemU6IDEzcHg7XG4gIG1hcmdpbi1sZWZ0OiA2cHg7XG4gIHBhZGRpbmc6IDFweDtcbiAgd2lkdGg6IDEwMHB4O1xufVxuLm1hdC1yYWlzZWQtYnV0dG9uOmRpc2FibGVkOmhvdmVyIHtcbiAgY29sb3I6ICM1NTU7XG59XG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIge1xuICBjb2xvcjogb3JhbmdlO1xufVxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7XG4gIGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTtcbn1cbi5tYXRJbnB1dCB7XG4gIGNhcmV0LWNvbG9yOiBvcmFuZ2U7XG4gIGNvbG9yOiBncmVlbjtcbn1cbi5tYXQtaW5wdXQtZWxlbWVudCB7XG4gIHdpZHRoOiAxMDAlO1xuICBjYXJldC1jb2xvcjogb3JhbmdlO1xufVxuaW5wdXQge1xuICBiYWNrZ3JvdW5kOiAjMDAwO1xuICBjYXJldC1jb2xvcjogb3JhbmdlO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMDAwO1xufVxuaW5wdXQ6Zm9jdXMge1xuICAvKm91dGxpbmU6IG5vbmUgIWltcG9ydGFudDsqL1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgb3JhbmdlO1xufVxuaW5wdXQ6ZGlzYWJsZWQge1xuICBjb2xvcjogIzU1NTtcbn1cbi8qOjotd2Via2l0LWlubmVyLXNwaW4tYnV0dG9uIHsgZGlzcGxheTogbm9uZTsgfSovXG5zZWxlY3Qge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMDAwO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICB3aWR0aDogMTAwJTtcbn1cbiNzaW5nbGUtc3R1ZHktaW5mbyB7XG4gIHdpZHRoOiAzMDBweDtcbn1cbiNpbWFnZS1jb250YWluZXIge1xuICBsZWZ0OiAzNTBweDtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxleC13cmFwOiB3cmFwO1xuICB3aWR0aDogMzUwcHg7XG4gIG1heC1oZWlnaHQ6IDIyMHB4O1xuICBvdmVyZmxvdy15OiBhdXRvO1xufVxuI2h1bWFuLWxpY2Vuc2Uge1xuICB3aWR0aDogMzAwcHg7XG59XG4jaWNvbi1jb250YWluZXIge1xuICBkaXNwbGF5OiBmbGV4O1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgIzMzMztcbn1cbi5wYWNzLWljb24ge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wO1xufVxuLnBhY3MtaWNvbjpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLnBhY3MtaWNvbjphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tO1xufVxuLnBhY3MtaWNvbjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tO1xufVxuLm1lZGlhLWljb24ge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDtcbn1cbi5tZWRpYS1pY29uOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0V4cG9ydF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLm1lZGlhLWljb246YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0V4cG9ydF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207XG59XG4ubWVkaWEtaWNvbjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTtcbn1cbi5pY29uLWJ1dHRvbiB7XG4gIGJvcmRlcjogbm9uZTtcbiAgd2lkdGg6IDYwcHg7XG4gIGhlaWdodDogNDBweDtcbn1cbi5pY29uLWJ1dHRvbjpmb2N1cyB7XG4gIG91dGxpbmU6IG5vbmU7XG59XG4jZXhwb3J0LWZvcm1hdC1hcmVhIHtcbiAgZGlzcGxheTogZmxleDtcbiAgbWFyZ2luLXRvcDogMjBweDtcbn1cbiNleHBvcnQtZm9ybWF0LXR5cGUge1xuICB3aWR0aDogMTAwcHg7XG4gIG1hcmdpbi1sZWZ0OiAxMDBweDtcbn1cbiN0cmFuc2Zlci1yb3cge1xuICBkaXNwbGF5OiBmbGV4O1xufVxuLnRkLWltYWdlIHtcbiAgcGFkZGluZy1yaWdodDogNXB4O1xufVxuLnNlY29uZC10ZCB7XG4gIHBhZGRpbmctbGVmdDogNTBweDtcbn1cbi50aHVtYm5haWwtdHlwZSB7XG4gIGJvcmRlcjogMXB4IHNvbGlkICM1NTU7XG4gIG1heC13aWR0aDogMTAwJTtcbiAgbWF4LWhlaWdodDogMTAwJTtcbiAgbWFyZ2luOiBhdXRvIGF1dG87XG59XG4uc2VsZWN0ZWQtaW1hZ2Uge1xuICBib3JkZXI6IDFweCBkb3R0ZWQgb3JhbmdlO1xufVxuLnJlY3QtaW1nIHtcbiAgaGVpZ2h0OiAxMDBweDtcbiAgd2lkdGg6IDEwMHB4O1xufVxuI3RhYi1tYXNrLWNvbnRlbnQge1xuICBtYXJnaW4tdG9wOiA1cHg7XG59XG4iLCJAaW1wb3J0IFwiLi4vLi4vLi4vLi4vLi4vdGhlbWVzLmxlc3NcIjtcblxuI2JvZHktY29udGVudCB7XG4gICAgd2lkdGg6IDcwMHB4O1xuICAgIG1pbi1oZWlnaHQgOiAyMDBweDtcbiAgICBtYXgtaGVpZ2h0IDogMzUwcHg7XG59XG5cbi50YWJsZS1saXN0LXN0eWxlIHtcbiAgICBvdmVyZmxvdzphdXRvO1xuXG4gICAgdGgge1xuICAgICAgICBwYWRkaW5nOiAzcHg7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgICAgIG1pbi13aWR0aDogMTAwcHg7XG4gICAgICAgIGJhY2tncm91bmQ6IEBoZWFkZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICB9XG5cbiAgICB0ZCB7XG4gICAgICAgIHBhZGRpbmc6IDNweDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICAgICAgbWluLXdpZHRoOiAxMDBweDtcbiAgICAgICAgLypjb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yOyovXG4gICAgfVxuXG4gICAgdGgsIHRkOmZpcnN0LWNoaWxkIHtcbiAgICAgICAgbWluLXdpZHRoOiAyMHB4O1xuICAgIH1cblxuICAgIHRyOm50aC1jaGlsZChvZGQpe1xuICAgICAgYmFja2dyb3VuZC1jb2xvcjogQG9kZC10ci1jb2xvcjtcbiAgICB9XG5cbiAgICB0cjpudGgtY2hpbGQoZXZlbil7XG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICB9XG59XG5cbiNzaW5nbGUtc3R1ZHktdGFibGUgdGR7XG4gICAgdmVydGljYWwtYWxpZ246dG9wO1xuICAgIHBhZGRpbmc6IDVweDtcbn1cblxuI3NpbmdsZS1zdHVkeS1pbmZvIHtcbiAgICB0b3A6IDVweDtcbn1cblxuI3NpbmdsZS1zdHVkeS1pbmZvIHRke1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgcGFkZGluZzogNXB4O1xufSAgIFxuXG4ubWF0LWRpYWxvZy10aXRsZSB7XG4gICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIEB1bmRlcmxpbmUtY29sb3I7XG4gICAgY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7XG4gICAgZm9udC1zaXplOiAxNXB4O1xuICAgIG1hcmdpbjogLTI0cHggLTI0cHggMHB4IC0yNHB4O1xuICAgIG1pbi13aWR0aDogMjAwcHg7XG4gICAgcGFkZGluZzogMXB4IDEwcHg7XG59XG5cbi5tYXQtZGlhbG9nLWNvbnRlbnQge1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBmb250LXNpemU6IDE1cHg7XG4gICAgbWluLWhlaWdodDogNjAwcHg7XG4gICAgbWluLXdpZHRoOiA2NTBweDtcbiAgICBwYWRkaW5nOiAxMHB4IDEwcHg7XG59XG5cbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBtYXJnaW4tcmlnaHQ6IC0xMnB4OyB9XG5cbi5tYXQtZm9ybS1maWVsZCB7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XG4gICAgYm9yZGVyLXJhZGl1czogM3B4O1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBmb250LXNpemU6IDEzcHg7XG4gICAgbWFyZ2luLWxlZnQ6IDZweDtcbiAgICBwYWRkaW5nOiAxcHg7XG4gICAgd2lkdGg6IDEwMHB4O1xufVxuXG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIgeyBjb2xvcjogQGRpc2FibGUtY29sb3I7IH1cblxuLm1hdC1yYWlzZWQtYnV0dG9uOmhvdmVyIHsgY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7IH1cblxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTsgfVxuXG4ubWF0SW5wdXQge1xuICAgIGNhcmV0LWNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGNvbG9yOiBncmVlbjtcbn1cblxuLm1hdC1pbnB1dC1lbGVtZW50IHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBjYXJldC1jb2xvcjogQHVuZGVybGluZS1jb2xvcjtcbn1cblxudGFibGUge1xuXG59XG5cbmlucHV0IHtcbiAgICBiYWNrZ3JvdW5kOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBjYXJldC1jb2xvcjpAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBiYWNrZ3JvdW5kLWNvbG9yO1xufVxuXG5pbnB1dDpmb2N1c3tcbiAgICAvKm91dGxpbmU6IG5vbmUgIWltcG9ydGFudDsqL1xuICAgIGJvcmRlci1ib3R0b206MXB4IHNvbGlkIEB1bmRlcmxpbmUtY29sb3I7XG59XG5cbmlucHV0OmRpc2FibGVke1xuICAgIGNvbG9yOiBAZGlzYWJsZS1jb2xvcjtcbn1cblxuLyo6Oi13ZWJraXQtaW5uZXItc3Bpbi1idXR0b24geyBkaXNwbGF5OiBub25lOyB9Ki9cblxuc2VsZWN0IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBib3JkZXI6IDFweCBzb2xpZCBAYm9yZGVyLWNvbG9yO1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG4jc2luZ2xlLXN0dWR5LWluZm8ge1xuICAgIHdpZHRoOiAzMDBweDtcbn1cblxuI2ltYWdlLWNvbnRhaW5lciB7XG4gICAgbGVmdDozNTBweDtcbiAgICBkaXNwbGF5OmZsZXg7XG4gICAgZmxleC13cmFwOiB3cmFwO1xuICAgIHdpZHRoOiAzNTBweDtcbiAgICBtYXgtaGVpZ2h0OiAyMjBweDtcbiAgICBvdmVyZmxvdy15OiBhdXRvO1xufVxuXG4jaHVtYW4tbGljZW5zZSB7XG4gICAgd2lkdGg6IDMwMHB4O1xufVxuXG4jaWNvbi1jb250YWluZXIge1xuICAgIGRpc3BsYXk6ZmxleDtcbiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbn1cblxuLnBhY3MtaWNvbiB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cblxuLnBhY3MtaWNvbjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XG5cbi5wYWNzLWljb246YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxuXG4ucGFjcy1pY29uOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IH1cblxuLm1lZGlhLWljb24geyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDsgfVxuXG4ubWVkaWEtaWNvbjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgfVxuXG4ubWVkaWEtaWNvbjphY3RpdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxuXG4ubWVkaWEtaWNvbjpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTsgfVxuXG4uaWNvbi1idXR0b24ge1xuICAgIGJvcmRlcjpub25lO1xuICAgIHdpZHRoOjYwcHg7XG4gICAgaGVpZ2h0OjQwcHg7XG59XG5cbi5pY29uLWJ1dHRvbjpmb2N1cyB7XG4gICAgb3V0bGluZTogbm9uZTtcbn1cblxuI2V4cG9ydC1mb3JtYXQtYXJlYXtcbiAgICBkaXNwbGF5OmZsZXg7XG4gICAgbWFyZ2luLXRvcDoyMHB4O1xufVxuXG4jZXhwb3J0LWZvcm1hdC10eXBlIHtcbiAgICB3aWR0aDoxMDBweDtcbiAgICBtYXJnaW4tbGVmdDogMTAwcHg7XG59XG5cbiN0cmFuc2Zlci1yb3cge1xuICAgIGRpc3BsYXk6ZmxleDtcbn1cblxuLnRkLWltYWdlIHtcbiAgICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG59XG5cbi5zZWNvbmQtdGQge1xuICAgIHBhZGRpbmctbGVmdDo1MHB4O1xufVxuXG4udGh1bWJuYWlsLXR5cGUge1xuICAgIGJvcmRlciA6IDFweCBzb2xpZCBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG4gICAgbWF4LXdpZHRoOjEwMCU7XG4gICAgbWF4LWhlaWdodDoxMDAlO1xuICAgIG1hcmdpbjogYXV0byBhdXRvO1xufVxuXG4uc2VsZWN0ZWQtaW1hZ2Uge1xuICAgIGJvcmRlciA6IDFweCBkb3R0ZWQgQHVuZGVybGluZS1jb2xvcjtcbn1cblxuLnJlY3QtaW1nIHtcbiAgICBoZWlnaHQ6IDEwMHB4O1xuICAgIHdpZHRoOiAxMDBweDtcbn1cblxuI3RhYi1tYXNrLWNvbnRlbnQge1xuICAgIG1hcmdpbi10b3A6IDVweDtcbn0iXX0= */"
 
 /***/ }),
 
@@ -10442,6 +10911,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
 /* harmony import */ var _services_database_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../services/database.service */ "./src/app/services/database.service.ts");
 /* harmony import */ var _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../services/dicom-image.service */ "./src/app/services/dicom-image.service.ts");
+/* harmony import */ var _viewer_shell_navigation_thumbnail_thumbnail_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../viewer-shell/navigation/thumbnail/thumbnail.component */ "./src/app/components/viewer-shell/navigation/thumbnail/thumbnail.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10461,22 +10931,33 @@ var __param = (undefined && undefined.__param) || function (paramIndex, decorato
 
 
 
+
 var ExportStudyComponent = /** @class */ (function () {
     function ExportStudyComponent(worklistService, databaseService, dicomImageService, dialogRef, studies, dialogService) {
+        var _this = this;
         this.worklistService = worklistService;
         this.databaseService = databaseService;
         this.dicomImageService = dicomImageService;
         this.dialogRef = dialogRef;
         this.dialogService = dialogService;
         this.studyNumber = 0;
+        this.isCheckAll = true;
+        this.isCheckedAllModel = true;
+        this.isCompression = false;
+        this.isNoCheckedImage = true;
+        this.isNoCheckedPacs = true;
+        this.isRemovePatientInfo = true;
+        this.isRemoveInstitutionName = true;
+        this.isIncludeCdViewer = true;
+        this.isIncludeCdBurningTool = true;
+        this.isShowPacs = true;
+        this.isCreateNewGuid = true;
         this.studyNumber = studies.length;
         this.studies = new Array();
         this.studies = studies;
         this.study = studies[0];
         this.seriesList = new Array();
         this.seriesList = this.study.seriesList;
-        this.imageList = new Array();
-        this.imageList = this.seriesList[0].imageList;
         this._image = new _models_pssi__WEBPACK_IMPORTED_MODULE_3__["Image"]();
         this._image.id = this.seriesList[0].seriesNo;
         this.thumbnails = new Array();
@@ -10487,51 +10968,148 @@ var ExportStudyComponent = /** @class */ (function () {
             this.study.seriesList[i] = seriesTemp;
         }
         this.refreshImage();
+        this.getPacsList();
+        this.databaseService.getTransferCompress().subscribe(function (ret) {
+            _this.transferCompressList = ret;
+            _this.selectedTransferCompress = "1";
+        });
     }
     ExportStudyComponent.prototype.ngOnInit = function () {
+    };
+    ExportStudyComponent.prototype.ngAfterViewInit = function () {
+        this.checkAllImages();
     };
     ExportStudyComponent.prototype.onCancelClick = function () {
         this.dialogRef.close();
     };
     ExportStudyComponent.prototype.onOkClick = function () {
-        this.worklistService.onTransferStudy(this.study);
+        var _this = this;
+        if (this.isShowPacs) {
+            this.checkedImages = new Array();
+            this.checkedOtherPacs = new Array();
+            this.childImages.forEach(function (child) {
+                if (child.isSelected()) {
+                    _this.checkedImages.push(child.image);
+                }
+            });
+            for (var _i = 0, _a = this.pacsList; _i < _a.length; _i++) {
+                var pacs = _a[_i];
+                if (pacs.pacsChecked === true) {
+                    this.checkedOtherPacs.push(pacs);
+                }
+            }
+            var compressType = void 0;
+            if (!this.isCompression) {
+                compressType = "-1";
+            }
+            else {
+                compressType = this.selectedTransferCompress;
+            }
+            this.databaseService.doTransfer(this.studies, this.seriesList, this.checkedImages, this.checkedOtherPacs, this.isCheckAll, compressType, this.isCreateNewGuid).subscribe();
+        }
+        else {
+            var strLastExportPatientInfoConfig = "8";
+            if (!this.isRemovePatientInfo && !this.isRemoveInstitutionName) {
+                strLastExportPatientInfoConfig = "7";
+            }
+            else if (!this.isRemovePatientInfo && this.isRemoveInstitutionName) {
+                strLastExportPatientInfoConfig = "6";
+            }
+            else if (this.isRemovePatientInfo && !this.isRemoveInstitutionName) {
+                strLastExportPatientInfoConfig = "1";
+            }
+            else if (this.isRemovePatientInfo && this.isRemoveInstitutionName) {
+                strLastExportPatientInfoConfig = "8";
+            }
+        }
         this.dialogRef.close();
     };
     ExportStudyComponent.prototype.refreshImage = function () {
         var _this = this;
         this.databaseService.getStudy(this.study.id).subscribe(function (data) {
+            _this.imageList = new Array();
             for (var _i = 0, _a = data.seriesList; _i < _a.length; _i++) {
                 var series = _a[_i];
                 for (var _b = 0, _c = series.imageList; _b < _c.length; _b++) {
                     var image = _c[_b];
-                    _this.getImageFromService(image);
+                    _this.imageList.push(image);
                 }
             }
         }, function (error) {
             console.log(error);
         });
     };
-    ExportStudyComponent.prototype.createImageFromBlob = function (image) {
+    ExportStudyComponent.prototype.onPacsIconClick = function () {
+        this.isShowPacs = true;
+    };
+    ExportStudyComponent.prototype.onMediaIconClick = function () {
+        this.isShowPacs = false;
+    };
+    ExportStudyComponent.prototype.checkAllImages = function () {
         var _this = this;
-        var reader = new FileReader();
-        reader.addEventListener("load", function () {
-            _this.thumbnailToShow = reader.result;
-            _this.thumbnails.push(_this.thumbnailToShow);
-        }, false);
-        if (image) {
-            reader.readAsDataURL(image);
+        this.isCheckAll = !this.isCheckedAllModel;
+        if (this.childImages.length === 0) {
+            this.childImages.changes.subscribe(function () {
+                _this.setCheckAllImages();
+            });
+        }
+        else {
+            this.setCheckAllImages();
         }
     };
-    ExportStudyComponent.prototype.getImageFromService = function (image) {
+    ExportStudyComponent.prototype.setCheckAllImages = function () {
+        if (!this.isCheckedAllModel) {
+            this.childImages.forEach(function (child) { return child.setSelect(true); });
+            this.isCheckedAllModel = true;
+        }
+        else {
+            this.childImages.forEach(function (child) { return child.setSelect(false); });
+            this.isCheckedAllModel = false;
+        }
+        this.setIsCheckedImage();
+    };
+    ExportStudyComponent.prototype.getPacsList = function () {
         var _this = this;
-        this.dicomImageService.getThumbnailFile(image).subscribe(function (data) {
-            _this.createImageFromBlob(data);
-        }, function (error) {
-            console.log(error);
+        this.databaseService.getOtherPacs().subscribe(function (pacsList) {
+            _this.pacsList = new Array();
+            _this.pacsList = pacsList;
         });
     };
-    ExportStudyComponent.prototype.onPacsIconClick = function () {
+    ExportStudyComponent.prototype.appThumbnailClicked = function () {
+        var _this = this;
+        this.isCheckedAllModel = true;
+        if (this.childImages.length !== 0) {
+            this.childImages.forEach(function (child) {
+                if (!child.isSelected()) {
+                    _this.isCheckedAllModel = false;
+                }
+            });
+        }
+        this.setIsCheckedImage();
     };
+    ExportStudyComponent.prototype.setIsCheckedImage = function () {
+        var _this = this;
+        this.isNoCheckedImage = true;
+        this.childImages.forEach(function (child) {
+            if (child.isSelected()) {
+                _this.isNoCheckedImage = false;
+            }
+        });
+    };
+    ExportStudyComponent.prototype.onPacsCheckChanged = function () {
+        this.isNoCheckedPacs = true;
+        for (var _i = 0, _a = this.pacsList; _i < _a.length; _i++) {
+            var pacs = _a[_i];
+            if (pacs.pacsChecked) {
+                this.isNoCheckedPacs = false;
+                break;
+            }
+        }
+    };
+    __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChildren"])(_viewer_shell_navigation_thumbnail_thumbnail_component__WEBPACK_IMPORTED_MODULE_7__["ThumbnailComponent"]),
+        __metadata("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_0__["QueryList"])
+    ], ExportStudyComponent.prototype, "childImages", void 0);
     ExportStudyComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-export-study',
@@ -10686,7 +11264,7 @@ var PatientEditComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n    <table id=\"tblStudies\" class=\"table table-bordered table-condensed\">\r\n        <thead>\r\n            <tr id=\"trStudiesHeader\">\r\n                <th>\r\n                </th>\r\n                <th>\r\n                </th>\r\n                <th *ngFor=\"let col of worklistService.worklistColumns \" nowrap>\r\n                    <div id=\"headContent\" class=\"worklistHeader\">\r\n                        <table>\r\n                            <tr>\r\n                                <td>\r\n                                    <div (click)=\"onWorklistHeaderClicked(col.columnId)\">{{col.columnText}}</div>\r\n                                </td>\r\n                                <td>\r\n                                    <i id=\"orderIcon\" *ngIf=\"col.columnId == orderHeader\" [className]=\"isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'\"></i>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </th>\r\n            </tr>\r\n            <tr id=\"trStudiesQuery\">\r\n                <td>\r\n                    <input type=\"checkbox\" (click)=\"onAllStudyChecked($event)\" (change)=\"onCheckStudyChanged()\" />\r\n                </td>\r\n                <td></td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\">\r\n                    <div *ngIf=\"col.controlType == 'TextBox'\">\r\n                        <input type=\"text\" [(ngModel)]=\"col.shortcutType[col.columnId]\" />\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'DropDownList'\">\r\n                        <div *ngIf=\"col.columnId == 'studyDate'; else notStudyDate\">\r\n                            <div>\r\n                                <select *ngIf=\"!initStudyDate; else showStudyDateRange\" [(ngModel)]=\"col.shortcutType[col.columnId]\" (change)=\"onStudyDateChangeSelect($event.target.selectedIndex)\">\r\n                                    <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                                </select>\r\n                                <ng-template #showStudyDateRange>\r\n                                    <table (click)=\"onStudyDateRangeTableClicked()\">\r\n                                        <tr>\r\n                                            <td>\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" [(ngModel)]=\"worklistService.shortcut.studyDateFrom\"/>\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker1></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                            <td id=\"tdStudyDateFrom\">\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker2\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"To\" [(ngModel)]=\"worklistService.shortcut.studyDateTo\" />\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker2></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                        </tr>\r\n                                    </table>\r\n                                </ng-template>\r\n                            </div>\r\n                        </div>\r\n                        <ng-template #notStudyDate>\r\n                            <select [(ngModel)]=\"col.shortcutType[col.columnId]\">\r\n                                <option value=\"\">All</option>\r\n                                <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                            </select>\r\n                        </ng-template>\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'Calendar'\">\r\n                        <table>\r\n                            <tr>\r\n                                <td id=\"no-border\">\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" (dateChange)=\"fromDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateFrom\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker1></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                                <td>\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker2\" [min]=\"toMinDate\" [max]=\"toMaxDate\" placeholder=\"To\" (dateChange)=\"toDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateTo\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker2></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let study of worklistService.studies\">\r\n                <td>\r\n                    <input type=\"checkbox\" [(ngModel)]=\"study.studyChecked\" (change)=\"onCheckStudyChanged()\" />\r\n                </td>\r\n                <td>\r\n                    <div *ngIf=\"study.scanStatus == 'Ended'; else scanStatusCompleted\" class=\"setReadCover\">\r\n                        <button class=\"setRead\" role=\"button\" title=\"Set Read\" (click)=\"onSetRead(study)\"></button>\r\n                    </div>\r\n                    <ng-template #scanStatusCompleted>\r\n                        <div class=\"setUnreadCover\">\r\n                            <button class=\"setUnread\" role=\"button\" title=\"Set Unread\" (click)=\"onSetUnread(study)\"></button>\r\n                        </div>\r\n                    </ng-template>\r\n                </td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\" (click)=\"onStudyChecked(study)\" nowrap>\r\n                    <div class=\"patientIdCol\" *ngIf=\"col.columnId == 'patientId'; else notPatientId\">\r\n                        <div *ngIf=\"study['instanceAvailability'] === 'Online'; else offlineStudy\" class=\"onlineStudy\" (click)=\"doShowStudy(study)\">\r\n                            {{study.patient[col.columnId]}}\r\n                        </div>\r\n                        <ng-template #offlineStudy>\r\n                            <div class=\"offlineStudy\">\r\n                                {{study.patient[col.columnId]}}\r\n                            </div>\r\n                        </ng-template>\r\n                    </div>\r\n                    <ng-template #notPatientId>\r\n                        <div *ngIf=\"study.patient[col.columnId]; else onlyStudy\">{{study.patient[col.columnId]}}</div>\r\n                        <ng-template #onlyStudy>\r\n                            <div *ngIf=\"col.columnId != 'bodyPartExamined'; else bodyPart\">{{study[col.columnId]}}</div>\r\n                            <ng-template #bodyPart>\r\n                                <span *ngFor=\"let bodyPart of study.bodyPartList; let i = index\">\r\n                                    <span *ngIf=\"i != 0\">\r\n                                        ,\r\n                                    </span>\r\n                                    {{bodyPart}}\r\n                                </span>\r\n                            </ng-template>\r\n                        </ng-template>\r\n                    </ng-template>\r\n                </td>\r\n            </tr>\r\n        </tbody>\r\n        <tfoot>\r\n            <tr id=\"trFoot\">\r\n                <td colspan=\"5\">\r\n                    <ul>\r\n                        <li>\r\n                            <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(1)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">First</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onPrevPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">Prev</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onNextPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Next</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(worklistService.pageCount)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Last</button>\r\n                        </li>\r\n                        <li>\r\n                            <select id=\"ddlPageIndex\" [(ngModel)]=\"currentPage\">\r\n                                <option *ngFor=\"let page of worklistService.pages;\">{{page+1}}</option>\r\n                            </select>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(currentPage)\" [disabled]=\"worklistService.pageCount == 1\">Goto</button>\r\n                        </li>\r\n                    </ul>\r\n                </td>\r\n            </tr>\r\n        </tfoot>\r\n    </table>\r\n</div>\r\n\r\n<mat-progress-spinner [style.visibility]=\"worklistService.querying? 'visible' : 'hidden'\" class=\"loading-shade\"\r\n                      [color]=\"color\"\r\n                      [mode]=\"mode\"\r\n                      [value]=\"value\">\r\n</mat-progress-spinner>\r\n"
+module.exports = "<div>\r\n    <table id=\"tblStudies\" class=\"table table-bordered table-condensed\">\r\n        <thead>\r\n            <tr id=\"trStudiesHeader\">\r\n                <th>\r\n                </th>\r\n                <th>\r\n                </th>\r\n                <th *ngFor=\"let col of worklistService.worklistColumns \" nowrap>\r\n                    <div id=\"headContent\" class=\"worklistHeader\">\r\n                        <table>\r\n                            <tr>\r\n                                <td>\r\n                                    <div (click)=\"onWorklistHeaderClicked(col.columnId)\">{{col.columnText}}</div>\r\n                                </td>\r\n                                <td>\r\n                                    <i id=\"orderIcon\" *ngIf=\"col.columnId == orderHeader\" [className]=\"isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'\"></i>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </th>\r\n            </tr>\r\n            <tr id=\"trStudiesQuery\">\r\n                <td>\r\n                    <input type=\"checkbox\" (click)=\"onAllStudyChecked($event)\" (change)=\"onCheckStudyChanged()\"/>\r\n                </td>\r\n                <td></td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\">\r\n                    <div *ngIf=\"col.controlType == 'TextBox'\">\r\n                        <input type=\"text\" [(ngModel)]=\"col.shortcutType[col.columnId]\" />\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'DropDownList'\">\r\n                        <div *ngIf=\"col.columnId == 'studyDate'; else notStudyDate\">\r\n                            <div>\r\n                                <select *ngIf=\"!initStudyDate; else showStudyDateRange\" [(ngModel)]=\"col.shortcutType[col.columnId]\" (change)=\"onStudyDateChangeSelect($event.target.selectedIndex)\">\r\n                                    <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                                </select>\r\n                                <ng-template #showStudyDateRange>\r\n                                    <table (click)=\"onStudyDateRangeTableClicked()\">\r\n                                        <tr>\r\n                                            <td>\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" [(ngModel)]=\"worklistService.shortcut.studyDateFrom\"/>\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker1></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                            <td id=\"tdStudyDateFrom\">\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker2\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"To\" [(ngModel)]=\"worklistService.shortcut.studyDateTo\" />\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker2></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                        </tr>\r\n                                    </table>\r\n                                </ng-template>\r\n                            </div>\r\n                        </div>\r\n                        <ng-template #notStudyDate>\r\n                            <select [(ngModel)]=\"col.shortcutType[col.columnId]\">\r\n                                <option value=\"\">All</option>\r\n                                <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                            </select>\r\n                        </ng-template>\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'Calendar'\">\r\n                        <table>\r\n                            <tr>\r\n                                <td id=\"no-border\">\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" (dateChange)=\"fromDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateFrom\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker1></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                                <td>\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker2\" [min]=\"toMinDate\" [max]=\"toMaxDate\" placeholder=\"To\" (dateChange)=\"toDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateTo\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker2></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let study of worklistService.studies\">\r\n                <td>\r\n                    <input type=\"checkbox\" [(ngModel)]=\"study.studyChecked\" (change)=\"onCheckStudyChanged()\" />\r\n                </td>\r\n                <td>\r\n                    <div *ngIf=\"study.scanStatus == 'Ended'; else scanStatusCompleted\" class=\"setReadCover\">\r\n                        <button class=\"setRead\" role=\"button\" title=\"Set Read\" (click)=\"onSetRead(study)\"></button>\r\n                    </div>\r\n                    <ng-template #scanStatusCompleted>\r\n                        <div class=\"setUnreadCover\">\r\n                            <button class=\"setUnread\" role=\"button\" title=\"Set Unread\" (click)=\"onSetUnread(study)\"></button>\r\n                        </div>\r\n                    </ng-template>\r\n                </td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\" (click)=\"onStudyChecked(study)\" nowrap>\r\n                    <div class=\"patientIdCol\" *ngIf=\"col.columnId == 'patientId'; else notPatientId\">\r\n                        <div *ngIf=\"study['instanceAvailability'] === 'Online'; else offlineStudy\" class=\"onlineStudy\" (click)=\"doShowStudy(study)\">\r\n                            {{study.patient[col.columnId]}}\r\n                        </div>\r\n                        <ng-template #offlineStudy>\r\n                            <div class=\"offlineStudy\">\r\n                                {{study.patient[col.columnId]}}\r\n                            </div>\r\n                        </ng-template>\r\n                    </div>\r\n                    <ng-template #notPatientId>\r\n                        <div *ngIf=\"study.patient[col.columnId]; else onlyStudy\">{{study.patient[col.columnId]}}</div>\r\n                        <ng-template #onlyStudy>\r\n                            <div *ngIf=\"col.columnId != 'bodyPartExamined'; else bodyPart\">{{study[col.columnId]}}</div>\r\n                            <ng-template #bodyPart>\r\n                                <span *ngFor=\"let bodyPart of study.bodyPartList; let i = index\">\r\n                                    <span *ngIf=\"i != 0\">\r\n                                        ,\r\n                                    </span>\r\n                                    {{bodyPart}}\r\n                                </span>\r\n                            </ng-template>\r\n                        </ng-template>\r\n                    </ng-template>\r\n                </td>\r\n            </tr>\r\n        </tbody>\r\n        <tfoot>\r\n            <tr id=\"trFoot\">\r\n                <td colspan=\"5\">\r\n                    <ul>\r\n                        <li>\r\n                            <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(1)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">First</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onPrevPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">Prev</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onNextPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Next</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(worklistService.pageCount)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Last</button>\r\n                        </li>\r\n                        <li>\r\n                            <select id=\"ddlPageIndex\" [(ngModel)]=\"currentPage\">\r\n                                <option *ngFor=\"let page of worklistService.pages;\">{{page+1}}</option>\r\n                            </select>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(currentPage)\" [disabled]=\"worklistService.pageCount == 1\">Goto</button>\r\n                        </li>\r\n                    </ul>\r\n                </td>\r\n            </tr>\r\n        </tfoot>\r\n    </table>\r\n</div>\r\n\r\n<mat-progress-spinner [style.visibility]=\"worklistService.querying? 'visible' : 'hidden'\" class=\"loading-shade\"\r\n                      [color]=\"color\"\r\n                      [mode]=\"mode\"\r\n                      [value]=\"value\">\r\n</mat-progress-spinner>\r\n"
 
 /***/ }),
 
@@ -10801,7 +11379,7 @@ var WorklistComponent = /** @class */ (function () {
         this.onCheckStudyChanged();
     };
     WorklistComponent.prototype.onAllStudyChecked = function (event) {
-        this.worklistService.studies.forEach(function (study) { return study.studyChecked = event.target.studyChecked; });
+        this.worklistService.studies.forEach(function (study) { return study.studyChecked = event.target.checked; });
     };
     WorklistComponent.prototype.doShowStudy = function (study) {
         study.studyChecked = true;
@@ -11180,13 +11758,29 @@ var WindowLevelData = /** @class */ (function () {
 /*!*****************************************************!*\
   !*** ./src/app/models/dropdown-button-menu-data.ts ***!
   \*****************************************************/
-/*! exports provided: SelectedButtonData, ButtonStyleToken */
+/*! exports provided: ToolbarButtonTypeEnum, ToolbarButtonData, SelectedButtonData, ButtonStyleToken */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ToolbarButtonTypeEnum", function() { return ToolbarButtonTypeEnum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ToolbarButtonData", function() { return ToolbarButtonData; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SelectedButtonData", function() { return SelectedButtonData; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ButtonStyleToken", function() { return ButtonStyleToken; });
+var ToolbarButtonTypeEnum;
+(function (ToolbarButtonTypeEnum) {
+    ToolbarButtonTypeEnum[ToolbarButtonTypeEnum["SingleButton"] = 0] = "SingleButton";
+    ToolbarButtonTypeEnum[ToolbarButtonTypeEnum["ListButton"] = 1] = "ListButton";
+    ToolbarButtonTypeEnum[ToolbarButtonTypeEnum["Divider"] = 2] = "Divider";
+})(ToolbarButtonTypeEnum || (ToolbarButtonTypeEnum = {}));
+var ToolbarButtonData = /** @class */ (function () {
+    function ToolbarButtonData(buttonType, buttonData) {
+        this.buttonType = buttonType;
+        this.buttonData = buttonData;
+    }
+    return ToolbarButtonData;
+}());
+
 var SelectedButtonData = /** @class */ (function () {
     function SelectedButtonData() {
     }
@@ -11256,6 +11850,198 @@ var ImageHangingData = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/models/image-operation.ts":
+/*!*******************************************!*\
+  !*** ./src/app/models/image-operation.ts ***!
+  \*******************************************/
+/*! exports provided: ImageInteractionEnum, ImageInteractionData, ImageOperationTargetEnum, ImageOperationEnum, ImageContextEnum, ImageContextData, ImageOperationData, ShellRuntimeData */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageInteractionEnum", function() { return ImageInteractionEnum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageInteractionData", function() { return ImageInteractionData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageOperationTargetEnum", function() { return ImageOperationTargetEnum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageOperationEnum", function() { return ImageOperationEnum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageContextEnum", function() { return ImageContextEnum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageContextData", function() { return ImageContextData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageOperationData", function() { return ImageOperationData; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ShellRuntimeData", function() { return ShellRuntimeData; });
+var ImageInteractionEnum;
+(function (ImageInteractionEnum) {
+    ImageInteractionEnum[ImageInteractionEnum["SelectThumbnailInNavigator"] = 0] = "SelectThumbnailInNavigator";
+    ImageInteractionEnum[ImageInteractionEnum["ChangeImageLayoutForSelectedGroup"] = 1] = "ChangeImageLayoutForSelectedGroup";
+    ImageInteractionEnum[ImageInteractionEnum["AddSelectImage"] = 2] = "AddSelectImage";
+})(ImageInteractionEnum || (ImageInteractionEnum = {}));
+var ImageInteractionData = /** @class */ (function () {
+    function ImageInteractionData(interactionType, interactionPara) {
+        this.interactionType = interactionType;
+        this.interactionPara = interactionPara;
+    }
+    ImageInteractionData.prototype.getPssiImage = function () {
+        return this.image;
+    };
+    ImageInteractionData.prototype.setPssiImage = function (image) {
+        this.image = image;
+    };
+    ImageInteractionData.prototype.setImageData = function (viewerImageData) {
+        this.viewerImageData = viewerImageData;
+        this.setPssiImage(viewerImageData.image);
+        this.setGroupData(viewerImageData.groupData);
+    };
+    ImageInteractionData.prototype.getImageData = function () {
+        return this.viewerImageData;
+    };
+    ImageInteractionData.prototype.setGroupData = function (viewerGroupData) {
+        this.viewerGroupData = viewerGroupData;
+        this.setShellData(viewerGroupData.viewerShellData);
+    };
+    ImageInteractionData.prototype.getGroupData = function () {
+        return this.viewerGroupData;
+    };
+    ImageInteractionData.prototype.setShellData = function (viewerShellData) {
+        this.viewerShellData = viewerShellData;
+    };
+    ImageInteractionData.prototype.getShellData = function () {
+        return this.viewerShellData;
+    };
+    ImageInteractionData.prototype.sameImageData = function (viewerImageData) {
+        return this.viewerImageData === viewerImageData;
+    };
+    ImageInteractionData.prototype.sameGroupData = function (viewerGroupData) {
+        return this.viewerGroupData === viewerGroupData;
+    };
+    ImageInteractionData.prototype.sameShellData = function (viewerShellData) {
+        return this.viewerShellData === viewerShellData;
+    };
+    ImageInteractionData.prototype.sameShellByPssiImage = function (image) {
+        if (!image)
+            return false;
+        if (!this.viewerShellData) {
+            alert("ImageInteractionData.sameShellByPssiImage() => Internal error, viewerShellData must NOT be undefined");
+            return false;
+        }
+        return this.viewerShellData.sameShell(image);
+    };
+    ImageInteractionData.prototype.getType = function () {
+        return this.interactionType;
+    };
+    ImageInteractionData.prototype.getPara = function () {
+        return this.interactionPara;
+    };
+    return ImageInteractionData;
+}());
+
+var ImageOperationTargetEnum;
+(function (ImageOperationTargetEnum) {
+    ImageOperationTargetEnum[ImageOperationTargetEnum["ForAllImages"] = 1] = "ForAllImages";
+    ImageOperationTargetEnum[ImageOperationTargetEnum["ForSelectedImages"] = 20] = "ForSelectedImages";
+    ImageOperationTargetEnum[ImageOperationTargetEnum["ForClickedImage"] = 50] = "ForClickedImage";
+})(ImageOperationTargetEnum || (ImageOperationTargetEnum = {}));
+var ImageOperationEnum;
+(function (ImageOperationEnum) {
+    // Operation takes effect for all images
+    ImageOperationEnum[ImageOperationEnum["SetContext"] = 1] = "SetContext";
+    ImageOperationEnum[ImageOperationEnum["ShowAnnotation"] = 2] = "ShowAnnotation";
+    ImageOperationEnum[ImageOperationEnum["ShowTextOverlay"] = 3] = "ShowTextOverlay";
+    ImageOperationEnum[ImageOperationEnum["ShowRuler"] = 4] = "ShowRuler";
+    ImageOperationEnum[ImageOperationEnum["ShowGraphicOverlay"] = 5] = "ShowGraphicOverlay";
+    ImageOperationEnum[ImageOperationEnum["SelectOneImageInSelectedGroup"] = 6] = "SelectOneImageInSelectedGroup";
+    ImageOperationEnum[ImageOperationEnum["SelectAllImagesInSelectedGroup"] = 7] = "SelectAllImagesInSelectedGroup";
+    ImageOperationEnum[ImageOperationEnum["SelectAllVisibleImagesInSelectedGroup"] = 8] = "SelectAllVisibleImagesInSelectedGroup";
+    ImageOperationEnum[ImageOperationEnum["SelectAllVisibleImages"] = 9] = "SelectAllVisibleImages";
+    ImageOperationEnum[ImageOperationEnum["SelectAllImages"] = 10] = "SelectAllImages";
+    ImageOperationEnum[ImageOperationEnum["DeselectAllImages"] = 11] = "DeselectAllImages";
+    ImageOperationEnum[ImageOperationEnum["ClickImageInViewer"] = 12] = "ClickImageInViewer";
+    // Operation takes effect for all selected images
+    ImageOperationEnum[ImageOperationEnum["DisplayImageInGroup"] = 20] = "DisplayImageInGroup";
+    ImageOperationEnum[ImageOperationEnum["RotateCwSelectedImage"] = 21] = "RotateCwSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["RotateCcwSelectedImage"] = 22] = "RotateCcwSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["FlipHorizontalSelectedImage"] = 23] = "FlipHorizontalSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["FlipVerticalSelectedImage"] = 24] = "FlipVerticalSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["InvertSelectedImage"] = 25] = "InvertSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["SaveSelectedImage"] = 26] = "SaveSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["FitHeightSelectedImage"] = 27] = "FitHeightSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["FitWidthSelectedImage"] = 28] = "FitWidthSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["FitWindowSelectedImage"] = 29] = "FitWindowSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["FitOriginalSelectedImage"] = 30] = "FitOriginalSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["ResetSelectedImage"] = 31] = "ResetSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["ManualWlSelectedImage"] = 32] = "ManualWlSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["ToggleKeyImageSelectedImage"] = 33] = "ToggleKeyImageSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["MoveSelectedImage"] = 34] = "MoveSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["ZoomSelectedImage"] = 35] = "ZoomSelectedImage";
+    ImageOperationEnum[ImageOperationEnum["WlSelectedImage"] = 36] = "WlSelectedImage";
+    // Operation takes effect for clicked image
+    ImageOperationEnum[ImageOperationEnum["DeleteAnnotation"] = 50] = "DeleteAnnotation";
+    ImageOperationEnum[ImageOperationEnum["DisplayFramesInClickedImage"] = 51] = "DisplayFramesInClickedImage";
+    ImageOperationEnum[ImageOperationEnum["AddMarker"] = 52] = "AddMarker";
+})(ImageOperationEnum || (ImageOperationEnum = {}));
+var ImageContextEnum;
+(function (ImageContextEnum) {
+    ImageContextEnum[ImageContextEnum["Select"] = 1] = "Select";
+    ImageContextEnum[ImageContextEnum["Pan"] = 2] = "Pan";
+    ImageContextEnum[ImageContextEnum["Wl"] = 3] = "Wl";
+    ImageContextEnum[ImageContextEnum["Zoom"] = 4] = "Zoom";
+    ImageContextEnum[ImageContextEnum["Magnify"] = 5] = "Magnify";
+    ImageContextEnum[ImageContextEnum["RoiZoom"] = 6] = "RoiZoom";
+    ImageContextEnum[ImageContextEnum["CreateAnn"] = 7] = "CreateAnn";
+    ImageContextEnum[ImageContextEnum["RoiWl"] = 8] = "RoiWl";
+    ImageContextEnum[ImageContextEnum["SelectAnn"] = 9] = "SelectAnn";
+})(ImageContextEnum || (ImageContextEnum = {}));
+var ImageContextData = /** @class */ (function () {
+    function ImageContextData(imageContextType, imageContextPara) {
+        if (imageContextPara === void 0) { imageContextPara = undefined; }
+        this.imageContextType = imageContextType;
+        this.imageContextPara = imageContextPara;
+    }
+    return ImageContextData;
+}());
+
+var ImageOperationData = /** @class */ (function () {
+    function ImageOperationData(shellId, operationType, operationPara) {
+        if (operationPara === void 0) { operationPara = undefined; }
+        this.shellId = shellId;
+        this.operationType = operationType;
+        this.operationPara = operationPara;
+        if (operationType >= ImageOperationEnum.DeleteAnnotation) {
+            this.operationTarget = ImageOperationTargetEnum.ForClickedImage;
+        }
+        else if (operationType >= ImageOperationEnum.RotateCwSelectedImage) {
+            this.operationTarget = ImageOperationTargetEnum.ForSelectedImages;
+        }
+        else {
+            this.operationTarget = ImageOperationTargetEnum.ForAllImages;
+        }
+    }
+    ImageOperationData.prototype.needResponse = function (shellId, selected, clicked) {
+        if (selected === void 0) { selected = true; }
+        if (clicked === void 0) { clicked = true; }
+        if (this.shellId !== shellId)
+            return false;
+        if (this.operationTarget === ImageOperationTargetEnum.ForAllImages)
+            return true;
+        if (this.operationTarget === ImageOperationTargetEnum.ForSelectedImages && selected)
+            return true;
+        if (this.operationTarget === ImageOperationTargetEnum.ForClickedImage && clicked)
+            return true;
+        return false;
+    };
+    return ImageOperationData;
+}());
+
+var ShellRuntimeData = /** @class */ (function () {
+    function ShellRuntimeData() {
+        this.imageSelectType = ImageOperationEnum.SelectOneImageInSelectedGroup;
+        this.contextData = new ImageContextData(ImageContextEnum.Select);
+        this.stampFileName = "";
+    }
+    return ShellRuntimeData;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/models/layout.ts":
 /*!**********************************!*\
   !*** ./src/app/models/layout.ts ***!
@@ -11309,6 +12095,9 @@ var LayoutMatrix = /** @class */ (function () {
     };
     LayoutMatrix.prototype.equal = function (layoutMatrix) {
         return this.rowCount === layoutMatrix.rowCount && this.colCount === layoutMatrix.colCount;
+    };
+    LayoutMatrix.prototype.toNumber = function () {
+        return this.rowCount * 10 + this.colCount;
     };
     return LayoutMatrix;
 }());
@@ -11452,7 +12241,7 @@ var GraphicOverlayData = /** @class */ (function () {
 /*!********************************!*\
   !*** ./src/app/models/pssi.ts ***!
   \********************************/
-/*! exports provided: Pssi, Patient, Study, Series, Image, MultiframeImage, WorklistColumn, RecWorklistData, RecOfflineImageInfo, StudyTemp */
+/*! exports provided: Pssi, Patient, Study, Series, Image, MultiframeImage, WorklistColumn, RecWorklistData, RecOfflineImageInfo, OtherPacs, StudyTemp */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11466,6 +12255,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WorklistColumn", function() { return WorklistColumn; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecWorklistData", function() { return RecWorklistData; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RecOfflineImageInfo", function() { return RecOfflineImageInfo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OtherPacs", function() { return OtherPacs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "StudyTemp", function() { return StudyTemp; });
 /* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/annotation */ "./src/app/models/annotation.ts");
 var __extends = (undefined && undefined.__extends) || (function () {
@@ -11610,6 +12400,9 @@ var Image = /** @class */ (function (_super) {
     function Image() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.graphicOverlayDataList = [];
+        _this.cornerStoneImageList = [];
+        _this.frameCount = 1;
+        _this.frameIndex = 0;
         return _this;
     }
     Image.clone = function (image, cloneChild) {
@@ -11676,9 +12469,9 @@ var Image = /** @class */ (function (_super) {
         return scale;
     };
     Image.prototype.getPixelSpacing = function () {
-        var tagValue = this.cornerStoneImage.data.string("x00280030");
+        var tagValue = this.cornerStoneImageList[0].data.string("x00280030");
         if (!tagValue) {
-            tagValue = this.cornerStoneImage.data.string("x00181164");
+            tagValue = this.cornerStoneImageList[0].data.string("x00181164");
         }
         if (!tagValue) {
             return null;
@@ -11692,7 +12485,7 @@ var Image = /** @class */ (function (_super) {
         pixelSpacing.cy = Number(valueList[1]);
         return pixelSpacing;
     };
-    Image.prototype.setCornerStoneImage = function (ctImage) {
+    Image.prototype.setCornerStoneImage = function (ctImage, frameIndex) {
         var annData = undefined;
         var element = ctImage.data.elements["x0011101d"];
         if (element) {
@@ -11702,7 +12495,25 @@ var Image = /** @class */ (function (_super) {
             }
         }
         this.annData = annData;
-        this.cornerStoneImage = ctImage;
+        this.cornerStoneImageList[frameIndex] = ctImage;
+        this.frameCount = Number(ctImage.data.intString("x00280008"));
+    };
+    Image.prototype.getNextFrameIndex = function (wheelUp) {
+        var nextFrameIndex = -1;
+        if (wheelUp) {
+            if (this.frameIndex > 0) {
+                nextFrameIndex = this.frameIndex - 1;
+            }
+        }
+        else {
+            if (this.frameIndex < this.frameCount - 1) {
+                nextFrameIndex = this.frameIndex + 1;
+            }
+        }
+        return nextFrameIndex;
+    };
+    Image.prototype.isValidFrameIndex = function (index) {
+        return index >= 0 && index < this.frameCount;
     };
     return Image;
 }(Pssi));
@@ -11731,6 +12542,12 @@ var RecOfflineImageInfo = /** @class */ (function () {
     function RecOfflineImageInfo() {
     }
     return RecOfflineImageInfo;
+}());
+
+var OtherPacs = /** @class */ (function () {
+    function OtherPacs() {
+    }
+    return OtherPacs;
 }());
 
 var StudyTemp = /** @class */ (function (_super) {
@@ -11877,8 +12694,10 @@ var Shortcut = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ViewerGroupData", function() { return ViewerGroupData; });
-/* harmony import */ var _models_layout__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/layout */ "./src/app/models/layout.ts");
-/* harmony import */ var _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/viewer-image-data */ "./src/app/models/viewer-image-data.ts");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/image-operation */ "./src/app/models/image-operation.ts");
+/* harmony import */ var _models_layout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/layout */ "./src/app/models/layout.ts");
+/* harmony import */ var _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/viewer-image-data */ "./src/app/models/viewer-image-data.ts");
+
 
 
 var ViewerGroupData = /** @class */ (function () {
@@ -11886,6 +12705,9 @@ var ViewerGroupData = /** @class */ (function () {
         this.imageCount = 0;
         this.imageDataList = new Array();
         this.empty = false;
+        this.selected = false;
+        this.hide = true;
+        this.pageIndex = 0;
         this.viewerShellData = viewerShellData;
         this.imageHangingProtocol = imageHangingProtocol;
         this.position = position;
@@ -11906,11 +12728,11 @@ var ViewerGroupData = /** @class */ (function () {
         this.imageDataList.length = 0;
         this.imageCount = 0;
     };
-    ViewerGroupData.prototype.getImage = function (pageIndex, rowIndex, colIndex) {
+    ViewerGroupData.prototype.getImage = function (rowIndex, colIndex) {
         if (this.imageDataList.length === 0) {
             return null;
         }
-        var imageIndex = pageIndex * this.imageMatrix.rowCount * this.imageMatrix.colCount + rowIndex * this.imageMatrix.colCount + colIndex;
+        var imageIndex = this.pageIndex * this.imageMatrix.rowCount * this.imageMatrix.colCount + rowIndex * this.imageMatrix.colCount + colIndex;
         if (imageIndex >= this.imageDataList.length) {
             alert("getImage() => Invalid image index : " + imageIndex);
             return null;
@@ -11918,7 +12740,7 @@ var ViewerGroupData = /** @class */ (function () {
         return this.imageDataList[imageIndex];
     };
     ViewerGroupData.prototype.addImage = function (image) {
-        var imageData = new _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_1__["ViewerImageData"](this, _models_layout__WEBPACK_IMPORTED_MODULE_0__["LayoutPosition"].fromNumber(this.imageDataList.length, this.imageMatrix));
+        var imageData = new _models_viewer_image_data__WEBPACK_IMPORTED_MODULE_2__["ViewerImageData"](this, _models_layout__WEBPACK_IMPORTED_MODULE_1__["LayoutPosition"].fromNumber(this.imageDataList.length, this.imageMatrix));
         imageData.setImage(image);
         this.imageDataList.push(imageData);
     };
@@ -11927,12 +12749,12 @@ var ViewerGroupData = /** @class */ (function () {
             alert("updateImagePositionFromIndex() => Invalid image index : " + imageIndex);
             return;
         }
-        this.imageDataList[imageIndex].setPosition(_models_layout__WEBPACK_IMPORTED_MODULE_0__["LayoutPosition"].fromNumber(imageIndex, this.imageMatrix));
+        this.imageDataList[imageIndex].setPosition(_models_layout__WEBPACK_IMPORTED_MODULE_1__["LayoutPosition"].fromNumber(imageIndex, this.imageMatrix));
     };
     ViewerGroupData.prototype.setEmpty = function () {
         this.empty = true;
         this.imageCount = 1;
-        this.imageMatrix = new _models_layout__WEBPACK_IMPORTED_MODULE_0__["LayoutMatrix"](1, 1);
+        this.imageMatrix = new _models_layout__WEBPACK_IMPORTED_MODULE_1__["LayoutMatrix"](1, 1);
         this.imageDataList = new Array();
         this.addImage(null);
     };
@@ -11941,6 +12763,10 @@ var ViewerGroupData = /** @class */ (function () {
     };
     ViewerGroupData.prototype.getPageCount = function () {
         return Math.ceil(this.imageDataList.length / (this.imageMatrix.rowCount * this.imageMatrix.colCount));
+    };
+    ViewerGroupData.prototype.resetPageInfo = function () {
+        this.pageIndex = 0;
+        this.pageCount = this.getPageCount();
     };
     ViewerGroupData.prototype.removeAllEmptyImage = function () {
         while (this.imageDataList[this.imageDataList.length - 1].isEmpty()) {
@@ -11955,6 +12781,103 @@ var ViewerGroupData = /** @class */ (function () {
         var totalSize = this.getPageCount() * matrixSize;
         for (var i = this.imageDataList.length; i < totalSize; i++) {
             this.addImage(null);
+        }
+    };
+    ViewerGroupData.prototype.getViewerImageDataByImage = function (image) {
+        var result = this.imageDataList.filter(function (imageData) { return imageData.sameImage(image); });
+        if (result.length > 1) {
+            alert("ViewerGroupData.findViewerImageDataByImage() => Find same images in group data!");
+        }
+        return result.length === 0 ? undefined : result[0];
+    };
+    ViewerGroupData.prototype.sameGroup = function (image) {
+        return this.getViewerImageDataByImage(image) !== undefined;
+    };
+    ViewerGroupData.prototype.sameShell = function (image) {
+        return this.viewerShellData.getViewerImageDataByImage(image) !== undefined;
+    };
+    ViewerGroupData.prototype.setSelected = function (selected) {
+        this.selected = selected;
+        this.imageDataList.forEach(function (imageData) { return imageData.selected = selected; });
+    };
+    ViewerGroupData.prototype.isSelected = function () {
+        return this.selected;
+    };
+    ViewerGroupData.prototype.getFirstShownImage = function () {
+        var len = this.imageDataList.length;
+        for (var i = 0; i < len; i++) {
+            if (!this.imageDataList[i].hide) {
+                return this.imageDataList[i];
+            }
+        }
+        return undefined;
+    };
+    ViewerGroupData.prototype.getNextPageIndex = function (wheelUp) {
+        var nextPageIndex = -1;
+        if (wheelUp) {
+            if (this.pageIndex > 0) {
+                nextPageIndex = this.pageIndex - 1;
+            }
+        }
+        else {
+            if (this.pageIndex < this.pageCount - 1) {
+                nextPageIndex = this.pageIndex + 1;
+            }
+        }
+        return nextPageIndex;
+    };
+    ViewerGroupData.prototype.navigate = function (imageSelectType, up) {
+        var oldPageIndex = this.pageIndex;
+        if (up) {
+            if (this.pageIndex > 0) {
+                this.pageIndex--;
+            }
+        }
+        else {
+            if (this.pageIndex < this.pageCount - 1) {
+                this.pageIndex++;
+            }
+        }
+        if (oldPageIndex === this.pageIndex) {
+            return;
+        }
+        this.setSelectionForNavigate(imageSelectType, oldPageIndex);
+    };
+    ViewerGroupData.prototype.displayImage = function (imageSelectType, pageIndex) {
+        if (pageIndex < 0 || pageIndex >= this.pageCount) {
+            alert("Invalid para in ViewerGroupData.displayImage()");
+            return;
+        }
+        if (pageIndex === this.pageIndex) {
+            return;
+        }
+        var oldPageIndex = this.pageIndex;
+        this.pageIndex = pageIndex;
+        this.setSelectionForNavigate(imageSelectType, oldPageIndex);
+    };
+    ViewerGroupData.prototype.setSelectionForNavigate = function (imageSelectType, oldPageIndex) {
+        if (imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_0__["ImageOperationEnum"].SelectAllImages || imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_0__["ImageOperationEnum"].SelectAllImagesInSelectedGroup) {
+            // In SelectAllImages or SelectAllImagesInSelectedGroup mode, nothing need to do when click an image, since they all selected
+            return;
+        }
+        else if (imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_0__["ImageOperationEnum"].SelectAllVisibleImages || imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_0__["ImageOperationEnum"].SelectAllVisibleImagesInSelectedGroup) {
+            // In SelectAllVisibleImages or SelectAllVisibleImagesInSelectedGroup mode
+            var count = this.imageMatrix.rowCount * this.imageMatrix.colCount;
+            for (var i = 0; i < count; i++) {
+                this.imageDataList[this.pageIndex * count + i].selected = true;
+                this.imageDataList[oldPageIndex * count + i].selected = false;
+            }
+        }
+        else if (imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_0__["ImageOperationEnum"].SelectOneImageInSelectedGroup) {
+            // in SelectOneImageInSelectedGroup mode
+            var count = this.imageMatrix.rowCount * this.imageMatrix.colCount;
+            for (var i = 0; i < count; i++) {
+                this.imageDataList[this.pageIndex * count + i].selected = this.imageDataList[oldPageIndex * count + i].selected;
+                this.imageDataList[oldPageIndex * count + i].selected = false;
+            }
+        }
+        else {
+            alert("Invalid para in ViewerGroupData.setSelectionForNavigate()");
         }
     };
     return ViewerGroupData;
@@ -11976,12 +12899,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ViewerImageData", function() { return ViewerImageData; });
 var ViewerImageData = /** @class */ (function () {
     function ViewerImageData(viewerGroupData, position) {
+        this.selected = false;
+        this.hide = true;
         this.groupData = viewerGroupData;
         this.position = position;
         ViewerImageData.logService.debug("ViewerImageData " + this.getId() + " created!");
     }
     ViewerImageData.prototype.getId = function () {
-        return this.groupData.getId() + this.position.getId();
+        return (this.groupData && this.position) ? this.groupData.getId() + this.position.getId() : "Temp";
     };
     ViewerImageData.prototype.setPosition = function (position) {
         this.position = position;
@@ -11991,6 +12916,15 @@ var ViewerImageData = /** @class */ (function () {
     };
     ViewerImageData.prototype.isEmpty = function () {
         return this.image === null;
+    };
+    ViewerImageData.prototype.sameImage = function (image) {
+        return this.image === image;
+    };
+    ViewerImageData.prototype.sameGroup = function (image) {
+        return this.groupData.getViewerImageDataByImage(image) !== undefined;
+    };
+    ViewerImageData.prototype.sameShell = function (image) {
+        return this.groupData.viewerShellData.getViewerImageDataByImage(image) !== undefined;
     };
     return ViewerImageData;
 }());
@@ -12012,6 +12946,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _models_pssi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/pssi */ "./src/app/models/pssi.ts");
 /* harmony import */ var _models_viewer_group_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/viewer-group-data */ "./src/app/models/viewer-group-data.ts");
 /* harmony import */ var _models_layout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/layout */ "./src/app/models/layout.ts");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../models/image-operation */ "./src/app/models/image-operation.ts");
+
 
 
 
@@ -12040,6 +12976,12 @@ var ViewerShellData = /** @class */ (function () {
                 series.imageList[j].hide = false;
                 series.imageList[j].series = series;
             }
+            // Sort the images in series by ImageNo. We already query the image by ImageNo order in backend,
+            // but ImageNo is saved in DB with string format, so "10" is prior than "2" which is NOT desired,
+            // Need to adjust it to sort by number type
+            series.imageList.sort(function (n1, n2) {
+                return (Number(n1.imageNo) < Number(n2.imageNo)) ? -1 : 1;
+            });
         }
         var index = -1;
         for (var i = 0; i < this.patientList.length; i++) {
@@ -12071,6 +13013,113 @@ var ViewerShellData = /** @class */ (function () {
         var name = "";
         this.patientList.forEach(function (patient) { return name += patient.patientId + "_" + patient.patientName + " | "; });
         return name.substr(0, name.length - 3);
+    };
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Select functions
+    ViewerShellData.prototype.isImageInFirstShownAndSelectedGroup = function (image) {
+        var groupData = this.getFirstShownAndSelectedGroup();
+        if (!groupData) {
+            return false;
+        }
+        return groupData.getViewerImageDataByImage(image) !== undefined;
+    };
+    ViewerShellData.prototype.getFirstShownAndSelectedGroup = function () {
+        var len = this.groupDataList.length;
+        for (var i = 0; i < len; i++) {
+            if (!this.groupDataList[i].hide && this.groupDataList[i].isSelected()) {
+                return this.groupDataList[i];
+            }
+        }
+        return undefined;
+    };
+    ViewerShellData.prototype.getFirstShownGroup = function () {
+        var len = this.groupDataList.length;
+        for (var i = 0; i < len; i++) {
+            if (!this.groupDataList[i].hide) {
+                return this.groupDataList[i];
+            }
+        }
+        return undefined;
+    };
+    ViewerShellData.prototype.selectAllImages = function (selected) {
+        this.groupDataList.forEach(function (groupData) {
+            groupData.setSelected(selected);
+        });
+    };
+    ViewerShellData.prototype.selectAllImagesInFirstShownAndSelectedGroup = function () {
+        // There might be multiple selected and shown groups, choose the first one as the selected group
+        // Other groups will all be set to unselected
+        var firstShownAndSelectedGroup = this.getFirstShownAndSelectedGroup();
+        this.groupDataList.forEach(function (groupData) {
+            groupData.setSelected(groupData === firstShownAndSelectedGroup);
+        });
+    };
+    ViewerShellData.prototype.selectAllVisibleImages = function () {
+        var _this = this;
+        // All shown groups will be selected and all hidden groups will be unselected
+        // All shown images will be selected and all hidden images will be unselected
+        this.groupDataList.forEach(function (groupData) {
+            groupData.selected = !groupData.hide;
+            _this.syncHideAndSelectForGroup(groupData);
+        });
+    };
+    ViewerShellData.prototype.selectAllVisibleImagesInFirstShownAndSelectedGroup = function () {
+        // There might be multiple selected and shown groups, choose the first one as the selected group
+        var firstShownAndSelectedGroup = this.getFirstShownAndSelectedGroup();
+        this.selectAllVisibleImagesInGroup(firstShownAndSelectedGroup);
+    };
+    ViewerShellData.prototype.selectFirstShowImageInFirstShownGroup = function () {
+        var firstShownGroup = this.getFirstShownGroup();
+        var firstShownImage = firstShownGroup.getFirstShownImage();
+        this.selectAllImages(false);
+        firstShownGroup.selected = true;
+        firstShownImage.selected = true;
+    };
+    ViewerShellData.prototype.clickImage = function (imageSelectType, clickedImageData) {
+        if (imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SelectAllImages || imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SelectAllVisibleImages) {
+            // In SelectAllImages or SelectAllVisibleImages mode, nothing need to do when click an image, since they all selected
+            return;
+        }
+        else if (imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SelectAllVisibleImagesInSelectedGroup) {
+            // In SelectAllVisibleImagesInSelectedGroup mode
+            this.selectAllVisibleImagesInGroup(clickedImageData.groupData);
+        }
+        else if (imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SelectAllImagesInSelectedGroup) {
+            // In SelectAllImagesInSelectedGroup
+            this.selectAllImagesInGroup(clickedImageData.groupData);
+        }
+        else if (imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageOperationEnum"].SelectOneImageInSelectedGroup) {
+            this.selectAllImages(false);
+            clickedImageData.selected = true;
+            clickedImageData.groupData.selected = true;
+        }
+        else {
+            alert("Invalid para in ViewerShellData.clickImage()");
+        }
+    };
+    // Select all visible images in the given group and unselect all other images
+    ViewerShellData.prototype.selectAllVisibleImagesInGroup = function (viewerGroupData) {
+        var _this = this;
+        this.groupDataList.forEach(function (groupData) {
+            groupData.selected = groupData === viewerGroupData;
+            _this.syncHideAndSelectForGroup(groupData);
+        });
+    };
+    // Select all images in the given group and unselect all other images
+    ViewerShellData.prototype.selectAllImagesInGroup = function (viewerGroupData) {
+        this.groupDataList.forEach(function (groupData) {
+            groupData.setSelected(groupData === viewerGroupData);
+        });
+    };
+    ViewerShellData.prototype.syncHideAndSelectForGroup = function (viewerGroupData) {
+        if (viewerGroupData.selected) {
+            // Group is selected, set all shown images selected and all hidden images unselected
+            viewerGroupData.imageDataList.forEach(function (imageData) { return imageData.selected = !imageData.hide; });
+        }
+        else {
+            // Group is unselected, set all images unselected
+            viewerGroupData.imageDataList.forEach(function (imageData) { return imageData.selected = false; });
+        }
     };
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Get count
@@ -12175,6 +13224,18 @@ var ViewerShellData = /** @class */ (function () {
             return null;
         }
         return seriesList[seriesIndex];
+    };
+    ViewerShellData.prototype.getViewerImageDataByImage = function (image) {
+        for (var i = 0; i < this.groupDataList.length; i++) {
+            var imageData = this.groupDataList[i].getViewerImageDataByImage(image);
+            if (imageData) {
+                return imageData;
+            }
+        }
+        return undefined;
+    };
+    ViewerShellData.prototype.sameShell = function (image) {
+        return this.getViewerImageDataByImage(image) !== undefined;
     };
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12440,6 +13501,7 @@ var DatabaseService = /** @class */ (function () {
         this.configUrl = "config";
         this.shortcutUrl = "shortcut"; // URL to web api
         this.pssiUrl = "pssi";
+        this.worklistUrl = "worklist";
         this.overlayUrl = "overlay";
         this.id_patient = 1;
         this.id_study = 1;
@@ -12565,6 +13627,16 @@ var DatabaseService = /** @class */ (function () {
         return this.http.post(url, data, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (recWorklistData) { return _this.log('fetched recWorklistData'); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('getRecWorklistData')));
     };
+    ///** GET PACS List from the server */
+    //getPacsList(): Observable<RecWorklistData> {
+    //    const url = `${this.pssiUrl}/GetPacsList/`;
+    //    let data = { shortcut: shortcut, pageIndex: pageIndex, sortItem: sortItem };
+    //    return this.http.post<RecWorklistData>(url, data, httpOptions)
+    //        .pipe(
+    //            tap(recWorklistData => this.log('fetched recWorklistData')),
+    //            catchError(this.handleError<RecWorklistData>('getRecWorklistData'))
+    //        );
+    //}
     /** Set Key Image */
     DatabaseService.prototype.setKeyImage = function (id, marked) {
         var url = this.pssiUrl + "/setkeyimage/";
@@ -12580,15 +13652,30 @@ var DatabaseService = /** @class */ (function () {
         return this.http.post(url, data, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (recWorklistData) { return _this.log('fetched recWorklistData'); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('getRecWorklistData')));
     };
-    //getThumbnailFiles(study: Study): Observable<Blob> {
-    //    const url = `${this.pssiUrl}/GetThumbnails/`;
-    //    return this.http.post(url, study, { responseType: 'blob' });
-    //}
-    /** Set Key Image */
-    DatabaseService.prototype.transferStudy = function (study) {
-        var url = this.pssiUrl + "/transferStudy/";
-        return this.http.post(url, study, httpOptions)
+    /** Transfer Study */
+    DatabaseService.prototype.doTransfer = function (studyList, seriesList, imageList, pacsList, isCheckAll, transferCompressType, isCreateNewGuid) {
+        var url = this.worklistUrl + "/DoTransfer/";
+        var data = {
+            studyList: studyList,
+            seriesList: seriesList,
+            imageList: imageList,
+            pacsList: pacsList,
+            isCheckAll: isCheckAll,
+            transferCompressType: transferCompressType,
+            isCreateNewGuid: isCreateNewGuid
+        };
+        return this.http.post(url, data, httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('transferStudy')));
+    };
+    DatabaseService.prototype.getOtherPacs = function () {
+        var url = this.worklistUrl + "/GetOtherPacs/";
+        return this.http.post(url, "", httpOptions)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('worklistTest')));
+    };
+    DatabaseService.prototype.getTransferCompress = function () {
+        var url = this.worklistUrl + "/GetTransferCompress/";
+        return this.http.post(url, "", httpOptions)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('worklistTest')));
     };
     DatabaseService.prototype.getStudiesTest = function () {
         var aa = this.localTestData.sort(this.compareStudy);
@@ -12816,8 +13903,9 @@ var DicomImageService = /** @class */ (function () {
         var imageUrl = this.dicomImageUrl + "/thumbnail/" + image.id;
         return this.http.get(imageUrl, { responseType: "blob" });
     };
-    DicomImageService.prototype.getCornerStoneImage = function (image) {
-        var imageUri = "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom".format(this.baseUrl, image.id, 0);
+    DicomImageService.prototype.getCornerStoneImage = function (image, frameIndex) {
+        if (frameIndex === void 0) { frameIndex = 0; }
+        var imageUri = "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom".format(this.baseUrl, image.id, frameIndex);
         this.logService.info("Dicom Image Service : Downloading dicom image, url is " + imageUri);
         return cornerstone.loadImage(imageUri);
     };
@@ -12856,7 +13944,7 @@ var DicomImageService = /** @class */ (function () {
         var startY = imagePointList.reduce(function (min, p) { return p.y < min ? p.y : min; }, imagePointList[0].y);
         var endX = imagePointList.reduce(function (max, p) { return p.x > max ? p.x : max; }, imagePointList[0].x);
         var endY = imagePointList.reduce(function (max, p) { return p.y > max ? p.y : max; }, imagePointList[0].y);
-        var pixelData = image.cornerStoneImage.getPixelData();
+        var pixelData = image.cornerStoneImageList[0].getPixelData();
         var maxValue = -4096;
         var minValue = 4096;
         for (var i = startX; i <= endX; i++) {
@@ -12936,7 +14024,7 @@ var DicomImageService = /** @class */ (function () {
                 tagValue = "Measure at anatomy";
             }
             else {
-                tagValue = image.cornerStoneImage.data.string(tagString);
+                tagValue = image.cornerStoneImageList[0].data.string(tagString);
             }
         }
         return tagValue === undefined ? "" : tagValue;
@@ -12993,12 +14081,12 @@ var DicomImageService = /** @class */ (function () {
         });
     };
     DicomImageService.prototype.getGraphicOverlayData = function (image, groupString) {
-        var element = image.cornerStoneImage.data.elements[groupString + "3000"];
-        var rows = image.cornerStoneImage.data.uint16(groupString + "0010");
-        var cols = image.cornerStoneImage.data.uint16(groupString + "0011");
-        var type = image.cornerStoneImage.data.string(groupString + "0040");
-        var startX = image.cornerStoneImage.data.uint16(groupString + "0050", 0);
-        var startY = image.cornerStoneImage.data.uint16(groupString + "0050", 1);
+        var element = image.cornerStoneImageList[0].data.elements[groupString + "3000"];
+        var rows = image.cornerStoneImageList[0].data.uint16(groupString + "0010");
+        var cols = image.cornerStoneImageList[0].data.uint16(groupString + "0011");
+        var type = image.cornerStoneImageList[0].data.string(groupString + "0040");
+        var startX = image.cornerStoneImageList[0].data.uint16(groupString + "0050", 0);
+        var startY = image.cornerStoneImageList[0].data.uint16(groupString + "0050", 1);
         if (!element || !rows || !cols || !type || !startX || !startY) {
             return undefined;
         }
@@ -13011,7 +14099,7 @@ var DicomImageService = /** @class */ (function () {
         var imageWidth = image.width();
         var imageHeight = image.height();
         for (var i = 0; i < element.length; i++) {
-            var byte = image.cornerStoneImage.data.byteArray[element.dataOffset + i];
+            var byte = image.cornerStoneImageList[0].data.byteArray[element.dataOffset + i];
             if (byte === 0) {
                 continue;
             }
@@ -13029,8 +14117,8 @@ var DicomImageService = /** @class */ (function () {
                 flag = flag >> 1;
             }
         }
-        graphicOverlayData.desc = image.cornerStoneImage.data.string(groupString + "0022");
-        graphicOverlayData.label = image.cornerStoneImage.data.string(groupString + "1500");
+        graphicOverlayData.desc = image.cornerStoneImageList[0].data.string(groupString + "0022");
+        graphicOverlayData.label = image.cornerStoneImageList[0].data.string(groupString + "1500");
         return graphicOverlayData;
     };
     DicomImageService = __decorate([
@@ -13077,12 +14165,12 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 var HangingProtocolService = /** @class */ (function () {
     function HangingProtocolService(logService) {
         this.logService = logService;
-        this.defaultGroupHangingProtocol = _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"].ByStudy;
-        this.defaultImageHangingPrococal = _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["ImageHangingProtocol"].Auto;
+        this.defaultGroupHangingProtocol = _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"].BySeries;
+        this.defaultImageHangingProtocol = _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["ImageHangingProtocol"].FreeHang_1X1;
         this.groupLayoutNumberList = [11, 11, 12, 22, 22];
         this.imageLayoutNumberList = [11, 11, 12, 22, 22, 23, 23, 33];
         this.groupHangingDataList = [
-            { groupHangingProtocol: _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"].ByPatent, name: "Patient", tip: "Group Image by Paitient" },
+            { groupHangingProtocol: _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"].ByPatent, name: "Patient", tip: "Group Image by Patient" },
             { groupHangingProtocol: _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"].ByStudy, name: "Study", tip: "Group Image by Study" },
             { groupHangingProtocol: _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"].BySeries, name: "Series", tip: "Group Image by Series" },
             { groupHangingProtocol: _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"].FreeHang, name: "FreeHang", tip: "Free Hang" }
@@ -13108,14 +14196,14 @@ var HangingProtocolService = /** @class */ (function () {
     HangingProtocolService.prototype.getDefaultGroupHangingProtocol = function () {
         return this.defaultGroupHangingProtocol;
     };
-    HangingProtocolService.prototype.getDefaultImageHangingPrococal = function () {
-        return this.defaultImageHangingPrococal;
+    HangingProtocolService.prototype.getDefaultImageHangingProtocol = function () {
+        return this.defaultImageHangingProtocol;
     };
     HangingProtocolService.prototype.getGroupHangingDataList = function () {
         return this.groupHangingDataList;
     };
     HangingProtocolService.prototype.getDefaultGroupHangingData = function () {
-        return this.groupHangingDataList[1];
+        return this.groupHangingDataList[2];
     };
     HangingProtocolService.prototype.getGroupLayoutDataList = function () {
         return this.groupLayoutDataList;
@@ -13128,6 +14216,12 @@ var HangingProtocolService = /** @class */ (function () {
     };
     HangingProtocolService.prototype.getDefaultImageLayoutData = function () {
         return this.imageLayoutDataList[0];
+    };
+    HangingProtocolService.prototype.getGroupLayoutDataByMatrix = function (groupMatrix) {
+        return this.getLayoutDataByMatrix(true, groupMatrix);
+    };
+    HangingProtocolService.prototype.getImageLayoutDataByMatrix = function (imageMatrix) {
+        return this.getLayoutDataByMatrix(false, imageMatrix);
     };
     HangingProtocolService.prototype.applyGroupHangingProtocol = function (viewerShellData, groupHangingProtocol) {
         this.logService.info("HP service: applyGroupHangingProtocol to viewer " + viewerShellData.getName() + ", protocol is " + _models_hanging_protocol__WEBPACK_IMPORTED_MODULE_2__["GroupHangingProtocol"][groupHangingProtocol]);
@@ -13199,6 +14293,7 @@ var HangingProtocolService = /** @class */ (function () {
                 groupData.normalizeImageList();
             }
         }
+        groupData.resetPageInfo();
     };
     HangingProtocolService.prototype.createImageDataListOfGroup = function (groupData) {
         var groupIndex = groupData.getIndex();
@@ -13252,7 +14347,7 @@ var HangingProtocolService = /** @class */ (function () {
     HangingProtocolService.prototype.createImageDataListFromImageList = function (groupData, imageList) {
         groupData.imageDataList = new Array();
         groupData.imageCount = imageList.length;
-        groupData.imageMatrix = this.getImageLayoutMatrixFromCount(groupData.imageCount);
+        groupData.imageMatrix = _models_layout__WEBPACK_IMPORTED_MODULE_1__["LayoutMatrix"].fromNumber(groupData.imageHangingProtocol);
         for (var i = 0; i < imageList.length; i++) {
             groupData.addImage(imageList[i]);
         }
@@ -13271,6 +14366,23 @@ var HangingProtocolService = /** @class */ (function () {
         }
         return _models_layout__WEBPACK_IMPORTED_MODULE_1__["LayoutMatrix"].fromNumber(matrixNumber);
     };
+    HangingProtocolService.prototype.getLayoutDataByMatrix = function (groupLayout, matrix) {
+        var hangingProtocol = matrix.toNumber();
+        var result = groupLayout ? this.groupLayoutDataList.filter(function (groupLayoutData) { return groupLayoutData.groupHangingProtocol === hangingProtocol; }) :
+            this.imageLayoutDataList.filter(function (imageLayoutData) { return imageLayoutData.imageHangingProtocol === hangingProtocol; });
+        ;
+        var layoutType = groupLayout ? "group" : "image";
+        if (result.length === 0) {
+            alert("HangingProtocolService.getLayoutDataByMatrix() => Can NOT find " + layoutType + " layer data in " + layoutType + " layout data list!");
+        }
+        else if (result.length > 1) {
+            alert("HangingProtocolService.getLayoutDataByMatrix() => Find same " + layoutType + " layer data in " + layoutType + " layout data list!");
+        }
+        else {
+            return result[0];
+        }
+        return undefined;
+    };
     HangingProtocolService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
             providedIn: "root"
@@ -13284,65 +14396,245 @@ var HangingProtocolService = /** @class */ (function () {
 
 /***/ }),
 
-/***/ "./src/app/services/image-selector.service.ts":
-/*!****************************************************!*\
-  !*** ./src/app/services/image-selector.service.ts ***!
-  \****************************************************/
-/*! exports provided: ImageSelectorService */
+/***/ "./src/app/services/image-interaction.service.ts":
+/*!*******************************************************!*\
+  !*** ./src/app/services/image-interaction.service.ts ***!
+  \*******************************************************/
+/*! exports provided: ImageInteractionService */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageSelectorService", function() { return ImageSelectorService; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageInteractionService", function() { return ImageInteractionService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/image-operation */ "./src/app/models/image-operation.ts");
+/* harmony import */ var _services_image_operation_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/image-operation.service */ "./src/app/services/image-operation.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 
 
-var ImageSelectorService = /** @class */ (function () {
-    function ImageSelectorService() {
-        // Observable string sources
-        this.imageSelectedSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        // Observable number sources
-        this.imageLayoutChangedSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        // Observable Image sources
-        this.thumbnailSelectedSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        // Observable boolean sources
-        this.imagePageNavigatedSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        // Observable string streams
-        this.imageSelected$ = this.imageSelectedSource.asObservable();
-        // Observable number streams
-        this.imageLayoutChanged$ = this.imageLayoutChangedSource.asObservable();
-        // Observable Image sources
-        this.thumbnailSelected$ = this.thumbnailSelectedSource.asObservable();
-        // Observable boolean sources
-        this.imagePageNavigated$ = this.imagePageNavigatedSource.asObservable();
+
+
+
+var ImageInteractionService = /** @class */ (function () {
+    function ImageInteractionService(imageOperationService) {
+        this.imageOperationService = imageOperationService;
+        // Observable ImageInteractionData source
+        this.imageInteractionSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+        // Observable ImageInteractionData sources
+        this.imageInteraction$ = this.imageInteractionSource.asObservable();
     }
-    // Service string commands
-    ImageSelectorService.prototype.selectImage = function (viewerImageData) {
-        this.imageSelectedSource.next(viewerImageData);
+    ImageInteractionService.prototype.doImageInteraction = function (imageInteractionData) {
+        if (!imageInteractionData.getShellData()) {
+            alert("ImageInteractionService.doImageInteraction() => Internal error, viewShellData must be set.");
+            return;
+        }
+        this.imageInteractionSource.next(imageInteractionData);
     };
-    // Service number commands
-    ImageSelectorService.prototype.changeImageLayout = function (imageLayoutStyle) {
-        this.imageLayoutChangedSource.next(imageLayoutStyle);
+    ImageInteractionService.prototype.onNavigationImageInGroup = function (viewerImageData, up) {
+        //const imageInteractionData = new ImageInteractionData(ImageInteractionEnum.NavigationImageInGroup, up);
+        //imageInteractionData.setImageData(viewerImageData);
+        //this.doImageInteraction(imageInteractionData);
     };
-    ImageSelectorService.prototype.selectThumbnail = function (image) {
-        this.thumbnailSelectedSource.next(image);
+    ImageInteractionService.prototype.onSelectThumbnailInNavigator = function (viewerShellData, image) {
+        var imageSelectType = this.imageOperationService.getShellImageSelectType(viewerShellData.getId());
+        if (imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllImages || imageSelectType === _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllVisibleImages)
+            return;
+        var imageInteractionData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageInteractionData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageInteractionEnum"].SelectThumbnailInNavigator, undefined);
+        imageInteractionData.setPssiImage(image);
+        imageInteractionData.setShellData(viewerShellData);
+        this.doImageInteraction(imageInteractionData);
     };
-    ImageSelectorService.prototype.navigateImagePage = function (up) {
-        this.imagePageNavigatedSource.next(up);
+    ImageInteractionService.prototype.onChangeImageLayoutForSelectedGroup = function (viewShellData, imageLayoutStyle) {
+        var imageInteractionData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageInteractionData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageInteractionEnum"].ChangeImageLayoutForSelectedGroup, imageLayoutStyle);
+        imageInteractionData.setShellData(viewShellData);
+        this.doImageInteraction(imageInteractionData);
     };
-    ImageSelectorService = __decorate([
+    ImageInteractionService.prototype.onAddSelectImage = function (viewerImageData) {
+        var imageInteractionData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageInteractionData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageInteractionEnum"].AddSelectImage, undefined);
+        imageInteractionData.setImageData(viewerImageData);
+        this.doImageInteraction(imageInteractionData);
+    };
+    ImageInteractionService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
-            providedIn: "root"
-        })
-    ], ImageSelectorService);
-    return ImageSelectorService;
+            providedIn: 'root'
+        }),
+        __metadata("design:paramtypes", [_services_image_operation_service__WEBPACK_IMPORTED_MODULE_3__["ImageOperationService"]])
+    ], ImageInteractionService);
+    return ImageInteractionService;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/services/image-operation.service.ts":
+/*!*****************************************************!*\
+  !*** ./src/app/services/image-operation.service.ts ***!
+  \*****************************************************/
+/*! exports provided: ImageOperationService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageOperationService", function() { return ImageOperationService; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _models_image_operation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/image-operation */ "./src/app/models/image-operation.ts");
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var ImageOperationService = /** @class */ (function () {
+    function ImageOperationService() {
+        // Observable ImageOperationData source
+        this.imageOperationSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+        // Observable ImageOperationData sources
+        this.imageOperation$ = this.imageOperationSource.asObservable();
+        this.shellRuntimeDataList = [];
+    }
+    ImageOperationService.prototype.doImageOperation = function (imageOperationData) {
+        switch (imageOperationData.operationType) {
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllImages:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllImagesInSelectedGroup:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllVisibleImages:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllVisibleImagesInSelectedGroup:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectOneImageInSelectedGroup:
+                this.onSetImageSelectType(imageOperationData);
+                break;
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SetContext:
+                this.onSetContext(imageOperationData);
+                break;
+        }
+        this.imageOperationSource.next(imageOperationData);
+    };
+    ImageOperationService.prototype.isImageToolBarButtonCheckStyle = function (imageOperationType) {
+        switch (imageOperationType) {
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ShowAnnotation:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ShowTextOverlay:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ShowRuler:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ShowGraphicOverlay:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SetContext:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ToggleKeyImageSelectedImage:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllImages:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllImagesInSelectedGroup:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllVisibleImages:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectAllVisibleImagesInSelectedGroup:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SelectOneImageInSelectedGroup:
+                return true;
+            default:
+                return false;
+        }
+    };
+    // If the toolbar button is initially checked when open studies
+    ImageOperationService.prototype.isImageToolBarButtonInitChecked = function (imageOperationType) {
+        switch (imageOperationType) {
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ShowAnnotation:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ShowTextOverlay:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ShowRuler:
+            case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ShowGraphicOverlay:
+                return true;
+            default:
+                return false;
+        }
+    };
+    ImageOperationService.prototype.getShellImageSelectType = function (shellId) {
+        return this.getShellRuntimeData(shellId).imageSelectType;
+    };
+    ImageOperationService.prototype.getShellContextType = function (shellId) {
+        return this.getShellRuntimeData(shellId).contextData;
+    };
+    ImageOperationService.prototype.getShellStampFileName = function (shellId) {
+        return this.getShellRuntimeData(shellId).stampFileName;
+    };
+    ImageOperationService.prototype.setShellContextType = function (shellId, imageContextData) {
+        var imageOperationData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationData"](shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].SetContext, imageContextData);
+        this.doImageOperation(imageOperationData);
+    };
+    ImageOperationService.prototype.onClickImageInViewer = function (viewerImageData) {
+        var shellId = viewerImageData.groupData.viewerShellData.getId();
+        var imageOperationData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationData"](shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ClickImageInViewer, viewerImageData);
+        this.doImageOperation(imageOperationData);
+    };
+    ImageOperationService.prototype.setShellStampFileName = function (shellId, stampFileName) {
+        this.getShellRuntimeData(shellId).stampFileName = stampFileName;
+    };
+    ImageOperationService.prototype.onNavigateImageInGroup = function (viewerImageData, up) {
+        var nextIndex = viewerImageData.groupData.getNextPageIndex(up);
+        if (nextIndex === -1) {
+            return;
+        }
+        this.onDisplayImageInGroup(viewerImageData, nextIndex);
+    };
+    ImageOperationService.prototype.onMoveAllSelectedImage = function (viewerImageData, deltaX, deltaY) {
+        var shellId = viewerImageData.groupData.viewerShellData.getId();
+        var imageOperationData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationData"](shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].MoveSelectedImage, { viewerImageData: viewerImageData, deltaX: deltaX, deltaY: deltaY });
+        this.doImageOperation(imageOperationData);
+    };
+    ImageOperationService.prototype.onZoomAllSelectedImage = function (viewerImageData, zoomOut, zoomPoint) {
+        var shellId = viewerImageData.groupData.viewerShellData.getId();
+        var imageOperationData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationData"](shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].ZoomSelectedImage, { viewerImageData: viewerImageData, zoomOut: zoomOut, zoomPoint: zoomPoint });
+        this.doImageOperation(imageOperationData);
+    };
+    ImageOperationService.prototype.onWlAllSelectedImage = function (viewerImageData, deltaX, deltaY) {
+        var shellId = viewerImageData.groupData.viewerShellData.getId();
+        var imageOperationData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationData"](shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].WlSelectedImage, { viewerImageData: viewerImageData, deltaX: deltaX, deltaY: deltaY });
+        this.doImageOperation(imageOperationData);
+    };
+    ImageOperationService.prototype.onNavigateFramesInClickedImage = function (viewerImageData, up) {
+        var nextIndex = viewerImageData.image.getNextFrameIndex(up);
+        if (nextIndex === -1) {
+            return;
+        }
+        this.onDisplayFramesInClickedImage(viewerImageData, nextIndex);
+    };
+    ImageOperationService.prototype.onDisplayFramesInClickedImage = function (viewerImageData, index) {
+        var shellId = viewerImageData.groupData.viewerShellData.getId();
+        var imageOperationData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationData"](shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].DisplayFramesInClickedImage, { viewerImageData: viewerImageData, index: index });
+        this.doImageOperation(imageOperationData);
+    };
+    ImageOperationService.prototype.onDisplayImageInGroup = function (viewerImageData, index) {
+        var shellId = viewerImageData.groupData.viewerShellData.getId();
+        var imageOperationData = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationData"](shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].DisplayImageInGroup, { viewerImageData: viewerImageData, index: index });
+        this.doImageOperation(imageOperationData);
+    };
+    ImageOperationService.prototype.onSetImageSelectType = function (imageOperationData) {
+        var shellRuntimeData = this.getShellRuntimeData(imageOperationData.shellId);
+        shellRuntimeData.imageSelectType = imageOperationData.operationType;
+    };
+    ImageOperationService.prototype.onSetContext = function (imageOperationData) {
+        var shellRuntimeData = this.getShellRuntimeData(imageOperationData.shellId);
+        shellRuntimeData.contextData = imageOperationData.operationPara;
+    };
+    ImageOperationService.prototype.getShellRuntimeData = function (shellId) {
+        if (!this.shellRuntimeDataList[shellId]) {
+            this.shellRuntimeDataList[shellId] = new _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ShellRuntimeData"]();
+        }
+        return this.shellRuntimeDataList[shellId];
+    };
+    ImageOperationService = __decorate([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
+            providedIn: 'root'
+        }),
+        __metadata("design:paramtypes", [])
+    ], ImageOperationService);
+    return ImageOperationService;
 }());
 
 
@@ -13515,250 +14807,6 @@ var ShellNavigatorService = /** @class */ (function () {
 
 /***/ }),
 
-/***/ "./src/app/services/view-context.service.ts":
-/*!**************************************************!*\
-  !*** ./src/app/services/view-context.service.ts ***!
-  \**************************************************/
-/*! exports provided: ViewContextEnum, OperationEnum, OperationData, ViewContext, ViewContextService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ViewContextEnum", function() { return ViewContextEnum; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OperationEnum", function() { return OperationEnum; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OperationData", function() { return OperationData; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ViewContext", function() { return ViewContext; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ViewContextService", function() { return ViewContextService; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (undefined && undefined.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-var ViewContextEnum;
-(function (ViewContextEnum) {
-    ViewContextEnum[ViewContextEnum["Select"] = 1] = "Select";
-    ViewContextEnum[ViewContextEnum["Pan"] = 2] = "Pan";
-    ViewContextEnum[ViewContextEnum["WL"] = 3] = "WL";
-    ViewContextEnum[ViewContextEnum["Zoom"] = 4] = "Zoom";
-    ViewContextEnum[ViewContextEnum["Magnify"] = 5] = "Magnify";
-    ViewContextEnum[ViewContextEnum["RoiZoom"] = 6] = "RoiZoom";
-    ViewContextEnum[ViewContextEnum["CreateAnn"] = 7] = "CreateAnn";
-    ViewContextEnum[ViewContextEnum["RoiWl"] = 8] = "RoiWl";
-    ViewContextEnum[ViewContextEnum["SelectAnn"] = 9] = "SelectAnn";
-})(ViewContextEnum || (ViewContextEnum = {}));
-var OperationEnum;
-(function (OperationEnum) {
-    OperationEnum[OperationEnum["Rotate"] = 1] = "Rotate";
-    OperationEnum[OperationEnum["Flip"] = 2] = "Flip";
-    OperationEnum[OperationEnum["Invert"] = 3] = "Invert";
-    OperationEnum[OperationEnum["ShowAnnotation"] = 4] = "ShowAnnotation";
-    OperationEnum[OperationEnum["ShowOverlay"] = 5] = "ShowOverlay";
-    OperationEnum[OperationEnum["ShowRuler"] = 6] = "ShowRuler";
-    OperationEnum[OperationEnum["DeleteAnnotation"] = 7] = "DeleteAnnotation";
-    OperationEnum[OperationEnum["Save"] = 8] = "Save";
-    OperationEnum[OperationEnum["SetContext"] = 9] = "SetContext";
-    OperationEnum[OperationEnum["ManualWL"] = 10] = "ManualWL";
-    OperationEnum[OperationEnum["FitHeight"] = 11] = "FitHeight";
-    OperationEnum[OperationEnum["FitWidth"] = 12] = "FitWidth";
-    OperationEnum[OperationEnum["FitWindow"] = 13] = "FitWindow";
-    OperationEnum[OperationEnum["FitOriginal"] = 14] = "FitOriginal";
-    OperationEnum[OperationEnum["Reset"] = 15] = "Reset";
-    OperationEnum[OperationEnum["ShowGraphicOverlay"] = 16] = "ShowGraphicOverlay";
-    OperationEnum[OperationEnum["ToggleKeyImage"] = 17] = "ToggleKeyImage";
-    OperationEnum[OperationEnum["Marker"] = 18] = "Marker";
-})(OperationEnum || (OperationEnum = {}));
-var OperationData = /** @class */ (function () {
-    function OperationData(type, data) {
-        this.type = type;
-        this.data = data;
-    }
-    return OperationData;
-}());
-
-var ViewContext = /** @class */ (function () {
-    function ViewContext(action, data) {
-        if (data === void 0) { data = undefined; }
-        this._action = ViewContextEnum.Pan;
-        this._action = action;
-        this._data = data;
-    }
-    Object.defineProperty(ViewContext.prototype, "action", {
-        get: function () {
-            return this._action;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewContext.prototype, "data", {
-        get: function () {
-            return this._data;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    return ViewContext;
-}());
-
-var ViewContextService = /** @class */ (function () {
-    function ViewContextService() {
-        this._showAnnotation = true;
-        this._showOverlay = true;
-        this._showRuler = true;
-        this._showGraphicOverlay = true;
-        this._keyImage = false;
-        this.viewContextChangedSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        this.viewContextChanged$ = this.viewContextChangedSource.asObservable();
-        this.operationSource = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        this.onOperation$ = this.operationSource.asObservable();
-        this._curContext = new ViewContext(ViewContextEnum.Select);
-    }
-    Object.defineProperty(ViewContextService.prototype, "curContext", {
-        get: function () {
-            return this._curContext;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewContextService.prototype, "previousContext", {
-        get: function () {
-            return this._previousContext;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewContextService.prototype, "showAnnotation", {
-        get: function () {
-            return this._showAnnotation;
-        },
-        set: function (bShow) {
-            this._showAnnotation = bShow;
-            var data = new OperationData(OperationEnum.ShowAnnotation, { show: bShow });
-            this.operationSource.next(data);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewContextService.prototype, "showOverlay", {
-        get: function () {
-            return this._showOverlay;
-        },
-        set: function (bShow) {
-            this._showOverlay = bShow;
-            var data = new OperationData(OperationEnum.ShowOverlay, { show: bShow });
-            this.operationSource.next(data);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewContextService.prototype, "showRuler", {
-        get: function () {
-            return this._showRuler;
-        },
-        set: function (bShow) {
-            this._showRuler = bShow;
-            var data = new OperationData(OperationEnum.ShowRuler, { show: bShow });
-            this.operationSource.next(data);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(ViewContextService.prototype, "showGraphicOverlay", {
-        get: function () {
-            return this._showGraphicOverlay;
-        },
-        set: function (bShow) {
-            this._showGraphicOverlay = bShow;
-            var data = new OperationData(OperationEnum.ShowGraphicOverlay, { show: bShow });
-            this.operationSource.next(data);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ViewContextService.prototype.onOperation = function (data) {
-        switch (data.type) {
-            case OperationEnum.ShowAnnotation: {
-                this.showAnnotation = !this.showAnnotation;
-                break;
-            }
-            case OperationEnum.ShowOverlay: {
-                this.showOverlay = !this.showOverlay;
-                break;
-            }
-            case OperationEnum.ShowRuler: {
-                this.showRuler = !this.showRuler;
-                break;
-            }
-            case OperationEnum.ShowGraphicOverlay: {
-                this.showGraphicOverlay = !this.showGraphicOverlay;
-                break;
-            }
-            default:
-                this.operationSource.next(data);
-        }
-    };
-    ViewContextService.prototype.setContext = function (context, data) {
-        if (data === void 0) { data = undefined; }
-        var curContext = new ViewContext(context, data);
-        this._previousContext = this._curContext;
-        this._curContext = curContext;
-        if (this._curContext.action !== this._previousContext.action) {
-            this.viewContextChangedSource.next(this._curContext);
-        }
-        else if (this._curContext.action === ViewContextEnum.CreateAnn) {
-            //if want to create the same object even if current object is not finished yet, we still change context to delete it. 
-            this.viewContextChangedSource.next(this._curContext);
-        }
-    };
-    ViewContextService.prototype.isImageToolBarButtonChecked = function (buttonData) {
-        switch (buttonData.operationData.type) {
-            case OperationEnum.ShowAnnotation:
-                return this._showAnnotation;
-            case OperationEnum.ShowOverlay:
-                return this._showOverlay;
-            case OperationEnum.ShowRuler:
-                return this._showRuler;
-            case OperationEnum.ShowGraphicOverlay:
-                return this._showGraphicOverlay;
-            case OperationEnum.ToggleKeyImage:
-                return this._keyImage;
-            default:
-                return buttonData.operationData.data === this._curContext.action;
-        }
-    };
-    ViewContextService.prototype.isImageToolBarButtonCheckStyle = function (buttonData) {
-        switch (buttonData.operationData.type) {
-            case OperationEnum.ShowAnnotation:
-            case OperationEnum.ShowOverlay:
-            case OperationEnum.ShowRuler:
-            case OperationEnum.ShowGraphicOverlay:
-            case OperationEnum.SetContext:
-            case OperationEnum.ToggleKeyImage:
-                return true;
-            default:
-                return false;
-        }
-    };
-    ViewContextService = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
-            providedIn: "root"
-        }),
-        __metadata("design:paramtypes", [])
-    ], ViewContextService);
-    return ViewContextService;
-}());
-
-
-
-/***/ }),
-
 /***/ "./src/app/services/worklist.service.ts":
 /*!**********************************************!*\
   !*** ./src/app/services/worklist.service.ts ***!
@@ -13918,7 +14966,7 @@ var WorklistService = /** @class */ (function () {
     };
     WorklistService.prototype.onShowSingleStudy = function (study) {
         var _this = this;
-        var viewerShellData = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingPrococal());
+        var viewerShellData = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingProtocol());
         if (this.isUsingLocalTestData()) {
             viewerShellData.addStudy(study);
             this.shellNavigatorService.shellNavigate(viewerShellData);
@@ -13932,7 +14980,7 @@ var WorklistService = /** @class */ (function () {
     WorklistService.prototype.onShowAllCheckedStudy = function () {
         var _this = this;
         if (this.isUsingLocalTestData()) {
-            var viewerShellData_1 = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingPrococal());
+            var viewerShellData_1 = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingProtocol());
             this.studies.forEach(function (study) {
                 if (study.studyChecked) {
                     viewerShellData_1.addStudy(study);
@@ -13997,8 +15045,7 @@ var WorklistService = /** @class */ (function () {
     //        .subscribe(() => this.refreshShortcuts());
     //}
     WorklistService.prototype.onTransferStudy = function (study) {
-        var _this = this;
-        this.databaseService.transferStudy(study).subscribe(function () { return _this.refreshShortcuts(); });
+        //this.databaseService.transferStudy(study).subscribe(() => this.refreshShortcuts());
     };
     WorklistService.prototype.onCheckStudyChanged = function (study) {
         var _this = this;
@@ -14243,7 +15290,7 @@ var WorklistService = /** @class */ (function () {
             this.loadedStudyCount = 0;
             return;
         }
-        var viewerShellData = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingPrococal());
+        var viewerShellData = new _models_viewer_shell_data__WEBPACK_IMPORTED_MODULE_4__["ViewerShellData"](this.hangingProtocolService.getDefaultGroupHangingProtocol(), this.hangingProtocolService.getDefaultImageHangingProtocol());
         this.loadedStudy.forEach(function (value) {
             value.detailsLoaded = true;
             value.studyChecked = true;
@@ -14253,7 +15300,6 @@ var WorklistService = /** @class */ (function () {
         this.loadedStudy = new Array();
         this.loadedStudyCount = 0;
         this.refreshShortcuts();
-        //}
     };
     WorklistService.prototype.checkOfflineBeforeLoadImage = function (allCheckedStudyCount, getStudies) {
         var _this = this;

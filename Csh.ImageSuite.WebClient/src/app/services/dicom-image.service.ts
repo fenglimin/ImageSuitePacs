@@ -48,8 +48,8 @@ export class DicomImageService {
     }
 
 
-    getCornerStoneImage(image: Image) {
-        const imageUri = "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom".format(this.baseUrl, image.id, 0);
+    getCornerStoneImage(image: Image, frameIndex: number = 0) {
+        const imageUri = "wadouri:{0}/wado?requestType=WADO&studyUID={studyUID}&seriesUID={serieUID}&objectUID={1}&frameIndex={2}&contentType=application%2Fdicom".format(this.baseUrl, image.id, frameIndex);
         this.logService.info("Dicom Image Service : Downloading dicom image, url is " + imageUri);
         return cornerstone.loadImage(imageUri);
     }
@@ -99,7 +99,7 @@ export class DicomImageService {
         const endX = imagePointList.reduce((max, p) => p.x > max ? p.x : max, imagePointList[0].x);
         const endY = imagePointList.reduce((max, p) => p.y > max ? p.y : max, imagePointList[0].y);
 
-        const pixelData = image.cornerStoneImage.getPixelData();
+        const pixelData = image.cornerStoneImageList[0].getPixelData();
 
         let maxValue = -4096;
         let minValue = 4096;
@@ -188,7 +188,7 @@ export class DicomImageService {
             if (tagString === "x0011101c") {
                 tagValue = "Measure at anatomy";
             } else {
-                tagValue = image.cornerStoneImage.data.string(tagString);
+                tagValue = image.cornerStoneImageList[0].data.string(tagString);
             }
         }
 
@@ -259,12 +259,12 @@ export class DicomImageService {
 
     private getGraphicOverlayData(image: Image, groupString: string): GraphicOverlayData {
 
-        const element = image.cornerStoneImage.data.elements[groupString + "3000"];
-        const rows = image.cornerStoneImage.data.uint16(groupString + "0010");
-        const cols = image.cornerStoneImage.data.uint16(groupString + "0011");
-        const type = image.cornerStoneImage.data.string(groupString + "0040");
-        const startX = image.cornerStoneImage.data.uint16(groupString + "0050", 0);
-        const startY = image.cornerStoneImage.data.uint16(groupString + "0050", 1);
+        const element = image.cornerStoneImageList[0].data.elements[groupString + "3000"];
+        const rows = image.cornerStoneImageList[0].data.uint16(groupString + "0010");
+        const cols = image.cornerStoneImageList[0].data.uint16(groupString + "0011");
+        const type = image.cornerStoneImageList[0].data.string(groupString + "0040");
+        const startX = image.cornerStoneImageList[0].data.uint16(groupString + "0050", 0);
+        const startY = image.cornerStoneImageList[0].data.uint16(groupString + "0050", 1);
 
         if (!element || !rows || !cols || !type || !startX || !startY) {
             return undefined;
@@ -281,7 +281,7 @@ export class DicomImageService {
         const imageHeight = image.height();
 
         for (let i = 0; i < element.length; i++) {
-            const byte = image.cornerStoneImage.data.byteArray[element.dataOffset + i];
+            const byte = image.cornerStoneImageList[0].data.byteArray[element.dataOffset + i];
             if (byte === 0) {
                 continue;
             }
@@ -301,8 +301,8 @@ export class DicomImageService {
             }
         }
 
-        graphicOverlayData.desc = image.cornerStoneImage.data.string(groupString + "0022");
-        graphicOverlayData.label = image.cornerStoneImage.data.string(groupString + "1500");
+        graphicOverlayData.desc = image.cornerStoneImageList[0].data.string(groupString + "0022");
+        graphicOverlayData.label = image.cornerStoneImageList[0].data.string(groupString + "1500");
 
         return graphicOverlayData;
     }

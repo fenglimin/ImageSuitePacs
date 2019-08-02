@@ -207,12 +207,12 @@ export class Image extends Pssi {
 
     graphicOverlayDataList = [];
 
-    cornerStoneImage: any;
+    cornerStoneImageList = [];
     annData: Uint8Array;
     serializeJson: string;
     transformMatrix: any;
-    windowCenter: number;
-    windowWidth: number;
+    frameCount = 1;
+    frameIndex = 0;
 
     static clone(image: Image, cloneChild: boolean): Image {
         const clonedImage = new Image();
@@ -294,9 +294,9 @@ export class Image extends Pssi {
     }
 
     getPixelSpacing(): Size {
-        let tagValue = this.cornerStoneImage.data.string("x00280030");
+        let tagValue = this.cornerStoneImageList[0].data.string("x00280030");
         if (!tagValue) {
-            tagValue = this.cornerStoneImage.data.string("x00181164");
+            tagValue = this.cornerStoneImageList[0].data.string("x00181164");
         }
         if (!tagValue) {
             return null;
@@ -314,7 +314,7 @@ export class Image extends Pssi {
         return pixelSpacing;
     }
 
-    setCornerStoneImage(ctImage: any) {
+    setCornerStoneImage(ctImage: any, frameIndex: number) {
         let annData = undefined;
 
         const element = ctImage.data.elements["x0011101d"];
@@ -326,7 +326,28 @@ export class Image extends Pssi {
         }
 
         this.annData = annData;
-        this.cornerStoneImage = ctImage;
+        this.cornerStoneImageList[frameIndex] = ctImage;
+
+        this.frameCount = Number(ctImage.data.intString("x00280008"));
+    }
+
+    getNextFrameIndex(wheelUp: boolean): number{
+        let nextFrameIndex = -1;
+        if (wheelUp) {
+            if (this.frameIndex > 0) {
+                nextFrameIndex = this.frameIndex - 1;
+            }
+        } else {
+            if (this.frameIndex < this.frameCount - 1) {
+                nextFrameIndex = this.frameIndex + 1;
+            }
+        }
+
+        return nextFrameIndex;
+    }
+
+    isValidFrameIndex(index: number): boolean {
+        return index >= 0 && index < this.frameCount;
     }
 }
 
@@ -357,6 +378,18 @@ export class RecOfflineImageInfo {
     public studyOfflineUidUSBList: string[];
     public popUpStudyOfflineMessage: string;
 
+}
+
+export class OtherPacs {
+    public netAEName: string;
+
+    public aETitle: string;
+
+    public iPAddress: string;
+
+    public storageCommitment: string; 
+
+    public pacsChecked: boolean;
 }
 
 export class StudyTemp extends Pssi {

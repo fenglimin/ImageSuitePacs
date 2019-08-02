@@ -47,4 +47,7 @@ namespace Csh.ImageSuite.Model.JsonWrapper
         public List<string> StudyOfflineUidUSBList { get; set; }
         public string PopUpStudyOfflineMessage { get; set; }
     }
+
+    
+
 }

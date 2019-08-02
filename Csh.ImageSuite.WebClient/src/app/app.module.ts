@@ -55,6 +55,7 @@ import { SelectMarkerDialogComponent } from './components/dialog/select-marker-d
 import { ViewerBottombarComponent } from './components/viewer-shell/viewer-bottombar/viewer-bottombar.component';
 import { PatientEditComponent } from './components/worklist-shell/worklist/patient-edit/patient-edit.component';
 import { ExportStudyComponent } from './components/worklist-shell/worklist/export-study/export-study.component';
+import { VideoPlayerComponent } from './components/common/video-player/video-player.component';
 
 
 @NgModule({
@@ -80,7 +81,8 @@ import { ExportStudyComponent } from './components/worklist-shell/worklist/expor
         SelectMarkerDialogComponent,
         ViewerBottombarComponent,
         PatientEditComponent,
-        ExportStudyComponent
+        ExportStudyComponent,
+        VideoPlayerComponent
     ],
     imports: [
         BrowserModule,

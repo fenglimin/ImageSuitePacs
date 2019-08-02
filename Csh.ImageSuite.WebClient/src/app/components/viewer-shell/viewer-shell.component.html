@@ -21,7 +21,7 @@
         </div>
         
         <div class="DivOperationBar">
-            <app-viewer-bottombar (save)="onSaveImage($event)" [pageIndex]="pageIndex" [pageCount]="pageCount" (navigateGroup)="onNavigateGroup($event)"></app-viewer-bottombar>
+            <app-viewer-bottombar [viewerShellData]="viewerShellData" (save)="onSaveImage($event)" [pageIndex]="pageIndex" [pageCount]="pageCount" (navigateGroup)="onNavigateGroup($event)"></app-viewer-bottombar>
         </div>
 
     </div>

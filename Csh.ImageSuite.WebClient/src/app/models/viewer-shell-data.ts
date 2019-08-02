@@ -4,6 +4,7 @@ import { ViewerImageData } from "../models/viewer-image-data";
 import { GroupHangingProtocol, ImageHangingProtocol } from "../models/hanging-protocol";
 import { LayoutPosition, LayoutMatrix } from "../models/layout";
 import { LogService } from "../services/log.service";
+import { ImageOperationEnum } from "../models/image-operation";
 
 export class ViewerShellData {
     static logService: LogService;
@@ -146,11 +147,7 @@ export class ViewerShellData {
     selectAllVisibleImagesInFirstShownAndSelectedGroup() {
         // There might be multiple selected and shown groups, choose the first one as the selected group
         const firstShownAndSelectedGroup = this.getFirstShownAndSelectedGroup();
-
-        this.groupDataList.forEach(groupData => {
-            groupData.selected = groupData === firstShownAndSelectedGroup;
-            this.syncHideAndSelectForGroup(groupData);
-        });
+        this.selectAllVisibleImagesInGroup(firstShownAndSelectedGroup);
     }
 
     selectFirstShowImageInFirstShownGroup() {
@@ -162,6 +159,41 @@ export class ViewerShellData {
 
         firstShownGroup.selected = true;
         firstShownImage.selected = true;
+    }
+
+    clickImage(imageSelectType: ImageOperationEnum, clickedImageData: ViewerImageData) {
+        
+        if (imageSelectType === ImageOperationEnum.SelectAllImages || imageSelectType === ImageOperationEnum.SelectAllVisibleImages) {
+            // In SelectAllImages or SelectAllVisibleImages mode, nothing need to do when click an image, since they all selected
+            return;
+        } else if (imageSelectType === ImageOperationEnum.SelectAllVisibleImagesInSelectedGroup) {
+            // In SelectAllVisibleImagesInSelectedGroup mode
+            this.selectAllVisibleImagesInGroup(clickedImageData.groupData);
+        } else if (imageSelectType === ImageOperationEnum.SelectAllImagesInSelectedGroup) {
+            // In SelectAllImagesInSelectedGroup
+            this.selectAllImagesInGroup(clickedImageData.groupData);
+        } else if (imageSelectType === ImageOperationEnum.SelectOneImageInSelectedGroup) {
+            this.selectAllImages(false);
+            clickedImageData.selected = true;
+            clickedImageData.groupData.selected = true;
+        } else {
+            alert("Invalid para in ViewerShellData.clickImage()");
+        }
+    }
+
+    // Select all visible images in the given group and unselect all other images
+    private selectAllVisibleImagesInGroup(viewerGroupData: ViewerGroupData) {
+        this.groupDataList.forEach(groupData => {
+            groupData.selected = groupData === viewerGroupData;
+            this.syncHideAndSelectForGroup(groupData);
+        });
+    }
+
+    // Select all images in the given group and unselect all other images
+    private selectAllImagesInGroup(viewerGroupData: ViewerGroupData) {
+        this.groupDataList.forEach(groupData => {
+            groupData.setSelected(groupData === viewerGroupData);
+        });
     }
 
     private syncHideAndSelectForGroup(viewerGroupData: ViewerGroupData) {

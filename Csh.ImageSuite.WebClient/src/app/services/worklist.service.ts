@@ -232,7 +232,7 @@ export class WorklistService {
     //}
 
     onTransferStudy(study: Study) {
-        this.databaseService.transferStudy(study).subscribe(() => this.refreshShortcuts());
+        //this.databaseService.transferStudy(study).subscribe(() => this.refreshShortcuts());
     }
 
     onCheckStudyChanged(study: Study = null) {
@@ -521,8 +521,6 @@ export class WorklistService {
         this.loadedStudyCount = 0;
 
         this.refreshShortcuts();
-
-        //}
     }
 
     private checkOfflineBeforeLoadImage(allCheckedStudyCount: number, getStudies: Study[]) {

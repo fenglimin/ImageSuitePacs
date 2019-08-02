@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import './carestream-orange.less';
+@import './carestream-orange.css';
 @import './themes.less';
 
 .mat-dialog-container {
@@ -114,6 +114,10 @@ input:focus{
 }
 
 input:disabled{
+    color: @disable-color;
+}
+
+select:disabled {
     color: @disable-color;
 }
 

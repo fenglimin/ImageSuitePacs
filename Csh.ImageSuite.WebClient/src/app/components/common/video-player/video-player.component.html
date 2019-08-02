@@ -1,0 +1,25 @@
+<table *ngIf="visible">
+    <tr style="padding-left: 10px;">
+        <td>
+            <button class="prevImage" role="button" title="Previous Image" (click)="onNavigateImage(true)" [disabled]="disablePrev"></button>
+        </td>
+        <td>
+            <button class="playVideo" role="button" title="Play" (click)="onPlay()" [disabled]="disablePlay"></button>
+        </td>
+        <td>
+            <button class="pauseVideo" role="button" title="Pause" (click)="onPause()" [disabled]="disablePause"></button>
+        </td>
+        <td>
+            <button class="stopVideo" role="button" title="Stop" (click)="onStop()" [disabled]="disableStop"></button>
+        </td>
+        <td>
+            <button class="nextImage" role="button" title="Next Image" (click)="onNavigateImage(false)" [disabled]="disableNext"></button>
+        </td>
+        <td>
+            <input type="range" min="1" [max]="count" [value]="index+1" (input)="sliderChanged($event)" class="slider" id="myRange">
+        </td>
+        <td>
+            {{getPlayStatus()}}
+        </td>
+    </tr>
+</table>

@@ -4,7 +4,7 @@ import { Observable, of } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 
 import { Shortcut } from '../models/shortcut';
-import { Patient, Study, Series, Image, RecWorklistData, RecOfflineImageInfo, StudyTemp } from '../models/pssi';
+import { Patient, Study, Series, Image, RecWorklistData, RecOfflineImageInfo, StudyTemp, OtherPacs } from '../models/pssi';
 import { TextOverlayData } from '../models/overlay';
 import { FontData, MarkerGroupData } from '../models/misc-data';
 
@@ -23,6 +23,7 @@ export class DatabaseService {
     private configUrl = "config";
     private shortcutUrl = "shortcut"; // URL to web api
     private pssiUrl = "pssi";
+    private worklistUrl = "worklist";
     private overlayUrl = "overlay";
     private id_patient = 1;
     private id_study = 1;
@@ -202,6 +203,17 @@ export class DatabaseService {
             );
     }
 
+    ///** GET PACS List from the server */
+    //getPacsList(): Observable<RecWorklistData> {
+    //    const url = `${this.pssiUrl}/GetPacsList/`;
+    //    let data = { shortcut: shortcut, pageIndex: pageIndex, sortItem: sortItem };
+    //    return this.http.post<RecWorklistData>(url, data, httpOptions)
+    //        .pipe(
+    //            tap(recWorklistData => this.log('fetched recWorklistData')),
+    //            catchError(this.handleError<RecWorklistData>('getRecWorklistData'))
+    //        );
+    //}
+
     /** Set Key Image */
     setKeyImage(id, marked): Observable<boolean> {
         const url = `${this.pssiUrl}/setkeyimage/`;
@@ -225,18 +237,42 @@ export class DatabaseService {
             );
     }
 
-    //getThumbnailFiles(study: Study): Observable<Blob> {
-    //    const url = `${this.pssiUrl}/GetThumbnails/`;
-    //    return this.http.post(url, study, { responseType: 'blob' });
-    //}
+    /** Transfer Study */
+    doTransfer(studyList, seriesList, imageList, pacsList, isCheckAll, transferCompressType, isCreateNewGuid): Observable<boolean> {
+        const url = `${this.worklistUrl}/DoTransfer/`;
 
-    /** Set Key Image */
-    transferStudy(study: Study): Observable<boolean> {
-        const url = `${this.pssiUrl}/transferStudy/`;
+        let data = {
+            studyList: studyList,
+            seriesList: seriesList,
+            imageList: imageList,
+            pacsList: pacsList,
+            isCheckAll: isCheckAll,
+            transferCompressType: transferCompressType,
+            isCreateNewGuid: isCreateNewGuid
+        };
 
-        return this.http.post<boolean>(url, study, httpOptions)
+        return this.http.post<boolean>(url, data, httpOptions)
             .pipe(
             catchError(this.handleError<boolean>('transferStudy'))
+            );
+    }
+
+
+    getOtherPacs(): Observable<OtherPacs[]> {
+        const url = `${this.worklistUrl}/GetOtherPacs/`;
+
+        return this.http.post<OtherPacs[]>(url, "", httpOptions)
+            .pipe(
+            catchError(this.handleError<OtherPacs[]>('worklistTest'))
+            );
+    }
+
+    getTransferCompress(): Observable<any> {
+        const url = `${this.worklistUrl}/GetTransferCompress/`;
+
+        return this.http.post<any>(url, "", httpOptions)
+            .pipe(
+                catchError(this.handleError<any>('worklistTest'))
             );
     }
 

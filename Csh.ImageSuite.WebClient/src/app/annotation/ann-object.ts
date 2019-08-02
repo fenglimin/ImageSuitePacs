@@ -2,8 +2,7 @@ import { Point, Size, Rectangle, PositionInRectangle, MouseEventType } from '../
 import { AnnTool } from "./ann-tool";
 import { Image } from "../models/pssi";
 import { IImageViewer } from "../interfaces/image-viewer-interface";
-import { IAnnotationObject } from "../interfaces/annotation-object-interface";
-import { ViewContext, ViewContextEnum } from "../services/view-context.service"
+import { ImageOperationData, ImageOperationEnum, ImageContextEnum, ImageContextData } from "../models/image-operation";
 import { AnnSerialize } from "./ann-serialize";
 
 export class Colors {
@@ -241,7 +240,7 @@ export abstract class AnnObject {
             stop: arg => {
                 console.log(parentObj.constructor.name + " on drag stop");
                 child._lastPos = {};
-                if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn && parentObj.dragging) {
+                if (this.imageViewer.getContext().imageContextType === ImageContextEnum.SelectAnn && parentObj.dragging) {
                     parentObj.dragging = false;
 
                     const point = AnnTool.screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
@@ -252,7 +251,7 @@ export abstract class AnnObject {
             },
             drag: arg => {
 
-                if (this.imageViewer.getContext().action === ViewContextEnum.SelectAnn && this.imageViewer.isDragging()) {
+                if (this.imageViewer.getContext().imageContextType === ImageContextEnum.SelectAnn && this.imageViewer.isDragging()) {
                     const point = AnnTool.screenToImage({ x: arg.x, y: arg.y }, parentObj.getTransformMatrix());
 
                     
@@ -327,7 +326,7 @@ export abstract class AnnObject {
     }
 
     needResponseToChildMouseEvent(): boolean {
-        return !this.dragging && this.imageViewer.getContext().action === ViewContextEnum.SelectAnn;
+        return !this.dragging && this.imageViewer.getContext().imageContextType === ImageContextEnum.SelectAnn;
     }
 
 

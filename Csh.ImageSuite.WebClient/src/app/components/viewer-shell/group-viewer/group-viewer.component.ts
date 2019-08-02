@@ -21,8 +21,6 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     Arr = Array; //Array type captured in a variable
     _groupData: ViewerGroupData;
     logPrefix: string;
-    pageIndex = 0;
-    pageCount: number;
 
     @ViewChildren(ImageViewerComponent)
     childImages: QueryList<ImageViewerComponent>;
@@ -76,7 +74,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     }
 
     ngAfterViewChecked() {
-        if (this.childImages) {
+        if (this.childImages.length !== 0) {
             this.setHeight(this.childImages.first.canvas.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.clientHeight);
             this.childImages.forEach(child => child.adjustHeight());
             //this.logService.debug("Group:  ngAfterViewChecked");
@@ -96,7 +94,7 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     }
 
     onResize() {
-        if (!this.childImages)
+        if (!this.childImages || this.childImages.length === 0)
             return;
 
         this.logService.debug("Group: onResize()");
@@ -108,13 +106,13 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
     }
 
     getImageData(rowIndex: number, colIndex: number): ViewerImageData {
-        return this.groupData.getImage(this.pageIndex, rowIndex, colIndex);
+        return this.groupData.getImage(rowIndex, colIndex);
     }
 
     setHeight(height: number) {
         const o = document.getElementById(this.getId());
         if (o !== undefined && o !== null) {
-            if (this.childImages) {
+            if (this.childImages.length !== 0) {
                 this.childImages.forEach(child => child.setHeight(0));
             }
 
@@ -150,8 +148,6 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         }
 
         this.hangingProtocolService.applyImageHangingProtocol(this.groupData, imageLayoutStyle);
-        this.pageIndex = 0;
-        this.pageCount = this.groupData.getPageCount();
         this.onResize();
     }
 
@@ -164,40 +160,20 @@ export class GroupViewerComponent implements OnInit, AfterContentInit {
         this._groupData.selected = (result !== undefined);
     }
 
-    private doNavigate(up: boolean) {
-        if (!this._groupData.selected) {
-            return;
-        }
-
-        if (up) {
-            if (this.pageIndex > 0) {
-                this.pageIndex--;
-            }
-        } else {
-            if (this.pageIndex < this.pageCount - 1) {
-                this.pageIndex++;
-            }
-        }
-    }
-
     private onImageInteraction(imageInteractionData: ImageInteractionData) {
         if (!imageInteractionData.sameShellData(this.groupData.viewerShellData)) {
             return;
         }
 
         switch (imageInteractionData.getType()) {
-            case ImageInteractionEnum.NavigationImageInGroup:
-                if (imageInteractionData.sameGroupData(this.groupData)) {
-                    this.doNavigate(imageInteractionData.getPara());
-                }
-                break;
+            //case ImageInteractionEnum.NavigationImageInGroup:
+            //    if (imageInteractionData.sameGroupData(this.groupData)) {
+            //        this.doNavigate(imageInteractionData.getPara());
+            //    }
+            //    break;
 
             case ImageInteractionEnum.SelectThumbnailInNavigator:
                 this.doSelectGroupByThumbnail(imageInteractionData.getPssiImage());
-                break;
-
-            case ImageInteractionEnum.SelectImageInGroup:
-                this.doSelectGroup(imageInteractionData.getImageData().groupData);
                 break;
 
             case ImageInteractionEnum.ChangeImageLayoutForSelectedGroup:

@@ -40,7 +40,7 @@ export class AnnImage extends AnnExtendObject {
         }
     }
 
-    onCreate(imageFileName: string, topLeftPoint: Point, bottomRightPoint: Point = undefined) {
+    onCreate(imageFileName: string, topLeftPoint: Point, bottomRightPoint: Point = undefined, drawEndAfterLoad: boolean = false) {
 
         this.imageFileName = imageFileName;
         const imageData = new Image();
@@ -64,7 +64,7 @@ export class AnnImage extends AnnExtendObject {
                 this.onRectangleChanged();
             }
 
-            if (this.loadedFromTag) {
+            if (this.loadedFromTag || drawEndAfterLoad) {
                 this.focusedObj = this.annBaseImage;
                 this.onSelect(this.selected, this.selected);
                 if (!this.parentObj) {

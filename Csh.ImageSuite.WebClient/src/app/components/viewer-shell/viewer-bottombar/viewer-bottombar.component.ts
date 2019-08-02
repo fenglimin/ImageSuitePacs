@@ -1,4 +1,5 @@
 import { Component, OnInit, EventEmitter, Output, Input} from '@angular/core';
+import { ViewerShellData } from "../../../models/viewer-shell-data";
 
 @Component({
   selector: 'app-viewer-bottombar',
@@ -20,6 +21,9 @@ export class ViewerBottombarComponent implements OnInit {
 
     @Input()
     pageCount: number;
+
+    @Input()
+    viewerShellData: ViewerShellData;
 
     disablePrev = true;
     disableNext = true;

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Csh.ImageSuite.Model.Dicom;
 using System.Data;
+using Csh.ImageSuite.Model.Common;
 using Csh.ImageSuite.Model.Config;
 using Csh.ImageSuite.Model.Enum;
 
@@ -67,6 +68,23 @@ namespace Csh.ImageSuite.Common.Interface
         int UpdateStudyEdit(Dictionary<string, string> dict);
 
         int UpdateSerieEdit(Dictionary<string, string> dict);
+
+        bool SaveExportJob(string strLastExportFormat, string strLastExportIncludeCDViewer,
+            string strLastExportJPGCompressRate, string strLastExportPatientInfoConfig, string strLastExportVerifyCDDVD,
+            string userId, string roleID);
+
+        DataTable GetTableNetAE();
+
+        bool SaveTransferJob(List<OtherPacs> otherPacses, TransferJobCommandType commandType, TransferJobTableMdl model, bool m_bWholeStudy,
+            bool m_bUpdateUID, int m_iCheckCompress, string ddlTransferCompressRateSelectIndex,
+            string ddlTransferCompressRateSelectValue, string userId, string roleID);
+
+        DataTable GetTableImage(string studyGUIDs, string serialGUIDs, string imageGUIDs);
+
+        TransferJobTableMdl GetTransferJobTableMdl(List<string> netAEList, string studyGUIDs, string seriesGUIDs,
+            string imageGUIDs);
+
+        DataTable GetTableTransferCompress();
 
     }
 }

@@ -4,9 +4,8 @@ import { ImageInteractionService } from "../../../../services/image-interaction.
 import { ImageInteractionData, ImageInteractionEnum } from "../../../../models/image-operation";
 import { DicomImageService } from "../../../../services/dicom-image.service";
 import { AnnotationService } from "../../../../services/annotation.service";
-import { ImageOperationData, ImageOperationEnum, ImageContextEnum } from "../../../../models/image-operation";
+import { ImageOperationData, ImageOperationEnum, ImageContextEnum, ImageContextData } from "../../../../models/image-operation";
 import { ImageOperationService } from "../../../../services/image-operation.service";
-import { ViewContextEnum, ViewContext, OperationEnum, OperationData, ViewContextService } from "../../../../services/view-context.service"
 import { Subscription } from "rxjs";
 import { Image as DicomImage } from "../../../../models/pssi";
 import { ViewerImageData } from "../../../../models/viewer-image-data";
@@ -51,7 +50,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private isViewInited: boolean;
 
     private subscriptionImageLayoutChange: Subscription;
-    private subscriptionViewContextChange: Subscription;
     private subscriptionOperation: Subscription;
     private subscriptionImageInteraction: Subscription;
     private subscriptionImageOperation: Subscription;
@@ -106,6 +104,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private annRoiRectangle: AnnBaseRectangle;
 
+    private imageDragStart: Point;
+    private shellId: string;
+
     @Input()
     set imageData(imageData: ViewerImageData) {
         this.logPrefix = "Image" + imageData.getId() + ": ";
@@ -122,14 +123,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             
 
             // Save new image data
-            imageData.hide = false
+            imageData.hide = false;
             this._imageData = imageData;
-            this.image = this._imageData.image;
+            this.image = imageData.image;
+            this.shellId = imageData.groupData.viewerShellData.getId();
 
             // If the view is NOT inited, will load image after view inited ( in ngAfterViewInit )
             // If the view is already inited, which means this component is created before, load image here
             if (this.isViewInited) {
-                this.loadImage();
+                this.loadImage(0);
             }
         }
     }
@@ -142,24 +144,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         private imageOperationService: ImageOperationService,
         private dicomImageService: DicomImageService,
         private configurationService: ConfigurationService,
-        private viewContext: ViewContextService,
         public worklistService: WorklistService,
         private dialogService: DialogService,
         private logService: LogService,
         private ngZone: NgZone,
         private annotationService: AnnotationService) {
-
-        this.subscriptionViewContextChange = viewContext.viewContextChanged$.subscribe(
-            context => {
-                if (!(this._imageData.groupData.viewerShellData.hide) && this.imageData.selected) {
-                    this.setContext(context);
-                }
-            });
-
-        this.subscriptionOperation = viewContext.onOperation$.subscribe(
-            operation => {
-                this.onOperation(operation);
-            });
 
         this.subscriptionImageInteraction = imageInteractionService.imageInteraction$.subscribe(
             imageInteractionData => {
@@ -202,7 +191,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.showWaitingText();
         }
 
-        this.loadImage();
+        this.loadImage(0);
         this.annGuide = new AnnGuide(this);
         this.annImageRuler = new AnnImageRuler(this);
 
@@ -247,7 +236,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     // Functions for loading/unloading image
     private enableCornerstone() {
         if (this.cornerstoneEnabled) {
-            alert("Internal error in enableCornerstone() - Cornerstone was already enabled!");
+            //alert("Internal error in enableCornerstone() - Cornerstone was already enabled!");
             return;
         }
 
@@ -256,7 +245,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
         }
 
-        if (!this.image || !this.image.cornerStoneImage) {
+        if (!this.image || this.image.cornerStoneImageList.length === 0) {
             alert("Internal error in enableCornerstone() - Image or Image.cornerstoneImage is NULL!");
             return;
         }
@@ -270,7 +259,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private disableCornerstone() {
-        if (this.image && this.image.cornerStoneImage && this.cornerstoneEnabled) {
+        if (this.image && this.image.cornerStoneImageList.length !== 0 && this.cornerstoneEnabled) {
             if (!this.helpElement) {
                 alert("Internal error in disableCornerstone() - Help element NOT assigned!");
                 return;
@@ -309,12 +298,15 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.jcanvas.restart();
     }
 
-    private loadImage() {
+    private loadImage(frameIndex: number) {
         //// Make sure this function is called after view is inited.
         //if (!this.isViewInited) {
         //    alert("Internal error : Must load image after view is inited");
         //    return;
         //}
+
+
+        this.isImageLoaded = false;
 
         // The image is null, which means to clear the image viewer
         if (!this.image) {
@@ -322,47 +314,51 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             return;
         }
 
-        if (this.image.cornerStoneImage) {
+        if (this.image.cornerStoneImageList[frameIndex]) {
             // The image is already downloaded, show the image
-            this.showImage();
+            this.showImage(frameIndex);
         } else {
             // The image is NOT downloaded, get the image from server and show it after download
-            this.dicomImageService.getCornerStoneImage(this.image).then(ctImage => this.onImageDownloaded(ctImage));
+            this.dicomImageService.getCornerStoneImage(this.image, frameIndex).then(ctImage => this.onImageDownloaded(ctImage, frameIndex));
         }
 
     }
 
     // Call back functions when image is loaded by CornerStone
-    private onImageDownloaded(ctImage: any) {
+    private onImageDownloaded(ctImage: any, frameIndex: number) {
         this.logService.info(this.logPrefix + "Image is downloaded from server. Start to show it by cornerstone.");
-        this.image.setCornerStoneImage(ctImage);
+        this.image.setCornerStoneImage(ctImage, frameIndex);
         this.image.graphicOverlayDataList = this.dicomImageService.getGraphicOverlayList(this.image);
-        this.showImage();
+        this.showImage(frameIndex);
     }
 
     // Show image when image is loaded
-    private showImage() {
+    private showImage(frameIndex: number) {
 
-        if (this.image.cornerStoneImage) {
+        if (this.image.cornerStoneImageList[frameIndex]) {
             this.enableCornerstone();
 
-            this.restartJCanvas();
+            // Frame index is same, means we are switching from different images
+            // If NOT same, means we are switching from different frames of the same image, so no need to restart jCanvas
+            if (frameIndex === this.image.frameIndex)
+                this.restartJCanvas();
 
             this.logService.debug(this.logPrefix + 'showImage() - canvas width: ' + this.canvas.width + ', canvas height: ' + this.canvas.height);
 
             this.isImageLoaded = false;
-            cornerstone.displayImage(this.helpElement, this.image.cornerStoneImage);
+            cornerstone.displayImage(this.helpElement, this.image.cornerStoneImageList[frameIndex]);
+            this.image.frameIndex = frameIndex;
 
             this.logService.debug(this.logPrefix + 'image is loaded, displaying it...');
         } else {
             this.logService.debug(this.logPrefix + 'local test data, no image to show.');
         }
 
-        const id = this.getId();
-        const index = id.substr(id.length - 4, 4);
-        if (index === "0000" || this.imageData.selected) {
-            this.onSelected();
-        }
+        //const id = this.getId();
+        //const index = id.substr(id.length - 4, 4);
+        //if (index === "0000" || this.imageData.selected) {
+        //    this.onSelected();
+        //}
     }
 
 
@@ -382,19 +378,23 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.fitWindow();
 
         // Save the original window center/width for later reset.
-        this.originalWindowCenter = this.image.cornerStoneImage.windowCenter;
-        this.originalWindowWidth = this.image.cornerStoneImage.windowWidth;
+        this.originalWindowCenter = this.image.cornerStoneImageList[0].windowCenter;
+        this.originalWindowWidth = this.image.cornerStoneImageList[0].windowWidth;
 
         this.hideWaitingText();
         this.showTextOverlay();
 
         this.updateImageTransform();
         this.syncAnnLabelLayerTransform();
-        this.viewContext.setContext(ViewContextEnum.SelectAnn, this.imageData.groupData.viewerShellData.getId());
+
+        // Set the default context to Select
+        this.imageOperationService.setShellContextType(this.shellId, new ImageContextData(ImageContextEnum.SelectAnn));
+
         this.annSerialize = new AnnSerialize(this.image.annData, this);
         this.deleteAllAnnotation();
         if (!this.annSerialize.createAnn()) {
-            this.setContext(this.viewContext.curContext);
+            // Todo
+            //this.setContext(this.viewContext.curContext);
         }
 
         this.redraw(2);
@@ -463,8 +463,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return cornerstone.getEnabledElement(this.helpElement).canvas;
     }
 
-    getContext(): ViewContext {
-        return this.viewContext.curContext;
+    getContext(): ImageContextData {
+        return this.imageOperationService.getShellContextType(this.shellId);
     }
 
     getBaseUrl(): string {
@@ -542,7 +542,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annObjList.push(annObj);
         if (!annObj.isLoadedFromTag()) {
             this.curSelectObj = annObj;
-            this.viewContext.setContext(ViewContextEnum.SelectAnn, this.imageData.groupData.viewerShellData.getId());
+            this.imageOperationService.setShellContextType(this.shellId, new ImageContextData(ImageContextEnum.SelectAnn));
         }
     }
 
@@ -560,7 +560,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         this.annGuide.stepTo(0);
 
         if (!needRecreate) {
-            this.viewContext.setContext(ViewContextEnum.SelectAnn, this.imageData.groupData.viewerShellData.getId());
+            this.imageOperationService.setShellContextType(this.shellId, new ImageContextData(ImageContextEnum.SelectAnn));
         }
     }
 
@@ -735,16 +735,12 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     onSelected() {
-        this.imageInteractionService.onSelectImageInGroup(this.imageData);
+        this.imageOperationService.onClickImageInViewer(this.imageData);
         this.canvas.focus();
     }
 
     getBorderStyle(): string {
-        return this.imageData.selected ? "1px solid #F90" : "1px solid #555555";
-    }
-
-    private doSelectImage(image: DicomImage) {
-        this.imageData.selected = (this.image === image);
+        return (this.isImageLoaded && this.imageData.selected) ? "1px solid #F90" : "1px solid #555555";
     }
 
     setHeight(height: number) {
@@ -762,12 +758,27 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         return this.imageData.selected;
     }
 
-    private setContext(context: ViewContext) {
+    //private setContext(context: ViewContext) {
+    //    if (!this.isImageLoaded) {
+    //        return;
+    //    }
+
+    //    const draggable = context.action === ViewContextEnum.Pan;
+    //    this.draggable(draggable);
+
+    //    //each time context changed, we should unselect cur selected object
+    //    this.selectAnnotation(undefined);
+    //    this.annGuide.hide();
+
+    //    this.setCursorFromContext();
+    //}
+
+    private setContext(imageContextData: ImageContextData) {
         if (!this.isImageLoaded) {
             return;
         }
 
-        const draggable = context.action === ViewContextEnum.Pan;
+        const draggable = imageContextData.imageContextType === ImageContextEnum.Pan;
         this.draggable(draggable);
 
         //each time context changed, we should unselect cur selected object
@@ -781,10 +792,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         if (!this.isImageLoaded)
             return;
 
-        if (!imageOperationData.needResponse(this.imageData.groupData.viewerShellData.getId(), this.imageData.selected))
+        if (!imageOperationData.needResponse(this.shellId, this.imageData.selected))
             return;
 
-        switch(imageOperationData.operationType) {
+        switch (imageOperationData.operationType) {
+            case ImageOperationEnum.SetContext:
+                this.setContext(imageOperationData.operationPara as ImageContextData);
+                break;
+
             case ImageOperationEnum.ShowAnnotation:
                 this.doToggleLayerDisplay(this.annLayer);
                 this.doToggleLayerDisplay(this.annLabelLayer);
@@ -833,131 +848,60 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 this.doReset();
                 break;
 
-            case ImageOperationEnum.ManualWlSelectedImage:
-                this.doManualWl();
-                break;
-
             case ImageOperationEnum.ToggleKeyImageSelectedImage:
                 this.doToggleKeyImage();
                 break;
+
+            case ImageOperationEnum.DisplayFramesInClickedImage:
+                if (imageOperationData.operationPara.viewerImageData === this.imageData) {
+                    this.displayFramesInImage(imageOperationData.operationPara.index);
+                }
+                break;
+
+            default:
+                return;
         }
 
         this.redraw(1);
     }
-
-    private onOperation(operation: OperationData) {
-        if (!this.isImageLoaded)
-            return;
-
-        if (!this.imageData.selected)
-            return;
-
-        switch (operation.type) {
-            //case OperationEnum.Rotate: {
-            //    this.rotate(operation.data.angle);
-            //    break;
-            //}
-
-            //case OperationEnum.Flip: {
-            //    this.flip(operation.data);
-            //    break;
-            //}
-
-            //case OperationEnum.Invert: {
-            //    this.invert();
-            //    break;
-            //}
-
-            //case OperationEnum.FitWidth:
-            //case OperationEnum.FitHeight:
-            //case OperationEnum.FitOriginal:
-            //case OperationEnum.FitWindow: {
-            //    //this.doFit(operation.type);
-            //    break;
-            //}
-
-            //case OperationEnum.ShowOverlay: {
-            //    this.olLayer.visible(operation.data.show);
-            //    break;
-            //}
-
-            //case OperationEnum.ShowRuler: {
-            //    this.imgRulerLayer.visible(operation.data.show);
-            //    break;
-            //}
-
-            //case OperationEnum.ShowAnnotation: {
-            //    this.annLayer.visible(operation.data.show);
-            //    break;
-            //}
-
-            //case OperationEnum.ShowGraphicOverlay: {
-            //    this.toggleGraphicOverlay(operation.data.show);
-            //    break;
-            //}
-
-            //case OperationEnum.ManualWL: {
-            //    this.doManualWl();
-            //    break;
-            //}
-
-            //case OperationEnum.ToggleKeyImage: {
-            //    if (this.image.keyImage === 'Y') {
-            //        this.image.keyImage = 'N';
-            //        this.setKeyImage(false);
-            //    } else {
-            //        this.image.keyImage = 'Y';
-            //        this.setKeyImage(true);
-            //    }
-            //    break;
-            //}
-
-            //case OperationEnum.Reset: {
-            //    this.doReset();
-            //    break;
-            //}
-        }
-
-        this.redraw(1);
-    }
-
+    
     private getCursorFromContext() {
-        const curContext = this.viewContext.curContext;
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
         const cursorUrl = `url(${this.baseUrl}/assets/img/cursor/{0}.cur),move`;
 
         let cursor = "default";
 
-        switch (curContext.action) {
-            case ViewContextEnum.WL:
+        switch (curContext.imageContextType) {
+            case ImageContextEnum.Wl:
                 cursor = cursorUrl.format("adjustwl");
                 break;
 
-            case ViewContextEnum.Pan:
+            case ImageContextEnum.Pan:
                 cursor = cursorUrl.format("hand");
                 break;
 
-            case ViewContextEnum.Zoom:
+            case ImageContextEnum.Zoom:
                 cursor = cursorUrl.format("zoom");
                 break;
 
-            case ViewContextEnum.Magnify:
+            case ImageContextEnum.Magnify:
                 cursor = cursorUrl.format("magnify");
                 break;
 
-            case ViewContextEnum.RoiZoom:
+            case ImageContextEnum.RoiZoom:
                 cursor = cursorUrl.format("rectzoom");
                 break;
 
-            case ViewContextEnum.RoiWl:
+            case ImageContextEnum.RoiWl:
                 cursor = cursorUrl.format("rectwl");
                 break;
 
-            case ViewContextEnum.SelectAnn:
+            case ImageContextEnum.SelectAnn:
                 cursor = cursorUrl.format("select");
                 break;
 
-            case ViewContextEnum.CreateAnn:
-                const cursorName = this.annotationService.getCursorNameByType(curContext.data);
+            case ImageContextEnum.CreateAnn:
+                    const cursorName = this.annotationService.getCursorNameByType(curContext.imageContextPara);
                 cursor = cursorUrl.format(cursorName);
                 break;
         }
@@ -969,18 +913,18 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         const cursor = this.getCursorFromContext();
         this.setCursor(cursor);
 
-        const curContext = this.viewContext.curContext;
-        if (curContext.action === ViewContextEnum.CreateAnn) {
-            const annDefData = this.annotationService.getAnnDefDataByType(curContext.data);
-            if (!annDefData) return;
+        //const curContext = this.viewContext.curContext;
+        //if (curContext.action === ViewContextEnum.CreateAnn) {
+        //    const annDefData = this.annotationService.getAnnDefDataByType(curContext.data);
+        //    if (!annDefData) return;
 
-            if (annDefData.needGuide) {
-                this.annGuide.show(annDefData.className);
-                this.redraw(1);
-            } else if (annDefData.cursorName === "ann_stamp") {
-                this.selectMarker();
-            }
-        }
+        //    if (annDefData.needGuide) {
+        //        this.annGuide.show(annDefData.className);
+        //        this.redraw(1);
+        //    } else if (annDefData.cursorName === "ann_stamp") {
+        //        this.selectMarker();
+        //    }
+        //}
     }
 
     private doRotate(angle) {
@@ -1122,8 +1066,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
 
         // Reset W/L
-        this.image.cornerStoneImage.windowWidth = this.originalWindowWidth;
-        this.image.cornerStoneImage.windowCenter = this.originalWindowCenter;
+        this.image.cornerStoneImageList[0].windowWidth = this.originalWindowWidth;
+        this.image.cornerStoneImageList[0].windowCenter = this.originalWindowCenter;
 
         const viewPort = cornerstone.getViewport(this.helpElement);
         viewPort.voi.windowCenter = this.originalWindowCenter;
@@ -1227,34 +1171,37 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     draggable(draggable: boolean) {
-        var self = this;
-        if (!self.isImageLoaded) {
+        if (!this.isImageLoaded) {
             return;
         }
 
         var canvas = this.canvas;
-        var curContext = this.viewContext.curContext;
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
 
         this.imgLayer.draggable({
             disabled: !draggable,
-            start: function (arg) {
-                if (curContext.action == ViewContextEnum.Select || curContext.action == ViewContextEnum.CreateAnn) {
+            start: arg => {
+                if (curContext.imageContextType === ImageContextEnum.Select || curContext.imageContextType === ImageContextEnum.CreateAnn) {
                     canvas.style.cursor = "move";
                 }
+                this.imageDragStart = arg;
             },
-            stop: function (arg) {
-                if (curContext.action == ViewContextEnum.Select || curContext.action == ViewContextEnum.CreateAnn) {
+            stop: arg => {
+                if (curContext.imageContextType === ImageContextEnum.Select || curContext.imageContextType === ImageContextEnum.CreateAnn) {
                     canvas.style.cursor = "auto";
                 }
             },
-            drag: function (arg) {
+            drag: arg => {
+                this.logService.debug(this.logPrefix + "dragging  x: " + arg.x + ", y: " + arg.y);
+                this.imageOperationService.onMoveAllSelectedImage(this.imageData, arg.x - this.imageDragStart.x, arg.y - this.imageDragStart.y);
+                this.imageDragStart = arg;
             }
         });
     }
 
     saveImage() {
         const annString = this.annSerialize.getAnnString(this.annObjList);
-        this.image.cornerStoneImage.data.elements["x0011101d"] = this.annSerialize.annData;
+        this.image.cornerStoneImageList[0].data.elements["x0011101d"] = this.annSerialize.annData;
         this.dicomImageService.saveImageAnn(this.image.id, annString).subscribe(ret => {
             const content = new MessageBoxContent();
             content.title = "Save Image";
@@ -1270,23 +1217,26 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         });
     }
 
-    private doWL(deltaX, deltaY) {
+    doWl(deltaX: number, deltaY: number, needNotify: boolean = true) {
         if (!this.isImageLoaded)
             return;
 
-        const self = this;
-        const dcmImg = self.image.cornerStoneImage;
+        const dcmImg = this.image.cornerStoneImageList[0];
 
-        if (deltaX != 0 || deltaY != 0) {
-            const maxVOI = dcmImg.maxPixelValue * dcmImg.slope + dcmImg.intercept;
-            const minVOI = dcmImg.minPixelValue * dcmImg.slope + dcmImg.intercept;
-            const imageDynamicRange = maxVOI - minVOI;
+        if (deltaX !== 0 || deltaY !== 0) {
+            const maxVoi = dcmImg.maxPixelValue * dcmImg.slope + dcmImg.intercept;
+            const minVoi = dcmImg.minPixelValue * dcmImg.slope + dcmImg.intercept;
+            const imageDynamicRange = maxVoi - minVoi;
             const multiplier = imageDynamicRange / 1024;
 
             const width = dcmImg.windowWidth + Math.round(deltaX * multiplier);
             const center = dcmImg.windowCenter + Math.round(deltaY * multiplier);
 
-            this.doWlByValue(center, width);
+            this.doWlByValue(center, width); 
+
+            if (needNotify) {
+                this.imageOperationService.onWlAllSelectedImage(this.imageData, deltaX, deltaY);
+            }
         }
     }
 
@@ -1329,30 +1279,30 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.logService.debug("Image Layer - onMouseDown");
 
-        const viewContext = self.viewContext;
-        //log('viwer mouse down: ' + this.canvasId);
+        //const viewContext = self.viewContext;
+        ////log('viwer mouse down: ' + this.canvasId);
 
-        //if in select context, and not click any object, will unselect all objects.
-        if (viewContext.curContext.action == ViewContextEnum.Select) {
-            if (!evt.event.cancelBubble) {
-                //if (self.curSelectObj && self.curSelectObj.select) {
-                //    self.curSelectObj.onSelect(false);
-                //    self.curSelectObj = undefined;
-                //}
-                self.selectAnnotation(null);
-                self.draggable(true);
-            } else { //an annobject has been selected
-                self.draggable(false);
-            }
-        } else if (viewContext.curContext.action == ViewContextEnum.CreateAnn) {
-            const parm = viewContext.curContext.data;
-            if (parm && parm.type && !parm.objCreated) {
-                const newObj: AnnObject = new parm.type();
-                //               self.createAnnObject(newObj, parm);
+        ////if in select context, and not click any object, will unselect all objects.
+        //if (viewContext.curContext.action == ViewContextEnum.Select) {
+        //    if (!evt.event.cancelBubble) {
+        //        //if (self.curSelectObj && self.curSelectObj.select) {
+        //        //    self.curSelectObj.onSelect(false);
+        //        //    self.curSelectObj = undefined;
+        //        //}
+        //        self.selectAnnotation(null);
+        //        self.draggable(true);
+        //    } else { //an annobject has been selected
+        //        self.draggable(false);
+        //    }
+        //} else if (viewContext.curContext.action == ViewContextEnum.CreateAnn) {
+        //    const parm = viewContext.curContext.data;
+        //    if (parm && parm.type && !parm.objCreated) {
+        //        const newObj: AnnObject = new parm.type();
+        //        //               self.createAnnObject(newObj, parm);
 
-                parm.objCreated = true; //stop create the annObject again
-            }
-        }
+        //        parm.objCreated = true; //stop create the annObject again
+        //    }
+        //}
 
         self.emitEvent(evt, MouseEventType.MouseDown, "onMouseDown");
     }
@@ -1364,13 +1314,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private onMouseOut(evt) {
         this.logService.debug("Image Layer - onMouseOut");
-        //log('viwer mouse out: ' + this.canvasId);
         this.emitEvent(evt, MouseEventType.MouseOut, "onMouseOut");
     }
 
     private onMouseUp(evt) {
         this.logService.debug("Image Layer - onMouseUp");
-        //log('viwer mouse up: ' +this.canvasId);
         this.emitEvent(evt, MouseEventType.MouseUp, "onMouseUp");
     }
 
@@ -1512,18 +1460,18 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
 
         const point = { x: evt.offsetX, y: evt.offsetY };
-
         if (this.annGuide.hitTest(point)) {
             return;
         }
 
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
-
         this.mouseEventHelper._mouseDownPosCvs = point;
+
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
 
         if (this.mouseEventHelper._mouseWhich === 1) {
 
-            if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
+            if (curContext.imageContextType === ImageContextEnum.CreateAnn) {
                 if (this.curSelectObj && !this.curSelectObj.isCreated()) {
                     this.curSelectObj.onMouseEvent(MouseEventType.DblClick, point, null);
                 }
@@ -1548,8 +1496,11 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private onCanvasMouseWheel(evt) {
+        this.logService.debug("onCanvasMouseWheel");
         const wheelUp = evt.originalEvent.wheelDelta > 0;
-        this.imageInteractionService.onNavigationImageInGroup(this.imageData, wheelUp);
+        (this.isImageLoaded && this.image.series.modality === "US")
+            ? this.imageOperationService.onNavigateFramesInClickedImage(this.imageData, wheelUp)
+            : this.imageOperationService.onNavigateImageInGroup(this.imageData, wheelUp);
     }
 
     private onCanvasMouseDown(evt) {
@@ -1566,23 +1517,33 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         this.dragging = true;
         this.mouseEventHelper._mouseWhich = evt.which; //_mouseWhich has value means current is mouse down
-
         this.mouseEventHelper._mouseDownPosCvs = point;
+
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
 
         if (this.mouseEventHelper._mouseWhich === 3) { //right mouse
 
-            if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
+            if (curContext.imageContextType === ImageContextEnum.CreateAnn) {
                 // Right click to cancel the creation of an annotation.
                 this.cancelCreate(true);
             } else {
-                this.mouseEventHelper._lastContext = this.viewContext.curContext;
-                this.viewContext.setContext(ViewContextEnum.WL, this.imageData.groupData.viewerShellData.getId());
+                this.mouseEventHelper._lastContext = curContext; 
+                this.imageOperationService.setShellContextType(this.shellId, new ImageContextData(ImageContextEnum.Wl));
             }
 
         } else if (this.mouseEventHelper._mouseWhich === 1) {
-            if (this.viewContext.curContext.action === ViewContextEnum.Magnify) {
+            if (curContext.imageContextType === ImageContextEnum.Magnify) {
                 this.startMagnify(point);
-            } else if (this.viewContext.curContext.action === ViewContextEnum.CreateAnn) {
+            } else if (curContext.imageContextType === ImageContextEnum.CreateAnn) {
+                if (curContext.imageContextPara === AnnType.Stamp) {
+
+                    const annImage = new AnnImage(undefined, this);
+                    const imageFileName = this.imageOperationService.getShellStampFileName(this.shellId);
+                    annImage.onCreate(imageFileName, AnnTool.screenToImage(point, this.image.transformMatrix), undefined, true);
+                    this.curSelectObj = annImage;
+                    return;
+                }
+
                 if (this.curSelectObj) {
                     // There is annotation selected
                     if (!this.curSelectObj.isCreated()) {
@@ -1598,9 +1559,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     // There is no annotation selected
                     this.startCreateAnnAtPoint(point);
                 }
-            } else if (this.viewContext.curContext.action === ViewContextEnum.SelectAnn) {
+            } else if (curContext.imageContextType === ImageContextEnum.SelectAnn) {
 
-            } else if (this.viewContext.curContext.action === ViewContextEnum.RoiZoom || this.viewContext.curContext.action === ViewContextEnum.RoiWl) {
+            } else if (curContext.imageContextType === ImageContextEnum.RoiZoom || curContext.imageContextType === ImageContextEnum.RoiWl) {
                 if (!this.annRoiRectangle) {
                     const imagePoint = AnnTool.screenToImage(point, this.getImageLayer().transform());
                     this.annRoiRectangle = new AnnBaseRectangle(undefined, imagePoint, 0, 0, this);
@@ -1613,45 +1574,43 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private onCanvasMouseMove(evt) {
 
-        const self = this;
         if (!this.isImageLoaded) {
             return;
         }
 
         const point = { x: evt.offsetX, y: evt.offsetY };
-        //console.log(evt.offsetX + "," + evt.offsetY);
-        const curContext = this.viewContext.curContext;
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
 
-        if (!self.mouseEventHelper._lastPosCvs) {
-            self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
+        if (!this.mouseEventHelper._lastPosCvs) {
+            this.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
         }
-        const deltaX = evt.offsetX - self.mouseEventHelper._lastPosCvs.x;
-        const deltaY = evt.offsetY - self.mouseEventHelper._lastPosCvs.y;
+        const deltaX = evt.offsetX - this.mouseEventHelper._lastPosCvs.x;
+        const deltaY = evt.offsetY - this.mouseEventHelper._lastPosCvs.y;
 
 
-        if (curContext.action === ViewContextEnum.CreateAnn) {
+        if (curContext.imageContextType === ImageContextEnum.CreateAnn) {
             if (this.curSelectObj && !this.curSelectObj.isCreated()) {
                 this.curSelectObj.onMouseEvent(MouseEventType.MouseMove, point, null);
             }
         } else {
-            if (self.mouseEventHelper._mouseWhich === 3) {
+            if (this.mouseEventHelper._mouseWhich === 3) {
 
-                if (curContext.action === ViewContextEnum.WL) {
-                    self.doWL(deltaX, deltaY);
+                if (curContext.imageContextType === ImageContextEnum.Wl) {
+                    this.doWl(deltaX, deltaY);
                 }
-            } else if (self.mouseEventHelper._mouseWhich === 1) {
+            } else if (this.mouseEventHelper._mouseWhich === 1) {
 
-                if (curContext.action === ViewContextEnum.Magnify) {
+                if (curContext.imageContextType === ImageContextEnum.Magnify) {
                     this.magnifyAtPoint(point);
-                } else if (curContext.action === ViewContextEnum.WL) {
-                    self.doWL(deltaX, deltaY);
-                } else if (curContext.action === ViewContextEnum.Zoom) {
+                } else if (curContext.imageContextType === ImageContextEnum.Wl) {
+                    this.doWl(deltaX, deltaY);
+                } else if (curContext.imageContextType === ImageContextEnum.Zoom) {
                     const delta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
                     if (Math.abs(delta) > 0) {
-                        self.doZoom(delta);
+                        this.doZoom(delta > 0, this.mouseEventHelper._mouseDownPosCvs);
                     }
 
-                } else if (curContext.action === ViewContextEnum.RoiZoom || curContext.action === ViewContextEnum.RoiWl) {
+                } else if (curContext.imageContextType === ImageContextEnum.RoiZoom || curContext.imageContextType === ImageContextEnum.RoiWl) {
                     if (this.annRoiRectangle) {
                         const topLeft = this.annRoiRectangle.getPosition();
                         const imagePoint = AnnTool.screenToImage(point, this.getImageLayer().transform());
@@ -1663,7 +1622,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
 
         this.redraw(this.dragging ? 2 : 1);
-        self.mouseEventHelper._lastPosCvs = { x: evt.offsetX, y: evt.offsetY };
+        this.mouseEventHelper._lastPosCvs = point;
     }
 
     private onCanvasMouseUp(evt) {
@@ -1682,28 +1641,27 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
 
         this.dragging = false;
-        const curContext = this.viewContext.curContext;
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
 
         if (self.mouseEventHelper._mouseWhich === 3) {
 
-            if (curContext.action === ViewContextEnum.WL) {
-                if (self.mouseEventHelper._lastContext.action === ViewContextEnum.CreateAnn) { //cancel create
-                    this.viewContext.setContext(ViewContextEnum.Select, this.imageData.groupData.viewerShellData.getId());
+            if (curContext.imageContextType === ImageContextEnum.Wl) {
+                if (self.mouseEventHelper._lastContext.imageContextType === ImageContextEnum.CreateAnn) { //cancel create
+                    this.imageOperationService.setShellContextType(this.shellId, new ImageContextData(ImageContextEnum.Select));
                 } else {
-                    this.viewContext.setContext(self.mouseEventHelper._lastContext.action, this.imageData.groupData.viewerShellData.getId(),
-                        self.mouseEventHelper._lastContext.data);
+                    this.imageOperationService.setShellContextType(this.shellId, self.mouseEventHelper._lastContext);
                 }
             }
         } else if (self.mouseEventHelper._mouseWhich === 1) {
 
-            if (curContext.action === ViewContextEnum.Magnify) {
+            if (curContext.imageContextType === ImageContextEnum.Magnify) {
                 this.endMagnify();
             }
-            else if (curContext.action === ViewContextEnum.RoiZoom || curContext.action === ViewContextEnum.RoiWl) {
+            else if (curContext.imageContextType === ImageContextEnum.RoiZoom || curContext.imageContextType === ImageContextEnum.RoiWl) {
                 if (this.annRoiRectangle && this.annRoiRectangle.getWidth() !== 0 && this.annRoiRectangle.getHeight() !== 0) {
                     const pointList = this.annRoiRectangle.getSurroundPointList();
 
-                    curContext.action === ViewContextEnum.RoiZoom ? this.doRoiZoom(pointList) : this.doRoiWl(pointList);
+                    curContext.imageContextType === ImageContextEnum.RoiZoom ? this.doRoiZoom(pointList) : this.doRoiWl(pointList);
 
                     this.annRoiRectangle.onDeleteChildren();
                     this.annRoiRectangle = undefined;
@@ -1716,25 +1674,45 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     }
 
     private onCanvasMouseOut(evt) {
-
         this.logService.debug("onCanvasMouseOut");
-        const self = this;
-        if (!self.isImageLoaded) {
+        if (!this.isImageLoaded) {
             return;
         }
 
-        self.canvas.onmouseup(evt); //cause jc to trigger mouseup event, which will stop the drag (imglayer)
-        if (self.mouseEventHelper._mouseWhich !== 0) {
-            self.onCanvasMouseUp(evt); //call mouseup to end the action
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
+        if (curContext.imageContextType === ImageContextEnum.CreateAnn) {
+            if (!this.curSelectObj || this.curSelectObj.isCreated()) {
+                if (!this.annGuide.isHidden()) {
+                    this.annGuide.hide();
+                    this.redraw(1);
+                }
+            }
+        }
+
+        this.canvas.onmouseup(evt); //cause jc to trigger mouseup event, which will stop the drag (imglayer)
+        if (this.mouseEventHelper._mouseWhich !== 0) {
+            this.onCanvasMouseUp(evt); //call mouseup to end the action
         }
     }
 
     private onCanvasMouseOver(evt) {
-
         this.logService.debug("onCanvasMouseOver");
-        const self = this;
-        if (!self.isImageLoaded) {
+        if (!this.isImageLoaded) {
             return;
+        }
+
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
+        if (curContext.imageContextType === ImageContextEnum.CreateAnn) {
+            if (!this.curSelectObj || this.curSelectObj.isCreated()) {
+                const annDefData = this.annotationService.getAnnDefDataByType(curContext.imageContextPara);
+                if (!annDefData)
+                    return;
+
+                if (annDefData.needGuide && this.annGuide.isHidden()) {
+                    this.annGuide.show(annDefData.className);
+                    this.redraw(1);
+                }
+            }
         }
     }
 
@@ -1768,8 +1746,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     private doManualWl() {
         const windowLevelData = new WindowLevelData();
-        windowLevelData.windowCenter = this.image.cornerStoneImage.windowCenter;
-        windowLevelData.windowWidth = this.image.cornerStoneImage.windowWidth;
+        windowLevelData.windowCenter = this.image.cornerStoneImageList[0].windowCenter;
+        windowLevelData.windowWidth = this.image.cornerStoneImageList[0].windowWidth;
         this.dialogService.showDialog(ManualWlDialogComponent, windowLevelData).subscribe(
             val => {
                 if (val) {
@@ -1780,14 +1758,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
     }
 
-    private doWlByValue(center: number, width: number) {
+    doWlByValue(center: number, width: number) {
         const viewPort = cornerstone.getViewport(this.helpElement);
         viewPort.voi.windowCenter = center;
         viewPort.voi.windowWidth = width;
         cornerstone.setViewport(this.helpElement, viewPort);
 
-        this.image.cornerStoneImage.windowWidth = width;
-        this.image.cornerStoneImage.windowCenter = center;
+        this.image.cornerStoneImageList[0].windowWidth = width;
+        this.image.cornerStoneImageList[0].windowCenter = center;
 
         this.updateWlTextOverlay(width, center);
     }
@@ -1807,7 +1785,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private startCreateAnnAtPoint(point: Point) {
         this.updateImageTransform();
 
-        const annDefData = this.annotationService.getAnnDefDataByType(this.viewContext.curContext.data);
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
+        const annDefData = this.annotationService.getAnnDefDataByType(curContext.imageContextPara);
         if (!annDefData) return;
 
         if (annDefData.imageSuiteAnnType === AnnType.Text) {
@@ -1904,7 +1883,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.annMagnify = new AnnMagnify(this);
         }
 
-        this.annMagnify.start(point, this.viewContext.curContext.data);
+        const curContext = this.imageOperationService.getShellContextType(this.shellId);
+        this.annMagnify.start(point, curContext.imageContextPara);
         this.canvas.style.cursor = "none";
 
         if (this.annGraphicOverlay) {
@@ -1949,20 +1929,24 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         );
     }
 
-    private doZoom(delta) {
+    doZoom(zoomOut: boolean, zoomPoint: Point, needNotify: boolean = true) {
         if (!this.isImageLoaded)
             return;
 
-        const imagePoint = AnnTool.screenToImage(this.mouseEventHelper._mouseDownPosCvs, this.image.transformMatrix);
+        const imagePoint = AnnTool.screenToImage(zoomPoint, this.image.transformMatrix);
 
-        const scaleValue = delta > 0 ? 1.05 : 0.95;
+        const scaleValue = zoomOut? 1.05 : 0.95;
         this.scale(scaleValue);
 
         const mouseDownPosCvsAfter = AnnTool.imageToScreen(imagePoint, this.image.transformMatrix);
-        this.translate(this.mouseEventHelper._mouseDownPosCvs.x - mouseDownPosCvsAfter.x, this.mouseEventHelper._mouseDownPosCvs.y - mouseDownPosCvsAfter.y);
+        this.translate(zoomPoint.x - mouseDownPosCvsAfter.x, zoomPoint.y - mouseDownPosCvsAfter.y);
 
         this.updateZoomRatioTextOverlay(this.getScale());
         this.refreshUi();
+
+        if (needNotify) {
+            this.imageOperationService.onZoomAllSelectedImage(this.imageData, zoomOut, zoomPoint);
+        }
     }
 
     private doRoiZoom(imagePointList: Point[]) {
@@ -2017,8 +2001,7 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
 
         switch (imageInteractionData.getType()) {
             case ImageInteractionEnum.SelectThumbnailInNavigator:
-            case ImageInteractionEnum.SelectImageInGroup:
-                this.doSelectImage(imageInteractionData.getPssiImage());
+                //this.doSelectImage(imageInteractionData.getPssiImage());
                 break;
 
         }
@@ -2030,10 +2013,8 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             layer.visible(visible);
         } else {
             // This is graphic overlay
-
-            
+            this.toggleGraphicOverlay(!this.annGraphicOverlay.isVisible());
         }
-        
     }
 
     private doToggleKeyImage() {
@@ -2044,5 +2025,14 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.image.keyImage = 'Y';
             this.setKeyImage(true);
         }
+    }
+
+    private displayFramesInImage(index: number) {
+        if (!this.image.isValidFrameIndex(index)) {
+            alert("Internal error in ImageViewerComponent.displayFramesInImage()");
+            return;
+        }
+
+        this.loadImage(index);
     }
 }

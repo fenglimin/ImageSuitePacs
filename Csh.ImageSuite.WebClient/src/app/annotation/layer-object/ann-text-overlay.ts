@@ -63,7 +63,7 @@ export class AnnTextOverlay {
 
             if (overlay.id === "9003") {
                 this.windowCenterIndex = index;
-                this.updateWindowCenter(this.image.cornerStoneImage.windowWidth, this.image.cornerStoneImage.windowCenter);
+                this.updateWindowCenter(this.image.cornerStoneImageList[0].windowWidth, this.image.cornerStoneImageList[0].windowCenter);
             } else if (overlay.id === "9004") {
                 this.zoomRatioIndex = index;
                 this.updateZoomRatioTextOverlay(this.image.getScaleValue());

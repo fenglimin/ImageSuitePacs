@@ -191,6 +191,7 @@
     <Compile Include="Controllers\WadoController.cs" />
     <Compile Include="Controllers\PssiController.cs" />
     <Compile Include="Controllers\ShortcutController.cs" />
+    <Compile Include="Controllers\WorklistController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Windsor\ControllerInstaller.cs" />
@@ -219,6 +220,7 @@
     <Folder Include="Views\Overlay\" />
     <Folder Include="Views\Pssi\" />
     <Folder Include="Views\Shortcut\" />
+    <Folder Include="Views\Worklist\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csh.ImageSuite.Common\Csh.ImageSuite.Common.csproj">

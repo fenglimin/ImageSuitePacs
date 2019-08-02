@@ -1,5 +1,6 @@
 ﻿import { ImageHangingProtocol } from "../models/hanging-protocol";
 import { ViewerShellData } from "../models/viewer-shell-data";
+import { ImageOperationEnum } from "../models/image-operation";
 import { LayoutPosition, LayoutMatrix } from "../models/layout";
 import { ViewerImageData } from "../models/viewer-image-data";
 import { Image } from "../models/pssi";
@@ -18,6 +19,9 @@ export class ViewerGroupData {
 
     selected = false;
     hide = true;
+
+    pageIndex = 0;
+    pageCount: number;
 
     constructor(viewerShellData: ViewerShellData,
         imageHangingProtocol: ImageHangingProtocol,
@@ -48,12 +52,12 @@ export class ViewerGroupData {
         this.imageCount = 0;
     }
 
-    getImage(pageIndex: number, rowIndex: number, colIndex: number): ViewerImageData {
+    getImage(rowIndex: number, colIndex: number): ViewerImageData {
         if (this.imageDataList.length === 0) {
             return null;
         }
 
-        const imageIndex = pageIndex * this.imageMatrix.rowCount * this.imageMatrix.colCount + rowIndex * this.imageMatrix.colCount + colIndex;
+        const imageIndex = this.pageIndex * this.imageMatrix.rowCount * this.imageMatrix.colCount + rowIndex * this.imageMatrix.colCount + colIndex;
         if (imageIndex >= this.imageDataList.length) {
             alert(`getImage() => Invalid image index : ${imageIndex}`);
             return null;
@@ -91,6 +95,11 @@ export class ViewerGroupData {
 
     getPageCount(): number {
         return Math.ceil(this.imageDataList.length / (this.imageMatrix.rowCount * this.imageMatrix.colCount));
+    }
+
+    resetPageInfo() {
+        this.pageIndex = 0;
+        this.pageCount = this.getPageCount();
     }
 
     removeAllEmptyImage() {
@@ -146,5 +155,77 @@ export class ViewerGroupData {
         }
 
         return undefined;
+    }
+
+    getNextPageIndex(wheelUp: boolean): number {
+        let nextPageIndex = -1;
+        if (wheelUp) {
+            if (this.pageIndex > 0) {
+                nextPageIndex = this.pageIndex - 1;
+            }
+        } else {
+            if (this.pageIndex < this.pageCount - 1) {
+                nextPageIndex = this.pageIndex + 1;
+            }
+        }
+
+        return nextPageIndex;
+    }
+
+    navigate(imageSelectType: ImageOperationEnum, up: boolean) {
+        const oldPageIndex = this.pageIndex;
+        if (up) {
+            if (this.pageIndex > 0) {
+                this.pageIndex--;
+            }
+        } else {
+            if (this.pageIndex < this.pageCount - 1) {
+                this.pageIndex++;
+            }
+        }
+
+        if (oldPageIndex === this.pageIndex) {
+            return;
+        }
+
+        this.setSelectionForNavigate(imageSelectType, oldPageIndex);
+    }
+
+    displayImage(imageSelectType: ImageOperationEnum, pageIndex: number) {
+        if (pageIndex < 0 || pageIndex >= this.pageCount) {
+            alert("Invalid para in ViewerGroupData.displayImage()");
+            return;
+        }
+
+        if (pageIndex === this.pageIndex) {
+            return;
+        }
+
+        const oldPageIndex = this.pageIndex;
+        this.pageIndex = pageIndex;
+        this.setSelectionForNavigate(imageSelectType, oldPageIndex);
+    }
+
+    private setSelectionForNavigate(imageSelectType: ImageOperationEnum, oldPageIndex: number) {
+        if (imageSelectType === ImageOperationEnum.SelectAllImages || imageSelectType === ImageOperationEnum.SelectAllImagesInSelectedGroup) {
+            // In SelectAllImages or SelectAllImagesInSelectedGroup mode, nothing need to do when click an image, since they all selected
+            return;
+        } else if (imageSelectType === ImageOperationEnum.SelectAllVisibleImages || imageSelectType === ImageOperationEnum.SelectAllVisibleImagesInSelectedGroup) {
+            // In SelectAllVisibleImages or SelectAllVisibleImagesInSelectedGroup mode
+            const count = this.imageMatrix.rowCount * this.imageMatrix.colCount;
+            for (let i = 0; i < count; i++) {
+                this.imageDataList[this.pageIndex * count + i].selected = true;
+                this.imageDataList[oldPageIndex * count + i].selected = false;
+            }
+        } else if (imageSelectType === ImageOperationEnum.SelectOneImageInSelectedGroup) {
+            // in SelectOneImageInSelectedGroup mode
+            const count = this.imageMatrix.rowCount * this.imageMatrix.colCount;
+            for (let i = 0; i < count; i++) {
+                this.imageDataList[this.pageIndex * count + i].selected = this.imageDataList[oldPageIndex * count + i].selected;
+                this.imageDataList[oldPageIndex * count + i].selected = false;
+            }
+        } else {
+            alert("Invalid para in ViewerGroupData.setSelectionForNavigate()");
+        }
     }
 }

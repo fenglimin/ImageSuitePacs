@@ -95,7 +95,7 @@ namespace Csh.ImageSuite.Common
 
         public Image CreateImage(DataRow row)
         {
-            var image = new Image(_commonTool.GetSafeStringDbValue(row, "SOPInstanceUID"))
+            var image = new Image()
             {
                 Id = _commonTool.GetSafeIntDbValue(row, "ID_Image"),
                 ImageNo = _commonTool.GetSafeStringDbValue(row, "ImageNo"),
@@ -108,7 +108,9 @@ namespace Csh.ImageSuite.Common
                 AcquisitionDate = _commonTool.GetSafeStringDbValue(row, "AcquisitionDate"),
                 AcquisitionTime = _commonTool.GetSafeStringDbValue(row, "AcquisitionTime"),
                 BitsAllocated = _commonTool.GetSafeIntDbValue(row, "BitsAllocated"),
-                KeyImage = _commonTool.GetSafeStringDbValue(row, "KeyImage")
+                KeyImage = _commonTool.GetSafeStringDbValue(row, "KeyImage"),
+                SopInstanceUid = _commonTool.GetSafeStringDbValue(row, "SOPInstanceUID")
+
             };
 
             return image;

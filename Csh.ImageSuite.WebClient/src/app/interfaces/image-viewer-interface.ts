@@ -1,9 +1,8 @@
-﻿import { IAnnotationObject } from "./annotation-object-interface";
-import { Image } from "../models/pssi";
-import { ViewContext } from "../services/view-context.service"
+﻿import { Image } from "../models/pssi";
+import { ImageContextData } from "../models/image-operation";
 import { AnnotationService } from "../services/annotation.service"
 import { AnnExtendObject } from "../annotation/extend-object/ann-extend-object";
-import { FontData } from '../models/misc-data';
+import { FontData } from "../models/misc-data";
 
 export interface IImageViewer {
 
@@ -21,7 +20,7 @@ export interface IImageViewer {
     getImage(): Image;
     getCanvas(): any;
     getCtCanvas(): any;
-    getContext(): ViewContext;
+    getContext(): ImageContextData;
     getAnnotationService(): AnnotationService;
     getBaseUrl(): string;
     getTextFont(): FontData;

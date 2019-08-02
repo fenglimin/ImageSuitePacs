@@ -4,9 +4,7 @@ import { ViewerShellData } from "../models/viewer-shell-data";
 import { Image } from "../models/pssi";
 
 export enum ImageInteractionEnum {
-    NavigationImageInGroup = 0,
-    SelectImageInGroup,
-    SelectThumbnailInNavigator,
+    SelectThumbnailInNavigator = 0,
     ChangeImageLayoutForSelectedGroup,
     AddSelectImage,
 }
@@ -109,10 +107,12 @@ export enum ImageOperationEnum {
     SelectAllVisibleImagesInSelectedGroup,
     SelectAllVisibleImages,
     SelectAllImages, // Including images that are NOT visible
-    DeselectAllImags,
+    DeselectAllImages,
+    ClickImageInViewer,
     
     // Operation takes effect for all selected images
-    RotateCwSelectedImage = 20,
+    DisplayImageInGroup = 20,
+    RotateCwSelectedImage,
     RotateCcwSelectedImage,
     FlipHorizontalSelectedImage,
     FlipVerticalSelectedImage,
@@ -125,8 +125,13 @@ export enum ImageOperationEnum {
     ResetSelectedImage,
     ManualWlSelectedImage,
     ToggleKeyImageSelectedImage,
+    MoveSelectedImage,
+    ZoomSelectedImage,
+    WlSelectedImage,
+
     // Operation takes effect for clicked image
     DeleteAnnotation = 50,
+    DisplayFramesInClickedImage,
     AddMarker
 }
 
@@ -142,6 +147,16 @@ export enum ImageContextEnum {
     SelectAnn
 }
 
+export class ImageContextData {
+    imageContextType: ImageContextEnum;
+    imageContextPara: any;
+
+    constructor(imageContextType: ImageContextEnum, imageContextPara: any = undefined) {
+        this.imageContextType = imageContextType;
+        this.imageContextPara = imageContextPara;
+    }
+}
+
 export class ImageOperationData {
     // The viewer shell ID for the operation
     shellId: string;
@@ -149,20 +164,16 @@ export class ImageOperationData {
     // The operation type
     operationType: ImageOperationEnum;
 
-    // The context type if the operation is SetContext
-    contextType: ImageContextEnum;
-
-    // The parameters for setting context
-    contextPara: any;
+    // The parameters for operation
+    operationPara: any;
 
     // The operation target
-    operationTarget: ImageOperationTargetEnum;
+    private operationTarget: ImageOperationTargetEnum;
 
-    constructor(shellId: string, operationType: ImageOperationEnum, contextType: ImageContextEnum = undefined, contextPara: any = undefined) {
+    constructor(shellId: string, operationType: ImageOperationEnum, operationPara: any = undefined) {
         this.shellId = shellId;
         this.operationType = operationType;
-        this.contextType = contextType;
-        this.contextPara = contextPara;
+        this.operationPara = operationPara;
 
         if (operationType >= ImageOperationEnum.DeleteAnnotation) {
             this.operationTarget = ImageOperationTargetEnum.ForClickedImage;
@@ -187,5 +198,17 @@ export class ImageOperationData {
             return true;
 
         return false;
+    }
+}
+
+export class ShellRuntimeData {
+    imageSelectType: ImageOperationEnum;
+    contextData: ImageContextData;
+    stampFileName: string;
+
+    constructor() {
+        this.imageSelectType = ImageOperationEnum.SelectOneImageInSelectedGroup;
+        this.contextData = new ImageContextData(ImageContextEnum.Select);
+        this.stampFileName = "";
     }
 }

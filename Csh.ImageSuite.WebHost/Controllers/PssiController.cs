@@ -35,13 +35,11 @@ namespace Csh.ImageSuite.WebHost.Controllers
     {
         private readonly IDbHelper _dbHelper;
         private readonly ICommonTool _commonTool;
-        private readonly IMiniPacsDicomHelper _miniPacsDicomHelper;
 
-        public PssiController(IPacsCoordinator pacsCoordinator, IMiniPacsDicomHelper miniPacsDicomHelper, ICommonTool commonTool)
+        public PssiController(IPacsCoordinator pacsCoordinator, ICommonTool commonTool)
         {
             _dbHelper = pacsCoordinator.GetCurrentDbHelper();
             _commonTool = commonTool;
-            _miniPacsDicomHelper = miniPacsDicomHelper;
         }
 
         // GET: Pssi
@@ -579,49 +577,6 @@ namespace Csh.ImageSuite.WebHost.Controllers
         }
 
 
-        //[System.Web.Mvc.HttpPost]
-        //public ActionResult GetThumbnails(Study study)
-        //{
-        //    Study imageStudy = _dbHelper.GetStudy(study.Id, false);
-        //    //List<FileContentResult> thumbnailList = new List<FileContentResult>();
-        //    //List<ActionResult> thumbnailList = new List<ActionResult>();
-
-        //    foreach (Series series in imageStudy.SeriesList)
-        //    {
-        //        foreach (Image image in series.ImageList)
-        //        {
-        //            var jpgFile = _miniPacsDicomHelper.GetThumbnailFile(Convert.ToInt32(image.Id));
-        //            if (jpgFile == string.Empty)
-        //            {
-        //                return null;
-        //            }
-
-        //            FileStream fs;
-        //            try
-        //            {
-        //                fs = new FileStream(jpgFile, FileMode.Open);
-        //            }
-        //            catch (Exception)
-        //            {
-        //                Thread.Sleep(1000);
-        //                fs = new FileStream(jpgFile, FileMode.Open);
-        //            }
-
-        //            var buffer = new byte[fs.Length];
-        //            fs.Read(buffer, 0, (int)fs.Length);
-        //            fs.Close();
-
-        //            //thumbnailList.Add(File(buffer, "image/jpeg", "fileName.jpg"));
-
-        //            return File(buffer, "image/jpeg", "fileName.jpg");
-
-        //        }
-        //    }
-
-        //    return View();
-        //}
-
-
         public static string GetPatientName(string LastName, string FirstName, string MiddleName)
         {
             // PatientName in DB storage format is: L^F^M
@@ -857,68 +812,59 @@ namespace Csh.ImageSuite.WebHost.Controllers
                 string strPatientId = "11";
                 string strLastExportIncludeCDViewer = "Y";
                 string strLastExportVerifyCDDVD = "Y";
+                string strImageType = "DICOM";
+                bool bImageIncludeDicomViewer = true;
+                bool bImageBurningDicomViewCD = true;
 
+                _dbHelper.SaveExportJob(strImageType, strLastExportIncludeCDViewer, "1", "8", strLastExportVerifyCDDVD, "admin", "administrator");
 
-                //TransferStatusBiz.SaveExportJob(strImageType, strLastExportIncludeCDViewer, strImageCompressRate, strLastExportPatientInfoConfig, strLastExportVerifyCDDVD, CurrentUser.UserId, CurrentUser.CurrentRole);
-
-                //int imageType = Convert.ToInt16(strImageType);
+                int imageType = Convert.ToInt16(strImageType);
                 //ExportJobDownLoadImageType exportJobEnum = imageType.ToEnum<ExportJobDownLoadImageType>(ExportJobDownLoadImageType.JPEG);
-
-                //model.ExportJobDownLoadImageType = exportJobEnum;
+                ExportJobDownLoadImageType exportJobEnum = ExportJobDownLoadImageType.DICOM;
+                model.ExportJobDownLoadImageType = exportJobEnum;
                 //model.RptFolderPath = GXWebUtil.GetRPTCacheFolderPath();
-                //model.BImageIncludeDicomViewer = bImageIncludeDicomViewer;
-                //model.BImageBurningDicomViewCD = bImageBurningDicomViewCD;
-                //model.ExportImageUidsList = ImageUidList;
-                //model.SessionIdString = Session.SessionID;
-                //model.PatientId = strPatientId;
-                //model.DatetimeSpanFolder = this.GetTimeSpanTempFolder();
+                model.BImageIncludeDicomViewer = bImageIncludeDicomViewer;
+                model.BImageBurningDicomViewCD = bImageBurningDicomViewCD;
+                model.ExportImageUidsList = ImageUidList;
+                model.SessionIdString = Session.SessionID;
+                model.PatientId = strPatientId;
+                model.DatetimeSpanFolder = this.GetTimeSpanTempFolder();
                 //model.ZipFileName = this.GetUniqueZipFileName(model.RptFolderPath, model.PatientId);
 
-                //model.SourceFileNameList.Clear();
-                //model.TargetFileNameList.Clear();
-                //model.TargetDicomFileNamePatientGuidPairs.Clear();
+                model.SourceFileNameList.Clear();
+                model.TargetFileNameList.Clear();
+                model.TargetDicomFileNamePatientGuidPairs.Clear();
 
-                //#region Compress Image from DICOM to JPEG
+                #region Compress Image from DICOM to JPEG
 
-                //if (exportJobEnum == ExportJobDownLoadImageType.JPEG)
-                //{
-                //    // Log
-                //    strLogMessage = "User choose Downloading JPEG files.........";
-                //    GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                if (exportJobEnum == ExportJobDownLoadImageType.JPEG)
+                {
 
-                //    // Log
-                //    strLogMessage = "Begin Compress Image from DICOM to JPEG.........";
-                //    GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //List<KeyValuePair<string, string>> lstImages = new List<KeyValuePair<string, string>>();
+                    //lstImages = JP2Compresser.AddTask_Jpeg(ImageUidList, Session.SessionID);
 
-                //    List<KeyValuePair<string, string>> lstImages = new List<KeyValuePair<string, string>>();
-                //    lstImages = JP2Compresser.AddTask_Jpeg(ImageUidList, Session.SessionID);
+                    //model.ImagesList = lstImages;
 
-                //    model.ImagesList = lstImages;
+                    //// Get physical path
+                    //string strRPTFolderPath = GXWebUtil.GetRPTCacheFolderPath();
+                    //for (int i = 0; i < lstImages.Count; i++)
+                    //{
+                    //    string strImagePhysicalPath = Path.Combine(strRPTFolderPath, lstImages[i].Value);
+                    //    if (!model.TargetFileNameList.Contains(strImagePhysicalPath))
+                    //    {
+                    //        model.TargetFileNameList.Add(strImagePhysicalPath);
+                    //    }
+                    //}
 
-                //    // Get physical path
-                //    string strRPTFolderPath = GXWebUtil.GetRPTCacheFolderPath();
-                //    for (int i = 0; i < lstImages.Count; i++)
-                //    {
-                //        string strImagePhysicalPath = Path.Combine(strRPTFolderPath, lstImages[i].Value);
-                //        if (!model.TargetFileNameList.Contains(strImagePhysicalPath))
-                //        {
-                //            model.TargetFileNameList.Add(strImagePhysicalPath);
+                    //Session["DoExportStudyModel"] = model;
 
-                //            // Log
-                //            strLogMessage = string.Format("Add new Jpeg file to the download list: [{0}]", strImagePhysicalPath);
-                //            GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
-                //        }
-                //    }
+                    //ParameterizedThreadStart tsGeneratorDicom2JpgOrPdf = new ParameterizedThreadStart(GeneratorDicom2JpgOrPdf);
+                    //Thread tGeneratorDicom2JpgOrPdf = new Thread(tsGeneratorDicom2JpgOrPdf);
+                    //tGeneratorDicom2JpgOrPdf.Start(model);
 
-                //    Session["DoExportStudyModel"] = model;
+                }
 
-                //    //ParameterizedThreadStart tsGeneratorDicom2JpgOrPdf = new ParameterizedThreadStart(GeneratorDicom2JpgOrPdf);
-                //    //Thread tGeneratorDicom2JpgOrPdf = new Thread(tsGeneratorDicom2JpgOrPdf);
-                //    //tGeneratorDicom2JpgOrPdf.Start(model);
-
-                //}
-
-                //#endregion
+                #endregion
 
                 //#region  Compress Image from DICOM to PDF
 
@@ -963,7 +909,7 @@ namespace Csh.ImageSuite.WebHost.Controllers
 
                 //#region  Compress Image from DICOM
 
-                //else if (exportJobEnum == ExportJobDownLoadImageType.DICOM)
+                //if (exportJobEnum == ExportJobDownLoadImageType.DICOM)
                 //{
                 //    int RemoveDicomTagMASK_ALL = MASK_ALL;
                 //    if (bImageRemovePatientInformation)
@@ -976,10 +922,10 @@ namespace Csh.ImageSuite.WebHost.Controllers
                 //    }
                 //    model.RemoveDicomTagMASK_ALL = RemoveDicomTagMASK_ALL;
 
-                //    // Download DICOM files
-                //    #region General Dicom Export
+                //// Download DICOM files
+                //#region General Dicom Export
 
-                //    if (!bImageIncludeDicomViewer && !bImageBurningDicomViewCD)
+                //if (!bImageIncludeDicomViewer && !bImageBurningDicomViewCD)
                 //    {
                 //        // Log
                 //        strLogMessage = "User choose Downloading DICOM files.........";
@@ -1033,304 +979,304 @@ namespace Csh.ImageSuite.WebHost.Controllers
 
                 //    #endregion
 
-                //    #region Include Dicom View Tool Export
+                    //#region Include Dicom View Tool Export
 
-                //    else if (bImageIncludeDicomViewer && !bImageBurningDicomViewCD)
-                //    {
+                    //else if (bImageIncludeDicomViewer && !bImageBurningDicomViewCD)
+                    //{
 
-                //        // Log
-                //        strLogMessage = "User choose Downloading Dicom View Tool files.........";
-                //        GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //    // Log
+                    //    strLogMessage = "User choose Downloading Dicom View Tool files.........";
+                    //    GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
 
-                //        string tempFolder = Path.Combine(model.RptFolderPath, model.DatetimeSpanFolder);
+                    //    string tempFolder = Path.Combine(model.RptFolderPath, model.DatetimeSpanFolder);
 
-                //        FileWrapper.CreateDirectory(tempFolder);
+                    //    FileWrapper.CreateDirectory(tempFolder);
 
-                //        string dcmTempFolder = Path.Combine(tempFolder, "WorkingDIR\\DICOM");
-                //        FileWrapper.CreateDirectory(dcmTempFolder);
+                    //    string dcmTempFolder = Path.Combine(tempFolder, "WorkingDIR\\DICOM");
+                    //    FileWrapper.CreateDirectory(dcmTempFolder);
 
-                //        int fileIndex = 1;
+                    //    int fileIndex = 1;
 
-                //        foreach (string sopInstanceUID in ImageUidList)
-                //        {
-                //            String sourceDicomFile = ImageBLL.GetDICOMFilePath(sopInstanceUID);
-                //            string sourceDicomFilePatientGUID = ImageBLL.GetPatientUIdByImageInstanceId(sopInstanceUID);
-                //            string strIndexDCMFileName = string.Format("{0}DCM", (fileIndex++).ToString());
-                //            String targetDicomFile = Path.Combine(dcmTempFolder, strIndexDCMFileName);
+                    //    foreach (string sopInstanceUID in ImageUidList)
+                    //    {
+                    //        String sourceDicomFile = ImageBLL.GetDICOMFilePath(sopInstanceUID);
+                    //        string sourceDicomFilePatientGUID = ImageBLL.GetPatientUIdByImageInstanceId(sopInstanceUID);
+                    //        string strIndexDCMFileName = string.Format("{0}DCM", (fileIndex++).ToString());
+                    //        String targetDicomFile = Path.Combine(dcmTempFolder, strIndexDCMFileName);
 
 
-                //            if (!model.SourceFileNameList.Contains(sourceDicomFile))
-                //            {
-                //                model.SourceFileNameList.Add(sourceDicomFile);
-                //            }
+                    //        if (!model.SourceFileNameList.Contains(sourceDicomFile))
+                    //        {
+                    //            model.SourceFileNameList.Add(sourceDicomFile);
+                    //        }
 
-                //            //model.LstMiddleStoreFileName.Add(destDicomFile);
-                //            if (!model.TargetFileNameList.Contains(targetDicomFile))
-                //            {
-                //                model.TargetFileNameList.Add(targetDicomFile);
-                //                // Log
-                //                strLogMessage = string.Format("Add new DICOM file to the download list: [{0}]", targetDicomFile);
-                //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
-                //            }
+                    //        //model.LstMiddleStoreFileName.Add(destDicomFile);
+                    //        if (!model.TargetFileNameList.Contains(targetDicomFile))
+                    //        {
+                    //            model.TargetFileNameList.Add(targetDicomFile);
+                    //            // Log
+                    //            strLogMessage = string.Format("Add new DICOM file to the download list: [{0}]", targetDicomFile);
+                    //            GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //        }
 
-                //            if (!model.TargetDicomFileNamePatientGuidPairs.ContainsKey(strIndexDCMFileName))
-                //            {
-                //                model.TargetDicomFileNamePatientGuidPairs.Add(strIndexDCMFileName, sourceDicomFilePatientGUID);
-                //                // Log
-                //                strLogMessage = string.Format("Add new index DCM : [{0}],PatientGUID : [{1}] to dictionary TargetDicomFileNamePatientGuidPairs.", strIndexDCMFileName, sourceDicomFilePatientGUID);
-                //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
-                //            }
-                //        }
+                    //        if (!model.TargetDicomFileNamePatientGuidPairs.ContainsKey(strIndexDCMFileName))
+                    //        {
+                    //            model.TargetDicomFileNamePatientGuidPairs.Add(strIndexDCMFileName, sourceDicomFilePatientGUID);
+                    //            // Log
+                    //            strLogMessage = string.Format("Add new index DCM : [{0}],PatientGUID : [{1}] to dictionary TargetDicomFileNamePatientGuidPairs.", strIndexDCMFileName, sourceDicomFilePatientGUID);
+                    //            GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //        }
+                    //    }
 
-                //        // prepera report file
-                //        foreach (string studyUid in studyUidList)
-                //        {
-                //            bool hasReport = WebReportDAL.HasReport(studyUid);
-                //            if (hasReport)
-                //            {
-                //                strLogMessage = "Begin Compress Report to Html.........";
-                //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //    // prepera report file
+                    //    foreach (string studyUid in studyUidList)
+                    //    {
+                    //        bool hasReport = WebReportDAL.HasReport(studyUid);
+                    //        if (hasReport)
+                    //        {
+                    //            strLogMessage = "Begin Compress Report to Html.........";
+                    //            GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
 
-                //                string targetReportFilePath = Path.Combine(dcmTempFolder, string.Format("{0}.html", studyUid));
-                //                if (!model.TargetReportFilePathList.Contains(targetReportFilePath))
-                //                {
-                //                    model.TargetReportFilePathList.Add(targetReportFilePath);
-                //                }
+                    //            string targetReportFilePath = Path.Combine(dcmTempFolder, string.Format("{0}.html", studyUid));
+                    //            if (!model.TargetReportFilePathList.Contains(targetReportFilePath))
+                    //            {
+                    //                model.TargetReportFilePathList.Add(targetReportFilePath);
+                    //            }
 
-                //                if (!model.TargetFileNameList.Contains(targetReportFilePath))
-                //                {
-                //                    model.TargetFileNameList.Add(targetReportFilePath);
-                //                }
-                //                strLogMessage = string.Format("Add new report html file to the download list: [{0}]", targetReportFilePath);
-                //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
-                //            }
-                //        }
+                    //            if (!model.TargetFileNameList.Contains(targetReportFilePath))
+                    //            {
+                    //                model.TargetFileNameList.Add(targetReportFilePath);
+                    //            }
+                    //            strLogMessage = string.Format("Add new report html file to the download list: [{0}]", targetReportFilePath);
+                    //            GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //        }
+                    //    }
 
-                //        // Prepare the parameter
+                    //    // Prepare the parameter
 
-                //        string strEasyFilmSourceZipFile = Path.Combine(GXWebUtil.GetGXResourceFolderPath(), DicomDIR);
-                //        string strEasyFilmTargetZipFile = Path.Combine(tempFolder, TempDicomDIR);
+                    //    string strEasyFilmSourceZipFile = Path.Combine(GXWebUtil.GetGXResourceFolderPath(), DicomDIR);
+                    //    string strEasyFilmTargetZipFile = Path.Combine(tempFolder, TempDicomDIR);
 
-                //        model.SourceDicomDIR7ZFile = strEasyFilmSourceZipFile;
-                //        model.TargetDicomDIR7ZFile = strEasyFilmTargetZipFile;
+                    //    model.SourceDicomDIR7ZFile = strEasyFilmSourceZipFile;
+                    //    model.TargetDicomDIR7ZFile = strEasyFilmTargetZipFile;
 
-                //        // Copy .7z file to temp folder
-                //        strLogMessage = string.Format("Copy file, From:[{0}], To:[{1}]", strEasyFilmSourceZipFile, strEasyFilmTargetZipFile);
-                //        GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
-                //        //
-                //        if (!FileWrapper.FileExist(strEasyFilmTargetZipFile))
-                //        {
-                //            FileWrapper.CopyFile(strEasyFilmSourceZipFile, strEasyFilmTargetZipFile);
-                //            File.SetAttributes(strEasyFilmTargetZipFile, FileAttributes.Normal);
-                //        }
+                    //    // Copy .7z file to temp folder
+                    //    strLogMessage = string.Format("Copy file, From:[{0}], To:[{1}]", strEasyFilmSourceZipFile, strEasyFilmTargetZipFile);
+                    //    GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //    //
+                    //    if (!FileWrapper.FileExist(strEasyFilmTargetZipFile))
+                    //    {
+                    //        FileWrapper.CopyFile(strEasyFilmSourceZipFile, strEasyFilmTargetZipFile);
+                    //        File.SetAttributes(strEasyFilmTargetZipFile, FileAttributes.Normal);
+                    //    }
 
-                //        Session["DoExportStudyModel"] = model;
+                    //    Session["DoExportStudyModel"] = model;
 
-                //        ParameterizedThreadStart tsGeneratorDicom2Dicom = new ParameterizedThreadStart(GeneratorDicom2Dicom);
-                //        Thread tDicom2Dicom = new Thread(tsGeneratorDicom2Dicom);
-                //        tDicom2Dicom.Start(model);
+                    //    ParameterizedThreadStart tsGeneratorDicom2Dicom = new ParameterizedThreadStart(GeneratorDicom2Dicom);
+                    //    Thread tDicom2Dicom = new Thread(tsGeneratorDicom2Dicom);
+                    //    tDicom2Dicom.Start(model);
 
-                //        ParameterizedThreadStart tsGeneratorDicom2Html = new ParameterizedThreadStart(GeneratorDicom2Html);
-                //        Thread tDicom2Html = new Thread(tsGeneratorDicom2Html);
-                //        tDicom2Html.Start(model);
+                    //    ParameterizedThreadStart tsGeneratorDicom2Html = new ParameterizedThreadStart(GeneratorDicom2Html);
+                    //    Thread tDicom2Html = new Thread(tsGeneratorDicom2Html);
+                    //    tDicom2Html.Start(model);
 
-                //        ParameterizedThreadStart tsGeneratorDicom2DICOMDirFiles = new ParameterizedThreadStart(GeneratorDicom2DicomDirZipFiles);
-                //        Thread newThread1 = new Thread(tsGeneratorDicom2DICOMDirFiles);
-                //        newThread1.Start(model);
+                    //    ParameterizedThreadStart tsGeneratorDicom2DICOMDirFiles = new ParameterizedThreadStart(GeneratorDicom2DicomDirZipFiles);
+                    //    Thread newThread1 = new Thread(tsGeneratorDicom2DICOMDirFiles);
+                    //    newThread1.Start(model);
 
-                //    }
+                    //}
 
-                //    #endregion
+                    //#endregion
 
-                //    #region Include Dicom View Tool OR Burning CD Tool Export
+                    //    #region Include Dicom View Tool OR Burning CD Tool Export
 
-                //    else if (bImageIncludeDicomViewer && bImageBurningDicomViewCD)
-                //    {
-                //        // Log
-                //        strLogMessage = "User choose Downloading Burning CD Tool files.........";
-                //        GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //    else if (bImageIncludeDicomViewer && bImageBurningDicomViewCD)
+                    //    {
+                    //        // Log
+                    //        strLogMessage = "User choose Downloading Burning CD Tool files.........";
+                    //        GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
 
-                //        string tempFolder = Path.Combine(model.RptFolderPath, model.DatetimeSpanFolder);
+                    //        string tempFolder = Path.Combine(model.RptFolderPath, model.DatetimeSpanFolder);
 
-                //        FileWrapper.CreateDirectory(tempFolder);
+                    //        FileWrapper.CreateDirectory(tempFolder);
 
-                //        string dcmTempFolder = Path.Combine(tempFolder, "WorkingDIR\\DICOM");
-                //        FileWrapper.CreateDirectory(dcmTempFolder);
+                    //        string dcmTempFolder = Path.Combine(tempFolder, "WorkingDIR\\DICOM");
+                    //        FileWrapper.CreateDirectory(dcmTempFolder);
 
-                //        int fileIndex = 1;
+                    //        int fileIndex = 1;
 
-                //        foreach (string sopInstanceUID in ImageUidList)
-                //        {
-                //            String sourceDicomFile = ImageBLL.GetDICOMFilePath(sopInstanceUID);
-                //            string sourceDicomFilePatientGUID = ImageBLL.GetPatientUIdByImageInstanceId(sopInstanceUID);
-                //            string strIndexDCMFileName = string.Format("{0}DCM", (fileIndex++).ToString());
-                //            String targetDicomFile = Path.Combine(dcmTempFolder, strIndexDCMFileName);
+                    //        foreach (string sopInstanceUID in ImageUidList)
+                    //        {
+                    //            String sourceDicomFile = ImageBLL.GetDICOMFilePath(sopInstanceUID);
+                    //            string sourceDicomFilePatientGUID = ImageBLL.GetPatientUIdByImageInstanceId(sopInstanceUID);
+                    //            string strIndexDCMFileName = string.Format("{0}DCM", (fileIndex++).ToString());
+                    //            String targetDicomFile = Path.Combine(dcmTempFolder, strIndexDCMFileName);
 
-                //            if (!model.SourceFileNameList.Contains(sourceDicomFile))
-                //            {
-                //                model.SourceFileNameList.Add(sourceDicomFile);
-                //            }
+                    //            if (!model.SourceFileNameList.Contains(sourceDicomFile))
+                    //            {
+                    //                model.SourceFileNameList.Add(sourceDicomFile);
+                    //            }
 
-                //            //model.LstMiddleStoreFileName.Add(destDicomFile);
-                //            if (!model.TargetFileNameList.Contains(targetDicomFile))
-                //            {
-                //                model.TargetFileNameList.Add(targetDicomFile);
-                //                // Log
-                //                strLogMessage = string.Format("Add new DICOM file to the download list: [{0}]", targetDicomFile);
-                //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
-                //            }
+                    //            //model.LstMiddleStoreFileName.Add(destDicomFile);
+                    //            if (!model.TargetFileNameList.Contains(targetDicomFile))
+                    //            {
+                    //                model.TargetFileNameList.Add(targetDicomFile);
+                    //                // Log
+                    //                strLogMessage = string.Format("Add new DICOM file to the download list: [{0}]", targetDicomFile);
+                    //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //            }
 
-                //            if (!model.TargetDicomFileNamePatientGuidPairs.ContainsKey(strIndexDCMFileName))
-                //            {
-                //                model.TargetDicomFileNamePatientGuidPairs.Add(strIndexDCMFileName, sourceDicomFilePatientGUID);
-                //                // Log
-                //                strLogMessage = string.Format("Add new index DCM : [{0}],PatientGUID : [{1}] to dictionary TargetDicomFileNamePatientGuidPairs.", strIndexDCMFileName, sourceDicomFilePatientGUID);
-                //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
-                //            }
-                //        }
+                    //            if (!model.TargetDicomFileNamePatientGuidPairs.ContainsKey(strIndexDCMFileName))
+                    //            {
+                    //                model.TargetDicomFileNamePatientGuidPairs.Add(strIndexDCMFileName, sourceDicomFilePatientGUID);
+                    //                // Log
+                    //                strLogMessage = string.Format("Add new index DCM : [{0}],PatientGUID : [{1}] to dictionary TargetDicomFileNamePatientGuidPairs.", strIndexDCMFileName, sourceDicomFilePatientGUID);
+                    //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //            }
+                    //        }
 
-                //        // prepera report file
-                //        foreach (string studyUid in studyUidList)
-                //        {
-                //            bool hasReport = WebReportDAL.HasReport(studyUid);
-                //            if (hasReport)
-                //            {
-                //                strLogMessage = "Begin Compress Report to Html.........";
-                //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //        // prepera report file
+                    //        foreach (string studyUid in studyUidList)
+                    //        {
+                    //            bool hasReport = WebReportDAL.HasReport(studyUid);
+                    //            if (hasReport)
+                    //            {
+                    //                strLogMessage = "Begin Compress Report to Html.........";
+                    //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
 
-                //                string targetReportFilePath = Path.Combine(dcmTempFolder, string.Format("{0}.html", studyUid));
-                //                if (!model.TargetReportFilePathList.Contains(targetReportFilePath))
-                //                {
-                //                    model.TargetReportFilePathList.Add(targetReportFilePath);
-                //                }
+                    //                string targetReportFilePath = Path.Combine(dcmTempFolder, string.Format("{0}.html", studyUid));
+                    //                if (!model.TargetReportFilePathList.Contains(targetReportFilePath))
+                    //                {
+                    //                    model.TargetReportFilePathList.Add(targetReportFilePath);
+                    //                }
 
-                //                if (!model.TargetFileNameList.Contains(targetReportFilePath))
-                //                {
-                //                    model.TargetFileNameList.Add(targetReportFilePath);
-                //                }
-                //                strLogMessage = string.Format("Add new report html file to the download list: [{0}]", targetReportFilePath);
-                //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
-                //            }
-                //        }
+                    //                if (!model.TargetFileNameList.Contains(targetReportFilePath))
+                    //                {
+                    //                    model.TargetFileNameList.Add(targetReportFilePath);
+                    //                }
+                    //                strLogMessage = string.Format("Add new report html file to the download list: [{0}]", targetReportFilePath);
+                    //                GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //            }
+                    //        }
 
-                //        //----------------------------------------------------------------------------------------------
-                //        // [2013/6/19 13:16:49   19009377]
-                //        // !!! WARNNING !!! 
-                //        // DICOMDIR also need p2p processing, so we need a thread to prepare the DICOM file
-                //        //----------------------------------------------------------------------------------------------
+                    //        //----------------------------------------------------------------------------------------------
+                    //        // [2013/6/19 13:16:49   19009377]
+                    //        // !!! WARNNING !!! 
+                    //        // DICOMDIR also need p2p processing, so we need a thread to prepare the DICOM file
+                    //        //----------------------------------------------------------------------------------------------
 
-                //        // Prepare the parameter
-                //        string strEasyFilmSourceZipFile = Path.Combine(GXWebUtil.GetGXResourceFolderPath(), DicomBurnCD);
-                //        string strEasyFilmTargetZipFile = Path.Combine(tempFolder, DicomBurnCD);
-                //        string strasyFilmTargetBurnCDDVD = Path.Combine(tempFolder, BurnCDDExe);
+                    //        // Prepare the parameter
+                    //        string strEasyFilmSourceZipFile = Path.Combine(GXWebUtil.GetGXResourceFolderPath(), DicomBurnCD);
+                    //        string strEasyFilmTargetZipFile = Path.Combine(tempFolder, DicomBurnCD);
+                    //        string strasyFilmTargetBurnCDDVD = Path.Combine(tempFolder, BurnCDDExe);
 
-                //        model.SourceDicomDIR7ZFile = strEasyFilmSourceZipFile;
-                //        model.TargetDicomDIR7ZFile = strEasyFilmTargetZipFile;
-                //        model.TargetBurnCDFilePath = strasyFilmTargetBurnCDDVD;
+                    //        model.SourceDicomDIR7ZFile = strEasyFilmSourceZipFile;
+                    //        model.TargetDicomDIR7ZFile = strEasyFilmTargetZipFile;
+                    //        model.TargetBurnCDFilePath = strasyFilmTargetBurnCDDVD;
 
-                //        model.ZipFileName = this.GetUniqueZipFileName(model.RptFolderPath, model.PatientId);
+                    //        model.ZipFileName = this.GetUniqueZipFileName(model.RptFolderPath, model.PatientId);
 
-                //        //// Add a un-exist file to avoid zip
-                //        //lstOutputFileList.Add(Path.Combine(tempFolder, Guid.NewGuid().ToString()));
+                    //        //// Add a un-exist file to avoid zip
+                    //        //lstOutputFileList.Add(Path.Combine(tempFolder, Guid.NewGuid().ToString()));
 
-                //        if (bImageIncludeDicomViewer && bImageBurningDicomViewCD)
-                //        {
-                //            // add patientinfo.xml
-                //            string strPatientInfoXmlFile = Path.Combine(tempFolder, "PatientInfo.xml");
+                    //        if (bImageIncludeDicomViewer && bImageBurningDicomViewCD)
+                    //        {
+                    //            // add patientinfo.xml
+                    //            string strPatientInfoXmlFile = Path.Combine(tempFolder, "PatientInfo.xml");
 
-                //            #region  ///////////////// Write xml /////////////////
-                //            XmlDocument xmldoc = new XmlDocument();
-                //            xmldoc.LoadXml("<root/>");
-                //            XmlElement informationSec = xmldoc.CreateElement("information");
-                //            xmldoc.FirstChild.AppendChild(informationSec);
-                //            // PID
-                //            XmlElement PIDSec = xmldoc.CreateElement("info");
-                //            XmlElement PIDTitle = xmldoc.CreateElement("PatientID");
-                //            XmlElement PIDValue = xmldoc.CreateElement("PatientID");
-                //            informationSec.AppendChild(PIDSec);
-                //            PIDSec.AppendChild(PIDTitle);
-                //            PIDSec.AppendChild(PIDValue);
-                //            PIDTitle.InnerText = "PatientID";
-                //            PIDValue.InnerText = ImageBLL.GetPatientId(ImageUidList[0]);
-                //            // PName
-                //            XmlElement PNameSec = xmldoc.CreateElement("info");
-                //            XmlElement PNameTitle = xmldoc.CreateElement("PatientName");
-                //            XmlElement PNameValue = xmldoc.CreateElement("PatientName");
-                //            informationSec.AppendChild(PNameSec);
-                //            PNameSec.AppendChild(PNameTitle);
-                //            PNameSec.AppendChild(PNameValue);
-                //            PNameTitle.InnerText = "PatientName";
-                //            string strPName = ImageBLL.GetPatientName(ImageUidList[0]);
-                //            PNameValue.InnerText = strPName;
-                //            // ImageCount
-                //            XmlElement ImageCountSec = xmldoc.CreateElement("info");
-                //            XmlElement ImageCountTitle = xmldoc.CreateElement("ImageCount");
-                //            XmlElement ImageCountValue = xmldoc.CreateElement("ImageCount");
-                //            informationSec.AppendChild(ImageCountSec);
-                //            ImageCountSec.AppendChild(ImageCountTitle);
-                //            ImageCountSec.AppendChild(ImageCountValue);
-                //            ImageCountTitle.InnerText = "ImageCount";
-                //            ImageCountValue.InnerText = ImageUidList.Length.ToString();
-                //            // Write XML to file
-                //            string strOuterXml = xmldoc.OuterXml;
-                //            File.AppendAllText(strPatientInfoXmlFile, strOuterXml, Encoding.Default);
-                //            #endregion
+                    //            #region  ///////////////// Write xml /////////////////
+                    //            XmlDocument xmldoc = new XmlDocument();
+                    //            xmldoc.LoadXml("<root/>");
+                    //            XmlElement informationSec = xmldoc.CreateElement("information");
+                    //            xmldoc.FirstChild.AppendChild(informationSec);
+                    //            // PID
+                    //            XmlElement PIDSec = xmldoc.CreateElement("info");
+                    //            XmlElement PIDTitle = xmldoc.CreateElement("PatientID");
+                    //            XmlElement PIDValue = xmldoc.CreateElement("PatientID");
+                    //            informationSec.AppendChild(PIDSec);
+                    //            PIDSec.AppendChild(PIDTitle);
+                    //            PIDSec.AppendChild(PIDValue);
+                    //            PIDTitle.InnerText = "PatientID";
+                    //            PIDValue.InnerText = ImageBLL.GetPatientId(ImageUidList[0]);
+                    //            // PName
+                    //            XmlElement PNameSec = xmldoc.CreateElement("info");
+                    //            XmlElement PNameTitle = xmldoc.CreateElement("PatientName");
+                    //            XmlElement PNameValue = xmldoc.CreateElement("PatientName");
+                    //            informationSec.AppendChild(PNameSec);
+                    //            PNameSec.AppendChild(PNameTitle);
+                    //            PNameSec.AppendChild(PNameValue);
+                    //            PNameTitle.InnerText = "PatientName";
+                    //            string strPName = ImageBLL.GetPatientName(ImageUidList[0]);
+                    //            PNameValue.InnerText = strPName;
+                    //            // ImageCount
+                    //            XmlElement ImageCountSec = xmldoc.CreateElement("info");
+                    //            XmlElement ImageCountTitle = xmldoc.CreateElement("ImageCount");
+                    //            XmlElement ImageCountValue = xmldoc.CreateElement("ImageCount");
+                    //            informationSec.AppendChild(ImageCountSec);
+                    //            ImageCountSec.AppendChild(ImageCountTitle);
+                    //            ImageCountSec.AppendChild(ImageCountValue);
+                    //            ImageCountTitle.InnerText = "ImageCount";
+                    //            ImageCountValue.InnerText = ImageUidList.Length.ToString();
+                    //            // Write XML to file
+                    //            string strOuterXml = xmldoc.OuterXml;
+                    //            File.AppendAllText(strPatientInfoXmlFile, strOuterXml, Encoding.Default);
+                    //            #endregion
 
-                //            // self-extract required files
-                //            List<string> lstSelfExtractRequiredFile = new List<string>();
-                //            lstSelfExtractRequiredFile.Add(Path.Combine(GXWebUtil.GetGXResourceFolderPath(), "7zsd.sfx"));
-                //            lstSelfExtractRequiredFile.Add(Path.Combine(GXWebUtil.GetGXResourceFolderPath(), "config.txt"));
+                    //            // self-extract required files
+                    //            List<string> lstSelfExtractRequiredFile = new List<string>();
+                    //            lstSelfExtractRequiredFile.Add(Path.Combine(GXWebUtil.GetGXResourceFolderPath(), "7zsd.sfx"));
+                    //            lstSelfExtractRequiredFile.Add(Path.Combine(GXWebUtil.GetGXResourceFolderPath(), "config.txt"));
 
-                //            model.SelfExtractRequiredFileList = lstSelfExtractRequiredFile;
+                    //            model.SelfExtractRequiredFileList = lstSelfExtractRequiredFile;
 
-                //            // Copy others files to temp folder
-                //            foreach (string tempSelfExtractRequiredFile in lstSelfExtractRequiredFile)
-                //            {
-                //                string strNewSelfExtractRequiredFile = Path.Combine(tempFolder, Path.GetFileName(tempSelfExtractRequiredFile));
-                //                if (!FileWrapper.FileExist(strNewSelfExtractRequiredFile))
-                //                {
-                //                    FileWrapper.CopyFile(tempSelfExtractRequiredFile, strNewSelfExtractRequiredFile);
-                //                    File.SetAttributes(strNewSelfExtractRequiredFile, FileAttributes.Normal);
-                //                    //
-                //                    strLogMessage = string.Format("Copy file, From:[{0}], To:[{1}]", tempSelfExtractRequiredFile, strNewSelfExtractRequiredFile);
-                //                    GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
-                //                }
-                //            }
+                    //            // Copy others files to temp folder
+                    //            foreach (string tempSelfExtractRequiredFile in lstSelfExtractRequiredFile)
+                    //            {
+                    //                string strNewSelfExtractRequiredFile = Path.Combine(tempFolder, Path.GetFileName(tempSelfExtractRequiredFile));
+                    //                if (!FileWrapper.FileExist(strNewSelfExtractRequiredFile))
+                    //                {
+                    //                    FileWrapper.CopyFile(tempSelfExtractRequiredFile, strNewSelfExtractRequiredFile);
+                    //                    File.SetAttributes(strNewSelfExtractRequiredFile, FileAttributes.Normal);
+                    //                    //
+                    //                    strLogMessage = string.Format("Copy file, From:[{0}], To:[{1}]", tempSelfExtractRequiredFile, strNewSelfExtractRequiredFile);
+                    //                    GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //                }
+                    //            }
 
-                //            // Copy easy film file DicomBurnCD.7z to target DicomBurnCD.7z
-                //            // Copy .7z file to temp folder
-                //            strLogMessage = string.Format("Copy file, From:[{0}], To:[{1}]", strEasyFilmSourceZipFile, strEasyFilmTargetZipFile);
-                //            GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
+                    //            // Copy easy film file DicomBurnCD.7z to target DicomBurnCD.7z
+                    //            // Copy .7z file to temp folder
+                    //            strLogMessage = string.Format("Copy file, From:[{0}], To:[{1}]", strEasyFilmSourceZipFile, strEasyFilmTargetZipFile);
+                    //            GXLogManager.WriteLog(GXLogModule.WEB_PAGE_TransferExport, GXLogLevel.Info, GXLogCode.DEFAULT, strLogMessage);
 
-                //            if (!FileWrapper.FileExist(strEasyFilmTargetZipFile))
-                //            {
-                //                FileWrapper.CopyFile(strEasyFilmSourceZipFile, strEasyFilmTargetZipFile);
-                //                File.SetAttributes(strEasyFilmTargetZipFile, FileAttributes.Normal);
-                //            }
-                //        }
+                    //            if (!FileWrapper.FileExist(strEasyFilmTargetZipFile))
+                    //            {
+                    //                FileWrapper.CopyFile(strEasyFilmSourceZipFile, strEasyFilmTargetZipFile);
+                    //                File.SetAttributes(strEasyFilmTargetZipFile, FileAttributes.Normal);
+                    //            }
+                    //        }
 
-                //        Session["DoExportStudyModel"] = model;
+                    //        Session["DoExportStudyModel"] = model;
 
-                //        ParameterizedThreadStart tsGeneratorDicom2Dicom = new ParameterizedThreadStart(GeneratorDicom2Dicom);
-                //        Thread tDicom2Dicom = new Thread(tsGeneratorDicom2Dicom);
-                //        tDicom2Dicom.Start(model);
+                    //        ParameterizedThreadStart tsGeneratorDicom2Dicom = new ParameterizedThreadStart(GeneratorDicom2Dicom);
+                    //        Thread tDicom2Dicom = new Thread(tsGeneratorDicom2Dicom);
+                    //        tDicom2Dicom.Start(model);
 
-                //        ParameterizedThreadStart tsGeneratorDicom2Html = new ParameterizedThreadStart(GeneratorDicom2Html);
-                //        Thread tDicom2Html = new Thread(tsGeneratorDicom2Html);
-                //        tDicom2Html.Start(model);
+                    //        ParameterizedThreadStart tsGeneratorDicom2Html = new ParameterizedThreadStart(GeneratorDicom2Html);
+                    //        Thread tDicom2Html = new Thread(tsGeneratorDicom2Html);
+                    //        tDicom2Html.Start(model);
 
-                //        ParameterizedThreadStart tsGeneratorDicom2DICOMDirFiles = new ParameterizedThreadStart(GeneratorDicom2DicomDirZipFiles);
-                //        Thread newThread1 = new Thread(tsGeneratorDicom2DICOMDirFiles);
-                //        newThread1.Start(model);
-                //    }
+                    //        ParameterizedThreadStart tsGeneratorDicom2DICOMDirFiles = new ParameterizedThreadStart(GeneratorDicom2DicomDirZipFiles);
+                    //        Thread newThread1 = new Thread(tsGeneratorDicom2DICOMDirFiles);
+                    //        newThread1.Start(model);
+                    //    }
 
-                //    #endregion
-                //}
+                    //    #endregion
+                    //}
 
-                //#endregion
+                    //#endregion
 
-                //Session["DoExportStudyModel"] = model;
-            }
+                    //Session["DoExportStudyModel"] = model;
+                }
             catch (Exception ex)
             {
             //    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "divLoadingHidden", "divLoadingHidden();", true);
@@ -1766,6 +1712,11 @@ namespace Csh.ImageSuite.WebHost.Controllers
                 get { return _sessionIdString; }
                 set { _sessionIdString = value; }
             }
+        }
+
+        private string GetTimeSpanTempFolder()
+        {
+            return DateTime.Now.ToString("yyyyMMddHHmmssFFF");
         }
 
         /// <summary>

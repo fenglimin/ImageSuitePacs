@@ -4,18 +4,15 @@
     height: 70px;
     margin-right: 4px;
     overflow: hidden;
-    padding: 2px;
+    padding: 0px;
     width: 70px;
+
 }
 
 .thumbnail:hover { border: solid 2px #F90; }
 
-
-.img {
-    background-color: black;
-    height: 70px;
-  
-    margin-right: 4px;
-    overflow: hidden;
-    width: 70px;
+.img-type {
+    max-width:100%;
+    max-height:100%;
+    margin: auto auto;
 }

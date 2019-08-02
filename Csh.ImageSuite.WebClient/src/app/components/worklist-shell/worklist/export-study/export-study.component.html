@@ -6,7 +6,7 @@
 </h1>
 <mat-dialog-content>
     <div id="body-content">
-        <div id="multi-study-instance" [hidden]="studyNumber==1">
+        <div id="multi-study-instance" class="table-list-style" [hidden]="studyNumber==1">
             <table>
                 <thead>
                     <tr>
@@ -55,36 +55,57 @@
             </table>
         </div>
         <div id="single-study-instance" [hidden]="studyNumber!=1">
-            <table>
+            <table id="single-study-table">
                 <tr>
-                    <td id="single-study-info">
-                        <div id="human-license">
-                            <div>
-                                Patient Name : {{study.patient.patientName}}
-                            </div>
-                            <div>
-                                Patient ID : {{study.patient.patientId}}
-                            </div>
-                            <div>
-                                Accession Number : {{study.accessionNo}}
-                            </div>
-                            <div>
-                                Study Date : {{study.studyDate}}
-                            </div>
-                            <div>
-                                Study Time : {{study.studyTime}}
-                            </div>
-                        </div>
+                    <td>
+                        <table id="single-study-info">
+                            <tr>
+                                <td>Patient Name
+                                </td>
+                                <td>
+                                    {{study.patient.patientName}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Patient ID
+                                </td>
+                                <td>
+                                    {{study.patient.patientId}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Accession Number
+                                </td>
+                                <td>
+                                    {{study.accessionNo}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Study Date
+                                </td>
+                                <td>
+                                    {{study.studyDate}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Study Time
+                                </td>
+                                <td>
+                                    {{study.patient.studyTime}}
+                                </td>
+                            </tr>
+                        </table>
                     </td>
-                    <td id="container">
-                        <div *ngFor="let thumbnail of thumbnails">
+                    <td id="image-container">
+                        <div *ngFor="let image of imageList">
                             <table>
                                 <tr>
-                                    <td width="20px">
-                                        <input type="checkbox" />
-                                    </td>
                                     <td class="td-image">
-                                        <img [src]="thumbnail" />
+                                        <app-thumbnail [image]="image" [isExportStudy]="true" (click)="appThumbnailClicked()"></app-thumbnail>
                                     </td>
                                 </tr>
                             </table>
@@ -96,7 +117,7 @@
                     <td>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" />
+                                <input type="checkbox" (click)="checkAllImages()" [checked]="isCheckedAllModel"/>
                                 Check All
                             </label>
                         </div>
@@ -112,10 +133,76 @@
             <button id="media-button" class="media-icon icon-button" (click)="onMediaIconClick()"></button>
         </div>
         <div id="tab-mask-content">
-            <div id="pacs-tab">
+            <div id="pacs-tab" [hidden]="!isShowPacs">
+                <div class="table-list-style">
+                    <table id="pacs-table">
+                        <tr>
+                            <th>
 
+                            </th>
+                            <th>
+                                Desctination
+                            </th>
+                            <th>
+                                AE Title
+                            </th>
+                            <th>
+                                IP Address
+                            </th>
+                            <th>
+                                Storage Commitment
+                            </th>
+                        </tr>
+                        <tr *ngFor="let pacs of pacsList">
+                            <td>
+                                <input type="checkbox" [(ngModel)]="pacs.pacsChecked" (change)="onPacsCheckChanged()"/>
+                            </td>
+                            <td>
+                                {{pacs.netAEName}}
+                            </td>
+                            <td>
+                                {{pacs.aETitle}}
+                            </td>
+                            <td>
+                                {{pacs.iPAddress}}
+                            </td>
+                            <td>
+                                {{pacs.storageCommitment}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <table>
+                    <tr>
+                        <td>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" [(ngModel)]="isCompression"/>
+                                    Compression
+                                </label>
+                            </div>
+                        </td>
+                        <td class="second-td">
+                            <select [(ngModel)]="selectedTransferCompress" [disabled]="!isCompression">
+                                <option *ngFor="let compress of transferCompressList | keyvalue" [ngValue]="compress.key">
+                                    {{compress.value}}
+                                </option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" [(ngModel)]="isCreateNewGuid" />
+                                    Create New GUID
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
-            <div id="media-tab">
+            <div id="media-tab" [hidden]="isShowPacs">
                 <div id="export-format-area">
                     <div>
                         Export Format :
@@ -138,7 +225,7 @@
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" />
+                                        <input type="checkbox" [checked]="isRemovePatientInfo"/>
                                         Remove Patient Info
                                     </label>
                                 </div>
@@ -146,7 +233,7 @@
                             <td class="second-td">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" />
+                                        <input type="checkbox" [checked]="isRemoveInstitutionName"/>
                                         Remove Institution Name
                                     </label>
                                 </div>
@@ -156,7 +243,7 @@
                             <td>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" />
+                                        <input type="checkbox" [checked]="isIncludeCdViewer" />
                                         Include CD Viewer
                                     </label>
                                 </div>
@@ -164,7 +251,7 @@
                             <td class="second-td">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" />
+                                        <input type="checkbox" [checked]="isIncludeCdBurningTool"/>
                                         Include CD Burning Tool
                                     </label>
                                 </div>
@@ -182,7 +269,7 @@
     <button class="mat-raised-button" (click)="onCancelClick()">
         <i class="glyphicon glyphicon-remove-circle" style="padding-right: 8px"></i>Cancel
     </button>
-    <button class="mat-raised-button" (click)="onOkClick()">
+    <button class="mat-raised-button" (click)="onOkClick()" [disabled]="isNoCheckedImage || isNoCheckedPacs">
         <i class="glyphicon glyphicon-ok-circle" style="padding-right: 8px"></i>Ok
     </button>
 </mat-dialog-actions>

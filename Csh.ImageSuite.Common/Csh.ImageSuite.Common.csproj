@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonTool.cs" />
+    <Compile Include="Constant.cs" />
     <Compile Include="DatabaseFactoryComponentSelector.cs" />
     <Compile Include="Database\SqlHelper.cs" />
     <Compile Include="Installer\CommonToolInstaller.cs" />
