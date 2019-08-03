@@ -22,7 +22,7 @@
             {{getPlayStatus()}}
         </td>
         <td>
-            <input type="checkbox" name="loop" [checked]="loop" (input)="loopChanged($event)" />Loop
+            <input type="checkbox" name="loop" [(ngModel)]="loop" />Loop
         </td>
     </tr>
 </table>

@@ -74,10 +74,6 @@ export class VideoPlayerComponent implements OnInit {
         this.onDisplayImage(index);
     }
 
-    loopChanged(event: any) {
-        this.loop = event.target.checked;
-    }
-
     private onImageOperation(imageOperationData: ImageOperationData) {
         if (!imageOperationData.needResponse(this.viewerShellData.getId(), true))
             return;
