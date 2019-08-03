@@ -23,6 +23,8 @@ export class VideoPlayerComponent implements OnInit {
 
     visible = false;
     playing = false;
+    loop = true;
+    loopYoyo = false;
 
     private subscriptionImageOperation: Subscription;
     private viewerImageData: ViewerImageData;
@@ -42,7 +44,6 @@ export class VideoPlayerComponent implements OnInit {
 
     onNavigateImage(up: boolean) {
         if (this.visible) {
-            
             this.viewerImageData.image.series.modality === "US"
                 ? this.imageOperationService.onNavigateFramesInClickedImage(this.viewerImageData, up)
                 : this.imageOperationService.onNavigateImageInGroup(this.viewerImageData, up);
@@ -68,9 +69,13 @@ export class VideoPlayerComponent implements OnInit {
         return `${this.index + 1}/${this.count}`; 
     }
 
-    sliderChanged(value: any) {
-        const index = Number(value.currentTarget.value) - 1;
+    sliderChanged(event: any) {
+        const index = Number(event.currentTarget.value) - 1;
         this.onDisplayImage(index);
+    }
+
+    loopChanged(event: any) {
+        this.loop = event.target.checked;
     }
 
     private onImageOperation(imageOperationData: ImageOperationData) {
@@ -85,9 +90,10 @@ export class VideoPlayerComponent implements OnInit {
             case ImageOperationEnum.DisplayImageInGroup:
             case ImageOperationEnum.DisplayFramesInClickedImage:
                 this.index = imageOperationData.operationPara.index;
-                this.setButtonStatus();
                 break;
         }
+
+        this.setButtonStatus();
     }
 
     private onClickImageInViewer(viewerImageData: ViewerImageData) {
@@ -110,10 +116,31 @@ export class VideoPlayerComponent implements OnInit {
         }
     }
 
+    private getNextIndex(): number {
+        let nextIndex = -1;
+        if (this.index < this.count - 1) {
+            nextIndex = this.index + 1;
+        } else {
+            if (this.loop) {
+                nextIndex = 0;
+            }
+        }
+
+        return nextIndex;
+    }
+
     private playVideo() {
-        if (this.playing && this.index < this.count - 1) {
-            this.onNavigateImage(false);
+        if (!this.playing) {
+            return;
+        }
+
+        const nextIndex = this.getNextIndex();
+        if (nextIndex !== -1) {
+            this.onDisplayImage(nextIndex);
             setTimeout(() => { this.playVideo(); }, 100);
+        } else {
+            this.playing = false;
+            this.onDisplayImage(0);
         }
     }
 

@@ -18,6 +18,10 @@
     border: 1px solid #F90;
 }
 
+.prevImage:disabled, .playVideo:disabled, .pauseVideo:disabled, .nextImage:disabled, .stopVideo:disabled{
+    border: none;
+}
+
 .slider {
     -webkit-appearance: none;  /* Override default CSS styles */
     appearance: none;

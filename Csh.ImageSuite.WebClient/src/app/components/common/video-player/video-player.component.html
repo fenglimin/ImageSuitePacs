@@ -21,5 +21,8 @@
         <td>
             {{getPlayStatus()}}
         </td>
+        <td>
+            <input type="checkbox" name="loop" [checked]="loop" (input)="loopChanged($event)" />Loop
+        </td>
     </tr>
 </table>
