@@ -12,6 +12,8 @@ import { ImageOperationService } from "../../../services/image-operation.service
   styleUrls: ['./video-player.component.css']
 })
 export class VideoPlayerComponent implements OnInit {
+    Arr = Array; //Array type captured in a variable
+
     @Input()
     viewerShellData: ViewerShellData;
 
@@ -24,7 +26,7 @@ export class VideoPlayerComponent implements OnInit {
     visible = false;
     playing = false;
     loop = true;
-    loopYoyo = false;
+    framePerSecond = 1;
 
     private subscriptionImageOperation: Subscription;
     private viewerImageData: ViewerImageData;
@@ -133,7 +135,7 @@ export class VideoPlayerComponent implements OnInit {
         const nextIndex = this.getNextIndex();
         if (nextIndex !== -1) {
             this.onDisplayImage(nextIndex);
-            setTimeout(() => { this.playVideo(); }, 100);
+            setTimeout(() => { this.playVideo(); }, 1000/this.framePerSecond);
         } else {
             this.playing = false;
             this.onDisplayImage(0);
@@ -151,8 +153,8 @@ export class VideoPlayerComponent implements OnInit {
     private setButtonStatus() {
         this.disablePrev = this.index === 0;
         this.disableNext = this.index === this.count - 1;
-        this.disablePlay = this.playing;
-        this.disableStop = !this.playing;
-        this.disablePause = !this.playing;
+        this.disablePlay = this.playing || this.count === 1;
+        this.disableStop = !this.playing || this.count === 1;
+        this.disablePause = !this.playing || this.count === 1;
     }
 }

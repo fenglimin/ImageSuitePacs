@@ -329,6 +329,9 @@ export class Image extends Pssi {
         this.cornerStoneImageList[frameIndex] = ctImage;
 
         this.frameCount = Number(ctImage.data.intString("x00280008"));
+        if (isNaN(this.frameCount)) {
+            this.frameCount = 1;
+        }
     }
 
     getNextFrameIndex(wheelUp: boolean): number{

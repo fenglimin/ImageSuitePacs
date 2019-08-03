@@ -59,3 +59,14 @@
 #table, tr, td {
     padding-left: 5px;
 }
+
+select {
+    background-color: black;
+    border: 1px solid #444;
+    width: 100%;
+}
+
+/*select, option:hover { 
+    background-color: #F90; 
+    color: #fff; 
+}*/ 

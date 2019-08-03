@@ -24,5 +24,10 @@
         <td>
             <input type="checkbox" name="loop" [(ngModel)]="loop" />Loop
         </td>
+        <td>
+            <select [(ngModel)]="framePerSecond">
+                <option *ngFor="let id of Arr(10).fill(1); let fps = index" [ngValue]="fps+1">{{fps+1}}FPS</option>
+            </select>
+        </td>
     </tr>
 </table>
