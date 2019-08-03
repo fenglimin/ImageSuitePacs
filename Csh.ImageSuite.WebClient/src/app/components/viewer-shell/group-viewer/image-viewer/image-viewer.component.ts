@@ -319,17 +319,26 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
             this.showImage(frameIndex);
         } else {
             // The image is NOT downloaded, get the image from server and show it after download
-            this.dicomImageService.getCornerStoneImage(this.image, frameIndex).then(ctImage => this.onImageDownloaded(ctImage, frameIndex));
+            const curImage = this.image;
+            this.dicomImageService.getCornerStoneImage(this.image, frameIndex).then(ctImage => this.onImageDownloaded(curImage, ctImage, frameIndex));
         }
 
     }
 
     // Call back functions when image is loaded by CornerStone
-    private onImageDownloaded(ctImage: any, frameIndex: number) {
+    private onImageDownloaded(image: DicomImage, ctImage: any, frameIndex: number) {
         this.logService.info(this.logPrefix + "Image is downloaded from server. Start to show it by cornerstone.");
-        this.image.setCornerStoneImage(ctImage, frameIndex);
-        this.image.graphicOverlayDataList = this.dicomImageService.getGraphicOverlayList(this.image);
-        this.showImage(frameIndex);
+
+        image.setCornerStoneImage(ctImage, frameIndex);
+        image.graphicOverlayDataList = this.dicomImageService.getGraphicOverlayList(image);
+
+        // When the cornerstone image is downloaded, the this.image might changed by mouse wheel the image viewer to switch to another image
+        // If changed, no need to show the image
+        if (this.image === image) {
+            this.showImage(frameIndex);
+        } else {
+            this.logService.error("Image changed when downloaded from server!");
+        }
     }
 
     // Show image when image is loaded
