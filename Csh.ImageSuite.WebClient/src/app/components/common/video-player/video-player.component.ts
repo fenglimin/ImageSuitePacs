@@ -97,20 +97,24 @@ export class VideoPlayerComponent implements OnInit {
     private onClickImageInViewer(viewerImageData: ViewerImageData) {
         this.viewerImageData = viewerImageData;
 
-        const modality = viewerImageData.image.series.modality;
-        if ( modality === "US") {
-            this.visible = true;
-            this.index = this.viewerImageData.image.frameIndex;
-            this.count = this.viewerImageData.image.frameCount;
-        } else if (modality === "CT") {
-            const matrix = viewerImageData.groupData.imageMatrix;
-            this.visible = matrix.rowCount === 1 && matrix.colCount === 1 && viewerImageData.groupData.imageCount > 1;
-            if (this.visible) {
-                this.index = this.viewerImageData.groupData.pageIndex;
-                this.count = this.viewerImageData.groupData.pageCount;
-            }
-        } else {
+        if (viewerImageData.image === undefined) {
             this.visible = false;
+        } else {
+            const modality = viewerImageData.image.series.modality;
+            if (modality === "US") {
+                this.visible = true;
+                this.index = this.viewerImageData.image.frameIndex;
+                this.count = this.viewerImageData.image.frameCount;
+            } else if (modality === "CT" || modality === "MR") {
+                const matrix = viewerImageData.groupData.imageMatrix;
+                this.visible = matrix.rowCount === 1 && matrix.colCount === 1 && viewerImageData.groupData.imageCount > 1;
+                if (this.visible) {
+                    this.index = this.viewerImageData.groupData.pageIndex;
+                    this.count = this.viewerImageData.groupData.pageCount;
+                }
+            } else {
+                this.visible = false;
+            }
         }
     }
 
