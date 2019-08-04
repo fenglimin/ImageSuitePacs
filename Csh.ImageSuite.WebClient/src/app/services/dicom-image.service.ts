@@ -99,7 +99,7 @@ export class DicomImageService {
         const endX = imagePointList.reduce((max, p) => p.x > max ? p.x : max, imagePointList[0].x);
         const endY = imagePointList.reduce((max, p) => p.y > max ? p.y : max, imagePointList[0].y);
 
-        const pixelData = image.cornerStoneImageList[0].getPixelData();
+        const pixelData = image.cornerStoneImageList[image.frameIndex].getPixelData();
 
         let maxValue = -4096;
         let minValue = 4096;
