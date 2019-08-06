@@ -1,0 +1,31 @@
+<h1 mat-dialog-title
+    cdkDrag
+    cdkDragRootElement=".cdk-overlay-pane"
+    cdkDragHandle>
+    Dicom Header Viewer
+</h1>
+<mat-dialog-content>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 100px">Tag</th>
+                <th style="width: 30px">VR</th>
+                <th style="width: 300px">Name</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tag of data">
+                <td class="showBlank">{{tag.tag}}</td>
+                <td>{{tag.vr}}</td>
+                <td>{{tag.name}}</td>
+                <td>{{tag.value}}</td>
+            </tr>
+        </tbody>
+    </table>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="onOkClick()">
+        <i class="glyphicon glyphicon-ok-circle" style="padding-right: 8px"></i>Ok
+    </button>
+</mat-dialog-actions>

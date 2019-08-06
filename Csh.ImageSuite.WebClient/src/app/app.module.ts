@@ -56,6 +56,7 @@ import { ViewerBottombarComponent } from './components/viewer-shell/viewer-botto
 import { PatientEditComponent } from './components/worklist-shell/worklist/patient-edit/patient-edit.component';
 import { ExportStudyComponent } from './components/worklist-shell/worklist/export-study/export-study.component';
 import { VideoPlayerComponent } from './components/common/video-player/video-player.component';
+import { DicomHeaderDialogComponent } from './components/dialog/dicom-header-dialog/dicom-header-dialog.component';
 
 
 @NgModule({
@@ -82,7 +83,8 @@ import { VideoPlayerComponent } from './components/common/video-player/video-pla
         ViewerBottombarComponent,
         PatientEditComponent,
         ExportStudyComponent,
-        VideoPlayerComponent
+        VideoPlayerComponent,
+        DicomHeaderDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -111,7 +113,7 @@ import { VideoPlayerComponent } from './components/common/video-player/video-pla
     ],
     providers: [],
     bootstrap: [AppComponent],
-    entryComponents: [MessageBoxComponent, ManualWlDialogComponent, SelectStudydateDialogComponent, SelectMarkerDialogComponent, PatientEditComponent, ExportStudyComponent]
+    entryComponents: [MessageBoxComponent, ManualWlDialogComponent, SelectStudydateDialogComponent, SelectMarkerDialogComponent, PatientEditComponent, ExportStudyComponent, DicomHeaderDialogComponent]
 })
 export class AppModule {
 }
