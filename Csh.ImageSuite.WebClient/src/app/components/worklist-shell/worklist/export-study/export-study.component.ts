@@ -16,6 +16,7 @@ import { ThumbnailComponent } from "../../../viewer-shell/navigation/thumbnail/t
 })
 export class ExportStudyComponent {
     studyNumber: number = 0;
+    selectedExportType: string;
     studies: Study[];
     study: Study;
     imageList: Image[];
@@ -97,16 +98,14 @@ export class ExportStudyComponent {
     }
 
     onOkClick(): void {
-        
+        this.checkedImages = new Array<Image>();
+        this.childImages.forEach(child => {
+            if (child.isSelected()) {
+                this.checkedImages.push(child.image);
+            }
+        });
         if (this.isShowPacs) {
-            this.checkedImages = new Array<Image>();
             this.checkedOtherPacs = new Array<OtherPacs>();
-
-            this.childImages.forEach(child => {
-                if (child.isSelected()) {
-                    this.checkedImages.push(child.image);
-                }
-            });
 
             for (let pacs of this.pacsList) {
                 if (pacs.pacsChecked === true) {
@@ -144,6 +143,16 @@ export class ExportStudyComponent {
                 strLastExportPatientInfoConfig = "8";
             }
 
+            this.databaseService.doExportJob(this.studies,
+                this.checkedImages,
+                this.selectedExportType,
+                this.selectedTransferCompress,
+                this.isRemovePatientInfo,
+                this.isRemovePatientInfo,
+                this.isIncludeCdViewer,
+                this.isIncludeCdBurningTool,
+                strLastExportPatientInfoConfig
+            ).subscribe();
         }
 
         
@@ -170,6 +179,8 @@ export class ExportStudyComponent {
 
     onMediaIconClick() {
         this.isShowPacs = false;
+
+
     }
 
     checkAllImages() {
