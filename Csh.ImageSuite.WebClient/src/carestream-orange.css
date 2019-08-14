@@ -1583,7 +1583,7 @@ mat-footer-row, mat-header-row, mat-row, td.mat-cell, td.mat-footer-cell, th.mat
 }
 
 .mat-divider {
-    border-top-color: rgba(0,0,0,.12);
+    border-top-color: orange;
 }
 
 .mat-divider-vertical {
@@ -1838,7 +1838,7 @@ mat-footer-row, mat-header-row, mat-row, td.mat-cell, td.mat-footer-cell, th.mat
 }
 
 .mat-menu-panel {
-    background: #fff;
+    background: #333;
 }
 
     .mat-menu-panel:not([class*=mat-elevation-z]) {
@@ -1846,8 +1846,8 @@ mat-footer-row, mat-header-row, mat-row, td.mat-cell, td.mat-footer-cell, th.mat
     }
 
 .mat-menu-item {
-    background: 0 0;
-    color: rgba(0,0,0,.87);
+    background: #333;
+    color: #fff;
 }
 
     .mat-menu-item[disabled], .mat-menu-item[disabled]::after {
@@ -1859,7 +1859,7 @@ mat-footer-row, mat-header-row, mat-row, td.mat-cell, td.mat-footer-cell, th.mat
     }
 
     .mat-menu-item-highlighted:not([disabled]), .mat-menu-item.cdk-keyboard-focused:not([disabled]), .mat-menu-item.cdk-program-focused:not([disabled]), .mat-menu-item:hover:not([disabled]) {
-        background: rgba(0,0,0,.04);
+        background: #555;
     }
 
 .mat-paginator {
