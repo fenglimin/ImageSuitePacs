@@ -86,5 +86,11 @@ namespace Csh.ImageSuite.Common.Interface
 
         DataTable GetTableTransferCompress();
 
+        DataSet GetAllTransferJobDS();
+
+        DataSet GetAllTransferJobItemDS(string jobUID);
+
+        bool SetJobStatus(string jobUID, string newStatus);
+
     }
 }

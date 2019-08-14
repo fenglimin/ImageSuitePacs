@@ -71,6 +71,7 @@
     <Compile Include="PacsCoordinator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PssiObjectCreator.cs" />
+    <Compile Include="Registry\RegistryHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
