@@ -1,5 +1,5 @@
 ﻿import { Shortcut } from "../models/shortcut";
-import { Size, Point } from "../models/annotation";
+import { Size } from "../models/annotation";
 
 export abstract class Pssi {
     id: number;
@@ -351,23 +351,6 @@ export class Image extends Pssi {
 
     isValidFrameIndex(index: number): boolean {
         return index >= 0 && index < this.frameCount;
-    }
-
-    isPointInImage(point: Point): boolean {
-        return point.x >= 0 && point.x < this.imageColumns && point.y >= 0 && point.y < this.imageRows;
-    }
-
-    getFlippedImagePoint(point: Point, hFlipped: boolean, vFlipped: boolean): Point {
-        const flippedPoint = new Point(point.x, point.y);
-        if (hFlipped) {
-            flippedPoint.x = this.imageColumns - point.x;
-        } 
-
-        if (vFlipped) {
-            flippedPoint.y = this.imageRows - point.y;
-        }
-
-        return flippedPoint;
     }
 }
 

@@ -7,8 +7,6 @@ import { Shortcut } from '../models/shortcut';
 import { Patient, Study, Series, Image, RecWorklistData, RecOfflineImageInfo, StudyTemp, OtherPacs } from '../models/pssi';
 import { TextOverlayData } from '../models/overlay';
 import { FontData, MarkerGroupData } from '../models/misc-data';
-import { TransferJob, TransferJobItem } from '../models/settings';
-
 
 const httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': "application/json"})
@@ -26,7 +24,6 @@ export class DatabaseService {
     private shortcutUrl = "shortcut"; // URL to web api
     private pssiUrl = "pssi";
     private worklistUrl = "worklist";
-    private settingsUrl = "settings";
     private overlayUrl = "overlay";
     private id_patient = 1;
     private id_study = 1;
@@ -256,29 +253,7 @@ export class DatabaseService {
 
         return this.http.post<boolean>(url, data, httpOptions)
             .pipe(
-            catchError(this.handleError<boolean>('doTransfer'))
-            );
-    }
-
-    /* */
-    doExportJob(studyList, imageList, imageType, imageCompressRate, isImageRemovePatientInformation, isImageRemoveInstitutionName, isImageIncludeDicomViewer, isImageBurningDicomViewCD, lastExportPatientInfoConfig): Observable<boolean> {
-        const url = `${this.worklistUrl}/DoExportJob/`;
-
-        let data = {
-            studyList: studyList,
-            imageList: imageList,
-            imageType: imageType,
-            imageCompressRate: imageCompressRate,
-            isImageRemovePatientInformation: isImageRemovePatientInformation,
-            isImageRemoveInstitutionName: isImageRemoveInstitutionName,
-            isImageIncludeDicomViewer: isImageIncludeDicomViewer,
-            isImageBurningDicomViewCD: isImageBurningDicomViewCD,
-            lastExportPatientInfoConfig: lastExportPatientInfoConfig
-        };
-
-        return this.http.post<boolean>(url, data, httpOptions)
-            .pipe(
-            catchError(this.handleError<boolean>('doExportJob'))
+            catchError(this.handleError<boolean>('transferStudy'))
             );
     }
 
@@ -298,37 +273,6 @@ export class DatabaseService {
         return this.http.post<any>(url, "", httpOptions)
             .pipe(
                 catchError(this.handleError<any>('worklistTest'))
-            );
-    }
-
-    getTransferJob(): Observable<TransferJob[]> {
-        const url = `${this.settingsUrl}/GetTransferJob/`;
-
-        return this.http.post<TransferJob[]>(url, "", httpOptions)
-            .pipe(
-            catchError(this.handleError<TransferJob[]>('GetTransferJob'))
-            );
-    }
-
-    getTransferJobItem(jobUID): Observable<TransferJobItem[]> {
-        const url = `${this.settingsUrl}/GetTransferJobItem/`;
-
-        let data = { jobUID: jobUID };
-
-        return this.http.post<TransferJobItem[]>(url, data, httpOptions)
-            .pipe(
-            catchError(this.handleError<TransferJobItem[]>('GetTransferJobItem'))
-            );
-    }
-
-    setSelectedJobStatus(jobUID, newStatus): Observable<boolean> {
-        const url = `${this.settingsUrl}/SetSelectedJobStatus/`;
-
-        let data = { jobUID: jobUID, newStatus: newStatus };
-
-        return this.http.post<boolean>(url, data, httpOptions)
-            .pipe(
-            catchError(this.handleError<boolean>('SetSelectedJobStatus'))
             );
     }
 

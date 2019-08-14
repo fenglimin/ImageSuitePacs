@@ -80,6 +80,8 @@ export class WorklistComponent implements OnInit {
     constructor(public worklistService: WorklistService, public dialogService: DialogService) {
         this.shortcutSelected = this.worklistService.shortcutSelected$.subscribe(
             shortcut => this.onShortcutSelected(shortcut));
+
+        
     }
 
     onShortcutSelected(shortcut: Shortcut) {
@@ -109,12 +111,6 @@ export class WorklistComponent implements OnInit {
         this.worklistService.onQueryStudies(1);
         this.worklistService.onQueryShortcuts();
         this.worklistService.onQueryWorklistCol();
-
-        // Set Header fixed
-        document.getElementById("div-scroll").addEventListener("scroll", function () {
-            let translate = "translate(0," + this.scrollTop + "px)";
-            this.querySelector("thead").style.transform = translate;
-        });
     }
 
     onStudyChecked(study: Study) {

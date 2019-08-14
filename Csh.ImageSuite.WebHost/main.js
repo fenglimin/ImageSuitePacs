@@ -6526,18 +6526,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_worklist_shell_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./components/worklist-shell/worklist/patient-edit/patient-edit.component */ "./src/app/components/worklist-shell/worklist/patient-edit/patient-edit.component.ts");
 /* harmony import */ var _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./components/worklist-shell/worklist/export-study/export-study.component */ "./src/app/components/worklist-shell/worklist/export-study/export-study.component.ts");
 /* harmony import */ var _components_common_video_player_video_player_component__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./components/common/video-player/video-player.component */ "./src/app/components/common/video-player/video-player.component.ts");
-/* harmony import */ var _components_dialog_dicom_header_dialog_dicom_header_dialog_component__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./components/dialog/dicom-header-dialog/dicom-header-dialog.component */ "./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.ts");
-/* harmony import */ var _components_header_bar_settings_settings_component__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./components/header-bar/settings/settings.component */ "./src/app/components/header-bar/settings/settings.component.ts");
-/* harmony import */ var _components_header_bar_settings_delivery_status_delivery_status_component__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./components/header-bar/settings/delivery-status/delivery-status.component */ "./src/app/components/header-bar/settings/delivery-status/delivery-status.component.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-
-
-
 
 
 
@@ -6603,10 +6597,7 @@ var AppModule = /** @class */ (function () {
                 _components_viewer_shell_viewer_bottombar_viewer_bottombar_component__WEBPACK_IMPORTED_MODULE_32__["ViewerBottombarComponent"],
                 _components_worklist_shell_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_33__["PatientEditComponent"],
                 _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__["ExportStudyComponent"],
-                _components_common_video_player_video_player_component__WEBPACK_IMPORTED_MODULE_35__["VideoPlayerComponent"],
-                _components_dialog_dicom_header_dialog_dicom_header_dialog_component__WEBPACK_IMPORTED_MODULE_36__["DicomHeaderDialogComponent"],
-                _components_header_bar_settings_settings_component__WEBPACK_IMPORTED_MODULE_37__["SettingsComponent"],
-                _components_header_bar_settings_delivery_status_delivery_status_component__WEBPACK_IMPORTED_MODULE_38__["DeliveryStatusComponent"]
+                _components_common_video_player_video_player_component__WEBPACK_IMPORTED_MODULE_35__["VideoPlayerComponent"]
             ],
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
@@ -6635,7 +6626,7 @@ var AppModule = /** @class */ (function () {
             ],
             providers: [],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_5__["AppComponent"]],
-            entryComponents: [_components_common_message_box_message_box_component__WEBPACK_IMPORTED_MODULE_19__["MessageBoxComponent"], _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"], _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_30__["SelectStudydateDialogComponent"], _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectMarkerDialogComponent"], _components_worklist_shell_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_33__["PatientEditComponent"], _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__["ExportStudyComponent"], _components_dialog_dicom_header_dialog_dicom_header_dialog_component__WEBPACK_IMPORTED_MODULE_36__["DicomHeaderDialogComponent"], _components_header_bar_settings_delivery_status_delivery_status_component__WEBPACK_IMPORTED_MODULE_38__["DeliveryStatusComponent"]]
+            entryComponents: [_components_common_message_box_message_box_component__WEBPACK_IMPORTED_MODULE_19__["MessageBoxComponent"], _components_dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_22__["ManualWlDialogComponent"], _components_dialog_select_studydate_dialog_select_studydate_dialog_component__WEBPACK_IMPORTED_MODULE_30__["SelectStudydateDialogComponent"], _components_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_31__["SelectMarkerDialogComponent"], _components_worklist_shell_worklist_patient_edit_patient_edit_component__WEBPACK_IMPORTED_MODULE_33__["PatientEditComponent"], _components_worklist_shell_worklist_export_study_export_study_component__WEBPACK_IMPORTED_MODULE_34__["ExportStudyComponent"]]
         })
     ], AppModule);
     return AppModule;
@@ -7081,7 +7072,7 @@ var MessageBoxComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".prevImage, .playVideo, .pauseVideo, .nextImage, .stopVideo {\r\n    border: none;\r\n    height: 30px;\r\n    outline: none;\r\n    width: 30px;\r\n    background-repeat: no-repeat; \r\n    background-size: 100% auto;\r\n    padding-left: 10px;\r\n}\r\n\r\n.prevImage { background-image: url('Prev_image.bmp'); }\r\n\r\n.playVideo { background-image: url('playBlue.png'); }\r\n\r\n.pauseVideo { background-image: url('pauseBlue.png'); }\r\n\r\n.stopVideo { background-image: url('stopBlue.png'); }\r\n\r\n.nextImage { background-image: url('Next_image.bmp'); }\r\n\r\n.prevImage:hover, .playVideo:hover, .pauseVideo:hover, .nextImage:hover, .stopVideo:hover{\r\n    border: 1px solid #F90;\r\n}\r\n\r\n.prevImage:disabled, .playVideo:disabled, .pauseVideo:disabled, .nextImage:disabled, .stopVideo:disabled{\r\n    border: none;\r\n}\r\n\r\n.slider {\r\n    -webkit-appearance: none;  /* Override default CSS styles */\r\n    -moz-appearance: none;\r\n         appearance: none;\r\n    width: 100%; /* Full-width */\r\n    height: 25px; /* Specified height */\r\n    background: #d3d3d3; /* Grey background */\r\n    outline: none; /* Remove outline */\r\n    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */ /* 0.2 seconds transition on hover */\r\n    transition: opacity .2s;\r\n}\r\n\r\n/* Mouse-over effects */\r\n\r\n.slider:hover {\r\n    opacity: 1; /* Fully shown on mouse-over */\r\n}\r\n\r\n/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */\r\n\r\n.slider::-webkit-slider-thumb {\r\n    -webkit-appearance: none; /* Override default look */\r\n    appearance: none;\r\n    width: 20px; /* Set a specific slider handle width */\r\n    height: 25px; /* Slider handle height */\r\n    background: #F90; /* Green background */\r\n    cursor: pointer; /* Cursor on hover */\r\n}\r\n\r\n.slider::-moz-range-thumb {\r\n    width: 20px; /* Set a specific slider handle width */\r\n    height: 25px; /* Slider handle height */\r\n    background: #F90; /* Green background */\r\n    cursor: pointer; /* Cursor on hover */\r\n}\r\n\r\n#table, tr, td {\r\n    padding-left: 5px;\r\n}\r\n\r\nselect {\r\n    background-color: black;\r\n    border: 1px solid #444;\r\n    width: 100%;\r\n}\r\n\r\n/*select, option:hover { \r\n    background-color: #F90; \r\n    color: #fff; \r\n}*/ \r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9jb21tb24vdmlkZW8tcGxheWVyL3ZpZGVvLXBsYXllci5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksWUFBWTtJQUNaLFlBQVk7SUFDWixhQUFhO0lBQ2IsV0FBVztJQUNYLDRCQUE0QjtJQUM1QiwwQkFBMEI7SUFDMUIsa0JBQWtCO0FBQ3RCOztBQUVBLGFBQWEsdUNBQW1FLEVBQUU7O0FBQ2xGLGFBQWEscUNBQWlFLEVBQUU7O0FBQ2hGLGNBQWMsc0NBQWtFLEVBQUU7O0FBQ2xGLGFBQWEscUNBQWlFLEVBQUU7O0FBQ2hGLGFBQWEsdUNBQW1FLEVBQUU7O0FBRWxGO0lBQ0ksc0JBQXNCO0FBQzFCOztBQUVBO0lBQ0ksWUFBWTtBQUNoQjs7QUFFQTtJQUNJLHdCQUF3QixHQUFHLGdDQUFnQztJQUMzRCxxQkFBZ0I7U0FBaEIsZ0JBQWdCO0lBQ2hCLFdBQVcsRUFBRSxlQUFlO0lBQzVCLFlBQVksRUFBRSxxQkFBcUI7SUFDbkMsbUJBQW1CLEVBQUUsb0JBQW9CO0lBQ3pDLGFBQWEsRUFBRSxtQkFBbUI7SUFDbEMsWUFBWSxFQUFFLHVEQUF1RCxFQUM1QyxvQ0FBb0M7SUFDN0QsdUJBQXVCO0FBQzNCOztBQUVBLHVCQUF1Qjs7QUFDdkI7SUFDSSxVQUFVLEVBQUUsOEJBQThCO0FBQzlDOztBQUVBLGdIQUFnSDs7QUFDaEg7SUFDSSx3QkFBd0IsRUFBRSwwQkFBMEI7SUFDcEQsZ0JBQWdCO0lBQ2hCLFdBQVcsRUFBRSx1Q0FBdUM7SUFDcEQsWUFBWSxFQUFFLHlCQUF5QjtJQUN2QyxnQkFBZ0IsRUFBRSxxQkFBcUI7SUFDdkMsZUFBZSxFQUFFLG9CQUFvQjtBQUN6Qzs7QUFFQTtJQUNJLFdBQVcsRUFBRSx1Q0FBdUM7SUFDcEQsWUFBWSxFQUFFLHlCQUF5QjtJQUN2QyxnQkFBZ0IsRUFBRSxxQkFBcUI7SUFDdkMsZUFBZSxFQUFFLG9CQUFvQjtBQUN6Qzs7QUFFQTtJQUNJLGlCQUFpQjtBQUNyQjs7QUFFQTtJQUNJLHVCQUF1QjtJQUN2QixzQkFBc0I7SUFDdEIsV0FBVztBQUNmOztBQUVBOzs7RUFHRSIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvY29tbW9uL3ZpZGVvLXBsYXllci92aWRlby1wbGF5ZXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5wcmV2SW1hZ2UsIC5wbGF5VmlkZW8sIC5wYXVzZVZpZGVvLCAubmV4dEltYWdlLCAuc3RvcFZpZGVvIHtcclxuICAgIGJvcmRlcjogbm9uZTtcclxuICAgIGhlaWdodDogMzBweDtcclxuICAgIG91dGxpbmU6IG5vbmU7XHJcbiAgICB3aWR0aDogMzBweDtcclxuICAgIGJhY2tncm91bmQtcmVwZWF0OiBuby1yZXBlYXQ7IFxyXG4gICAgYmFja2dyb3VuZC1zaXplOiAxMDAlIGF1dG87XHJcbiAgICBwYWRkaW5nLWxlZnQ6IDEwcHg7XHJcbn1cclxuXHJcbi5wcmV2SW1hZ2UgeyBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUHJldl9pbWFnZS5ibXApOyB9XHJcbi5wbGF5VmlkZW8geyBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vcGxheUJsdWUucG5nKTsgfVxyXG4ucGF1c2VWaWRlbyB7IGJhY2tncm91bmQtaW1hZ2U6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9wYXVzZUJsdWUucG5nKTsgfVxyXG4uc3RvcFZpZGVvIHsgYmFja2dyb3VuZC1pbWFnZTogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3N0b3BCbHVlLnBuZyk7IH1cclxuLm5leHRJbWFnZSB7IGJhY2tncm91bmQtaW1hZ2U6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9OZXh0X2ltYWdlLmJtcCk7IH1cclxuXHJcbi5wcmV2SW1hZ2U6aG92ZXIsIC5wbGF5VmlkZW86aG92ZXIsIC5wYXVzZVZpZGVvOmhvdmVyLCAubmV4dEltYWdlOmhvdmVyLCAuc3RvcFZpZGVvOmhvdmVye1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgI0Y5MDtcclxufVxyXG5cclxuLnByZXZJbWFnZTpkaXNhYmxlZCwgLnBsYXlWaWRlbzpkaXNhYmxlZCwgLnBhdXNlVmlkZW86ZGlzYWJsZWQsIC5uZXh0SW1hZ2U6ZGlzYWJsZWQsIC5zdG9wVmlkZW86ZGlzYWJsZWR7XHJcbiAgICBib3JkZXI6IG5vbmU7XHJcbn1cclxuXHJcbi5zbGlkZXIge1xyXG4gICAgLXdlYmtpdC1hcHBlYXJhbmNlOiBub25lOyAgLyogT3ZlcnJpZGUgZGVmYXVsdCBDU1Mgc3R5bGVzICovXHJcbiAgICBhcHBlYXJhbmNlOiBub25lO1xyXG4gICAgd2lkdGg6IDEwMCU7IC8qIEZ1bGwtd2lkdGggKi9cclxuICAgIGhlaWdodDogMjVweDsgLyogU3BlY2lmaWVkIGhlaWdodCAqL1xyXG4gICAgYmFja2dyb3VuZDogI2QzZDNkMzsgLyogR3JleSBiYWNrZ3JvdW5kICovXHJcbiAgICBvdXRsaW5lOiBub25lOyAvKiBSZW1vdmUgb3V0bGluZSAqL1xyXG4gICAgb3BhY2l0eTogMC43OyAvKiBTZXQgdHJhbnNwYXJlbmN5IChmb3IgbW91c2Utb3ZlciBlZmZlY3RzIG9uIGhvdmVyKSAqL1xyXG4gICAgLXdlYmtpdC10cmFuc2l0aW9uOiAuMnM7IC8qIDAuMiBzZWNvbmRzIHRyYW5zaXRpb24gb24gaG92ZXIgKi9cclxuICAgIHRyYW5zaXRpb246IG9wYWNpdHkgLjJzO1xyXG59XHJcblxyXG4vKiBNb3VzZS1vdmVyIGVmZmVjdHMgKi9cclxuLnNsaWRlcjpob3ZlciB7XHJcbiAgICBvcGFjaXR5OiAxOyAvKiBGdWxseSBzaG93biBvbiBtb3VzZS1vdmVyICovXHJcbn1cclxuXHJcbi8qIFRoZSBzbGlkZXIgaGFuZGxlICh1c2UgLXdlYmtpdC0gKENocm9tZSwgT3BlcmEsIFNhZmFyaSwgRWRnZSkgYW5kIC1tb3otIChGaXJlZm94KSB0byBvdmVycmlkZSBkZWZhdWx0IGxvb2spICovIFxyXG4uc2xpZGVyOjotd2Via2l0LXNsaWRlci10aHVtYiB7XHJcbiAgICAtd2Via2l0LWFwcGVhcmFuY2U6IG5vbmU7IC8qIE92ZXJyaWRlIGRlZmF1bHQgbG9vayAqL1xyXG4gICAgYXBwZWFyYW5jZTogbm9uZTtcclxuICAgIHdpZHRoOiAyMHB4OyAvKiBTZXQgYSBzcGVjaWZpYyBzbGlkZXIgaGFuZGxlIHdpZHRoICovXHJcbiAgICBoZWlnaHQ6IDI1cHg7IC8qIFNsaWRlciBoYW5kbGUgaGVpZ2h0ICovXHJcbiAgICBiYWNrZ3JvdW5kOiAjRjkwOyAvKiBHcmVlbiBiYWNrZ3JvdW5kICovXHJcbiAgICBjdXJzb3I6IHBvaW50ZXI7IC8qIEN1cnNvciBvbiBob3ZlciAqL1xyXG59XHJcblxyXG4uc2xpZGVyOjotbW96LXJhbmdlLXRodW1iIHtcclxuICAgIHdpZHRoOiAyMHB4OyAvKiBTZXQgYSBzcGVjaWZpYyBzbGlkZXIgaGFuZGxlIHdpZHRoICovXHJcbiAgICBoZWlnaHQ6IDI1cHg7IC8qIFNsaWRlciBoYW5kbGUgaGVpZ2h0ICovXHJcbiAgICBiYWNrZ3JvdW5kOiAjRjkwOyAvKiBHcmVlbiBiYWNrZ3JvdW5kICovXHJcbiAgICBjdXJzb3I6IHBvaW50ZXI7IC8qIEN1cnNvciBvbiBob3ZlciAqL1xyXG59XHJcblxyXG4jdGFibGUsIHRyLCB0ZCB7XHJcbiAgICBwYWRkaW5nLWxlZnQ6IDVweDtcclxufVxyXG5cclxuc2VsZWN0IHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6IGJsYWNrO1xyXG4gICAgYm9yZGVyOiAxcHggc29saWQgIzQ0NDtcclxuICAgIHdpZHRoOiAxMDAlO1xyXG59XHJcblxyXG4vKnNlbGVjdCwgb3B0aW9uOmhvdmVyIHsgXHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjRjkwOyBcclxuICAgIGNvbG9yOiAjZmZmOyBcclxufSovICJdfQ== */"
+module.exports = ".prevImage, .playVideo, .pauseVideo, .nextImage, .stopVideo {\r\n    border: none;\r\n    height: 30px;\r\n    outline: none;\r\n    width: 30px;\r\n    background-repeat: no-repeat; \r\n    background-size: 100% auto;\r\n    padding-left: 10px;\r\n}\r\n\r\n.prevImage { background-image: url('Prev_image.bmp'); }\r\n\r\n.playVideo { background-image: url('playBlue.png'); }\r\n\r\n.pauseVideo { background-image: url('pauseBlue.png'); }\r\n\r\n.stopVideo { background-image: url('stopBlue.png'); }\r\n\r\n.nextImage { background-image: url('Next_image.bmp'); }\r\n\r\n.prevImage:hover, .playVideo:hover, .pauseVideo:hover, .nextImage:hover, .stopVideo:hover{\r\n    border: 1px solid #F90;\r\n}\r\n\r\n.slider {\r\n    -webkit-appearance: none;  /* Override default CSS styles */\r\n    -moz-appearance: none;\r\n         appearance: none;\r\n    width: 100%; /* Full-width */\r\n    height: 25px; /* Specified height */\r\n    background: #d3d3d3; /* Grey background */\r\n    outline: none; /* Remove outline */\r\n    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */ /* 0.2 seconds transition on hover */\r\n    transition: opacity .2s;\r\n}\r\n\r\n/* Mouse-over effects */\r\n\r\n.slider:hover {\r\n    opacity: 1; /* Fully shown on mouse-over */\r\n}\r\n\r\n/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */\r\n\r\n.slider::-webkit-slider-thumb {\r\n    -webkit-appearance: none; /* Override default look */\r\n    appearance: none;\r\n    width: 20px; /* Set a specific slider handle width */\r\n    height: 25px; /* Slider handle height */\r\n    background: #F90; /* Green background */\r\n    cursor: pointer; /* Cursor on hover */\r\n}\r\n\r\n.slider::-moz-range-thumb {\r\n    width: 20px; /* Set a specific slider handle width */\r\n    height: 25px; /* Slider handle height */\r\n    background: #F90; /* Green background */\r\n    cursor: pointer; /* Cursor on hover */\r\n}\r\n\r\n#table, tr, td {\r\n    padding-left: 5px;\r\n}\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9jb21tb24vdmlkZW8tcGxheWVyL3ZpZGVvLXBsYXllci5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0lBQ0ksWUFBWTtJQUNaLFlBQVk7SUFDWixhQUFhO0lBQ2IsV0FBVztJQUNYLDRCQUE0QjtJQUM1QiwwQkFBMEI7SUFDMUIsa0JBQWtCO0FBQ3RCOztBQUVBLGFBQWEsdUNBQW1FLEVBQUU7O0FBQ2xGLGFBQWEscUNBQWlFLEVBQUU7O0FBQ2hGLGNBQWMsc0NBQWtFLEVBQUU7O0FBQ2xGLGFBQWEscUNBQWlFLEVBQUU7O0FBQ2hGLGFBQWEsdUNBQW1FLEVBQUU7O0FBRWxGO0lBQ0ksc0JBQXNCO0FBQzFCOztBQUVBO0lBQ0ksd0JBQXdCLEdBQUcsZ0NBQWdDO0lBQzNELHFCQUFnQjtTQUFoQixnQkFBZ0I7SUFDaEIsV0FBVyxFQUFFLGVBQWU7SUFDNUIsWUFBWSxFQUFFLHFCQUFxQjtJQUNuQyxtQkFBbUIsRUFBRSxvQkFBb0I7SUFDekMsYUFBYSxFQUFFLG1CQUFtQjtJQUNsQyxZQUFZLEVBQUUsdURBQXVELEVBQzVDLG9DQUFvQztJQUM3RCx1QkFBdUI7QUFDM0I7O0FBRUEsdUJBQXVCOztBQUN2QjtJQUNJLFVBQVUsRUFBRSw4QkFBOEI7QUFDOUM7O0FBRUEsZ0hBQWdIOztBQUNoSDtJQUNJLHdCQUF3QixFQUFFLDBCQUEwQjtJQUNwRCxnQkFBZ0I7SUFDaEIsV0FBVyxFQUFFLHVDQUF1QztJQUNwRCxZQUFZLEVBQUUseUJBQXlCO0lBQ3ZDLGdCQUFnQixFQUFFLHFCQUFxQjtJQUN2QyxlQUFlLEVBQUUsb0JBQW9CO0FBQ3pDOztBQUVBO0lBQ0ksV0FBVyxFQUFFLHVDQUF1QztJQUNwRCxZQUFZLEVBQUUseUJBQXlCO0lBQ3ZDLGdCQUFnQixFQUFFLHFCQUFxQjtJQUN2QyxlQUFlLEVBQUUsb0JBQW9CO0FBQ3pDOztBQUVBO0lBQ0ksaUJBQWlCO0FBQ3JCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9jb21tb24vdmlkZW8tcGxheWVyL3ZpZGVvLXBsYXllci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnByZXZJbWFnZSwgLnBsYXlWaWRlbywgLnBhdXNlVmlkZW8sIC5uZXh0SW1hZ2UsIC5zdG9wVmlkZW8ge1xyXG4gICAgYm9yZGVyOiBub25lO1xyXG4gICAgaGVpZ2h0OiAzMHB4O1xyXG4gICAgb3V0bGluZTogbm9uZTtcclxuICAgIHdpZHRoOiAzMHB4O1xyXG4gICAgYmFja2dyb3VuZC1yZXBlYXQ6IG5vLXJlcGVhdDsgXHJcbiAgICBiYWNrZ3JvdW5kLXNpemU6IDEwMCUgYXV0bztcclxuICAgIHBhZGRpbmctbGVmdDogMTBweDtcclxufVxyXG5cclxuLnByZXZJbWFnZSB7IGJhY2tncm91bmQtaW1hZ2U6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9QcmV2X2ltYWdlLmJtcCk7IH1cclxuLnBsYXlWaWRlbyB7IGJhY2tncm91bmQtaW1hZ2U6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9wbGF5Qmx1ZS5wbmcpOyB9XHJcbi5wYXVzZVZpZGVvIHsgYmFja2dyb3VuZC1pbWFnZTogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3BhdXNlQmx1ZS5wbmcpOyB9XHJcbi5zdG9wVmlkZW8geyBiYWNrZ3JvdW5kLWltYWdlOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc3RvcEJsdWUucG5nKTsgfVxyXG4ubmV4dEltYWdlIHsgYmFja2dyb3VuZC1pbWFnZTogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL05leHRfaW1hZ2UuYm1wKTsgfVxyXG5cclxuLnByZXZJbWFnZTpob3ZlciwgLnBsYXlWaWRlbzpob3ZlciwgLnBhdXNlVmlkZW86aG92ZXIsIC5uZXh0SW1hZ2U6aG92ZXIsIC5zdG9wVmlkZW86aG92ZXJ7XHJcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjRjkwO1xyXG59XHJcblxyXG4uc2xpZGVyIHtcclxuICAgIC13ZWJraXQtYXBwZWFyYW5jZTogbm9uZTsgIC8qIE92ZXJyaWRlIGRlZmF1bHQgQ1NTIHN0eWxlcyAqL1xyXG4gICAgYXBwZWFyYW5jZTogbm9uZTtcclxuICAgIHdpZHRoOiAxMDAlOyAvKiBGdWxsLXdpZHRoICovXHJcbiAgICBoZWlnaHQ6IDI1cHg7IC8qIFNwZWNpZmllZCBoZWlnaHQgKi9cclxuICAgIGJhY2tncm91bmQ6ICNkM2QzZDM7IC8qIEdyZXkgYmFja2dyb3VuZCAqL1xyXG4gICAgb3V0bGluZTogbm9uZTsgLyogUmVtb3ZlIG91dGxpbmUgKi9cclxuICAgIG9wYWNpdHk6IDAuNzsgLyogU2V0IHRyYW5zcGFyZW5jeSAoZm9yIG1vdXNlLW92ZXIgZWZmZWN0cyBvbiBob3ZlcikgKi9cclxuICAgIC13ZWJraXQtdHJhbnNpdGlvbjogLjJzOyAvKiAwLjIgc2Vjb25kcyB0cmFuc2l0aW9uIG9uIGhvdmVyICovXHJcbiAgICB0cmFuc2l0aW9uOiBvcGFjaXR5IC4ycztcclxufVxyXG5cclxuLyogTW91c2Utb3ZlciBlZmZlY3RzICovXHJcbi5zbGlkZXI6aG92ZXIge1xyXG4gICAgb3BhY2l0eTogMTsgLyogRnVsbHkgc2hvd24gb24gbW91c2Utb3ZlciAqL1xyXG59XHJcblxyXG4vKiBUaGUgc2xpZGVyIGhhbmRsZSAodXNlIC13ZWJraXQtIChDaHJvbWUsIE9wZXJhLCBTYWZhcmksIEVkZ2UpIGFuZCAtbW96LSAoRmlyZWZveCkgdG8gb3ZlcnJpZGUgZGVmYXVsdCBsb29rKSAqLyBcclxuLnNsaWRlcjo6LXdlYmtpdC1zbGlkZXItdGh1bWIge1xyXG4gICAgLXdlYmtpdC1hcHBlYXJhbmNlOiBub25lOyAvKiBPdmVycmlkZSBkZWZhdWx0IGxvb2sgKi9cclxuICAgIGFwcGVhcmFuY2U6IG5vbmU7XHJcbiAgICB3aWR0aDogMjBweDsgLyogU2V0IGEgc3BlY2lmaWMgc2xpZGVyIGhhbmRsZSB3aWR0aCAqL1xyXG4gICAgaGVpZ2h0OiAyNXB4OyAvKiBTbGlkZXIgaGFuZGxlIGhlaWdodCAqL1xyXG4gICAgYmFja2dyb3VuZDogI0Y5MDsgLyogR3JlZW4gYmFja2dyb3VuZCAqL1xyXG4gICAgY3Vyc29yOiBwb2ludGVyOyAvKiBDdXJzb3Igb24gaG92ZXIgKi9cclxufVxyXG5cclxuLnNsaWRlcjo6LW1vei1yYW5nZS10aHVtYiB7XHJcbiAgICB3aWR0aDogMjBweDsgLyogU2V0IGEgc3BlY2lmaWMgc2xpZGVyIGhhbmRsZSB3aWR0aCAqL1xyXG4gICAgaGVpZ2h0OiAyNXB4OyAvKiBTbGlkZXIgaGFuZGxlIGhlaWdodCAqL1xyXG4gICAgYmFja2dyb3VuZDogI0Y5MDsgLyogR3JlZW4gYmFja2dyb3VuZCAqL1xyXG4gICAgY3Vyc29yOiBwb2ludGVyOyAvKiBDdXJzb3Igb24gaG92ZXIgKi9cclxufVxyXG5cclxuI3RhYmxlLCB0ciwgdGQge1xyXG4gICAgcGFkZGluZy1sZWZ0OiA1cHg7XHJcbn0iXX0= */"
 
 /***/ }),
 
@@ -7092,7 +7083,7 @@ module.exports = ".prevImage, .playVideo, .pauseVideo, .nextImage, .stopVideo {\
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<table *ngIf=\"visible\">\r\n    <tr style=\"padding-left: 10px;\">\r\n        <td>\r\n            <button class=\"prevImage\" role=\"button\" title=\"Previous Image\" (click)=\"onNavigateImage(true)\" [disabled]=\"disablePrev\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"playVideo\" role=\"button\" title=\"Play\" (click)=\"onPlay()\" [disabled]=\"disablePlay\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"pauseVideo\" role=\"button\" title=\"Pause\" (click)=\"onPause()\" [disabled]=\"disablePause\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"stopVideo\" role=\"button\" title=\"Stop\" (click)=\"onStop()\" [disabled]=\"disableStop\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"nextImage\" role=\"button\" title=\"Next Image\" (click)=\"onNavigateImage(false)\" [disabled]=\"disableNext\"></button>\r\n        </td>\r\n        <td>\r\n            <input type=\"range\" min=\"1\" [max]=\"count\" [value]=\"index+1\" (input)=\"sliderChanged($event)\" class=\"slider\" id=\"myRange\">\r\n        </td>\r\n        <td>\r\n            {{getPlayStatus()}}\r\n        </td>\r\n        <td>\r\n            <input type=\"checkbox\" name=\"loop\" [(ngModel)]=\"loop\" />Loop\r\n        </td>\r\n        <td>\r\n            <select [(ngModel)]=\"framePerSecond\">\r\n                <option *ngFor=\"let id of Arr(10).fill(1); let fps = index\" [ngValue]=\"fps+1\">{{fps+1}}FPS</option>\r\n            </select>\r\n        </td>\r\n    </tr>\r\n</table>"
+module.exports = "<table *ngIf=\"visible\">\r\n    <tr style=\"padding-left: 10px;\">\r\n        <td>\r\n            <button class=\"prevImage\" role=\"button\" title=\"Previous Image\" (click)=\"onNavigateImage(true)\" [disabled]=\"disablePrev\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"playVideo\" role=\"button\" title=\"Play\" (click)=\"onPlay()\" [disabled]=\"disablePlay\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"pauseVideo\" role=\"button\" title=\"Pause\" (click)=\"onPause()\" [disabled]=\"disablePause\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"stopVideo\" role=\"button\" title=\"Stop\" (click)=\"onStop()\" [disabled]=\"disableStop\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"nextImage\" role=\"button\" title=\"Next Image\" (click)=\"onNavigateImage(false)\" [disabled]=\"disableNext\"></button>\r\n        </td>\r\n        <td>\r\n            <input type=\"range\" min=\"1\" [max]=\"count\" [value]=\"index+1\" (input)=\"sliderChanged($event)\" class=\"slider\" id=\"myRange\">\r\n        </td>\r\n        <td>\r\n            {{getPlayStatus()}}\r\n        </td>\r\n    </tr>\r\n</table>"
 
 /***/ }),
 
@@ -7127,7 +7118,6 @@ var VideoPlayerComponent = /** @class */ (function () {
     function VideoPlayerComponent(imageOperationService) {
         var _this = this;
         this.imageOperationService = imageOperationService;
-        this.Arr = Array; //Array type captured in a variable
         this.disablePrev = true;
         this.disablePlay = false;
         this.disablePause = true;
@@ -7135,8 +7125,6 @@ var VideoPlayerComponent = /** @class */ (function () {
         this.disableNext = false;
         this.visible = false;
         this.playing = false;
-        this.loop = true;
-        this.framePerSecond = 1;
         this.index = 0;
         this.count = 1;
         this.subscriptionImageOperation = imageOperationService.imageOperation$.subscribe(function (imageOperationData) {
@@ -7162,13 +7150,13 @@ var VideoPlayerComponent = /** @class */ (function () {
     };
     VideoPlayerComponent.prototype.onStop = function () {
         this.playing = false;
-        this.onDisplayImage(0);
+        this.imageOperationService.onDisplayImageInGroup(this.viewerImageData, 0);
     };
     VideoPlayerComponent.prototype.getPlayStatus = function () {
         return this.index + 1 + "/" + this.count;
     };
-    VideoPlayerComponent.prototype.sliderChanged = function (event) {
-        var index = Number(event.currentTarget.value) - 1;
+    VideoPlayerComponent.prototype.sliderChanged = function (value) {
+        var index = Number(value.currentTarget.value) - 1;
         this.onDisplayImage(index);
     };
     VideoPlayerComponent.prototype.onImageOperation = function (imageOperationData) {
@@ -7181,60 +7169,35 @@ var VideoPlayerComponent = /** @class */ (function () {
             case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].DisplayImageInGroup:
             case _models_image_operation__WEBPACK_IMPORTED_MODULE_2__["ImageOperationEnum"].DisplayFramesInClickedImage:
                 this.index = imageOperationData.operationPara.index;
+                this.setButtonStatus();
                 break;
         }
-        this.setButtonStatus();
     };
     VideoPlayerComponent.prototype.onClickImageInViewer = function (viewerImageData) {
         this.viewerImageData = viewerImageData;
-        if (viewerImageData.image === undefined) {
+        var modality = viewerImageData.image.series.modality;
+        if (modality === "US") {
+            this.visible = true;
+            this.index = this.viewerImageData.image.frameIndex;
+            this.count = this.viewerImageData.image.frameCount;
+        }
+        else if (modality === "CT") {
+            var matrix = viewerImageData.groupData.imageMatrix;
+            this.visible = matrix.rowCount === 1 && matrix.colCount === 1 && viewerImageData.groupData.imageCount > 1;
+            if (this.visible) {
+                this.index = this.viewerImageData.groupData.pageIndex;
+                this.count = this.viewerImageData.groupData.pageCount;
+            }
+        }
+        else {
             this.visible = false;
         }
-        else {
-            var modality = viewerImageData.image.series.modality;
-            if (modality === "US") {
-                this.visible = true;
-                this.index = this.viewerImageData.image.frameIndex;
-                this.count = this.viewerImageData.image.frameCount;
-            }
-            else if (modality === "CT" || modality === "MR") {
-                var matrix = viewerImageData.groupData.imageMatrix;
-                this.visible = matrix.rowCount === 1 && matrix.colCount === 1 && viewerImageData.groupData.imageCount > 1;
-                if (this.visible) {
-                    this.index = this.viewerImageData.groupData.pageIndex;
-                    this.count = this.viewerImageData.groupData.pageCount;
-                }
-            }
-            else {
-                this.visible = false;
-            }
-        }
-    };
-    VideoPlayerComponent.prototype.getNextIndex = function () {
-        var nextIndex = -1;
-        if (this.index < this.count - 1) {
-            nextIndex = this.index + 1;
-        }
-        else {
-            if (this.loop) {
-                nextIndex = 0;
-            }
-        }
-        return nextIndex;
     };
     VideoPlayerComponent.prototype.playVideo = function () {
         var _this = this;
-        if (!this.playing) {
-            return;
-        }
-        var nextIndex = this.getNextIndex();
-        if (nextIndex !== -1) {
-            this.onDisplayImage(nextIndex);
-            setTimeout(function () { _this.playVideo(); }, 1000 / this.framePerSecond);
-        }
-        else {
-            this.playing = false;
-            this.onDisplayImage(0);
+        if (this.playing && this.index < this.count - 1) {
+            this.onNavigateImage(false);
+            setTimeout(function () { _this.playVideo(); }, 100);
         }
     };
     VideoPlayerComponent.prototype.onDisplayImage = function (index) {
@@ -7247,9 +7210,9 @@ var VideoPlayerComponent = /** @class */ (function () {
     VideoPlayerComponent.prototype.setButtonStatus = function () {
         this.disablePrev = this.index === 0;
         this.disableNext = this.index === this.count - 1;
-        this.disablePlay = this.playing || this.count === 1;
-        this.disableStop = !this.playing || this.count === 1;
-        this.disablePause = !this.playing || this.count === 1;
+        this.disablePlay = this.playing;
+        this.disableStop = !this.playing;
+        this.disablePause = !this.playing;
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Input"])(),
@@ -7264,83 +7227,6 @@ var VideoPlayerComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [_services_image_operation_service__WEBPACK_IMPORTED_MODULE_3__["ImageOperationService"]])
     ], VideoPlayerComponent);
     return VideoPlayerComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.css":
-/*!*****************************************************************************************!*\
-  !*** ./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.css ***!
-  \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".mat-dialog-title {\r\n    border-bottom: 1px solid #FF9900;\r\n    color: #f90;\r\n    font-size: 15px;\r\n    margin: -24px -24px 0px -24px;\r\n    min-width: 200px;\r\n    padding: 1px 10px;\r\n}\r\n\r\n.mat-dialog-content {\r\n    color: white;\r\n    font-size: 15px;\r\n    height: 800px;\r\n    min-width: 200px;\r\n    padding: 10px 10px;\r\n}\r\n\r\n.mat-form-field-appearance-legacy .mat-form-field-wrapper {\r\n    padding-bottom: 2px;\r\n}\r\n\r\n.mat-form-field-appearance-legacy .mat-form-field-infix {\r\n    padding: 0;\r\n}\r\n\r\n.matInput {\r\n    caret-color: #F90;\r\n    color: green;\r\n}\r\n\r\n.mat-input-element {\r\n    caret-color: #F90;\r\n    padding-left: 5px;\r\n}\r\n\r\n.mat-form-field-label-wrapper {\r\n    padding-top: 3px;\r\n}\r\n\r\n.mat-form-field-infix {\r\n    border-top: 0;\r\n}\r\n\r\n.mat-raised-button {\r\n    background-color: #444;\r\n    border: 1px solid #777;\r\n    border-radius: 3px;\r\n    color: white;\r\n    font-size: 13px;\r\n    margin-left: 6px;\r\n    padding: 1px;\r\n    width: 90px;\r\n    height: 30px;\r\n    line-height: 10px;\r\n}\r\n\r\n.mat-dialog-actions { margin-right: -12px; }\r\n\r\n.mat-raised-button:disabled:hover { color: #999; }\r\n\r\n.mat-raised-button:hover { color: #f90; }\r\n\r\n.mat-dialog-actions { flex-direction: row-reverse; }\r\n\r\n#table, thead, tr, th {\r\n    padding-left: 5px;\r\n    padding-top: 2px;\r\n    border: 1px solid #444;\r\n    color: white;\r\n}\r\n\r\n#table, tbody, tr, td {\r\n    padding-left: 5px;\r\n    padding-right: 5px;\r\n    padding-top: 2px;\r\n    vertical-align: top;\r\n    border: 1px solid #444;\r\n    color: #ddd;\r\n}\r\n\r\n#table, tbody, tr:nth-child(2n) {\r\n    background-color: black;\r\n}\r\n\r\n#table, tbody, tr:nth-child(2n + 1) {\r\n    background-color: #181818;\r\n}\r\n\r\n.showBlank {\r\n    white-space: pre;\r\n}\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9kaWFsb2cvZGljb20taGVhZGVyLWRpYWxvZy9kaWNvbS1oZWFkZXItZGlhbG9nLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7SUFDSSxnQ0FBZ0M7SUFDaEMsV0FBVztJQUNYLGVBQWU7SUFDZiw2QkFBNkI7SUFDN0IsZ0JBQWdCO0lBQ2hCLGlCQUFpQjtBQUNyQjs7QUFFQTtJQUNJLFlBQVk7SUFDWixlQUFlO0lBQ2YsYUFBYTtJQUNiLGdCQUFnQjtJQUNoQixrQkFBa0I7QUFDdEI7O0FBRUE7SUFDSSxtQkFBbUI7QUFDdkI7O0FBRUE7SUFDSSxVQUFVO0FBQ2Q7O0FBRUE7SUFDSSxpQkFBaUI7SUFDakIsWUFBWTtBQUNoQjs7QUFFQTtJQUNJLGlCQUFpQjtJQUNqQixpQkFBaUI7QUFDckI7O0FBRUE7SUFDSSxnQkFBZ0I7QUFDcEI7O0FBRUE7SUFDSSxhQUFhO0FBQ2pCOztBQUVBO0lBQ0ksc0JBQXNCO0lBQ3RCLHNCQUFzQjtJQUN0QixrQkFBa0I7SUFDbEIsWUFBWTtJQUNaLGVBQWU7SUFDZixnQkFBZ0I7SUFDaEIsWUFBWTtJQUNaLFdBQVc7SUFDWCxZQUFZO0lBQ1osaUJBQWlCO0FBQ3JCOztBQUVBLHNCQUFzQixtQkFBbUIsRUFBRTs7QUFFM0Msb0NBQW9DLFdBQVcsRUFBRTs7QUFFakQsMkJBQTJCLFdBQVcsRUFBRTs7QUFFeEMsc0JBQXNCLDJCQUEyQixFQUFFOztBQUVuRDtJQUNJLGlCQUFpQjtJQUNqQixnQkFBZ0I7SUFDaEIsc0JBQXNCO0lBQ3RCLFlBQVk7QUFDaEI7O0FBRUE7SUFDSSxpQkFBaUI7SUFDakIsa0JBQWtCO0lBQ2xCLGdCQUFnQjtJQUNoQixtQkFBbUI7SUFDbkIsc0JBQXNCO0lBQ3RCLFdBQVc7QUFDZjs7QUFFQTtJQUNJLHVCQUF1QjtBQUMzQjs7QUFFQTtJQUNJLHlCQUF5QjtBQUM3Qjs7QUFFQTtJQUNJLGdCQUFnQjtBQUNwQiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvZGlhbG9nL2RpY29tLWhlYWRlci1kaWFsb2cvZGljb20taGVhZGVyLWRpYWxvZy5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm1hdC1kaWFsb2ctdGl0bGUge1xyXG4gICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICNGRjk5MDA7XHJcbiAgICBjb2xvcjogI2Y5MDtcclxuICAgIGZvbnQtc2l6ZTogMTVweDtcclxuICAgIG1hcmdpbjogLTI0cHggLTI0cHggMHB4IC0yNHB4O1xyXG4gICAgbWluLXdpZHRoOiAyMDBweDtcclxuICAgIHBhZGRpbmc6IDFweCAxMHB4O1xyXG59XHJcblxyXG4ubWF0LWRpYWxvZy1jb250ZW50IHtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIGZvbnQtc2l6ZTogMTVweDtcclxuICAgIGhlaWdodDogODAwcHg7XHJcbiAgICBtaW4td2lkdGg6IDIwMHB4O1xyXG4gICAgcGFkZGluZzogMTBweCAxMHB4O1xyXG59XHJcblxyXG4ubWF0LWZvcm0tZmllbGQtYXBwZWFyYW5jZS1sZWdhY3kgLm1hdC1mb3JtLWZpZWxkLXdyYXBwZXIge1xyXG4gICAgcGFkZGluZy1ib3R0b206IDJweDtcclxufVxyXG5cclxuLm1hdC1mb3JtLWZpZWxkLWFwcGVhcmFuY2UtbGVnYWN5IC5tYXQtZm9ybS1maWVsZC1pbmZpeCB7XHJcbiAgICBwYWRkaW5nOiAwO1xyXG59XHJcblxyXG4ubWF0SW5wdXQge1xyXG4gICAgY2FyZXQtY29sb3I6ICNGOTA7XHJcbiAgICBjb2xvcjogZ3JlZW47XHJcbn1cclxuXHJcbi5tYXQtaW5wdXQtZWxlbWVudCB7XHJcbiAgICBjYXJldC1jb2xvcjogI0Y5MDtcclxuICAgIHBhZGRpbmctbGVmdDogNXB4O1xyXG59XHJcblxyXG4ubWF0LWZvcm0tZmllbGQtbGFiZWwtd3JhcHBlciB7XHJcbiAgICBwYWRkaW5nLXRvcDogM3B4O1xyXG59XHJcblxyXG4ubWF0LWZvcm0tZmllbGQtaW5maXgge1xyXG4gICAgYm9yZGVyLXRvcDogMDtcclxufVxyXG5cclxuLm1hdC1yYWlzZWQtYnV0dG9uIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6ICM0NDQ7XHJcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjNzc3O1xyXG4gICAgYm9yZGVyLXJhZGl1czogM3B4O1xyXG4gICAgY29sb3I6IHdoaXRlO1xyXG4gICAgZm9udC1zaXplOiAxM3B4O1xyXG4gICAgbWFyZ2luLWxlZnQ6IDZweDtcclxuICAgIHBhZGRpbmc6IDFweDtcclxuICAgIHdpZHRoOiA5MHB4O1xyXG4gICAgaGVpZ2h0OiAzMHB4O1xyXG4gICAgbGluZS1oZWlnaHQ6IDEwcHg7XHJcbn1cclxuXHJcbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBtYXJnaW4tcmlnaHQ6IC0xMnB4OyB9XHJcblxyXG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIgeyBjb2xvcjogIzk5OTsgfVxyXG5cclxuLm1hdC1yYWlzZWQtYnV0dG9uOmhvdmVyIHsgY29sb3I6ICNmOTA7IH1cclxuXHJcbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBmbGV4LWRpcmVjdGlvbjogcm93LXJldmVyc2U7IH1cclxuXHJcbiN0YWJsZSwgdGhlYWQsIHRyLCB0aCB7XHJcbiAgICBwYWRkaW5nLWxlZnQ6IDVweDtcclxuICAgIHBhZGRpbmctdG9wOiAycHg7XHJcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjNDQ0O1xyXG4gICAgY29sb3I6IHdoaXRlO1xyXG59XHJcblxyXG4jdGFibGUsIHRib2R5LCB0ciwgdGQge1xyXG4gICAgcGFkZGluZy1sZWZ0OiA1cHg7XHJcbiAgICBwYWRkaW5nLXJpZ2h0OiA1cHg7XHJcbiAgICBwYWRkaW5nLXRvcDogMnB4O1xyXG4gICAgdmVydGljYWwtYWxpZ246IHRvcDtcclxuICAgIGJvcmRlcjogMXB4IHNvbGlkICM0NDQ7XHJcbiAgICBjb2xvcjogI2RkZDtcclxufVxyXG5cclxuI3RhYmxlLCB0Ym9keSwgdHI6bnRoLWNoaWxkKDJuKSB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBibGFjaztcclxufVxyXG5cclxuI3RhYmxlLCB0Ym9keSwgdHI6bnRoLWNoaWxkKDJuICsgMSkge1xyXG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzE4MTgxODtcclxufVxyXG5cclxuLnNob3dCbGFuayB7XHJcbiAgICB3aGl0ZS1zcGFjZTogcHJlO1xyXG59Il19 */"
-
-/***/ }),
-
-/***/ "./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.html":
-/*!******************************************************************************************!*\
-  !*** ./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.html ***!
-  \******************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=\".cdk-overlay-pane\"\r\n    cdkDragHandle>\r\n    Dicom Header Viewer\r\n</h1>\r\n<mat-dialog-content>\r\n    <table>\r\n        <thead>\r\n            <tr>\r\n                <th style=\"width: 100px\">Tag</th>\r\n                <th style=\"width: 30px\">VR</th>\r\n                <th style=\"width: 300px\">Name</th>\r\n                <th>Value</th>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let tag of data\">\r\n                <td class=\"showBlank\">{{tag.tag}}</td>\r\n                <td>{{tag.vr}}</td>\r\n                <td>{{tag.name}}</td>\r\n                <td>{{tag.value}}</td>\r\n            </tr>\r\n        </tbody>\r\n    </table>\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n    <button class=\"mat-raised-button\" (click)=\"onOkClick()\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n</mat-dialog-actions>"
-
-/***/ }),
-
-/***/ "./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.ts":
-/*!****************************************************************************************!*\
-  !*** ./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.ts ***!
-  \****************************************************************************************/
-/*! exports provided: DicomHeaderDialogComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DicomHeaderDialogComponent", function() { return DicomHeaderDialogComponent; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
-/* harmony import */ var _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../services/dicom-image.service */ "./src/app/services/dicom-image.service.ts");
-var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (undefined && undefined.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-
-
-
-var DicomHeaderDialogComponent = /** @class */ (function () {
-    function DicomHeaderDialogComponent(dialogRef, data, dicomImageService) {
-        this.dialogRef = dialogRef;
-        this.data = data;
-        this.dicomImageService = dicomImageService;
-    }
-    DicomHeaderDialogComponent.prototype.ngOnInit = function () {
-    };
-    DicomHeaderDialogComponent.prototype.onOkClick = function () {
-        this.dialogRef.close();
-    };
-    DicomHeaderDialogComponent = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
-            selector: 'app-dicom-header-dialog',
-            template: __webpack_require__(/*! ./dicom-header-dialog.component.html */ "./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.html"),
-            styles: [__webpack_require__(/*! ./dicom-header-dialog.component.css */ "./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.css")]
-        }),
-        __param(1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"])),
-        __metadata("design:paramtypes", [_angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"], Object, _services_dicom_image_service__WEBPACK_IMPORTED_MODULE_2__["DicomImageService"]])
-    ], DicomHeaderDialogComponent);
-    return DicomHeaderDialogComponent;
 }());
 
 
@@ -7651,7 +7537,7 @@ var SelectStudydateDialogComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".nav-button {\r\n    /*display: inline-block;*/\r\n    background-color: #555555;\r\n    border-radius: 1px;\r\n    border-width: 1px;\r\n    color: white;\r\n    margin-left: 2px;\r\n    margin-right: 2px;\r\n    text-decoration: none;\r\n}\r\n\r\n/*.nav-button:visited {\r\n  color: #607D8B;\r\n}*/\r\n\r\n.nav-button:hover { color: #ff9900; }\r\n\r\n/*.nav-button:active {\r\n  color: #039be5;\r\n}*/\r\n\r\n.company-name {\r\n    color: white;\r\n    font-size: 18px;\r\n    font-weight: 600;\r\n}\r\n\r\n.product-name {\r\n    color: white;\r\n    font-size: 12px;\r\n    padding: 15px 2px;\r\n}\r\n\r\n.div-headerbar-nav {\r\n    /*display: inline-block;*/\r\n    background-color: #555555;\r\n    border-radius: 1px;\r\n    border-width: 1px;\r\n    color: white;\r\n    margin-left: 2px;\r\n    margin-right: 2px;\r\n    text-decoration: none;\r\n}\r\n\r\n.div-headerbar-button {\r\n    background-color: #555555;\r\n    border-radius: 2px;\r\n    border-width: 0px;\r\n    color: white;\r\n    height: 28px;\r\n    padding-top: 3px;\r\n    text-decoration: none;\r\n}\r\n\r\n.div-headerbar-button:hover { color: #ff9900; }\r\n\r\n.div-headerbar-button:focus { outline: none; }\r\n\r\n#container-fluid {\r\n    display: flex;\r\n    justify-content: space-between;\r\n}\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9oZWFkZXItYmFyL2hlYWRlci1iYXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLHlCQUF5QjtJQUN6Qix5QkFBeUI7SUFDekIsa0JBQWtCO0lBQ2xCLGlCQUFpQjtJQUNqQixZQUFZO0lBQ1osZ0JBQWdCO0lBQ2hCLGlCQUFpQjtJQUNqQixxQkFBcUI7QUFDekI7O0FBRUE7O0VBRUU7O0FBRUYsb0JBQW9CLGNBQWMsRUFBRTs7QUFFcEM7O0VBRUU7O0FBRUY7SUFDSSxZQUFZO0lBQ1osZUFBZTtJQUNmLGdCQUFnQjtBQUNwQjs7QUFFQTtJQUNJLFlBQVk7SUFDWixlQUFlO0lBQ2YsaUJBQWlCO0FBQ3JCOztBQUVBO0lBQ0kseUJBQXlCO0lBQ3pCLHlCQUF5QjtJQUN6QixrQkFBa0I7SUFDbEIsaUJBQWlCO0lBQ2pCLFlBQVk7SUFDWixnQkFBZ0I7SUFDaEIsaUJBQWlCO0lBQ2pCLHFCQUFxQjtBQUN6Qjs7QUFFQTtJQUNJLHlCQUF5QjtJQUN6QixrQkFBa0I7SUFDbEIsaUJBQWlCO0lBQ2pCLFlBQVk7SUFDWixZQUFZO0lBQ1osZ0JBQWdCO0lBQ2hCLHFCQUFxQjtBQUN6Qjs7QUFFQSw4QkFBOEIsY0FBYyxFQUFFOztBQUU5Qyw4QkFBOEIsYUFBYSxFQUFFOztBQUc3QztJQUNJLGFBQWE7SUFDYiw4QkFBOEI7QUFDbEMiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL2hlYWRlci1iYXIvaGVhZGVyLWJhci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm5hdi1idXR0b24ge1xyXG4gICAgLypkaXNwbGF5OiBpbmxpbmUtYmxvY2s7Ki9cclxuICAgIGJhY2tncm91bmQtY29sb3I6ICM1NTU1NTU7XHJcbiAgICBib3JkZXItcmFkaXVzOiAxcHg7XHJcbiAgICBib3JkZXItd2lkdGg6IDFweDtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIG1hcmdpbi1sZWZ0OiAycHg7XHJcbiAgICBtYXJnaW4tcmlnaHQ6IDJweDtcclxuICAgIHRleHQtZGVjb3JhdGlvbjogbm9uZTtcclxufVxyXG5cclxuLyoubmF2LWJ1dHRvbjp2aXNpdGVkIHtcclxuICBjb2xvcjogIzYwN0Q4QjtcclxufSovXHJcblxyXG4ubmF2LWJ1dHRvbjpob3ZlciB7IGNvbG9yOiAjZmY5OTAwOyB9XHJcblxyXG4vKi5uYXYtYnV0dG9uOmFjdGl2ZSB7XHJcbiAgY29sb3I6ICMwMzliZTU7XHJcbn0qL1xyXG5cclxuLmNvbXBhbnktbmFtZSB7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBmb250LXNpemU6IDE4cHg7XHJcbiAgICBmb250LXdlaWdodDogNjAwO1xyXG59XHJcblxyXG4ucHJvZHVjdC1uYW1lIHtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIGZvbnQtc2l6ZTogMTJweDtcclxuICAgIHBhZGRpbmc6IDE1cHggMnB4O1xyXG59XHJcblxyXG4uZGl2LWhlYWRlcmJhci1uYXYge1xyXG4gICAgLypkaXNwbGF5OiBpbmxpbmUtYmxvY2s7Ki9cclxuICAgIGJhY2tncm91bmQtY29sb3I6ICM1NTU1NTU7XHJcbiAgICBib3JkZXItcmFkaXVzOiAxcHg7XHJcbiAgICBib3JkZXItd2lkdGg6IDFweDtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIG1hcmdpbi1sZWZ0OiAycHg7XHJcbiAgICBtYXJnaW4tcmlnaHQ6IDJweDtcclxuICAgIHRleHQtZGVjb3JhdGlvbjogbm9uZTtcclxufVxyXG5cclxuLmRpdi1oZWFkZXJiYXItYnV0dG9uIHtcclxuICAgIGJhY2tncm91bmQtY29sb3I6ICM1NTU1NTU7XHJcbiAgICBib3JkZXItcmFkaXVzOiAycHg7XHJcbiAgICBib3JkZXItd2lkdGg6IDBweDtcclxuICAgIGNvbG9yOiB3aGl0ZTtcclxuICAgIGhlaWdodDogMjhweDtcclxuICAgIHBhZGRpbmctdG9wOiAzcHg7XHJcbiAgICB0ZXh0LWRlY29yYXRpb246IG5vbmU7XHJcbn1cclxuXHJcbi5kaXYtaGVhZGVyYmFyLWJ1dHRvbjpob3ZlciB7IGNvbG9yOiAjZmY5OTAwOyB9XHJcblxyXG4uZGl2LWhlYWRlcmJhci1idXR0b246Zm9jdXMgeyBvdXRsaW5lOiBub25lOyB9XHJcblxyXG5cclxuI2NvbnRhaW5lci1mbHVpZCB7XHJcbiAgICBkaXNwbGF5OiBmbGV4O1xyXG4gICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xyXG59Il19 */"
+module.exports = ".nav-button {\r\n    /*display: inline-block;*/\r\n    background-color: #555555;\r\n    border-radius: 1px;\r\n    border-width: 1px;\r\n    color: white;\r\n    margin-left: 2px;\r\n    margin-right: 2px;\r\n    text-decoration: none;\r\n}\r\n\r\n/*.nav-button:visited {\r\n  color: #607D8B;\r\n}*/\r\n\r\n.nav-button:hover { color: #ff9900; }\r\n\r\n/*.nav-button:active {\r\n  color: #039be5;\r\n}*/\r\n\r\n.company-name {\r\n    color: white;\r\n    font-size: 18px;\r\n    font-weight: 600;\r\n}\r\n\r\n.product-name {\r\n    color: white;\r\n    font-size: 12px;\r\n    padding: 15px 2px;\r\n}\r\n\r\n.div-headerbar-nav {\r\n    /*display: inline-block;*/\r\n    background-color: #555555;\r\n    border-radius: 1px;\r\n    border-width: 1px;\r\n    color: white;\r\n    margin-left: 2px;\r\n    margin-right: 2px;\r\n    text-decoration: none;\r\n}\r\n\r\n.div-headerbar-button {\r\n    background-color: #555555;\r\n    border-radius: 2px;\r\n    border-width: 0px;\r\n    color: white;\r\n    height: 28px;\r\n    padding-top: 3px;\r\n    text-decoration: none;\r\n}\r\n\r\n.div-headerbar-button:hover { color: #ff9900; }\r\n\r\n.div-headerbar-button:focus { outline: none; }\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9oZWFkZXItYmFyL2hlYWRlci1iYXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLHlCQUF5QjtJQUN6Qix5QkFBeUI7SUFDekIsa0JBQWtCO0lBQ2xCLGlCQUFpQjtJQUNqQixZQUFZO0lBQ1osZ0JBQWdCO0lBQ2hCLGlCQUFpQjtJQUNqQixxQkFBcUI7QUFDekI7O0FBRUE7O0VBRUU7O0FBRUYsb0JBQW9CLGNBQWMsRUFBRTs7QUFFcEM7O0VBRUU7O0FBRUY7SUFDSSxZQUFZO0lBQ1osZUFBZTtJQUNmLGdCQUFnQjtBQUNwQjs7QUFFQTtJQUNJLFlBQVk7SUFDWixlQUFlO0lBQ2YsaUJBQWlCO0FBQ3JCOztBQUVBO0lBQ0kseUJBQXlCO0lBQ3pCLHlCQUF5QjtJQUN6QixrQkFBa0I7SUFDbEIsaUJBQWlCO0lBQ2pCLFlBQVk7SUFDWixnQkFBZ0I7SUFDaEIsaUJBQWlCO0lBQ2pCLHFCQUFxQjtBQUN6Qjs7QUFFQTtJQUNJLHlCQUF5QjtJQUN6QixrQkFBa0I7SUFDbEIsaUJBQWlCO0lBQ2pCLFlBQVk7SUFDWixZQUFZO0lBQ1osZ0JBQWdCO0lBQ2hCLHFCQUFxQjtBQUN6Qjs7QUFFQSw4QkFBOEIsY0FBYyxFQUFFOztBQUU5Qyw4QkFBOEIsYUFBYSxFQUFFIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9oZWFkZXItYmFyL2hlYWRlci1iYXIuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5uYXYtYnV0dG9uIHtcclxuICAgIC8qZGlzcGxheTogaW5saW5lLWJsb2NrOyovXHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1NTU1O1xyXG4gICAgYm9yZGVyLXJhZGl1czogMXB4O1xyXG4gICAgYm9yZGVyLXdpZHRoOiAxcHg7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBtYXJnaW4tbGVmdDogMnB4O1xyXG4gICAgbWFyZ2luLXJpZ2h0OiAycHg7XHJcbiAgICB0ZXh0LWRlY29yYXRpb246IG5vbmU7XHJcbn1cclxuXHJcbi8qLm5hdi1idXR0b246dmlzaXRlZCB7XHJcbiAgY29sb3I6ICM2MDdEOEI7XHJcbn0qL1xyXG5cclxuLm5hdi1idXR0b246aG92ZXIgeyBjb2xvcjogI2ZmOTkwMDsgfVxyXG5cclxuLyoubmF2LWJ1dHRvbjphY3RpdmUge1xyXG4gIGNvbG9yOiAjMDM5YmU1O1xyXG59Ki9cclxuXHJcbi5jb21wYW55LW5hbWUge1xyXG4gICAgY29sb3I6IHdoaXRlO1xyXG4gICAgZm9udC1zaXplOiAxOHB4O1xyXG4gICAgZm9udC13ZWlnaHQ6IDYwMDtcclxufVxyXG5cclxuLnByb2R1Y3QtbmFtZSB7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBmb250LXNpemU6IDEycHg7XHJcbiAgICBwYWRkaW5nOiAxNXB4IDJweDtcclxufVxyXG5cclxuLmRpdi1oZWFkZXJiYXItbmF2IHtcclxuICAgIC8qZGlzcGxheTogaW5saW5lLWJsb2NrOyovXHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1NTU1O1xyXG4gICAgYm9yZGVyLXJhZGl1czogMXB4O1xyXG4gICAgYm9yZGVyLXdpZHRoOiAxcHg7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBtYXJnaW4tbGVmdDogMnB4O1xyXG4gICAgbWFyZ2luLXJpZ2h0OiAycHg7XHJcbiAgICB0ZXh0LWRlY29yYXRpb246IG5vbmU7XHJcbn1cclxuXHJcbi5kaXYtaGVhZGVyYmFyLWJ1dHRvbiB7XHJcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1NTU1O1xyXG4gICAgYm9yZGVyLXJhZGl1czogMnB4O1xyXG4gICAgYm9yZGVyLXdpZHRoOiAwcHg7XHJcbiAgICBjb2xvcjogd2hpdGU7XHJcbiAgICBoZWlnaHQ6IDI4cHg7XHJcbiAgICBwYWRkaW5nLXRvcDogM3B4O1xyXG4gICAgdGV4dC1kZWNvcmF0aW9uOiBub25lO1xyXG59XHJcblxyXG4uZGl2LWhlYWRlcmJhci1idXR0b246aG92ZXIgeyBjb2xvcjogI2ZmOTkwMDsgfVxyXG5cclxuLmRpdi1oZWFkZXJiYXItYnV0dG9uOmZvY3VzIHsgb3V0bGluZTogbm9uZTsgfVxyXG4iXX0= */"
 
 /***/ }),
 
@@ -7662,7 +7548,7 @@ module.exports = ".nav-button {\r\n    /*display: inline-block;*/\r\n    backgro
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <!--<div class=\"navbar-brand\" href=\"#\">\r\n                        <img src=\"../../../assets/img/Carestream.svg\">\r\n                    </div>-->\r\n                    <div class=\"company-name\">Carestream</div>\r\n                </td>\r\n                <td>\r\n                    <div class=\"product-name\">Image Suite</div>\r\n                </td>\r\n                <td>\r\n                    <div class=\"nav-button\" style=\"padding-left: 4px; padding-right: 4px\">\r\n                        <button id=\"headerButton-worklist\" class=\"div-headerbar-button\" (click)=\"showViewerShell(null)\">Worklist</button>\r\n                    </div>\r\n                </td>\r\n                <td *ngFor=\"let viewerShellData of getViewerShellDataList()\">\r\n                    <div class=\"nav-button\">\r\n                        <button [id]=\"getId(viewerShellData)\" class=\"div-headerbar-button\" (click)=\"showViewerShell(viewerShellData)\">{{viewerShellData.getName()}}</button>\r\n                        <button class=\"div-headerbar-button\" (click)=\"closeViewerShell(viewerShellData)\">x</button>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n    <div id=\"setting-area\">\r\n        <app-settings></app-settings>\r\n    </div>\r\n</div>\r\n"
+module.exports = "<div class=\"container-fluid\">\r\n    <div class=\"navbar-header\">\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <!--<div class=\"navbar-brand\" href=\"#\">\r\n                        <img src=\"../../../assets/img/Carestream.svg\">\r\n                    </div>-->\r\n                    <div class=\"company-name\">Carestream</div>\r\n                </td>\r\n                <td>\r\n                    <div class=\"product-name\">Image Suite</div>\r\n                </td>\r\n                <td>\r\n                    <div class=\"nav-button\" style=\"padding-left: 4px; padding-right: 4px\">\r\n                        <button id=\"headerButton-worklist\" class=\"div-headerbar-button\" (click)=\"showViewerShell(null)\">Worklist</button>\r\n                    </div>\r\n                </td>\r\n                <td *ngFor=\"let viewerShellData of getViewerShellDataList()\">\r\n                    <div class=\"nav-button\">\r\n                        <button [id]=\"getId(viewerShellData)\" class=\"div-headerbar-button\" (click)=\"showViewerShell(viewerShellData)\">{{viewerShellData.getName()}}</button>\r\n                        <button class=\"div-headerbar-button\" (click)=\"closeViewerShell(viewerShellData)\">x</button>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n</div>\r\n"
 
 /***/ }),
 
@@ -7751,220 +7637,6 @@ var HeaderBarComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [_services_shell_navigator_service__WEBPACK_IMPORTED_MODULE_1__["ShellNavigatorService"]])
     ], HeaderBarComponent);
     return HeaderBarComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/components/header-bar/settings/delivery-status/delivery-status.component.html":
-/*!***********************************************************************************************!*\
-  !*** ./src/app/components/header-bar/settings/delivery-status/delivery-status.component.html ***!
-  \***********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=\".cdk-overlay-pane\"\r\n    cdkDragHandle>\r\n    Delivery Status\r\n</h1>\r\n<mat-dialog-content>\r\n    <mat-list>\r\n        <table class=\"table-list-style\">\r\n            <tr>\r\n                <th>Delivery Status</th>\r\n                <th>Name</th>\r\n                <th>Patient ID</th>\r\n                <th>Created Date</th>\r\n                <th>Type</th>\r\n                <th>Image Count</th>\r\n                <th>Delivery Name</th>\r\n                <th>Destination</th>\r\n                <th>Finished Number</th>\r\n                <th>Success Number</th>\r\n                <th>Compression Ratio</th>\r\n            </tr>\r\n            <tr *ngFor=\"let transferJob of transferJobList\" [className]=\"transferJob == selectedTransferJob ? 'selected-row' : 'unselected-row'\" (click)=\"onTransferJobRowClicked(transferJob)\">\r\n                <td>\r\n                    {{transferJob.deliveryStatus}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.patientName}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.patientId}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.createdDate}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.type}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.imageCount}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.deliveryName}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.destination}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.finishedNumber}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.successNumber}}\r\n                </td>\r\n                <td>\r\n                    {{transferJob.compressionRatio}}\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <div id=\"button-content\">\r\n            <table>\r\n                <tr>\r\n                    <td>\r\n                        <button class=\"resume-btn image-btn\" role=\"button\" title=\"Resume\" (click)=\"onResumeClicked()\" [disabled]=\"selectedTransferJob.deliveryStatus != 'PAUSED'\"></button>\r\n                    </td>\r\n                    <td>\r\n                        <button class=\"pause-btn image-btn\" role=\"button\" title=\"Pause\" (click)=\"onPauseClicked()\" [disabled]=\"selectedTransferJob.deliveryStatus != 'FRESH'\"></button>\r\n                    </td>\r\n                    <td>\r\n                        <button class=\"cancel-btn image-btn\" role=\"button\" title=\"Cancel\" (click)=\"onCancelTransferClicked()\" [disabled]=\"selectedTransferJob.deliveryStatus != 'FRESH'\"></button>\r\n                    </td>\r\n                    <td>\r\n                        <button class=\"resend-btn image-btn\" role=\"button\" title=\"Resend\" (click)=\"onResendClicked()\" [disabled]=\"selectedTransferJob.deliveryStatus != 'FAILURE'\"></button>\r\n                    </td>\r\n                    <td>\r\n                        <button class=\"delete-btn image-btn\" role=\"button\" title=\"Delete\" (click)=\"onDeleteClicked()\" [disabled]=\"selectedTransferJob.deliveryStatus == 'PROCESSING'\"></button>\r\n                    </td>\r\n                    <td>\r\n                        <button class=\"refresh-btn image-btn\" role=\"button\" title=\"Refresh\" (click)=\"onRefreshClicked()\"></button>\r\n                    </td>\r\n                </tr>\r\n            </table>\r\n\r\n        </div>\r\n        <br>\r\n        <br>\r\n        <br>\r\n        <mat-divider></mat-divider><br>\r\n        <table class=\"table-list-style\">\r\n            <tr>\r\n                <th>Item No</th>\r\n                <th>Type</th>\r\n                <th>Patient ID</th>\r\n                <th>Name</th>\r\n                <th>Execute Status</th>\r\n                <th>Execute Time</th>\r\n            </tr>\r\n            <tr *ngFor=\"let transferJobItem of transferJobItemList\">\r\n                <td>\r\n                    {{transferJobItem.itemNo}}\r\n                </td>\r\n                <td>\r\n                    {{transferJobItem.type}}\r\n                </td>\r\n                <td>\r\n                    {{transferJobItem.patientId}}\r\n                </td>\r\n                <td>\r\n                    {{transferJobItem.name}}\r\n                </td>\r\n                <td>\r\n                    {{transferJobItem.executeStatus}}\r\n                </td>\r\n                <td>\r\n                    {{transferJobItem.executeTime}}\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </mat-list>\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n    <button class=\"mat-raised-button\" (click)=\"onCancelClick()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Close\r\n    </button>\r\n</mat-dialog-actions>\r\n"
-
-/***/ }),
-
-/***/ "./src/app/components/header-bar/settings/delivery-status/delivery-status.component.less":
-/*!***********************************************************************************************!*\
-  !*** ./src/app/components/header-bar/settings/delivery-status/delivery-status.component.less ***!
-  \***********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n.table-list-style {\n  overflow: auto;\n}\n.table-list-style th {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  background: #444;\n}\n.table-list-style td {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  /*color: @container-background-color;*/\n}\n.table-list-style th,\n.table-list-style td:first-child {\n  min-width: 20px;\n}\n.table-list-style tr:nth-child(odd) {\n  background-color: #181818;\n}\n.table-list-style tr:nth-child(even) {\n  background-color: #000;\n}\n.mat-dialog-title {\n  border-bottom: 1px solid orange;\n  color: orange;\n  font-size: 15px;\n  margin: -24px -24px 0px -24px;\n  min-width: 200px;\n  padding: 1px 10px;\n}\n.mat-dialog-content {\n  color: #fff;\n  font-size: 15px;\n  min-height: 500px;\n  max-height: 800px;\n  max-width: 1200px;\n  padding: 10px 10px;\n}\n.mat-dialog-actions {\n  margin-right: -12px;\n}\n.mat-form-field {\n  width: 100%;\n}\n.mat-raised-button {\n  background-color: #555;\n  border: 1px solid #777;\n  border-radius: 3px;\n  color: #fff;\n  font-size: 13px;\n  margin-left: 6px;\n  padding: 1px;\n  width: 100px;\n}\n.mat-raised-button:disabled:hover {\n  color: #555;\n}\n.mat-raised-button:hover {\n  color: orange;\n}\n.mat-dialog-actions {\n  flex-direction: row-reverse;\n}\n.matInput {\n  caret-color: orange;\n  color: green;\n}\n.mat-input-element {\n  width: 100%;\n  caret-color: orange;\n}\ntd {\n  padding: 3px;\n}\n::-webkit-inner-spin-button {\n  display: none;\n}\n#button-content {\n  float: right;\n}\n.image-btn {\n  border: none;\n  height: 40px;\n  outline: none;\n  width: 60px;\n}\n.selected-row {\n  outline: thin solid orange;\n}\n.resume-btn {\n  background: url('ResumeTransfer_60_40_All.png') no-repeat left top;\n}\n.resume-btn:hover {\n  background: url('ResumeTransfer_60_40_All.png') no-repeat right top;\n}\n.resume-btn:active {\n  background: url('ResumeTransfer_60_40_All.png') no-repeat left bottom;\n}\n.resume-btn:disabled {\n  background: url('ResumeTransfer_60_40_All.png') no-repeat right bottom;\n}\n.pause-btn {\n  background: url('Pause_60_40_All.png') no-repeat left top;\n}\n.pause-btn:hover {\n  background: url('Pause_60_40_All.png') no-repeat right top;\n}\n.pause-btn:active {\n  background: url('Pause_60_40_All.png') no-repeat left bottom;\n}\n.pause-btn:disabled {\n  background: url('Pause_60_40_All.png') no-repeat right bottom;\n}\n.cancel-btn {\n  background: url('Cancel_60_40_All.png') no-repeat left top;\n}\n.cancel-btn:hover {\n  background: url('Cancel_60_40_All.png') no-repeat right top;\n}\n.cancel-btn:active {\n  background: url('Cancel_60_40_All.png') no-repeat left bottom;\n}\n.cancel-btn:disabled {\n  background: url('Cancel_60_40_All.png') no-repeat right bottom;\n}\n.resend-btn {\n  background: url('Resend_60_40_All.png') no-repeat left top;\n}\n.resend-btn:hover {\n  background: url('Resend_60_40_All.png') no-repeat right top;\n}\n.resend-btn:active {\n  background: url('Resend_60_40_All.png') no-repeat left bottom;\n}\n.resend-btn:disabled {\n  background: url('Resend_60_40_All.png') no-repeat right bottom;\n}\n.delete-btn {\n  background: url('delete_60_40.png') no-repeat left top;\n}\n.delete-btn:hover {\n  background: url('delete_60_40.png') no-repeat right top;\n}\n.delete-btn:active {\n  background: url('delete_60_40.png') no-repeat right bottom;\n}\n.delete-btn:disabled {\n  background: url('delete_60_40.png') no-repeat left bottom;\n}\n.refresh-btn {\n  background: url('Refresh_60_40_All.png') no-repeat left top;\n}\n.refresh-btn:hover {\n  background: url('Refresh_60_40_All.png') no-repeat right top;\n}\n.refresh-btn:active {\n  background: url('Refresh_60_40_All.png') no-repeat left bottom;\n}\n.refresh-btn:disabled {\n  background: url('Refresh_60_40_All.png') no-repeat right bottom;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9oZWFkZXItYmFyL3NldHRpbmdzL2RlbGl2ZXJ5LXN0YXR1cy9kZWxpdmVyeS1zdGF0dXMuY29tcG9uZW50Lmxlc3MiLCJzcmMvYXBwL2NvbXBvbmVudHMvaGVhZGVyLWJhci9zZXR0aW5ncy9kZWxpdmVyeS1zdGF0dXMvRDovV29yay9HaXQvSW1hZ2VTdWl0ZS9XZWJQYWNzL0NzaC5JbWFnZVN1aXRlLldlYkNsaWVudC9zcmMvYXBwL2NvbXBvbmVudHMvaGVhZGVyLWJhci9zZXR0aW5ncy9kZWxpdmVyeS1zdGF0dXMvZGVsaXZlcnktc3RhdHVzLmNvbXBvbmVudC5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7O2NBSWM7QUFDZDs7Ozs7Ozs7Ozs7Ozs7Ozs7OztFQW1CRTtBQ3RCRjtFQUNJLGNBQUE7QUR3Qko7QUN6QkE7RUFJUSxZQUFBO0VBQ0Esc0JBQUE7RUFDQSxnQkFBQTtFQUNBLGdCQUFBO0FEd0JSO0FDL0JBO0VBV1EsWUFBQTtFQUNBLHNCQUFBO0VBQ0EsZ0JBQUE7RUR1Qk4sc0NBQXNDO0FBQ3hDO0FDckNBOztFQWtCUSxlQUFBO0FEdUJSO0FDekNBO0VBc0JNLHlCQUFBO0FEc0JOO0FDNUNBO0VBMEJNLHNCQUFBO0FEcUJOO0FDakJBO0VBQ0ksK0JBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtFQUNBLDZCQUFBO0VBQ0EsZ0JBQUE7RUFDQSxpQkFBQTtBRG1CSjtBQ2hCQTtFQUNJLFdBQUE7RUFDQSxlQUFBO0VBQ0EsaUJBQUE7RUFDQSxpQkFBQTtFQUNBLGlCQUFBO0VBQ0Esa0JBQUE7QURrQko7QUNmQTtFQUFzQixtQkFBQTtBRGtCdEI7QUNoQkE7RUFDSSxXQUFBO0FEa0JKO0FDZkE7RUFDSSxzQkFBQTtFQUNBLHNCQUFBO0VBQ0Esa0JBQUE7RUFDQSxXQUFBO0VBQ0EsZUFBQTtFQUNBLGdCQUFBO0VBQ0EsWUFBQTtFQUNBLFlBQUE7QURpQko7QUNkQTtFQUFvQyxXQUFBO0FEaUJwQztBQ2ZBO0VBQTJCLGFBQUE7QURrQjNCO0FDaEJBO0VBQXNCLDJCQUFBO0FEbUJ0QjtBQ2pCQTtFQUNJLG1CQUFBO0VBQ0EsWUFBQTtBRG1CSjtBQ2hCQTtFQUNJLFdBQUE7RUFDQSxtQkFBQTtBRGtCSjtBQ2ZBO0VBQ0ksWUFBQTtBRGlCSjtBQ2RBO0VBQThCLGFBQUE7QURpQjlCO0FDZkE7RUFDSSxZQUFBO0FEaUJKO0FDZEE7RUFDSSxZQUFBO0VBQ0EsWUFBQTtFQUNBLGFBQUE7RUFDQSxXQUFBO0FEZ0JKO0FDYkE7RUFDSSwwQkFBQTtBRGVKO0FDWkE7RUFBYyxrRUFBQTtBRGVkO0FDYkE7RUFBb0IsbUVBQUE7QURnQnBCO0FDZEE7RUFBcUIscUVBQUE7QURpQnJCO0FDZkE7RUFBdUIsc0VBQUE7QURrQnZCO0FDaEJBO0VBQWEseURBQUE7QURtQmI7QUNqQkE7RUFBbUIsMERBQUE7QURvQm5CO0FDbEJBO0VBQW9CLDREQUFBO0FEcUJwQjtBQ25CQTtFQUFzQiw2REFBQTtBRHNCdEI7QUNwQkE7RUFBYywwREFBQTtBRHVCZDtBQ3JCQTtFQUFvQiwyREFBQTtBRHdCcEI7QUN0QkE7RUFBcUIsNkRBQUE7QUR5QnJCO0FDdkJBO0VBQXVCLDhEQUFBO0FEMEJ2QjtBQ3hCQTtFQUFjLDBEQUFBO0FEMkJkO0FDekJBO0VBQW9CLDJEQUFBO0FENEJwQjtBQzFCQTtFQUFxQiw2REFBQTtBRDZCckI7QUMzQkE7RUFBdUIsOERBQUE7QUQ4QnZCO0FDNUJBO0VBQWMsc0RBQUE7QUQrQmQ7QUM3QkE7RUFBb0IsdURBQUE7QURnQ3BCO0FDOUJBO0VBQXFCLDBEQUFBO0FEaUNyQjtBQy9CQTtFQUF1Qix5REFBQTtBRGtDdkI7QUNoQ0E7RUFBZSwyREFBQTtBRG1DZjtBQ2pDQTtFQUFxQiw0REFBQTtBRG9DckI7QUNsQ0E7RUFBc0IsOERBQUE7QURxQ3RCO0FDbkNBO0VBQXdCLCtEQUFBO0FEc0N4QiIsImZpbGUiOiJzcmMvYXBwL2NvbXBvbmVudHMvaGVhZGVyLWJhci9zZXR0aW5ncy9kZWxpdmVyeS1zdGF0dXMvZGVsaXZlcnktc3RhdHVzLmNvbXBvbmVudC5sZXNzIiwic291cmNlc0NvbnRlbnQiOlsiLypAYmxhY2s6ICMwMDA7XG5Ab3JhbmdlOiBvcmFuZ2U7XG5AZ3JheTogIzU1NTtcbkBzaWx2ZXI6ICNhYWE7XG5Ad2hpdGU6ICNmZmY7Ki9cbi8qLnRoZW1lLWRhcmsge1xuICAgIEBiYWNrZ3JvdW5kLWNvbG9yIDogQGJsYWNrO1xuICAgIEB1bmRlcmxpbmUtY29sb3IgOiBAb3JhbmdlO1xuICAgIEBib3JkZXItY29sb3IgOiBAc2lsdmVyO1xuICAgIEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvciA6IEBncmF5O1xuICAgIEBkaXNhYmxlLWNvbG9yIDogQGdyYXk7XG4gICAgQGZvbnQtY29sb3IgOiBAd2hpdGU7XG4gICAgLmNoYW5nZS1kYXJrKEBiYWNrZ3JvdW5kLWNvbG9yKTtcbn1cblxuXG4udGhlbWUtbGlnaHQge1xuICAgIEBiYWNrZ3JvdW5kLWNvbG9yIDogQHdoaXRlO1xuICAgIEB1bmRlcmxpbmUtY29sb3IgOiBAb3JhbmdlO1xuICAgIEBib3JkZXItY29sb3IgOiBAd2hpdGU7XG4gICAgQGRpc2FibGUtY29sb3IgOiBAd2hpdGU7XG4gICAgQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yIDogQHdoaXRlO1xuICAgIEBmb250LWNvbG9yOiBAYmxhY2s7XG4gICAgLmNoYW5nZS1kYXJrKEBiYWNrZ3JvdW5kLWNvbG9yKTtcbn0qL1xuLnRhYmxlLWxpc3Qtc3R5bGUge1xuICBvdmVyZmxvdzogYXV0bztcbn1cbi50YWJsZS1saXN0LXN0eWxlIHRoIHtcbiAgcGFkZGluZzogM3B4O1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICBtaW4td2lkdGg6IDEwMHB4O1xuICBiYWNrZ3JvdW5kOiAjNDQ0O1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdGQge1xuICBwYWRkaW5nOiAzcHg7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIG1pbi13aWR0aDogMTAwcHg7XG4gIC8qY29sb3I6IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjsqL1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdGgsXG4udGFibGUtbGlzdC1zdHlsZSB0ZDpmaXJzdC1jaGlsZCB7XG4gIG1pbi13aWR0aDogMjBweDtcbn1cbi50YWJsZS1saXN0LXN0eWxlIHRyOm50aC1jaGlsZChvZGQpIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzE4MTgxODtcbn1cbi50YWJsZS1saXN0LXN0eWxlIHRyOm50aC1jaGlsZChldmVuKSB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMwMDA7XG59XG4ubWF0LWRpYWxvZy10aXRsZSB7XG4gIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCBvcmFuZ2U7XG4gIGNvbG9yOiBvcmFuZ2U7XG4gIGZvbnQtc2l6ZTogMTVweDtcbiAgbWFyZ2luOiAtMjRweCAtMjRweCAwcHggLTI0cHg7XG4gIG1pbi13aWR0aDogMjAwcHg7XG4gIHBhZGRpbmc6IDFweCAxMHB4O1xufVxuLm1hdC1kaWFsb2ctY29udGVudCB7XG4gIGNvbG9yOiAjZmZmO1xuICBmb250LXNpemU6IDE1cHg7XG4gIG1pbi1oZWlnaHQ6IDUwMHB4O1xuICBtYXgtaGVpZ2h0OiA4MDBweDtcbiAgbWF4LXdpZHRoOiAxMjAwcHg7XG4gIHBhZGRpbmc6IDEwcHggMTBweDtcbn1cbi5tYXQtZGlhbG9nLWFjdGlvbnMge1xuICBtYXJnaW4tcmlnaHQ6IC0xMnB4O1xufVxuLm1hdC1mb3JtLWZpZWxkIHtcbiAgd2lkdGg6IDEwMCU7XG59XG4ubWF0LXJhaXNlZC1idXR0b24ge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1O1xuICBib3JkZXI6IDFweCBzb2xpZCAjNzc3O1xuICBib3JkZXItcmFkaXVzOiAzcHg7XG4gIGNvbG9yOiAjZmZmO1xuICBmb250LXNpemU6IDEzcHg7XG4gIG1hcmdpbi1sZWZ0OiA2cHg7XG4gIHBhZGRpbmc6IDFweDtcbiAgd2lkdGg6IDEwMHB4O1xufVxuLm1hdC1yYWlzZWQtYnV0dG9uOmRpc2FibGVkOmhvdmVyIHtcbiAgY29sb3I6ICM1NTU7XG59XG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIge1xuICBjb2xvcjogb3JhbmdlO1xufVxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7XG4gIGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTtcbn1cbi5tYXRJbnB1dCB7XG4gIGNhcmV0LWNvbG9yOiBvcmFuZ2U7XG4gIGNvbG9yOiBncmVlbjtcbn1cbi5tYXQtaW5wdXQtZWxlbWVudCB7XG4gIHdpZHRoOiAxMDAlO1xuICBjYXJldC1jb2xvcjogb3JhbmdlO1xufVxudGQge1xuICBwYWRkaW5nOiAzcHg7XG59XG46Oi13ZWJraXQtaW5uZXItc3Bpbi1idXR0b24ge1xuICBkaXNwbGF5OiBub25lO1xufVxuI2J1dHRvbi1jb250ZW50IHtcbiAgZmxvYXQ6IHJpZ2h0O1xufVxuLmltYWdlLWJ0biB7XG4gIGJvcmRlcjogbm9uZTtcbiAgaGVpZ2h0OiA0MHB4O1xuICBvdXRsaW5lOiBub25lO1xuICB3aWR0aDogNjBweDtcbn1cbi5zZWxlY3RlZC1yb3cge1xuICBvdXRsaW5lOiB0aGluIHNvbGlkIG9yYW5nZTtcbn1cbi5yZXN1bWUtYnRuIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1Jlc3VtZVRyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDtcbn1cbi5yZXN1bWUtYnRuOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1Jlc3VtZVRyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7XG59XG4ucmVzdW1lLWJ0bjphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUmVzdW1lVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tO1xufVxuLnJlc3VtZS1idG46ZGlzYWJsZWQge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUmVzdW1lVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTtcbn1cbi5wYXVzZS1idG4ge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUGF1c2VfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wO1xufVxuLnBhdXNlLWJ0bjpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9QYXVzZV82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLnBhdXNlLWJ0bjphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUGF1c2VfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tO1xufVxuLnBhdXNlLWJ0bjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9QYXVzZV82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tO1xufVxuLmNhbmNlbC1idG4ge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vQ2FuY2VsXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDtcbn1cbi5jYW5jZWwtYnRuOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0NhbmNlbF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLmNhbmNlbC1idG46YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0NhbmNlbF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207XG59XG4uY2FuY2VsLWJ0bjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DYW5jZWxfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTtcbn1cbi5yZXNlbmQtYnRuIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1Jlc2VuZF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7XG59XG4ucmVzZW5kLWJ0bjpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9SZXNlbmRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDtcbn1cbi5yZXNlbmQtYnRuOmFjdGl2ZSB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9SZXNlbmRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tO1xufVxuLnJlc2VuZC1idG46ZGlzYWJsZWQge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUmVzZW5kXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207XG59XG4uZGVsZXRlLWJ0biB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9kZWxldGVfNjBfNDAucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7XG59XG4uZGVsZXRlLWJ0bjpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9kZWxldGVfNjBfNDAucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLmRlbGV0ZS1idG46YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL2RlbGV0ZV82MF80MC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207XG59XG4uZGVsZXRlLWJ0bjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9kZWxldGVfNjBfNDAucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207XG59XG4ucmVmcmVzaC1idG4ge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUmVmcmVzaF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7XG59XG4ucmVmcmVzaC1idG46aG92ZXIge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUmVmcmVzaF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLnJlZnJlc2gtYnRuOmFjdGl2ZSB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9SZWZyZXNoXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTtcbn1cbi5yZWZyZXNoLWJ0bjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9SZWZyZXNoXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207XG59XG4iLCJAaW1wb3J0IFwiLi4vLi4vLi4vLi4vLi4vdGhlbWVzLmxlc3NcIjtcblxuLnRhYmxlLWxpc3Qtc3R5bGUge1xuICAgIG92ZXJmbG93OmF1dG87XG5cbiAgICB0aCB7XG4gICAgICAgIHBhZGRpbmc6IDNweDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICAgICAgbWluLXdpZHRoOiAxMDBweDtcbiAgICAgICAgYmFja2dyb3VuZDogQGhlYWRlci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIH1cblxuICAgIHRkIHtcbiAgICAgICAgcGFkZGluZzogM3B4O1xuICAgICAgICBib3JkZXI6IDFweCBzb2xpZCBAYm9yZGVyLWNvbG9yO1xuICAgICAgICBtaW4td2lkdGg6IDEwMHB4O1xuICAgICAgICAvKmNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7Ki9cbiAgICB9XG5cbiAgICB0aCwgdGQ6Zmlyc3QtY2hpbGQge1xuICAgICAgICBtaW4td2lkdGg6IDIwcHg7XG4gICAgfVxuXG4gICAgdHI6bnRoLWNoaWxkKG9kZCl7XG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAb2RkLXRyLWNvbG9yO1xuICAgIH1cblxuICAgIHRyOm50aC1jaGlsZChldmVuKXtcbiAgICAgIGJhY2tncm91bmQtY29sb3I6IEBiYWNrZ3JvdW5kLWNvbG9yO1xuICAgIH1cbn1cblxuLm1hdC1kaWFsb2ctdGl0bGUge1xuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGZvbnQtc2l6ZTogMTVweDtcbiAgICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcbiAgICBtaW4td2lkdGg6IDIwMHB4O1xuICAgIHBhZGRpbmc6IDFweCAxMHB4O1xufVxuXG4ubWF0LWRpYWxvZy1jb250ZW50IHtcbiAgICBjb2xvcjogQGZvbnQtY29sb3I7XG4gICAgZm9udC1zaXplOiAxNXB4O1xuICAgIG1pbi1oZWlnaHQ6IDUwMHB4O1xuICAgIG1heC1oZWlnaHQ6IDgwMHB4O1xuICAgIG1heC13aWR0aDogMTIwMHB4O1xuICAgIHBhZGRpbmc6IDEwcHggMTBweDtcbn1cblxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IG1hcmdpbi1yaWdodDogLTEycHg7IH1cblxuLm1hdC1mb3JtLWZpZWxkIHtcbiAgICB3aWR0aDogMTAwJTtcbn1cblxuLm1hdC1yYWlzZWQtYnV0dG9uIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyOiAxcHggc29saWQgIzc3NztcbiAgICBib3JkZXItcmFkaXVzOiAzcHg7XG4gICAgY29sb3I6IEBmb250LWNvbG9yO1xuICAgIGZvbnQtc2l6ZTogMTNweDtcbiAgICBtYXJnaW4tbGVmdDogNnB4O1xuICAgIHBhZGRpbmc6IDFweDtcbiAgICB3aWR0aDogMTAwcHg7XG59XG5cbi5tYXQtcmFpc2VkLWJ1dHRvbjpkaXNhYmxlZDpob3ZlciB7IGNvbG9yOiBAZGlzYWJsZS1jb2xvcjsgfVxuXG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIgeyBjb2xvcjogQHVuZGVybGluZS1jb2xvcjsgfVxuXG4ubWF0LWRpYWxvZy1hY3Rpb25zIHsgZmxleC1kaXJlY3Rpb246IHJvdy1yZXZlcnNlOyB9XG5cbi5tYXRJbnB1dCB7XG4gICAgY2FyZXQtY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7XG4gICAgY29sb3I6IGdyZWVuO1xufVxuXG4ubWF0LWlucHV0LWVsZW1lbnQge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGNhcmV0LWNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xufVxuXG50ZCB7XG4gICAgcGFkZGluZzogM3B4O1xufVxuXG46Oi13ZWJraXQtaW5uZXItc3Bpbi1idXR0b24geyBkaXNwbGF5OiBub25lOyB9XG5cbiNidXR0b24tY29udGVudCB7XG4gICAgZmxvYXQ6cmlnaHQ7XG59XG5cbi5pbWFnZS1idG4ge1xuICAgIGJvcmRlcjogbm9uZTtcbiAgICBoZWlnaHQ6IDQwcHg7XG4gICAgb3V0bGluZTogbm9uZTtcbiAgICB3aWR0aDogNjBweDtcbn1cbiAgICBcbi5zZWxlY3RlZC1yb3d7XG4gICAgb3V0bGluZTogdGhpbiBzb2xpZCBAdW5kZXJsaW5lLWNvbG9yO1xufVxuXG4ucmVzdW1lLWJ0biB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9SZXN1bWVUcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cblxuLnJlc3VtZS1idG46aG92ZXIgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUmVzdW1lVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgfVxuXG4ucmVzdW1lLWJ0bjphY3RpdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUmVzdW1lVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tOyB9XG5cbi5yZXN1bWUtYnRuOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1Jlc3VtZVRyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IH1cblxuLnBhdXNlLWJ0biB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9QYXVzZV82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cblxuLnBhdXNlLWJ0bjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9QYXVzZV82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XG5cbi5wYXVzZS1idG46YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1BhdXNlXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxuXG4ucGF1c2UtYnRuOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1BhdXNlXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IH1cblxuLmNhbmNlbC1idG4geyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vQ2FuY2VsXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDsgfVxuXG4uY2FuY2VsLWJ0bjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DYW5jZWxfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgfVxuXG4uY2FuY2VsLWJ0bjphY3RpdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vQ2FuY2VsXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxuXG4uY2FuY2VsLWJ0bjpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DYW5jZWxfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTsgfVxuXG4ucmVzZW5kLWJ0biB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9SZXNlbmRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wOyB9XG5cbi5yZXNlbmQtYnRuOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1Jlc2VuZF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XG5cbi5yZXNlbmQtYnRuOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9SZXNlbmRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tOyB9XG5cbi5yZXNlbmQtYnRuOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1Jlc2VuZF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XG5cbi5kZWxldGUtYnRuIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL2RlbGV0ZV82MF80MC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDsgfVxuXG4uZGVsZXRlLWJ0bjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9kZWxldGVfNjBfNDAucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XG5cbi5kZWxldGUtYnRuOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9kZWxldGVfNjBfNDAucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XG5cbi5kZWxldGUtYnRuOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL2RlbGV0ZV82MF80MC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxuXG4ucmVmcmVzaC1idG4geyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUmVmcmVzaF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cblxuLnJlZnJlc2gtYnRuOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1JlZnJlc2hfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgfVxuXG4ucmVmcmVzaC1idG46YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1JlZnJlc2hfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tOyB9XG5cbi5yZWZyZXNoLWJ0bjpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9SZWZyZXNoXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IH1cbiJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/components/header-bar/settings/delivery-status/delivery-status.component.ts":
-/*!*********************************************************************************************!*\
-  !*** ./src/app/components/header-bar/settings/delivery-status/delivery-status.component.ts ***!
-  \*********************************************************************************************/
-/*! exports provided: DeliveryStatusComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DeliveryStatusComponent", function() { return DeliveryStatusComponent; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
-/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
-/* harmony import */ var _models_pssi__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../models/pssi */ "./src/app/models/pssi.ts");
-/* harmony import */ var _services_worklist_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../services/worklist.service */ "./src/app/services/worklist.service.ts");
-/* harmony import */ var _services_database_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../services/database.service */ "./src/app/services/database.service.ts");
-/* harmony import */ var _models_settings__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../../models/settings */ "./src/app/models/settings.ts");
-var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (undefined && undefined.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (undefined && undefined.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-
-
-
-
-
-
-
-var DeliveryStatusComponent = /** @class */ (function () {
-    function DeliveryStatusComponent(worklistService, databaseService, dialogRef, study, dialogService) {
-        this.worklistService = worklistService;
-        this.databaseService = databaseService;
-        this.dialogRef = dialogRef;
-        this.dialogService = dialogService;
-        this.selectedTransferJob = new _models_settings__WEBPACK_IMPORTED_MODULE_6__["TransferJob"]();
-    }
-    DeliveryStatusComponent.prototype.ngOnInit = function () {
-        this.refreshTransferJob();
-    };
-    DeliveryStatusComponent.prototype.refreshTransferJob = function () {
-        var _this = this;
-        this.databaseService.getTransferJob().subscribe(function (ret) {
-            _this.transferJobList = ret;
-            for (var _i = 0, _a = _this.transferJobList; _i < _a.length; _i++) {
-                var transferJob = _a[_i];
-                _this.onTransferJobRowClicked(transferJob);
-                break;
-            }
-        });
-    };
-    DeliveryStatusComponent.prototype.onTransferJobRowClicked = function (transferJob) {
-        var _this = this;
-        this.selectedTransferJob = transferJob;
-        this.databaseService.getTransferJobItem(transferJob.jobUid).subscribe(function (ret) {
-            _this.transferJobItemList = ret;
-        });
-    };
-    DeliveryStatusComponent.prototype.onResumeClicked = function () {
-        var _this = this;
-        this.databaseService.setSelectedJobStatus(this.selectedTransferJob.jobUid, "FRESH").subscribe(function (ret) {
-            _this.refreshTransferJob();
-        });
-    };
-    DeliveryStatusComponent.prototype.onPauseClicked = function () {
-        var _this = this;
-        this.databaseService.setSelectedJobStatus(this.selectedTransferJob.jobUid, "PAUSED").subscribe(function (ret) {
-            _this.refreshTransferJob();
-        });
-    };
-    DeliveryStatusComponent.prototype.onCancelTransferClicked = function () {
-        var _this = this;
-        this.databaseService.setSelectedJobStatus(this.selectedTransferJob.jobUid, "canceled").subscribe(function (ret) {
-            _this.refreshTransferJob();
-        });
-    };
-    DeliveryStatusComponent.prototype.onResendClicked = function () {
-        var _this = this;
-        this.databaseService.setSelectedJobStatus(this.selectedTransferJob.jobUid, "FRESH").subscribe(function (ret) {
-            _this.refreshTransferJob();
-        });
-    };
-    DeliveryStatusComponent.prototype.onDeleteClicked = function () {
-        //this.databaseService.setSelectedJobStatus(this.selectedTransferJob.jobUid, "processing").subscribe(ret => {
-        //});
-    };
-    DeliveryStatusComponent.prototype.onRefreshClicked = function () {
-        this.refreshTransferJob();
-    };
-    DeliveryStatusComponent.prototype.onCancelClick = function () {
-        this.dialogRef.close();
-    };
-    DeliveryStatusComponent = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
-            selector: 'app-delivery-status',
-            template: __webpack_require__(/*! ./delivery-status.component.html */ "./src/app/components/header-bar/settings/delivery-status/delivery-status.component.html"),
-            styles: [__webpack_require__(/*! ./delivery-status.component.less */ "./src/app/components/header-bar/settings/delivery-status/delivery-status.component.less")]
-        }),
-        __param(3, Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"])(_angular_material__WEBPACK_IMPORTED_MODULE_2__["MAT_DIALOG_DATA"])),
-        __metadata("design:paramtypes", [_services_worklist_service__WEBPACK_IMPORTED_MODULE_4__["WorklistService"],
-            _services_database_service__WEBPACK_IMPORTED_MODULE_5__["DatabaseService"],
-            _angular_material__WEBPACK_IMPORTED_MODULE_2__["MatDialogRef"],
-            _models_pssi__WEBPACK_IMPORTED_MODULE_3__["Study"],
-            _services_dialog_service__WEBPACK_IMPORTED_MODULE_1__["DialogService"]])
-    ], DeliveryStatusComponent);
-    return DeliveryStatusComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/components/header-bar/settings/settings.component.html":
-/*!************************************************************************!*\
-  !*** ./src/app/components/header-bar/settings/settings.component.html ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<!--<button class=\"mat-raised-button\" title=\"Delivery Status\" >\r\n    \r\n</button>-->\r\n\r\n<button mat-button [matMenuTriggerFor]=\"menu\">Settings</button>\r\n<mat-menu #menu=\"matMenu\">\r\n    <button mat-menu-item (click)=\"onDeliveryStatusClicked()\">Delivery Status</button>\r\n    <button mat-menu-item>Help</button>\r\n</mat-menu>\r\n"
-
-/***/ }),
-
-/***/ "./src/app/components/header-bar/settings/settings.component.less":
-/*!************************************************************************!*\
-  !*** ./src/app/components/header-bar/settings/settings.component.less ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n.mat-raised-button {\n  background-color: #555;\n  border: 1px solid #777;\n  border-radius: 3px;\n  color: #fff;\n  font-size: 13px;\n  margin-left: 6px;\n  padding: 1px;\n  width: 100px;\n  height: 35px;\n}\n.mat-raised-button:disabled:hover {\n  color: #555;\n}\n.mat-raised-button:hover {\n  color: orange;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9oZWFkZXItYmFyL3NldHRpbmdzL3NldHRpbmdzLmNvbXBvbmVudC5sZXNzIiwic3JjL2FwcC9jb21wb25lbnRzL2hlYWRlci1iYXIvc2V0dGluZ3MvRDovV29yay9HaXQvSW1hZ2VTdWl0ZS9XZWJQYWNzL0NzaC5JbWFnZVN1aXRlLldlYkNsaWVudC9zcmMvYXBwL2NvbXBvbmVudHMvaGVhZGVyLWJhci9zZXR0aW5ncy9zZXR0aW5ncy5jb21wb25lbnQubGVzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7OztjQUljO0FBQ2Q7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7RUFtQkU7QUNyQkY7RUFDSSxzQkFBQTtFQUNBLHNCQUFBO0VBQ0Esa0JBQUE7RUFDQSxXQUFBO0VBQ0EsZUFBQTtFQUNBLGdCQUFBO0VBQ0EsWUFBQTtFQUNBLFlBQUE7RUFDQSxZQUFBO0FEdUJKO0FDcEJBO0VBQW9DLFdBQUE7QUR1QnBDO0FDckJBO0VBQTJCLGFBQUE7QUR3QjNCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9oZWFkZXItYmFyL3NldHRpbmdzL3NldHRpbmdzLmNvbXBvbmVudC5sZXNzIiwic291cmNlc0NvbnRlbnQiOlsiLypAYmxhY2s6ICMwMDA7XG5Ab3JhbmdlOiBvcmFuZ2U7XG5AZ3JheTogIzU1NTtcbkBzaWx2ZXI6ICNhYWE7XG5Ad2hpdGU6ICNmZmY7Ki9cbi8qLnRoZW1lLWRhcmsge1xuICAgIEBiYWNrZ3JvdW5kLWNvbG9yIDogQGJsYWNrO1xuICAgIEB1bmRlcmxpbmUtY29sb3IgOiBAb3JhbmdlO1xuICAgIEBib3JkZXItY29sb3IgOiBAc2lsdmVyO1xuICAgIEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvciA6IEBncmF5O1xuICAgIEBkaXNhYmxlLWNvbG9yIDogQGdyYXk7XG4gICAgQGZvbnQtY29sb3IgOiBAd2hpdGU7XG4gICAgLmNoYW5nZS1kYXJrKEBiYWNrZ3JvdW5kLWNvbG9yKTtcbn1cblxuXG4udGhlbWUtbGlnaHQge1xuICAgIEBiYWNrZ3JvdW5kLWNvbG9yIDogQHdoaXRlO1xuICAgIEB1bmRlcmxpbmUtY29sb3IgOiBAb3JhbmdlO1xuICAgIEBib3JkZXItY29sb3IgOiBAd2hpdGU7XG4gICAgQGRpc2FibGUtY29sb3IgOiBAd2hpdGU7XG4gICAgQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yIDogQHdoaXRlO1xuICAgIEBmb250LWNvbG9yOiBAYmxhY2s7XG4gICAgLmNoYW5nZS1kYXJrKEBiYWNrZ3JvdW5kLWNvbG9yKTtcbn0qL1xuLm1hdC1yYWlzZWQtYnV0dG9uIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcbiAgYm9yZGVyOiAxcHggc29saWQgIzc3NztcbiAgYm9yZGVyLXJhZGl1czogM3B4O1xuICBjb2xvcjogI2ZmZjtcbiAgZm9udC1zaXplOiAxM3B4O1xuICBtYXJnaW4tbGVmdDogNnB4O1xuICBwYWRkaW5nOiAxcHg7XG4gIHdpZHRoOiAxMDBweDtcbiAgaGVpZ2h0OiAzNXB4O1xufVxuLm1hdC1yYWlzZWQtYnV0dG9uOmRpc2FibGVkOmhvdmVyIHtcbiAgY29sb3I6ICM1NTU7XG59XG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIge1xuICBjb2xvcjogb3JhbmdlO1xufVxuIiwiQGltcG9ydCAnLi4vLi4vLi4vLi4vdGhlbWVzLmxlc3MnO1xuXG5cbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XG4gICAgYm9yZGVyLXJhZGl1czogM3B4O1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBmb250LXNpemU6IDEzcHg7XG4gICAgbWFyZ2luLWxlZnQ6IDZweDtcbiAgICBwYWRkaW5nOiAxcHg7XG4gICAgd2lkdGg6IDEwMHB4O1xuICAgIGhlaWdodDozNXB4O1xufVxuXG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIgeyBjb2xvcjogQGRpc2FibGUtY29sb3I7IH1cblxuLm1hdC1yYWlzZWQtYnV0dG9uOmhvdmVyIHsgY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7IH0iXX0= */"
-
-/***/ }),
-
-/***/ "./src/app/components/header-bar/settings/settings.component.ts":
-/*!**********************************************************************!*\
-  !*** ./src/app/components/header-bar/settings/settings.component.ts ***!
-  \**********************************************************************/
-/*! exports provided: SettingsComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingsComponent", function() { return SettingsComponent; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_dialog_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../services/dialog.service */ "./src/app/services/dialog.service.ts");
-/* harmony import */ var _delivery_status_delivery_status_component__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./delivery-status/delivery-status.component */ "./src/app/components/header-bar/settings/delivery-status/delivery-status.component.ts");
-var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (undefined && undefined.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-var SettingsComponent = /** @class */ (function () {
-    function SettingsComponent(dialogService) {
-        this.dialogService = dialogService;
-    }
-    SettingsComponent.prototype.ngOnInit = function () {
-    };
-    SettingsComponent.prototype.onDeliveryStatusClicked = function () {
-        this.dialogService.showDialog(_delivery_status_delivery_status_component__WEBPACK_IMPORTED_MODULE_2__["DeliveryStatusComponent"], "").subscribe(function (val) {
-            //this.getStudyDate(val);
-        });
-    };
-    SettingsComponent = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
-            selector: 'app-settings',
-            template: __webpack_require__(/*! ./settings.component.html */ "./src/app/components/header-bar/settings/settings.component.html"),
-            styles: [__webpack_require__(/*! ./settings.component.less */ "./src/app/components/header-bar/settings/settings.component.less")]
-        }),
-        __metadata("design:paramtypes", [_services_dialog_service__WEBPACK_IMPORTED_MODULE_1__["DialogService"]])
-    ], SettingsComponent);
-    return SettingsComponent;
 }());
 
 
@@ -8236,20 +7908,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../../services/log.service */ "./src/app/services/log.service.ts");
 /* harmony import */ var _models_dailog_data_image_process__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../../models/dailog-data/image-process */ "./src/app/models/dailog-data/image-process.ts");
 /* harmony import */ var _dialog_manual_wl_dialog_manual_wl_dialog_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../dialog/manual-wl-dialog/manual-wl-dialog.component */ "./src/app/components/dialog/manual-wl-dialog/manual-wl-dialog.component.ts");
-/* harmony import */ var _dialog_dicom_header_dialog_dicom_header_dialog_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../dialog/dicom-header-dialog/dicom-header-dialog.component */ "./src/app/components/dialog/dicom-header-dialog/dicom-header-dialog.component.ts");
-/* harmony import */ var _dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
-/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../../models/messageBox */ "./src/app/models/messageBox.ts");
-/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../../../models/annotation */ "./src/app/models/annotation.ts");
-/* harmony import */ var _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../../../annotation/ann-tool */ "./src/app/annotation/ann-tool.ts");
-/* harmony import */ var _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-text */ "./src/app/annotation/extend-object/ann-text.ts");
-/* harmony import */ var _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-guide */ "./src/app/annotation/layer-object/ann-guide.ts");
-/* harmony import */ var _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-image-ruler */ "./src/app/annotation/layer-object/ann-image-ruler.ts");
-/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
-/* harmony import */ var _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../../../../annotation/ann-serialize */ "./src/app/annotation/ann-serialize.ts");
-/* harmony import */ var _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-graphic-overlay */ "./src/app/annotation/layer-object/ann-graphic-overlay.ts");
-/* harmony import */ var _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-text-overlay */ "./src/app/annotation/layer-object/ann-text-overlay.ts");
-/* harmony import */ var _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-magnify */ "./src/app/annotation/layer-object/ann-magnify.ts");
-/* harmony import */ var _annotation_base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ../../../../annotation/base-object/ann-base-rectangle */ "./src/app/annotation/base-object/ann-base-rectangle.ts");
+/* harmony import */ var _dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../dialog/select-marker-dialog/select-marker-dialog.component */ "./src/app/components/dialog/select-marker-dialog/select-marker-dialog.component.ts");
+/* harmony import */ var _models_messageBox__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../../../models/messageBox */ "./src/app/models/messageBox.ts");
+/* harmony import */ var _models_annotation__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../../../models/annotation */ "./src/app/models/annotation.ts");
+/* harmony import */ var _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../../../annotation/ann-tool */ "./src/app/annotation/ann-tool.ts");
+/* harmony import */ var _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-text */ "./src/app/annotation/extend-object/ann-text.ts");
+/* harmony import */ var _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-guide */ "./src/app/annotation/layer-object/ann-guide.ts");
+/* harmony import */ var _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-image-ruler */ "./src/app/annotation/layer-object/ann-image-ruler.ts");
+/* harmony import */ var _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../../../annotation/extend-object/ann-image */ "./src/app/annotation/extend-object/ann-image.ts");
+/* harmony import */ var _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ../../../../annotation/ann-serialize */ "./src/app/annotation/ann-serialize.ts");
+/* harmony import */ var _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-graphic-overlay */ "./src/app/annotation/layer-object/ann-graphic-overlay.ts");
+/* harmony import */ var _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-text-overlay */ "./src/app/annotation/layer-object/ann-text-overlay.ts");
+/* harmony import */ var _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ../../../../annotation/layer-object/ann-magnify */ "./src/app/annotation/layer-object/ann-magnify.ts");
+/* harmony import */ var _annotation_base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ../../../../annotation/base-object/ann-base-rectangle */ "./src/app/annotation/base-object/ann-base-rectangle.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8259,7 +7930,6 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -8366,8 +8036,8 @@ var ImageViewerComponent = /** @class */ (function () {
             this.showWaitingText();
         }
         this.loadImage(0);
-        this.annGuide = new _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_20__["AnnGuide"](this);
-        this.annImageRuler = new _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_21__["AnnImageRuler"](this);
+        this.annGuide = new _annotation_layer_object_ann_guide__WEBPACK_IMPORTED_MODULE_19__["AnnGuide"](this);
+        this.annImageRuler = new _annotation_layer_object_ann_image_ruler__WEBPACK_IMPORTED_MODULE_20__["AnnImageRuler"](this);
         this.isViewInited = true;
     };
     ImageViewerComponent.prototype.ngAfterViewChecked = function () {
@@ -8469,23 +8139,15 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         else {
             // The image is NOT downloaded, get the image from server and show it after download
-            var curImage_1 = this.image;
-            this.dicomImageService.getCornerStoneImage(this.image, frameIndex).then(function (ctImage) { return _this.onImageDownloaded(curImage_1, ctImage, frameIndex); });
+            this.dicomImageService.getCornerStoneImage(this.image, frameIndex).then(function (ctImage) { return _this.onImageDownloaded(ctImage, frameIndex); });
         }
     };
     // Call back functions when image is loaded by CornerStone
-    ImageViewerComponent.prototype.onImageDownloaded = function (image, ctImage, frameIndex) {
+    ImageViewerComponent.prototype.onImageDownloaded = function (ctImage, frameIndex) {
         this.logService.info(this.logPrefix + "Image is downloaded from server. Start to show it by cornerstone.");
-        image.setCornerStoneImage(ctImage, frameIndex);
-        image.graphicOverlayDataList = this.dicomImageService.getGraphicOverlayList(image);
-        // When the cornerstone image is downloaded, the this.image might changed by mouse wheel the image viewer to switch to another image
-        // If changed, no need to show the image
-        if (this.image === image) {
-            this.showImage(frameIndex);
-        }
-        else {
-            this.logService.error("Image changed when downloaded from server!");
-        }
+        this.image.setCornerStoneImage(ctImage, frameIndex);
+        this.image.graphicOverlayDataList = this.dicomImageService.getGraphicOverlayList(this.image);
+        this.showImage(frameIndex);
     };
     // Show image when image is loaded
     ImageViewerComponent.prototype.showImage = function (frameIndex) {
@@ -8530,7 +8192,7 @@ var ImageViewerComponent = /** @class */ (function () {
         this.syncAnnLabelLayerTransform();
         // Set the default context to Select
         this.imageOperationService.setShellContextType(this.shellId, new _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].SelectAnn));
-        this.annSerialize = new _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_23__["AnnSerialize"](this.image.annData, this);
+        this.annSerialize = new _annotation_ann_serialize__WEBPACK_IMPORTED_MODULE_22__["AnnSerialize"](this.image.annData, this);
         this.deleteAllAnnotation();
         if (!this.annSerialize.createAnn()) {
             // Todo
@@ -8758,7 +8420,7 @@ var ImageViewerComponent = /** @class */ (function () {
     ImageViewerComponent.prototype.showTextOverlay = function () {
         this.olLayer.visible(true);
         if (!this.annTextOverlay) {
-            this.annTextOverlay = new _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_25__["AnnTextOverlay"](this, this.dicomImageService);
+            this.annTextOverlay = new _annotation_layer_object_ann_text_overlay__WEBPACK_IMPORTED_MODULE_24__["AnnTextOverlay"](this, this.dicomImageService);
         }
         this.annTextOverlay.redraw();
         this.redraw(1);
@@ -8944,12 +8606,6 @@ var ImageViewerComponent = /** @class */ (function () {
             case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn:
                 var cursorName = this.annotationService.getCursorNameByType(curContext.imageContextPara);
                 cursor = cursorUrl.format(cursorName);
-                break;
-            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].PixelValueMeasurement:
-                cursor = cursorUrl.format("pixel_measure");
-                break;
-            case _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].DicomHeaderViewer:
-                cursor = cursorUrl.format("dicom_header_view");
                 break;
         }
         return cursor;
@@ -9197,15 +8853,15 @@ var ImageViewerComponent = /** @class */ (function () {
         var annString = this.annSerialize.getAnnString(this.annObjList);
         this.image.cornerStoneImageList[0].data.elements["x0011101d"] = this.annSerialize.annData;
         this.dicomImageService.saveImageAnn(this.image.id, annString).subscribe(function (ret) {
-            var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_16__["MessageBoxContent"]();
+            var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxContent"]();
             content.title = "Save Image";
             if (ret) {
                 content.messageText = "Save image failed! " + ret;
-                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_16__["MessageBoxType"].Error;
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxType"].Error;
             }
             else {
                 content.messageText = "Save image successfully!";
-                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_16__["MessageBoxType"].Info;
+                content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxType"].Info;
             }
             _this.dialogService.showMessageBox(content);
         });
@@ -9284,19 +8940,19 @@ var ImageViewerComponent = /** @class */ (function () {
         //        parm.objCreated = true; //stop create the annObject again
         //    }
         //}
-        self.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_17__["MouseEventType"].MouseDown, "onMouseDown");
+        self.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseDown, "onMouseDown");
     };
     ImageViewerComponent.prototype.onMouseMove = function (evt) {
         //this.logService.debug("Image Layer - onMouseMove");
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_17__["MouseEventType"].MouseMove, "onMouseMove");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseMove, "onMouseMove");
     };
     ImageViewerComponent.prototype.onMouseOut = function (evt) {
         this.logService.debug("Image Layer - onMouseOut");
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_17__["MouseEventType"].MouseOut, "onMouseOut");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseOut, "onMouseOut");
     };
     ImageViewerComponent.prototype.onMouseUp = function (evt) {
         this.logService.debug("Image Layer - onMouseUp");
-        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_17__["MouseEventType"].MouseUp, "onMouseUp");
+        this.emitEvent(evt, _models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseUp, "onMouseUp");
     };
     //image layer events
     ImageViewerComponent.prototype.registerEvent = function (obj, type) {
@@ -9341,7 +8997,7 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         //covert screen point to image point
         if (arg.x) {
-            arg = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].screenToImage(arg, this.imgLayer.transform());
+            arg = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(arg, this.imgLayer.transform());
         }
         handlers.forEach(function (obj) {
             if (obj[handler]) {
@@ -9413,7 +9069,7 @@ var ImageViewerComponent = /** @class */ (function () {
         if (this.mouseEventHelper._mouseWhich === 1) {
             if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
                 if (this.curSelectObj && !this.curSelectObj.isCreated()) {
-                    this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_17__["MouseEventType"].DblClick, point, null);
+                    this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].DblClick, point, null);
                 }
             }
         }
@@ -9467,10 +9123,10 @@ var ImageViewerComponent = /** @class */ (function () {
                 this.startMagnify(point);
             }
             else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
-                if (curContext.imageContextPara === _models_annotation__WEBPACK_IMPORTED_MODULE_17__["AnnType"].Stamp) {
-                    var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_22__["AnnImage"](undefined, this);
+                if (curContext.imageContextPara === _models_annotation__WEBPACK_IMPORTED_MODULE_16__["AnnType"].Stamp) {
+                    var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_21__["AnnImage"](undefined, this);
                     var imageFileName = this.imageOperationService.getShellStampFileName(this.shellId);
-                    annImage.onCreate(imageFileName, _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].screenToImage(point, this.image.transformMatrix), undefined, true);
+                    annImage.onCreate(imageFileName, _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(point, this.image.transformMatrix), undefined, true);
                     this.curSelectObj = annImage;
                     return;
                 }
@@ -9478,7 +9134,7 @@ var ImageViewerComponent = /** @class */ (function () {
                     // There is annotation selected
                     if (!this.curSelectObj.isCreated()) {
                         // The selected annotation is creating
-                        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_17__["MouseEventType"].MouseDown, point, null);
+                        this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseDown, point, null);
                     }
                     else {
                         // The selected annotation is created
@@ -9496,15 +9152,9 @@ var ImageViewerComponent = /** @class */ (function () {
             }
             else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiZoom || curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiWl) {
                 if (!this.annRoiRectangle) {
-                    var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].screenToImage(point, this.getImageLayer().transform());
-                    this.annRoiRectangle = new _annotation_base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_27__["AnnBaseRectangle"](undefined, imagePoint, 0, 0, this);
+                    var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(point, this.getImageLayer().transform());
+                    this.annRoiRectangle = new _annotation_base_object_ann_base_rectangle__WEBPACK_IMPORTED_MODULE_26__["AnnBaseRectangle"](undefined, imagePoint, 0, 0, this);
                 }
-            }
-            else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].PixelValueMeasurement) {
-                this.showPixelValueMeasurement(point);
-            }
-            else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].DicomHeaderViewer) {
-                this.showDicomHeaderDialog();
             }
         }
         this.redraw(1);
@@ -9522,7 +9172,7 @@ var ImageViewerComponent = /** @class */ (function () {
         var deltaY = evt.offsetY - this.mouseEventHelper._lastPosCvs.y;
         if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].CreateAnn) {
             if (this.curSelectObj && !this.curSelectObj.isCreated()) {
-                this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_17__["MouseEventType"].MouseMove, point, null);
+                this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseMove, point, null);
             }
         }
         else {
@@ -9547,13 +9197,10 @@ var ImageViewerComponent = /** @class */ (function () {
                 else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiZoom || curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].RoiWl) {
                     if (this.annRoiRectangle) {
                         var topLeft = this.annRoiRectangle.getPosition();
-                        var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].screenToImage(point, this.getImageLayer().transform());
+                        var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(point, this.getImageLayer().transform());
                         this.annRoiRectangle.setWidth(imagePoint.x - topLeft.x);
                         this.annRoiRectangle.setHeight(imagePoint.y - topLeft.y);
                     }
-                }
-                else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].PixelValueMeasurement) {
-                    this.movePixelValueMeasurement(point);
                 }
             }
         }
@@ -9594,9 +9241,6 @@ var ImageViewerComponent = /** @class */ (function () {
                     this.annRoiRectangle.onDeleteChildren();
                     this.annRoiRectangle = undefined;
                 }
-            }
-            else if (curContext.imageContextType === _models_image_operation__WEBPACK_IMPORTED_MODULE_3__["ImageContextEnum"].PixelValueMeasurement) {
-                this.hidePixelValueMeasurement();
             }
         }
         this.redraw(2);
@@ -9697,7 +9341,7 @@ var ImageViewerComponent = /** @class */ (function () {
         var annDefData = this.annotationService.getAnnDefDataByType(curContext.imageContextPara);
         if (!annDefData)
             return;
-        if (annDefData.imageSuiteAnnType === _models_annotation__WEBPACK_IMPORTED_MODULE_17__["AnnType"].Text) {
+        if (annDefData.imageSuiteAnnType === _models_annotation__WEBPACK_IMPORTED_MODULE_16__["AnnType"].Text) {
             this.createFreeText(point);
         }
         else {
@@ -9705,7 +9349,7 @@ var ImageViewerComponent = /** @class */ (function () {
             if (annDefData.needGuide) {
                 this.annGuide.setGuideTargetObj(this.curSelectObj);
             }
-            this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_17__["MouseEventType"].MouseDown, point, null);
+            this.curSelectObj.onMouseEvent(_models_annotation__WEBPACK_IMPORTED_MODULE_16__["MouseEventType"].MouseDown, point, null);
         }
     };
     ImageViewerComponent.prototype.deleteSelectedAnnotation = function () {
@@ -9715,11 +9359,11 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.selectMarker = function () {
         var _this = this;
-        this.dialogService.showDialog(_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_15__["SelectMarkerDialogComponent"], undefined).subscribe(function (val) {
+        this.dialogService.showDialog(_dialog_select_marker_dialog_select_marker_dialog_component__WEBPACK_IMPORTED_MODULE_14__["SelectMarkerDialogComponent"], undefined).subscribe(function (val) {
             if (val) {
                 _this.updateImageTransform();
-                var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_22__["AnnImage"](undefined, _this);
-                annImage.onCreate(val, new _models_annotation__WEBPACK_IMPORTED_MODULE_17__["Point"](0, 0));
+                var annImage = new _annotation_extend_object_ann_image__WEBPACK_IMPORTED_MODULE_21__["AnnImage"](undefined, _this);
+                annImage.onCreate(val, new _models_annotation__WEBPACK_IMPORTED_MODULE_16__["Point"](0, 0));
                 _this.curSelectObj = annImage;
             }
         });
@@ -9763,7 +9407,7 @@ var ImageViewerComponent = /** @class */ (function () {
         }
         if (show) {
             if (!this.annGraphicOverlay) {
-                this.annGraphicOverlay = new _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_24__["AnnGraphicOverlay"](this.image.graphicOverlayDataList, this);
+                this.annGraphicOverlay = new _annotation_layer_object_ann_graphic_overlay__WEBPACK_IMPORTED_MODULE_23__["AnnGraphicOverlay"](this.image.graphicOverlayDataList, this);
             }
             this.annGraphicOverlay.setVisible(true);
         }
@@ -9775,7 +9419,7 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.startMagnify = function (point) {
         if (!this.annMagnify) {
-            this.annMagnify = new _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_26__["AnnMagnify"](this);
+            this.annMagnify = new _annotation_layer_object_ann_magnify__WEBPACK_IMPORTED_MODULE_25__["AnnMagnify"](this);
         }
         var curContext = this.imageOperationService.getShellContextType(this.shellId);
         this.annMagnify.start(point, curContext.imageContextPara);
@@ -9799,14 +9443,14 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.createFreeText = function (point) {
         var _this = this;
-        var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_16__["MessageBoxContent"]();
+        var content = new _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxContent"]();
         content.title = "Text";
         content.messageText = "Please input the text:";
-        content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_16__["MessageBoxType"].Input;
+        content.messageType = _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["MessageBoxType"].Input;
         this.dialogService.showMessageBox(content).subscribe(function (val) {
-            if (val.dialogResult === _models_messageBox__WEBPACK_IMPORTED_MODULE_16__["DialogResult"].Ok) {
-                var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].screenToImage(point, _this.image.transformMatrix);
-                var annObj = new _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_19__["AnnText"](undefined, _this);
+            if (val.dialogResult === _models_messageBox__WEBPACK_IMPORTED_MODULE_15__["DialogResult"].Ok) {
+                var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(point, _this.image.transformMatrix);
+                var annObj = new _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_18__["AnnText"](undefined, _this);
                 annObj.onCreate(imagePoint, val.valueInput, false);
                 annObj.onDrawEnded();
                 _this.curSelectObj = annObj;
@@ -9818,10 +9462,10 @@ var ImageViewerComponent = /** @class */ (function () {
         if (needNotify === void 0) { needNotify = true; }
         if (!this.isImageLoaded)
             return;
-        var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].screenToImage(zoomPoint, this.image.transformMatrix);
+        var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].screenToImage(zoomPoint, this.image.transformMatrix);
         var scaleValue = zoomOut ? 1.05 : 0.95;
         this.scale(scaleValue);
-        var mouseDownPosCvsAfter = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].imageToScreen(imagePoint, this.image.transformMatrix);
+        var mouseDownPosCvsAfter = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].imageToScreen(imagePoint, this.image.transformMatrix);
         this.translate(zoomPoint.x - mouseDownPosCvsAfter.x, zoomPoint.y - mouseDownPosCvsAfter.y);
         this.updateZoomRatioTextOverlay(this.getScale());
         this.refreshUi();
@@ -9831,15 +9475,15 @@ var ImageViewerComponent = /** @class */ (function () {
     };
     ImageViewerComponent.prototype.doRoiZoom = function (imagePointList) {
         var _a;
-        var imageRect = new _models_annotation__WEBPACK_IMPORTED_MODULE_17__["Rectangle"](0, 0, this.image.width(), this.image.height());
+        var imageRect = new _models_annotation__WEBPACK_IMPORTED_MODULE_16__["Rectangle"](0, 0, this.image.width(), this.image.height());
         for (var i = 0; i < 4; i++) {
-            if (!_annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].pointInRect(imagePointList[i], imageRect)) {
+            if (!_annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].pointInRect(imagePointList[i], imageRect)) {
                 return;
             }
         }
         var width = imagePointList[2].x - imagePointList[0].x;
         var height = imagePointList[2].y - imagePointList[0].y;
-        var imageCenterPoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_17__["Point"](imagePointList[0].x + width / 2, imagePointList[0].y + height / 2);
+        var imageCenterPoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_16__["Point"](imagePointList[0].x + width / 2, imagePointList[0].y + height / 2);
         var rotateAngle = this.getRotate();
         if (Math.abs(rotateAngle % 180) === 90) {
             _a = [height, width], width = _a[0], height = _a[1];
@@ -9848,7 +9492,7 @@ var ImageViewerComponent = /** @class */ (function () {
         var scaleY = this.canvas.height / Math.abs(height);
         var newScale = Math.min(scaleX, scaleY) / this.image.getScaleValue();
         this.scale(newScale);
-        var screenRectCenterPointAfter = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].imageToScreen(imageCenterPoint, this.getImageLayer().transform());
+        var screenRectCenterPointAfter = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].imageToScreen(imageCenterPoint, this.getImageLayer().transform());
         var deltaX = this.canvas.width / 2 - screenRectCenterPointAfter.x;
         var deltaY = this.canvas.height / 2 - screenRectCenterPointAfter.y;
         this.imgLayer.translate(deltaX, deltaY);
@@ -9856,9 +9500,9 @@ var ImageViewerComponent = /** @class */ (function () {
         this.refreshUi();
     };
     ImageViewerComponent.prototype.doRoiWl = function (imagePointList) {
-        var imageRect = new _models_annotation__WEBPACK_IMPORTED_MODULE_17__["Rectangle"](0, 0, this.image.width(), this.image.height());
+        var imageRect = new _models_annotation__WEBPACK_IMPORTED_MODULE_16__["Rectangle"](0, 0, this.image.width(), this.image.height());
         for (var i = 0; i < 4; i++) {
-            if (!_annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].pointInRect(imagePointList[i], imageRect)) {
+            if (!_annotation_ann_tool__WEBPACK_IMPORTED_MODULE_17__["AnnTool"].pointInRect(imagePointList[i], imageRect)) {
                 return;
             }
             imagePointList[i].x = Math.round(imagePointList[i].x);
@@ -9903,39 +9547,6 @@ var ImageViewerComponent = /** @class */ (function () {
             return;
         }
         this.loadImage(index);
-    };
-    ImageViewerComponent.prototype.showPixelValueMeasurement = function (screenPoint) {
-        if (!this.annPixelValueMeasurement) {
-            var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].screenToImage(screenPoint, this.getImageLayer().transform());
-            if (this.image.isPointInImage(imagePoint)) {
-                var viewPort = cornerstone.getViewport(this.helpElement);
-                var flippedImagePoint = this.image.getFlippedImagePoint(imagePoint, viewPort.hflip, viewPort.vflip);
-                this.annPixelValueMeasurement = new _annotation_extend_object_ann_text__WEBPACK_IMPORTED_MODULE_19__["AnnText"](undefined, this);
-                this.annPixelValueMeasurement.onCreate(imagePoint, this.dicomImageService.getPixelValueText(this.image, flippedImagePoint));
-            }
-        }
-    };
-    ImageViewerComponent.prototype.movePixelValueMeasurement = function (screenPoint) {
-        if (this.annPixelValueMeasurement) {
-            var imagePoint = _annotation_ann_tool__WEBPACK_IMPORTED_MODULE_18__["AnnTool"].screenToImage(screenPoint, this.getImageLayer().transform());
-            if (this.image.isPointInImage(imagePoint)) {
-                var viewPort = cornerstone.getViewport(this.helpElement);
-                var flippedImagePoint = this.image.getFlippedImagePoint(imagePoint, viewPort.hflip, viewPort.vflip);
-                this.annPixelValueMeasurement.onMove(imagePoint);
-                this.annPixelValueMeasurement.setText(this.dicomImageService.getPixelValueText(this.image, flippedImagePoint));
-            }
-        }
-    };
-    ImageViewerComponent.prototype.hidePixelValueMeasurement = function () {
-        if (this.annPixelValueMeasurement) {
-            this.annPixelValueMeasurement.onDeleteChildren();
-            this.annPixelValueMeasurement = undefined;
-        }
-    };
-    ImageViewerComponent.prototype.showDicomHeaderDialog = function () {
-        var dicomTagDataList = [];
-        this.dicomImageService.getTagDataList(this.image.cornerStoneImageList[0].data, 0, dicomTagDataList);
-        this.dialogService.showDialog(_dialog_dicom_header_dialog_dicom_header_dialog_component__WEBPACK_IMPORTED_MODULE_14__["DicomHeaderDialogComponent"], dicomTagDataList);
     };
     __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ViewChild"])("viewerCanvas"),
@@ -10813,10 +10424,6 @@ var ViewerToolbarComponent = /** @class */ (function () {
         var markerButtonMenu = {
             name: "ann_stamp", tip: "Markers", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].CreateAnn, _models_annotation__WEBPACK_IMPORTED_MODULE_4__["AnnType"].Stamp))
         };
-        var miscButtonMenu = [
-            { name: "dicom_header_view", tip: "DICOM Header Viewer", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].DicomHeaderViewer)) },
-            { name: "pen", tip: "Pixel Value Measurement", operationData: new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationData"](this.shellId, _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageOperationEnum"].SetContext, new _models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextData"](_models_image_operation__WEBPACK_IMPORTED_MODULE_5__["ImageContextEnum"].PixelValueMeasurement)) }
-        ];
         this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, selectPanButtonMenuList));
         this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, multiSelectButtonMenuList));
         this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, zoomButtonMenuList));
@@ -10841,7 +10448,6 @@ var ViewerToolbarComponent = /** @class */ (function () {
         this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, showRulerButtonMenu));
         this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].SingleButton, showGraphicOverlayButtonMenu));
         this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].Divider, undefined));
-        this.toolbarButtonList.push(new _models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonData"](_models_dropdown_button_menu_data__WEBPACK_IMPORTED_MODULE_2__["ToolbarButtonTypeEnum"].ListButton, miscButtonMenu));
     };
     ViewerToolbarComponent.prototype.getButtonDivideSrc = function () {
         return this.buttonDivideSrc;
@@ -11092,6 +10698,17 @@ var QueryShortcutComponent = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/components/worklist-shell/query-toolbar/query-toolbar.component.css":
+/*!*************************************************************************************!*\
+  !*** ./src/app/components/worklist-shell/query-toolbar/query-toolbar.component.css ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".query, .queryClear, .querySave {\r\n    border: none;\r\n    height: 30px;\r\n    outline: none;\r\n    width: 100px;\r\n}\r\n\r\n.query { background: url('Query_All.png') no-repeat left top; }\r\n\r\n.query:hover { background: url('Query_All.png') no-repeat right top; }\r\n\r\n.query:active { background: url('Query_All.png') no-repeat right bottom; }\r\n\r\n.queryClear { background: url('ClearCondition_All.png') no-repeat left top; }\r\n\r\n.queryClear:hover { background: url('ClearCondition_All.png') no-repeat right top; }\r\n\r\n.queryClear:active { background: url('ClearCondition_All.png') no-repeat right bottom; }\r\n\r\n.querySave { background: url('Query_Save.png') no-repeat left top; }\r\n\r\n.querySave:hover { background: url('Query_Save.png') no-repeat right top; }\r\n\r\n.querySave:active { background: url('Query_Save.png') no-repeat right bottom; }\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC9xdWVyeS10b29sYmFyL3F1ZXJ5LXRvb2xiYXIuY29tcG9uZW50LmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtJQUNJLFlBQVk7SUFDWixZQUFZO0lBQ1osYUFBYTtJQUNiLFlBQVk7QUFDaEI7O0FBRUEsU0FBUyxtREFBK0UsRUFBRTs7QUFFMUYsZUFBZSxvREFBZ0YsRUFBRTs7QUFFakcsZ0JBQWdCLHVEQUFtRixFQUFFOztBQUVyRyxjQUFjLDREQUF3RixFQUFFOztBQUV4RyxvQkFBb0IsNkRBQXlGLEVBQUU7O0FBRS9HLHFCQUFxQixnRUFBNEYsRUFBRTs7QUFFbkgsYUFBYSxvREFBZ0YsRUFBRTs7QUFFL0YsbUJBQW1CLHFEQUFpRixFQUFFOztBQUV0RyxvQkFBb0Isd0RBQW9GLEVBQUUiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3F1ZXJ5LXRvb2xiYXIvcXVlcnktdG9vbGJhci5jb21wb25lbnQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnF1ZXJ5LCAucXVlcnlDbGVhciwgLnF1ZXJ5U2F2ZSB7XHJcbiAgICBib3JkZXI6IG5vbmU7XHJcbiAgICBoZWlnaHQ6IDMwcHg7XHJcbiAgICBvdXRsaW5lOiBub25lO1xyXG4gICAgd2lkdGg6IDEwMHB4O1xyXG59XHJcblxyXG4ucXVlcnkgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wOyB9XHJcblxyXG4ucXVlcnk6aG92ZXIgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgfVxyXG5cclxuLnF1ZXJ5OmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9RdWVyeV9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XHJcblxyXG4ucXVlcnlDbGVhciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cclxuXHJcbi5xdWVyeUNsZWFyOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0NsZWFyQ29uZGl0aW9uX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IH1cclxuXHJcbi5xdWVyeUNsZWFyOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XHJcblxyXG4ucXVlcnlTYXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cclxuXHJcbi5xdWVyeVNhdmU6aG92ZXIgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfU2F2ZS5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IH1cclxuXHJcbi5xdWVyeVNhdmU6YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9Il19 */"
+
+/***/ }),
+
 /***/ "./src/app/components/worklist-shell/query-toolbar/query-toolbar.component.html":
 /*!**************************************************************************************!*\
   !*** ./src/app/components/worklist-shell/query-toolbar/query-toolbar.component.html ***!
@@ -11099,18 +10716,7 @@ var QueryShortcutComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"container\">\r\n    <div>\r\n        <table>\r\n            <tr>\r\n                <td>\r\n                    <button class=\"query\" role=\"button\" title=\"Query\" (click)=\"onQuery()\"></button>\r\n                </td>\r\n                <td>\r\n                    <button class=\"queryClear\" role=\"button\" title=\"Clear Condition\" (click)=\"onClearCondition()\"></button>\r\n                </td>\r\n                <td>\r\n                    <button class=\"querySave\" role=\"button\" title=\"Save Shortcut\" (click)=\"onSaveShortcut()\"></button>\r\n                </td>\r\n\r\n                <td style=\"padding-left: 6px\">\r\n                    <div class=\"checkbox\">\r\n                        <label>\r\n                            <input type=\"checkbox\" [(ngModel)]=\"worklistService.showHistoryStudies\"/>Show History Study\r\n                        </label>\r\n                    </div>\r\n                </td>\r\n                <td style=\"padding-left: 6px\">\r\n                    <div class=\"checkbox\">\r\n                        <label>\r\n                            <input type=\"checkbox\" [ngModel]=\"worklistService.isUsingLocalTestData()\" (click)=\"onChangeDataSource($event)\"/>Using Local Test Data\r\n                        </label>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n    </div>\r\n</div>\r\n\r\n\r\n"
-
-/***/ }),
-
-/***/ "./src/app/components/worklist-shell/query-toolbar/query-toolbar.component.less":
-/*!**************************************************************************************!*\
-  !*** ./src/app/components/worklist-shell/query-toolbar/query-toolbar.component.less ***!
-  \**************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n.query,\n.queryClear,\n.querySave {\n  border: none;\n  height: 30px;\n  outline: none;\n  width: 100px;\n}\n.query {\n  background: url('Query_All.png') no-repeat left top;\n}\n.query:hover {\n  background: url('Query_All.png') no-repeat right top;\n}\n.query:active {\n  background: url('Query_All.png') no-repeat right bottom;\n}\n.queryClear {\n  background: url('ClearCondition_All.png') no-repeat left top;\n}\n.queryClear:hover {\n  background: url('ClearCondition_All.png') no-repeat right top;\n}\n.queryClear:active {\n  background: url('ClearCondition_All.png') no-repeat right bottom;\n}\n.querySave {\n  background: url('Query_Save.png') no-repeat left top;\n}\n.querySave:hover {\n  background: url('Query_Save.png') no-repeat right top;\n}\n.querySave:active {\n  background: url('Query_Save.png') no-repeat right bottom;\n}\n#container {\n  display: flex;\n  justify-content: space-between;\n}\n#setting-area {\n  /*float: right;*/\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC9xdWVyeS10b29sYmFyL3F1ZXJ5LXRvb2xiYXIuY29tcG9uZW50Lmxlc3MiLCJzcmMvYXBwL2NvbXBvbmVudHMvd29ya2xpc3Qtc2hlbGwvcXVlcnktdG9vbGJhci9EOi9Xb3JrL0dpdC9JbWFnZVN1aXRlL1dlYlBhY3MvQ3NoLkltYWdlU3VpdGUuV2ViQ2xpZW50L3NyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC9xdWVyeS10b29sYmFyL3F1ZXJ5LXRvb2xiYXIuY29tcG9uZW50Lmxlc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Y0FJYztBQUNkOzs7Ozs7Ozs7Ozs7Ozs7Ozs7O0VBbUJFO0FDdEJGOzs7RUFDSSxZQUFBO0VBQ0EsWUFBQTtFQUNBLGFBQUE7RUFDQSxZQUFBO0FEMEJKO0FDdkJBO0VBQVMsbURBQUE7QUQwQlQ7QUN4QkE7RUFBZSxvREFBQTtBRDJCZjtBQ3pCQTtFQUFnQix1REFBQTtBRDRCaEI7QUMxQkE7RUFBYyw0REFBQTtBRDZCZDtBQzNCQTtFQUFvQiw2REFBQTtBRDhCcEI7QUM1QkE7RUFBcUIsZ0VBQUE7QUQrQnJCO0FDN0JBO0VBQWEsb0RBQUE7QURnQ2I7QUM5QkE7RUFBbUIscURBQUE7QURpQ25CO0FDL0JBO0VBQW9CLHdEQUFBO0FEa0NwQjtBQy9CQTtFQUNJLGFBQUE7RUFDQSw4QkFBQTtBRGlDSjtBQzlCQTtFRGdDRSxnQkFBZ0I7QUFDbEIiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3F1ZXJ5LXRvb2xiYXIvcXVlcnktdG9vbGJhci5jb21wb25lbnQubGVzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qQGJsYWNrOiAjMDAwO1xuQG9yYW5nZTogb3JhbmdlO1xuQGdyYXk6ICM1NTU7XG5Ac2lsdmVyOiAjYWFhO1xuQHdoaXRlOiAjZmZmOyovXG4vKi50aGVtZS1kYXJrIHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEBibGFjaztcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHNpbHZlcjtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAZ3JheTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEBncmF5O1xuICAgIEBmb250LWNvbG9yIDogQHdoaXRlO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59XG5cblxuLnRoZW1lLWxpZ2h0IHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHdoaXRlO1xuICAgIEBkaXNhYmxlLWNvbG9yIDogQHdoaXRlO1xuICAgIEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZm9udC1jb2xvcjogQGJsYWNrO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59Ki9cbi5xdWVyeSxcbi5xdWVyeUNsZWFyLFxuLnF1ZXJ5U2F2ZSB7XG4gIGJvcmRlcjogbm9uZTtcbiAgaGVpZ2h0OiAzMHB4O1xuICBvdXRsaW5lOiBub25lO1xuICB3aWR0aDogMTAwcHg7XG59XG4ucXVlcnkge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wO1xufVxuLnF1ZXJ5OmhvdmVyIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7XG59XG4ucXVlcnk6YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207XG59XG4ucXVlcnlDbGVhciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7XG59XG4ucXVlcnlDbGVhcjpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLnF1ZXJ5Q2xlYXI6YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0NsZWFyQ29uZGl0aW9uX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207XG59XG4ucXVlcnlTYXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7XG59XG4ucXVlcnlTYXZlOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLnF1ZXJ5U2F2ZTphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfU2F2ZS5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207XG59XG4jY29udGFpbmVyIHtcbiAgZGlzcGxheTogZmxleDtcbiAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xufVxuI3NldHRpbmctYXJlYSB7XG4gIC8qZmxvYXQ6IHJpZ2h0OyovXG59XG4iLCJAaW1wb3J0ICcuLi8uLi8uLi8uLi90aGVtZXMubGVzcyc7XG5cbi5xdWVyeSwgLnF1ZXJ5Q2xlYXIsIC5xdWVyeVNhdmUge1xuICAgIGJvcmRlcjogbm9uZTtcbiAgICBoZWlnaHQ6IDMwcHg7XG4gICAgb3V0bGluZTogbm9uZTtcbiAgICB3aWR0aDogMTAwcHg7XG59XG5cbi5xdWVyeSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9RdWVyeV9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cblxuLnF1ZXJ5OmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IH1cblxuLnF1ZXJ5OmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9RdWVyeV9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XG5cbi5xdWVyeUNsZWFyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0NsZWFyQ29uZGl0aW9uX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDsgfVxuXG4ucXVlcnlDbGVhcjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XG5cbi5xdWVyeUNsZWFyOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9DbGVhckNvbmRpdGlvbl9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XG5cbi5xdWVyeVNhdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vUXVlcnlfU2F2ZS5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDsgfVxuXG4ucXVlcnlTYXZlOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XG5cbi5xdWVyeVNhdmU6YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1F1ZXJ5X1NhdmUucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyB9XG5cblxuI2NvbnRhaW5lciB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47XG59XG5cbiNzZXR0aW5nLWFyZWEge1xuICAgIC8qZmxvYXQ6IHJpZ2h0OyovXG59Il19 */"
+module.exports = "<table>\r\n    <tr>\r\n        <td>\r\n            <button class=\"query\" role=\"button\" title=\"Query\" (click)=\"onQuery()\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"queryClear\" role=\"button\" title=\"Clear Condition\" (click)=\"onClearCondition()\"></button>\r\n        </td>\r\n        <td>\r\n            <button class=\"querySave\" role=\"button\" title=\"Save Shortcut\" (click)=\"onSaveShortcut()\"></button>\r\n        </td>\r\n\r\n        <td style=\"padding-left: 6px\">\r\n            <div class=\"checkbox\">\r\n                <label>\r\n                    <input type=\"checkbox\" [(ngModel)]=\"worklistService.showHistoryStudies\"/>Show History Study\r\n                </label>\r\n            </div>\r\n        </td>\r\n        <td style=\"padding-left: 6px\">\r\n            <div class=\"checkbox\">\r\n                <label>\r\n                    <input type=\"checkbox\" [ngModel]=\"worklistService.isUsingLocalTestData()\"(click)=\"onChangeDataSource($event)\"/>Using Local Test Data\r\n                </label>\r\n            </div>\r\n        </td>\r\n    </tr>\r\n</table>\r\n"
 
 /***/ }),
 
@@ -11174,13 +10780,11 @@ var QueryToolbarComponent = /** @class */ (function () {
             this.worklistService.onSaveShortcut(val.valueInput);
         }
     };
-    QueryToolbarComponent.prototype.onDeliveryStatusClicked = function () {
-    };
     QueryToolbarComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: "app-query-toolbar",
             template: __webpack_require__(/*! ./query-toolbar.component.html */ "./src/app/components/worklist-shell/query-toolbar/query-toolbar.component.html"),
-            styles: [__webpack_require__(/*! ./query-toolbar.component.less */ "./src/app/components/worklist-shell/query-toolbar/query-toolbar.component.less")]
+            styles: [__webpack_require__(/*! ./query-toolbar.component.css */ "./src/app/components/worklist-shell/query-toolbar/query-toolbar.component.css")]
         }),
         __metadata("design:paramtypes", [_services_worklist_service__WEBPACK_IMPORTED_MODULE_1__["WorklistService"], _services_dialog_service__WEBPACK_IMPORTED_MODULE_3__["DialogService"]])
     ], QueryToolbarComponent);
@@ -11275,7 +10879,7 @@ var WorklistShellComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=\".cdk-overlay-pane\"\r\n    cdkDragHandle>\r\n    Export Study\r\n</h1>\r\n<mat-dialog-content>\r\n    <div id=\"body-content\">\r\n        <div id=\"multi-study-instance\" class=\"table-list-style\" [hidden]=\"studyNumber==1\">\r\n            <table>\r\n                <thead>\r\n                    <tr>\r\n                        <th id=\"checkbox-row\">\r\n                            <input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"/>\r\n                        </th>\r\n                        <th>\r\n                            Patient ID\r\n                        </th>\r\n                        <th>\r\n                            Patient Name\r\n                        </th>\r\n                        <th>\r\n                            Exam Type\r\n                        </th>\r\n                        <th>\r\n                            Accession No\r\n                        </th>\r\n                        <th>\r\n                            Study Date Time\r\n                        </th>\r\n                        <th>\r\n                            Image Count\r\n                        </th>\r\n\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <tr *ngFor=\"let value of studies\">\r\n                        <td>\r\n                            <input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"/>\r\n                        </td>\r\n                        <td>{{value.patient.patientId}}</td>\r\n\r\n                        <td>{{value.patient.patientName}}</td>\r\n\r\n                        <td></td>\r\n\r\n                        <td>{{value.accessionNo}}</td>\r\n\r\n                        <td>{{value.studyDate}}</td>\r\n\r\n                        <td>{{value.studyTime}}</td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n        <div id=\"single-study-instance\" [hidden]=\"studyNumber!=1\">\r\n            <table id=\"single-study-table\">\r\n                <tr>\r\n                    <td>\r\n                        <table id=\"single-study-info\">\r\n                            <tr>\r\n                                <td>Patient Name\r\n                                </td>\r\n                                <td>\r\n                                    {{study.patient.patientName}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Patient ID\r\n                                </td>\r\n                                <td>\r\n                                    {{study.patient.patientId}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Accession Number\r\n                                </td>\r\n                                <td>\r\n                                    {{study.accessionNo}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Study Date\r\n                                </td>\r\n                                <td>\r\n                                    {{study.studyDate}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Study Time\r\n                                </td>\r\n                                <td>\r\n                                    {{study.patient.studyTime}}\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </td>\r\n                    <td id=\"image-container\">\r\n                        <div *ngFor=\"let image of imageList\">\r\n                            <table>\r\n                                <tr>\r\n                                    <td class=\"td-image\">\r\n                                        <app-thumbnail [image]=\"image\" [isExportStudy]=\"true\" (click)=\"appThumbnailClicked()\"></app-thumbnail>\r\n                                    </td>\r\n                                </tr>\r\n                            </table>\r\n                        </div>\r\n                    </td>\r\n                </tr>\r\n                <tr>\r\n                    <td></td>\r\n                    <td>\r\n                        <div class=\"checkbox\">\r\n                            <label>\r\n                                <input type=\"checkbox\" (click)=\"checkAllImages()\" [checked]=\"isCheckedAllModel\"/>\r\n                                Check All\r\n                            </label>\r\n                        </div>\r\n                    </td>\r\n                </tr>\r\n            </table>\r\n        </div>\r\n    </div>\r\n    <mat-divider></mat-divider><br>\r\n    <div id=\"transfer-content\">\r\n        <div id=\"icon-container\">\r\n            <button id=\"pacs-button\" class=\"pacs-icon icon-button\" (click)=\"onPacsIconClick()\"></button>\r\n            <button id=\"media-button\" class=\"media-icon icon-button\" (click)=\"onMediaIconClick()\"></button>\r\n        </div>\r\n        <div id=\"tab-mask-content\">\r\n            <div id=\"pacs-tab\" [hidden]=\"!isShowPacs\">\r\n                <div class=\"table-list-style\">\r\n                    <table id=\"pacs-table\">\r\n                        <tr>\r\n                            <th>\r\n\r\n                            </th>\r\n                            <th>\r\n                                Desctination\r\n                            </th>\r\n                            <th>\r\n                                AE Title\r\n                            </th>\r\n                            <th>\r\n                                IP Address\r\n                            </th>\r\n                            <th>\r\n                                Storage Commitment\r\n                            </th>\r\n                        </tr>\r\n                        <tr *ngFor=\"let pacs of pacsList\">\r\n                            <td>\r\n                                <input type=\"checkbox\" [(ngModel)]=\"pacs.pacsChecked\" (change)=\"onPacsCheckChanged()\"/>\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.netAEName}}\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.aETitle}}\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.iPAddress}}\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.storageCommitment}}\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </div>\r\n                <table>\r\n                    <tr>\r\n                        <td>\r\n                            <div class=\"checkbox\">\r\n                                <label>\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"isCompression\"/>\r\n                                    Compression\r\n                                </label>\r\n                            </div>\r\n                        </td>\r\n                        <td class=\"second-td\">\r\n                            <select [(ngModel)]=\"selectedTransferCompress\" [disabled]=\"!isCompression\">\r\n                                <option *ngFor=\"let compress of transferCompressList | keyvalue\" [ngValue]=\"compress.key\">\r\n                                    {{compress.value}}\r\n                                </option>\r\n                            </select>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td>\r\n                            <div class=\"checkbox\">\r\n                                <label>\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"isCreateNewGuid\" />\r\n                                    Create New GUID\r\n                                </label>\r\n                            </div>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </div>\r\n            <div id=\"media-tab\" [hidden]=\"isShowPacs\">\r\n                <div id=\"export-format-area\">\r\n                    <div>\r\n                        Export Format :\r\n                    </div>\r\n                    <select id=\"export-format-type\" [(ngModel)]=\"selectedExportType\">\r\n                        <option value=\"DICOM\">\r\n                            DICOM\r\n                        </option>\r\n                        <option value=\"JPEG\">\r\n                            JPEG\r\n                        </option>\r\n                        <option value=\"PDF\">\r\n                            PDF\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n                <div>\r\n                    <table>\r\n                        <tr>\r\n                            <td>\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isRemovePatientInfo\"/>\r\n                                        Remove Patient Info\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                            <td class=\"second-td\">\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isRemoveInstitutionName\"/>\r\n                                        Remove Institution Name\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isIncludeCdViewer\" />\r\n                                        Include CD Viewer\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                            <td class=\"second-td\">\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isIncludeCdBurningTool\"/>\r\n                                        Include CD Burning Tool\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n    <button class=\"mat-raised-button\" (click)=\"onCancelClick()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n    <button class=\"mat-raised-button\" (click)=\"onOkClick()\" [disabled]=\"isNoCheckedImage || (isNoCheckedPacs && isShowPacs)\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n</mat-dialog-actions>\r\n"
+module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=\".cdk-overlay-pane\"\r\n    cdkDragHandle>\r\n    Export Study\r\n</h1>\r\n<mat-dialog-content>\r\n    <div id=\"body-content\">\r\n        <div id=\"multi-study-instance\" class=\"table-list-style\" [hidden]=\"studyNumber==1\">\r\n            <table>\r\n                <thead>\r\n                    <tr>\r\n                        <th id=\"checkbox-row\">\r\n                            <input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"/>\r\n                        </th>\r\n                        <th>\r\n                            Patient ID\r\n                        </th>\r\n                        <th>\r\n                            Patient Name\r\n                        </th>\r\n                        <th>\r\n                            Exam Type\r\n                        </th>\r\n                        <th>\r\n                            Accession No\r\n                        </th>\r\n                        <th>\r\n                            Study Date Time\r\n                        </th>\r\n                        <th>\r\n                            Image Count\r\n                        </th>\r\n\r\n                    </tr>\r\n                </thead>\r\n                <tbody>\r\n                    <tr *ngFor=\"let value of studies\">\r\n                        <td>\r\n                            <input type=\"checkbox\" disabled=\"disabled\" checked=\"checked\"/>\r\n                        </td>\r\n                        <td>{{value.patient.patientId}}</td>\r\n\r\n                        <td>{{value.patient.patientName}}</td>\r\n\r\n                        <td></td>\r\n\r\n                        <td>{{value.accessionNo}}</td>\r\n\r\n                        <td>{{value.studyDate}}</td>\r\n\r\n                        <td>{{value.studyTime}}</td>\r\n                    </tr>\r\n                </tbody>\r\n            </table>\r\n        </div>\r\n        <div id=\"single-study-instance\" [hidden]=\"studyNumber!=1\">\r\n            <table id=\"single-study-table\">\r\n                <tr>\r\n                    <td>\r\n                        <table id=\"single-study-info\">\r\n                            <tr>\r\n                                <td>Patient Name\r\n                                </td>\r\n                                <td>\r\n                                    {{study.patient.patientName}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Patient ID\r\n                                </td>\r\n                                <td>\r\n                                    {{study.patient.patientId}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Accession Number\r\n                                </td>\r\n                                <td>\r\n                                    {{study.accessionNo}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Study Date\r\n                                </td>\r\n                                <td>\r\n                                    {{study.studyDate}}\r\n                                </td>\r\n                            </tr>\r\n                            <tr>\r\n                                <td>\r\n                                    Study Time\r\n                                </td>\r\n                                <td>\r\n                                    {{study.patient.studyTime}}\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </td>\r\n                    <td id=\"image-container\">\r\n                        <div *ngFor=\"let image of imageList\">\r\n                            <table>\r\n                                <tr>\r\n                                    <td class=\"td-image\">\r\n                                        <app-thumbnail [image]=\"image\" [isExportStudy]=\"true\" (click)=\"appThumbnailClicked()\"></app-thumbnail>\r\n                                    </td>\r\n                                </tr>\r\n                            </table>\r\n                        </div>\r\n                    </td>\r\n                </tr>\r\n                <tr>\r\n                    <td></td>\r\n                    <td>\r\n                        <div class=\"checkbox\">\r\n                            <label>\r\n                                <input type=\"checkbox\" (click)=\"checkAllImages()\" [checked]=\"isCheckedAllModel\"/>\r\n                                Check All\r\n                            </label>\r\n                        </div>\r\n                    </td>\r\n                </tr>\r\n            </table>\r\n        </div>\r\n    </div>\r\n    <mat-divider></mat-divider><br>\r\n    <div id=\"transfer-content\">\r\n        <div id=\"icon-container\">\r\n            <button id=\"pacs-button\" class=\"pacs-icon icon-button\" (click)=\"onPacsIconClick()\"></button>\r\n            <button id=\"media-button\" class=\"media-icon icon-button\" (click)=\"onMediaIconClick()\"></button>\r\n        </div>\r\n        <div id=\"tab-mask-content\">\r\n            <div id=\"pacs-tab\" [hidden]=\"!isShowPacs\">\r\n                <div class=\"table-list-style\">\r\n                    <table id=\"pacs-table\">\r\n                        <tr>\r\n                            <th>\r\n\r\n                            </th>\r\n                            <th>\r\n                                Desctination\r\n                            </th>\r\n                            <th>\r\n                                AE Title\r\n                            </th>\r\n                            <th>\r\n                                IP Address\r\n                            </th>\r\n                            <th>\r\n                                Storage Commitment\r\n                            </th>\r\n                        </tr>\r\n                        <tr *ngFor=\"let pacs of pacsList\">\r\n                            <td>\r\n                                <input type=\"checkbox\" [(ngModel)]=\"pacs.pacsChecked\" (change)=\"onPacsCheckChanged()\"/>\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.netAEName}}\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.aETitle}}\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.iPAddress}}\r\n                            </td>\r\n                            <td>\r\n                                {{pacs.storageCommitment}}\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </div>\r\n                <table>\r\n                    <tr>\r\n                        <td>\r\n                            <div class=\"checkbox\">\r\n                                <label>\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"isCompression\"/>\r\n                                    Compression\r\n                                </label>\r\n                            </div>\r\n                        </td>\r\n                        <td class=\"second-td\">\r\n                            <select [(ngModel)]=\"selectedTransferCompress\" [disabled]=\"!isCompression\">\r\n                                <option *ngFor=\"let compress of transferCompressList | keyvalue\" [ngValue]=\"compress.key\">\r\n                                    {{compress.value}}\r\n                                </option>\r\n                            </select>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td>\r\n                            <div class=\"checkbox\">\r\n                                <label>\r\n                                    <input type=\"checkbox\" [(ngModel)]=\"isCreateNewGuid\" />\r\n                                    Create New GUID\r\n                                </label>\r\n                            </div>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </div>\r\n            <div id=\"media-tab\" [hidden]=\"isShowPacs\">\r\n                <div id=\"export-format-area\">\r\n                    <div>\r\n                        Export Format :\r\n                    </div>\r\n                    <select id=\"export-format-type\">\r\n                        <option>\r\n                            DICOM\r\n                        </option>\r\n                        <option>\r\n                            JPEG\r\n                        </option>\r\n                        <option>\r\n                            PDF\r\n                        </option>\r\n                    </select>\r\n                </div>\r\n                <div>\r\n                    <table>\r\n                        <tr>\r\n                            <td>\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isRemovePatientInfo\"/>\r\n                                        Remove Patient Info\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                            <td class=\"second-td\">\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isRemoveInstitutionName\"/>\r\n                                        Remove Institution Name\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isIncludeCdViewer\" />\r\n                                        Include CD Viewer\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                            <td class=\"second-td\">\r\n                                <div class=\"checkbox\">\r\n                                    <label>\r\n                                        <input type=\"checkbox\" [checked]=\"isIncludeCdBurningTool\"/>\r\n                                        Include CD Burning Tool\r\n                                    </label>\r\n                                </div>\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n\r\n</mat-dialog-content>\r\n<mat-dialog-actions>\r\n    <button class=\"mat-raised-button\" (click)=\"onCancelClick()\">\r\n        <i class=\"glyphicon glyphicon-remove-circle\" style=\"padding-right: 8px\"></i>Cancel\r\n    </button>\r\n    <button class=\"mat-raised-button\" (click)=\"onOkClick()\" [disabled]=\"isNoCheckedImage || isNoCheckedPacs\">\r\n        <i class=\"glyphicon glyphicon-ok-circle\" style=\"padding-right: 8px\"></i>Ok\r\n    </button>\r\n</mat-dialog-actions>\r\n"
 
 /***/ }),
 
@@ -11286,7 +10890,7 @@ module.exports = "<h1 mat-dialog-title\r\n    cdkDrag\r\n    cdkDragRootElement=
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n#body-content {\n  width: 700px;\n  min-height: 200px;\n  max-height: 350px;\n}\n.table-list-style {\n  overflow: auto;\n}\n.table-list-style th {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  background: #444;\n}\n.table-list-style td {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  /*color: @container-background-color;*/\n}\n.table-list-style th,\n.table-list-style td:first-child {\n  min-width: 20px;\n}\n.table-list-style tr:nth-child(odd) {\n  background-color: #181818;\n}\n.table-list-style tr:nth-child(even) {\n  background-color: #000;\n}\n#single-study-table td {\n  vertical-align: top;\n  padding: 5px;\n}\n#single-study-info {\n  top: 5px;\n}\n#single-study-info td {\n  border: 1px solid #333;\n  padding: 5px;\n}\n.mat-dialog-title {\n  border-bottom: 1px solid orange;\n  color: orange;\n  font-size: 15px;\n  margin: -24px -24px 0px -24px;\n  min-width: 200px;\n  padding: 1px 10px;\n}\n.mat-dialog-content {\n  color: #fff;\n  font-size: 15px;\n  min-height: 600px;\n  min-width: 650px;\n  padding: 10px 10px;\n}\n.mat-dialog-actions {\n  margin-right: -12px;\n}\n.mat-form-field {\n  width: 100%;\n}\n.mat-raised-button {\n  background-color: #555;\n  border: 1px solid #777;\n  border-radius: 3px;\n  color: #fff;\n  font-size: 13px;\n  margin-left: 6px;\n  padding: 1px;\n  width: 100px;\n}\n.mat-raised-button:disabled:hover {\n  color: #555;\n}\n.mat-raised-button:hover {\n  color: orange;\n}\n.mat-dialog-actions {\n  flex-direction: row-reverse;\n}\n.matInput {\n  caret-color: orange;\n  color: green;\n}\n.mat-input-element {\n  width: 100%;\n  caret-color: orange;\n}\ninput {\n  background: #000;\n  caret-color: orange;\n  border: 1px solid #000;\n}\ninput:focus {\n  /*outline: none !important;*/\n  border-bottom: 1px solid orange;\n}\ninput:disabled {\n  color: #555;\n}\n/*::-webkit-inner-spin-button { display: none; }*/\nselect {\n  background-color: #000;\n  border: 1px solid #333;\n  width: 100%;\n}\n#single-study-info {\n  width: 300px;\n}\n#image-container {\n  left: 350px;\n  display: flex;\n  flex-wrap: wrap;\n  width: 370px;\n  max-height: 220px;\n  overflow-y: auto;\n}\n#human-license {\n  width: 300px;\n}\n#icon-container {\n  display: flex;\n  border-bottom: 1px solid #333;\n}\n.pacs-icon {\n  background: url('Transfer_60_40_All.png') no-repeat left top;\n}\n.pacs-icon:hover {\n  background: url('Transfer_60_40_All.png') no-repeat right top;\n}\n.pacs-icon:active {\n  background: url('Transfer_60_40_All.png') no-repeat left bottom;\n}\n.pacs-icon:disabled {\n  background: url('Transfer_60_40_All.png') no-repeat right bottom;\n}\n.media-icon {\n  background: url('Export_60_40_All.png') no-repeat left top;\n}\n.media-icon:hover {\n  background: url('Export_60_40_All.png') no-repeat right top;\n}\n.media-icon:active {\n  background: url('Export_60_40_All.png') no-repeat left bottom;\n}\n.media-icon:disabled {\n  background: url('Export_60_40_All.png') no-repeat right bottom;\n}\n.icon-button {\n  border: none;\n  width: 60px;\n  height: 40px;\n}\n.icon-button:focus {\n  outline: none;\n}\n#export-format-area {\n  display: flex;\n  margin-top: 20px;\n}\n#export-format-type {\n  width: 100px;\n  margin-left: 100px;\n}\n#transfer-row {\n  display: flex;\n}\n.td-image {\n  padding-right: 5px;\n}\n.second-td {\n  padding-left: 50px;\n}\n.thumbnail-type {\n  border: 1px solid #555;\n  max-width: 100%;\n  max-height: 100%;\n  margin: auto auto;\n}\n.selected-image {\n  border: 1px dotted orange;\n}\n.rect-img {\n  height: 100px;\n  width: 100px;\n}\n#tab-mask-content {\n  margin-top: 5px;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIiwic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L2V4cG9ydC1zdHVkeS9EOi9Xb3JrL0dpdC9JbWFnZVN1aXRlL1dlYlBhY3MvQ3NoLkltYWdlU3VpdGUuV2ViQ2xpZW50L3NyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7O2NBSWM7QUFDZDs7Ozs7Ozs7Ozs7Ozs7Ozs7OztFQW1CRTtBQ3RCRjtFQUNJLFlBQUE7RUFDQSxpQkFBQTtFQUNBLGlCQUFBO0FEd0JKO0FDckJBO0VBQ0ksY0FBQTtBRHVCSjtBQ3hCQTtFQUlRLFlBQUE7RUFDQSxzQkFBQTtFQUNBLGdCQUFBO0VBQ0EsZ0JBQUE7QUR1QlI7QUM5QkE7RUFXUSxZQUFBO0VBQ0Esc0JBQUE7RUFDQSxnQkFBQTtFRHNCTixzQ0FBc0M7QUFDeEM7QUNwQ0E7O0VBa0JRLGVBQUE7QURzQlI7QUN4Q0E7RUFzQk0seUJBQUE7QURxQk47QUMzQ0E7RUEwQk0sc0JBQUE7QURvQk47QUNoQkE7RUFDSSxtQkFBQTtFQUNBLFlBQUE7QURrQko7QUNmQTtFQUNJLFFBQUE7QURpQko7QUNkQTtFQUNJLHNCQUFBO0VBQ0EsWUFBQTtBRGdCSjtBQ2JBO0VBQ0ksK0JBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtFQUNBLDZCQUFBO0VBQ0EsZ0JBQUE7RUFDQSxpQkFBQTtBRGVKO0FDWkE7RUFDSSxXQUFBO0VBQ0EsZUFBQTtFQUNBLGlCQUFBO0VBQ0EsZ0JBQUE7RUFDQSxrQkFBQTtBRGNKO0FDWEE7RUFBc0IsbUJBQUE7QURjdEI7QUNaQTtFQUNJLFdBQUE7QURjSjtBQ1hBO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLGtCQUFBO0VBQ0EsV0FBQTtFQUNBLGVBQUE7RUFDQSxnQkFBQTtFQUNBLFlBQUE7RUFDQSxZQUFBO0FEYUo7QUNWQTtFQUFvQyxXQUFBO0FEYXBDO0FDWEE7RUFBMkIsYUFBQTtBRGMzQjtBQ1pBO0VBQXNCLDJCQUFBO0FEZXRCO0FDYkE7RUFDSSxtQkFBQTtFQUNBLFlBQUE7QURlSjtBQ1pBO0VBQ0ksV0FBQTtFQUNBLG1CQUFBO0FEY0o7QUNQQTtFQUNJLGdCQUFBO0VBQ0EsbUJBQUE7RUFDQSxzQkFBQTtBRFNKO0FDTkE7RURRRSw0QkFBNEI7RUNOMUIsK0JBQUE7QURRSjtBQ0xBO0VBQ0ksV0FBQTtBRE9KO0FBQ0EsaURBQWlEO0FDSGpEO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLFdBQUE7QURLSjtBQ0ZBO0VBQ0ksWUFBQTtBRElKO0FDREE7RUFDSSxXQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7RUFDQSxZQUFBO0VBQ0EsaUJBQUE7RUFDQSxnQkFBQTtBREdKO0FDQUE7RUFDSSxZQUFBO0FERUo7QUNDQTtFQUNJLGFBQUE7RUFDQSw2QkFBQTtBRENKO0FDRUE7RUFBYSw0REFBQTtBRENiO0FDQ0E7RUFBbUIsNkRBQUE7QURFbkI7QUNBQTtFQUFvQiwrREFBQTtBREdwQjtBQ0RBO0VBQXNCLGdFQUFBO0FESXRCO0FDRkE7RUFBYywwREFBQTtBREtkO0FDSEE7RUFBb0IsMkRBQUE7QURNcEI7QUNKQTtFQUFxQiw2REFBQTtBRE9yQjtBQ0xBO0VBQXVCLDhEQUFBO0FEUXZCO0FDTkE7RUFDSSxZQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7QURRSjtBQ0xBO0VBQ0ksYUFBQTtBRE9KO0FDSkE7RUFDSSxhQUFBO0VBQ0EsZ0JBQUE7QURNSjtBQ0hBO0VBQ0ksWUFBQTtFQUNBLGtCQUFBO0FES0o7QUNGQTtFQUNJLGFBQUE7QURJSjtBQ0RBO0VBQ0ksa0JBQUE7QURHSjtBQ0FBO0VBQ0ksa0JBQUE7QURFSjtBQ0NBO0VBQ0ksc0JBQUE7RUFDQSxlQUFBO0VBQ0EsZ0JBQUE7RUFDQSxpQkFBQTtBRENKO0FDRUE7RUFDSSx5QkFBQTtBREFKO0FDR0E7RUFDSSxhQUFBO0VBQ0EsWUFBQTtBRERKO0FDSUE7RUFDSSxlQUFBO0FERkoiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L2V4cG9ydC1zdHVkeS9leHBvcnQtc3R1ZHkuY29tcG9uZW50Lmxlc3MiLCJzb3VyY2VzQ29udGVudCI6WyIvKkBibGFjazogIzAwMDtcbkBvcmFuZ2U6IG9yYW5nZTtcbkBncmF5OiAjNTU1O1xuQHNpbHZlcjogI2FhYTtcbkB3aGl0ZTogI2ZmZjsqL1xuLyoudGhlbWUtZGFyayB7XG4gICAgQGJhY2tncm91bmQtY29sb3IgOiBAYmxhY2s7XG4gICAgQHVuZGVybGluZS1jb2xvciA6IEBvcmFuZ2U7XG4gICAgQGJvcmRlci1jb2xvciA6IEBzaWx2ZXI7XG4gICAgQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yIDogQGdyYXk7XG4gICAgQGRpc2FibGUtY29sb3IgOiBAZ3JheTtcbiAgICBAZm9udC1jb2xvciA6IEB3aGl0ZTtcbiAgICAuY2hhbmdlLWRhcmsoQGJhY2tncm91bmQtY29sb3IpO1xufVxuXG5cbi50aGVtZS1saWdodCB7XG4gICAgQGJhY2tncm91bmQtY29sb3IgOiBAd2hpdGU7XG4gICAgQHVuZGVybGluZS1jb2xvciA6IEBvcmFuZ2U7XG4gICAgQGJvcmRlci1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEB3aGl0ZTtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAd2hpdGU7XG4gICAgQGZvbnQtY29sb3I6IEBibGFjaztcbiAgICAuY2hhbmdlLWRhcmsoQGJhY2tncm91bmQtY29sb3IpO1xufSovXG4jYm9keS1jb250ZW50IHtcbiAgd2lkdGg6IDcwMHB4O1xuICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgbWF4LWhlaWdodDogMzUwcHg7XG59XG4udGFibGUtbGlzdC1zdHlsZSB7XG4gIG92ZXJmbG93OiBhdXRvO1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdGgge1xuICBwYWRkaW5nOiAzcHg7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIG1pbi13aWR0aDogMTAwcHg7XG4gIGJhY2tncm91bmQ6ICM0NDQ7XG59XG4udGFibGUtbGlzdC1zdHlsZSB0ZCB7XG4gIHBhZGRpbmc6IDNweDtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcbiAgbWluLXdpZHRoOiAxMDBweDtcbiAgLypjb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yOyovXG59XG4udGFibGUtbGlzdC1zdHlsZSB0aCxcbi50YWJsZS1saXN0LXN0eWxlIHRkOmZpcnN0LWNoaWxkIHtcbiAgbWluLXdpZHRoOiAyMHB4O1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdHI6bnRoLWNoaWxkKG9kZCkge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMTgxODE4O1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdHI6bnRoLWNoaWxkKGV2ZW4pIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbn1cbiNzaW5nbGUtc3R1ZHktdGFibGUgdGQge1xuICB2ZXJ0aWNhbC1hbGlnbjogdG9wO1xuICBwYWRkaW5nOiA1cHg7XG59XG4jc2luZ2xlLXN0dWR5LWluZm8ge1xuICB0b3A6IDVweDtcbn1cbiNzaW5nbGUtc3R1ZHktaW5mbyB0ZCB7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIHBhZGRpbmc6IDVweDtcbn1cbi5tYXQtZGlhbG9nLXRpdGxlIHtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIG9yYW5nZTtcbiAgY29sb3I6IG9yYW5nZTtcbiAgZm9udC1zaXplOiAxNXB4O1xuICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcbiAgbWluLXdpZHRoOiAyMDBweDtcbiAgcGFkZGluZzogMXB4IDEwcHg7XG59XG4ubWF0LWRpYWxvZy1jb250ZW50IHtcbiAgY29sb3I6ICNmZmY7XG4gIGZvbnQtc2l6ZTogMTVweDtcbiAgbWluLWhlaWdodDogNjAwcHg7XG4gIG1pbi13aWR0aDogNjUwcHg7XG4gIHBhZGRpbmc6IDEwcHggMTBweDtcbn1cbi5tYXQtZGlhbG9nLWFjdGlvbnMge1xuICBtYXJnaW4tcmlnaHQ6IC0xMnB4O1xufVxuLm1hdC1mb3JtLWZpZWxkIHtcbiAgd2lkdGg6IDEwMCU7XG59XG4ubWF0LXJhaXNlZC1idXR0b24ge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1O1xuICBib3JkZXI6IDFweCBzb2xpZCAjNzc3O1xuICBib3JkZXItcmFkaXVzOiAzcHg7XG4gIGNvbG9yOiAjZmZmO1xuICBmb250LXNpemU6IDEzcHg7XG4gIG1hcmdpbi1sZWZ0OiA2cHg7XG4gIHBhZGRpbmc6IDFweDtcbiAgd2lkdGg6IDEwMHB4O1xufVxuLm1hdC1yYWlzZWQtYnV0dG9uOmRpc2FibGVkOmhvdmVyIHtcbiAgY29sb3I6ICM1NTU7XG59XG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIge1xuICBjb2xvcjogb3JhbmdlO1xufVxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7XG4gIGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTtcbn1cbi5tYXRJbnB1dCB7XG4gIGNhcmV0LWNvbG9yOiBvcmFuZ2U7XG4gIGNvbG9yOiBncmVlbjtcbn1cbi5tYXQtaW5wdXQtZWxlbWVudCB7XG4gIHdpZHRoOiAxMDAlO1xuICBjYXJldC1jb2xvcjogb3JhbmdlO1xufVxuaW5wdXQge1xuICBiYWNrZ3JvdW5kOiAjMDAwO1xuICBjYXJldC1jb2xvcjogb3JhbmdlO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMDAwO1xufVxuaW5wdXQ6Zm9jdXMge1xuICAvKm91dGxpbmU6IG5vbmUgIWltcG9ydGFudDsqL1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgb3JhbmdlO1xufVxuaW5wdXQ6ZGlzYWJsZWQge1xuICBjb2xvcjogIzU1NTtcbn1cbi8qOjotd2Via2l0LWlubmVyLXNwaW4tYnV0dG9uIHsgZGlzcGxheTogbm9uZTsgfSovXG5zZWxlY3Qge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMDAwO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICB3aWR0aDogMTAwJTtcbn1cbiNzaW5nbGUtc3R1ZHktaW5mbyB7XG4gIHdpZHRoOiAzMDBweDtcbn1cbiNpbWFnZS1jb250YWluZXIge1xuICBsZWZ0OiAzNTBweDtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxleC13cmFwOiB3cmFwO1xuICB3aWR0aDogMzcwcHg7XG4gIG1heC1oZWlnaHQ6IDIyMHB4O1xuICBvdmVyZmxvdy15OiBhdXRvO1xufVxuI2h1bWFuLWxpY2Vuc2Uge1xuICB3aWR0aDogMzAwcHg7XG59XG4jaWNvbi1jb250YWluZXIge1xuICBkaXNwbGF5OiBmbGV4O1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgIzMzMztcbn1cbi5wYWNzLWljb24ge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wO1xufVxuLnBhY3MtaWNvbjpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLnBhY3MtaWNvbjphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tO1xufVxuLnBhY3MtaWNvbjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tO1xufVxuLm1lZGlhLWljb24ge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDtcbn1cbi5tZWRpYS1pY29uOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0V4cG9ydF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLm1lZGlhLWljb246YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0V4cG9ydF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207XG59XG4ubWVkaWEtaWNvbjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTtcbn1cbi5pY29uLWJ1dHRvbiB7XG4gIGJvcmRlcjogbm9uZTtcbiAgd2lkdGg6IDYwcHg7XG4gIGhlaWdodDogNDBweDtcbn1cbi5pY29uLWJ1dHRvbjpmb2N1cyB7XG4gIG91dGxpbmU6IG5vbmU7XG59XG4jZXhwb3J0LWZvcm1hdC1hcmVhIHtcbiAgZGlzcGxheTogZmxleDtcbiAgbWFyZ2luLXRvcDogMjBweDtcbn1cbiNleHBvcnQtZm9ybWF0LXR5cGUge1xuICB3aWR0aDogMTAwcHg7XG4gIG1hcmdpbi1sZWZ0OiAxMDBweDtcbn1cbiN0cmFuc2Zlci1yb3cge1xuICBkaXNwbGF5OiBmbGV4O1xufVxuLnRkLWltYWdlIHtcbiAgcGFkZGluZy1yaWdodDogNXB4O1xufVxuLnNlY29uZC10ZCB7XG4gIHBhZGRpbmctbGVmdDogNTBweDtcbn1cbi50aHVtYm5haWwtdHlwZSB7XG4gIGJvcmRlcjogMXB4IHNvbGlkICM1NTU7XG4gIG1heC13aWR0aDogMTAwJTtcbiAgbWF4LWhlaWdodDogMTAwJTtcbiAgbWFyZ2luOiBhdXRvIGF1dG87XG59XG4uc2VsZWN0ZWQtaW1hZ2Uge1xuICBib3JkZXI6IDFweCBkb3R0ZWQgb3JhbmdlO1xufVxuLnJlY3QtaW1nIHtcbiAgaGVpZ2h0OiAxMDBweDtcbiAgd2lkdGg6IDEwMHB4O1xufVxuI3RhYi1tYXNrLWNvbnRlbnQge1xuICBtYXJnaW4tdG9wOiA1cHg7XG59XG4iLCJAaW1wb3J0IFwiLi4vLi4vLi4vLi4vLi4vdGhlbWVzLmxlc3NcIjtcblxuI2JvZHktY29udGVudCB7XG4gICAgd2lkdGg6IDcwMHB4O1xuICAgIG1pbi1oZWlnaHQgOiAyMDBweDtcbiAgICBtYXgtaGVpZ2h0IDogMzUwcHg7XG59XG5cbi50YWJsZS1saXN0LXN0eWxlIHtcbiAgICBvdmVyZmxvdzphdXRvO1xuXG4gICAgdGgge1xuICAgICAgICBwYWRkaW5nOiAzcHg7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgICAgIG1pbi13aWR0aDogMTAwcHg7XG4gICAgICAgIGJhY2tncm91bmQ6IEBoZWFkZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICB9XG5cbiAgICB0ZCB7XG4gICAgICAgIHBhZGRpbmc6IDNweDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICAgICAgbWluLXdpZHRoOiAxMDBweDtcbiAgICAgICAgLypjb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yOyovXG4gICAgfVxuXG4gICAgdGgsIHRkOmZpcnN0LWNoaWxkIHtcbiAgICAgICAgbWluLXdpZHRoOiAyMHB4O1xuICAgIH1cblxuICAgIHRyOm50aC1jaGlsZChvZGQpe1xuICAgICAgYmFja2dyb3VuZC1jb2xvcjogQG9kZC10ci1jb2xvcjtcbiAgICB9XG5cbiAgICB0cjpudGgtY2hpbGQoZXZlbil7XG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICB9XG59XG5cbiNzaW5nbGUtc3R1ZHktdGFibGUgdGR7XG4gICAgdmVydGljYWwtYWxpZ246dG9wO1xuICAgIHBhZGRpbmc6IDVweDtcbn1cblxuI3NpbmdsZS1zdHVkeS1pbmZvIHtcbiAgICB0b3A6IDVweDtcbn1cblxuI3NpbmdsZS1zdHVkeS1pbmZvIHRke1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgcGFkZGluZzogNXB4O1xufSAgIFxuXG4ubWF0LWRpYWxvZy10aXRsZSB7XG4gICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIEB1bmRlcmxpbmUtY29sb3I7XG4gICAgY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7XG4gICAgZm9udC1zaXplOiAxNXB4O1xuICAgIG1hcmdpbjogLTI0cHggLTI0cHggMHB4IC0yNHB4O1xuICAgIG1pbi13aWR0aDogMjAwcHg7XG4gICAgcGFkZGluZzogMXB4IDEwcHg7XG59XG5cbi5tYXQtZGlhbG9nLWNvbnRlbnQge1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBmb250LXNpemU6IDE1cHg7XG4gICAgbWluLWhlaWdodDogNjAwcHg7XG4gICAgbWluLXdpZHRoOiA2NTBweDtcbiAgICBwYWRkaW5nOiAxMHB4IDEwcHg7XG59XG5cbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBtYXJnaW4tcmlnaHQ6IC0xMnB4OyB9XG5cbi5tYXQtZm9ybS1maWVsZCB7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XG4gICAgYm9yZGVyLXJhZGl1czogM3B4O1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBmb250LXNpemU6IDEzcHg7XG4gICAgbWFyZ2luLWxlZnQ6IDZweDtcbiAgICBwYWRkaW5nOiAxcHg7XG4gICAgd2lkdGg6IDEwMHB4O1xufVxuXG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIgeyBjb2xvcjogQGRpc2FibGUtY29sb3I7IH1cblxuLm1hdC1yYWlzZWQtYnV0dG9uOmhvdmVyIHsgY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7IH1cblxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTsgfVxuXG4ubWF0SW5wdXQge1xuICAgIGNhcmV0LWNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGNvbG9yOiBncmVlbjtcbn1cblxuLm1hdC1pbnB1dC1lbGVtZW50IHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBjYXJldC1jb2xvcjogQHVuZGVybGluZS1jb2xvcjtcbn1cblxudGFibGUge1xuXG59XG5cbmlucHV0IHtcbiAgICBiYWNrZ3JvdW5kOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBjYXJldC1jb2xvcjpAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBiYWNrZ3JvdW5kLWNvbG9yO1xufVxuXG5pbnB1dDpmb2N1c3tcbiAgICAvKm91dGxpbmU6IG5vbmUgIWltcG9ydGFudDsqL1xuICAgIGJvcmRlci1ib3R0b206MXB4IHNvbGlkIEB1bmRlcmxpbmUtY29sb3I7XG59XG5cbmlucHV0OmRpc2FibGVke1xuICAgIGNvbG9yOiBAZGlzYWJsZS1jb2xvcjtcbn1cblxuLyo6Oi13ZWJraXQtaW5uZXItc3Bpbi1idXR0b24geyBkaXNwbGF5OiBub25lOyB9Ki9cblxuc2VsZWN0IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBib3JkZXI6IDFweCBzb2xpZCBAYm9yZGVyLWNvbG9yO1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG4jc2luZ2xlLXN0dWR5LWluZm8ge1xuICAgIHdpZHRoOiAzMDBweDtcbn1cblxuI2ltYWdlLWNvbnRhaW5lciB7XG4gICAgbGVmdDozNTBweDtcbiAgICBkaXNwbGF5OmZsZXg7XG4gICAgZmxleC13cmFwOiB3cmFwO1xuICAgIHdpZHRoOiAzNzBweDtcbiAgICBtYXgtaGVpZ2h0OiAyMjBweDtcbiAgICBvdmVyZmxvdy15OiBhdXRvO1xufVxuXG4jaHVtYW4tbGljZW5zZSB7XG4gICAgd2lkdGg6IDMwMHB4O1xufVxuXG4jaWNvbi1jb250YWluZXIge1xuICAgIGRpc3BsYXk6ZmxleDtcbiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbn1cblxuLnBhY3MtaWNvbiB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cblxuLnBhY3MtaWNvbjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XG5cbi5wYWNzLWljb246YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxuXG4ucGFjcy1pY29uOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IH1cblxuLm1lZGlhLWljb24geyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDsgfVxuXG4ubWVkaWEtaWNvbjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgfVxuXG4ubWVkaWEtaWNvbjphY3RpdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxuXG4ubWVkaWEtaWNvbjpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTsgfVxuXG4uaWNvbi1idXR0b24ge1xuICAgIGJvcmRlcjpub25lO1xuICAgIHdpZHRoOjYwcHg7XG4gICAgaGVpZ2h0OjQwcHg7XG59XG5cbi5pY29uLWJ1dHRvbjpmb2N1cyB7XG4gICAgb3V0bGluZTogbm9uZTtcbn1cblxuI2V4cG9ydC1mb3JtYXQtYXJlYXtcbiAgICBkaXNwbGF5OmZsZXg7XG4gICAgbWFyZ2luLXRvcDoyMHB4O1xufVxuXG4jZXhwb3J0LWZvcm1hdC10eXBlIHtcbiAgICB3aWR0aDoxMDBweDtcbiAgICBtYXJnaW4tbGVmdDogMTAwcHg7XG59XG5cbiN0cmFuc2Zlci1yb3cge1xuICAgIGRpc3BsYXk6ZmxleDtcbn1cblxuLnRkLWltYWdlIHtcbiAgICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG59XG5cbi5zZWNvbmQtdGQge1xuICAgIHBhZGRpbmctbGVmdDo1MHB4O1xufVxuXG4udGh1bWJuYWlsLXR5cGUge1xuICAgIGJvcmRlciA6IDFweCBzb2xpZCBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG4gICAgbWF4LXdpZHRoOjEwMCU7XG4gICAgbWF4LWhlaWdodDoxMDAlO1xuICAgIG1hcmdpbjogYXV0byBhdXRvO1xufVxuXG4uc2VsZWN0ZWQtaW1hZ2Uge1xuICAgIGJvcmRlciA6IDFweCBkb3R0ZWQgQHVuZGVybGluZS1jb2xvcjtcbn1cblxuLnJlY3QtaW1nIHtcbiAgICBoZWlnaHQ6IDEwMHB4O1xuICAgIHdpZHRoOiAxMDBweDtcbn1cblxuI3RhYi1tYXNrLWNvbnRlbnQge1xuICAgIG1hcmdpbi10b3A6IDVweDtcbn0iXX0= */"
+module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n#body-content {\n  width: 700px;\n  min-height: 200px;\n  max-height: 350px;\n}\n.table-list-style {\n  overflow: auto;\n}\n.table-list-style th {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  background: #444;\n}\n.table-list-style td {\n  padding: 3px;\n  border: 1px solid #333;\n  min-width: 100px;\n  /*color: @container-background-color;*/\n}\n.table-list-style th,\n.table-list-style td:first-child {\n  min-width: 20px;\n}\n.table-list-style tr:nth-child(odd) {\n  background-color: #181818;\n}\n.table-list-style tr:nth-child(even) {\n  background-color: #000;\n}\n#single-study-table td {\n  vertical-align: top;\n  padding: 5px;\n}\n#single-study-info {\n  top: 5px;\n}\n#single-study-info td {\n  border: 1px solid #333;\n  padding: 5px;\n}\n.mat-dialog-title {\n  border-bottom: 1px solid orange;\n  color: orange;\n  font-size: 15px;\n  margin: -24px -24px 0px -24px;\n  min-width: 200px;\n  padding: 1px 10px;\n}\n.mat-dialog-content {\n  color: #fff;\n  font-size: 15px;\n  min-height: 600px;\n  min-width: 650px;\n  padding: 10px 10px;\n}\n.mat-dialog-actions {\n  margin-right: -12px;\n}\n.mat-form-field {\n  width: 100%;\n}\n.mat-raised-button {\n  background-color: #555;\n  border: 1px solid #777;\n  border-radius: 3px;\n  color: #fff;\n  font-size: 13px;\n  margin-left: 6px;\n  padding: 1px;\n  width: 100px;\n}\n.mat-raised-button:disabled:hover {\n  color: #555;\n}\n.mat-raised-button:hover {\n  color: orange;\n}\n.mat-dialog-actions {\n  flex-direction: row-reverse;\n}\n.matInput {\n  caret-color: orange;\n  color: green;\n}\n.mat-input-element {\n  width: 100%;\n  caret-color: orange;\n}\ninput {\n  background: #000;\n  caret-color: orange;\n  border: 1px solid #000;\n}\ninput:focus {\n  /*outline: none !important;*/\n  border-bottom: 1px solid orange;\n}\ninput:disabled {\n  color: #555;\n}\n/*::-webkit-inner-spin-button { display: none; }*/\nselect {\n  background-color: #000;\n  border: 1px solid #333;\n  width: 100%;\n}\n#single-study-info {\n  width: 300px;\n}\n#image-container {\n  left: 350px;\n  display: flex;\n  flex-wrap: wrap;\n  width: 350px;\n  max-height: 220px;\n  overflow-y: auto;\n}\n#human-license {\n  width: 300px;\n}\n#icon-container {\n  display: flex;\n  border-bottom: 1px solid #333;\n}\n.pacs-icon {\n  background: url('Transfer_60_40_All.png') no-repeat left top;\n}\n.pacs-icon:hover {\n  background: url('Transfer_60_40_All.png') no-repeat right top;\n}\n.pacs-icon:active {\n  background: url('Transfer_60_40_All.png') no-repeat left bottom;\n}\n.pacs-icon:disabled {\n  background: url('Transfer_60_40_All.png') no-repeat right bottom;\n}\n.media-icon {\n  background: url('Export_60_40_All.png') no-repeat left top;\n}\n.media-icon:hover {\n  background: url('Export_60_40_All.png') no-repeat right top;\n}\n.media-icon:active {\n  background: url('Export_60_40_All.png') no-repeat left bottom;\n}\n.media-icon:disabled {\n  background: url('Export_60_40_All.png') no-repeat right bottom;\n}\n.icon-button {\n  border: none;\n  width: 60px;\n  height: 40px;\n}\n.icon-button:focus {\n  outline: none;\n}\n#export-format-area {\n  display: flex;\n  margin-top: 20px;\n}\n#export-format-type {\n  width: 100px;\n  margin-left: 100px;\n}\n#transfer-row {\n  display: flex;\n}\n.td-image {\n  padding-right: 5px;\n}\n.second-td {\n  padding-left: 50px;\n}\n.thumbnail-type {\n  border: 1px solid #555;\n  max-width: 100%;\n  max-height: 100%;\n  margin: auto auto;\n}\n.selected-image {\n  border: 1px dotted orange;\n}\n.rect-img {\n  height: 100px;\n  width: 100px;\n}\n#tab-mask-content {\n  margin-top: 5px;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIiwic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L2V4cG9ydC1zdHVkeS9EOi9Xb3JrL0dpdC9JbWFnZVN1aXRlL1dlYlBhY3MvQ3NoLkltYWdlU3VpdGUuV2ViQ2xpZW50L3NyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9leHBvcnQtc3R1ZHkvZXhwb3J0LXN0dWR5LmNvbXBvbmVudC5sZXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7O2NBSWM7QUFDZDs7Ozs7Ozs7Ozs7Ozs7Ozs7OztFQW1CRTtBQ3RCRjtFQUNJLFlBQUE7RUFDQSxpQkFBQTtFQUNBLGlCQUFBO0FEd0JKO0FDckJBO0VBQ0ksY0FBQTtBRHVCSjtBQ3hCQTtFQUlRLFlBQUE7RUFDQSxzQkFBQTtFQUNBLGdCQUFBO0VBQ0EsZ0JBQUE7QUR1QlI7QUM5QkE7RUFXUSxZQUFBO0VBQ0Esc0JBQUE7RUFDQSxnQkFBQTtFRHNCTixzQ0FBc0M7QUFDeEM7QUNwQ0E7O0VBa0JRLGVBQUE7QURzQlI7QUN4Q0E7RUFzQk0seUJBQUE7QURxQk47QUMzQ0E7RUEwQk0sc0JBQUE7QURvQk47QUNoQkE7RUFDSSxtQkFBQTtFQUNBLFlBQUE7QURrQko7QUNmQTtFQUNJLFFBQUE7QURpQko7QUNkQTtFQUNJLHNCQUFBO0VBQ0EsWUFBQTtBRGdCSjtBQ2JBO0VBQ0ksK0JBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtFQUNBLDZCQUFBO0VBQ0EsZ0JBQUE7RUFDQSxpQkFBQTtBRGVKO0FDWkE7RUFDSSxXQUFBO0VBQ0EsZUFBQTtFQUNBLGlCQUFBO0VBQ0EsZ0JBQUE7RUFDQSxrQkFBQTtBRGNKO0FDWEE7RUFBc0IsbUJBQUE7QURjdEI7QUNaQTtFQUNJLFdBQUE7QURjSjtBQ1hBO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLGtCQUFBO0VBQ0EsV0FBQTtFQUNBLGVBQUE7RUFDQSxnQkFBQTtFQUNBLFlBQUE7RUFDQSxZQUFBO0FEYUo7QUNWQTtFQUFvQyxXQUFBO0FEYXBDO0FDWEE7RUFBMkIsYUFBQTtBRGMzQjtBQ1pBO0VBQXNCLDJCQUFBO0FEZXRCO0FDYkE7RUFDSSxtQkFBQTtFQUNBLFlBQUE7QURlSjtBQ1pBO0VBQ0ksV0FBQTtFQUNBLG1CQUFBO0FEY0o7QUNQQTtFQUNJLGdCQUFBO0VBQ0EsbUJBQUE7RUFDQSxzQkFBQTtBRFNKO0FDTkE7RURRRSw0QkFBNEI7RUNOMUIsK0JBQUE7QURRSjtBQ0xBO0VBQ0ksV0FBQTtBRE9KO0FBQ0EsaURBQWlEO0FDSGpEO0VBQ0ksc0JBQUE7RUFDQSxzQkFBQTtFQUNBLFdBQUE7QURLSjtBQ0ZBO0VBQ0ksWUFBQTtBRElKO0FDREE7RUFDSSxXQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7RUFDQSxZQUFBO0VBQ0EsaUJBQUE7RUFDQSxnQkFBQTtBREdKO0FDQUE7RUFDSSxZQUFBO0FERUo7QUNDQTtFQUNJLGFBQUE7RUFDQSw2QkFBQTtBRENKO0FDRUE7RUFBYSw0REFBQTtBRENiO0FDQ0E7RUFBbUIsNkRBQUE7QURFbkI7QUNBQTtFQUFvQiwrREFBQTtBREdwQjtBQ0RBO0VBQXNCLGdFQUFBO0FESXRCO0FDRkE7RUFBYywwREFBQTtBREtkO0FDSEE7RUFBb0IsMkRBQUE7QURNcEI7QUNKQTtFQUFxQiw2REFBQTtBRE9yQjtBQ0xBO0VBQXVCLDhEQUFBO0FEUXZCO0FDTkE7RUFDSSxZQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7QURRSjtBQ0xBO0VBQ0ksYUFBQTtBRE9KO0FDSkE7RUFDSSxhQUFBO0VBQ0EsZ0JBQUE7QURNSjtBQ0hBO0VBQ0ksWUFBQTtFQUNBLGtCQUFBO0FES0o7QUNGQTtFQUNJLGFBQUE7QURJSjtBQ0RBO0VBQ0ksa0JBQUE7QURHSjtBQ0FBO0VBQ0ksa0JBQUE7QURFSjtBQ0NBO0VBQ0ksc0JBQUE7RUFDQSxlQUFBO0VBQ0EsZ0JBQUE7RUFDQSxpQkFBQTtBRENKO0FDRUE7RUFDSSx5QkFBQTtBREFKO0FDR0E7RUFDSSxhQUFBO0VBQ0EsWUFBQTtBRERKO0FDSUE7RUFDSSxlQUFBO0FERkoiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL3dvcmtsaXN0LXNoZWxsL3dvcmtsaXN0L2V4cG9ydC1zdHVkeS9leHBvcnQtc3R1ZHkuY29tcG9uZW50Lmxlc3MiLCJzb3VyY2VzQ29udGVudCI6WyIvKkBibGFjazogIzAwMDtcbkBvcmFuZ2U6IG9yYW5nZTtcbkBncmF5OiAjNTU1O1xuQHNpbHZlcjogI2FhYTtcbkB3aGl0ZTogI2ZmZjsqL1xuLyoudGhlbWUtZGFyayB7XG4gICAgQGJhY2tncm91bmQtY29sb3IgOiBAYmxhY2s7XG4gICAgQHVuZGVybGluZS1jb2xvciA6IEBvcmFuZ2U7XG4gICAgQGJvcmRlci1jb2xvciA6IEBzaWx2ZXI7XG4gICAgQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yIDogQGdyYXk7XG4gICAgQGRpc2FibGUtY29sb3IgOiBAZ3JheTtcbiAgICBAZm9udC1jb2xvciA6IEB3aGl0ZTtcbiAgICAuY2hhbmdlLWRhcmsoQGJhY2tncm91bmQtY29sb3IpO1xufVxuXG5cbi50aGVtZS1saWdodCB7XG4gICAgQGJhY2tncm91bmQtY29sb3IgOiBAd2hpdGU7XG4gICAgQHVuZGVybGluZS1jb2xvciA6IEBvcmFuZ2U7XG4gICAgQGJvcmRlci1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEB3aGl0ZTtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAd2hpdGU7XG4gICAgQGZvbnQtY29sb3I6IEBibGFjaztcbiAgICAuY2hhbmdlLWRhcmsoQGJhY2tncm91bmQtY29sb3IpO1xufSovXG4jYm9keS1jb250ZW50IHtcbiAgd2lkdGg6IDcwMHB4O1xuICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgbWF4LWhlaWdodDogMzUwcHg7XG59XG4udGFibGUtbGlzdC1zdHlsZSB7XG4gIG92ZXJmbG93OiBhdXRvO1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdGgge1xuICBwYWRkaW5nOiAzcHg7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIG1pbi13aWR0aDogMTAwcHg7XG4gIGJhY2tncm91bmQ6ICM0NDQ7XG59XG4udGFibGUtbGlzdC1zdHlsZSB0ZCB7XG4gIHBhZGRpbmc6IDNweDtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcbiAgbWluLXdpZHRoOiAxMDBweDtcbiAgLypjb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yOyovXG59XG4udGFibGUtbGlzdC1zdHlsZSB0aCxcbi50YWJsZS1saXN0LXN0eWxlIHRkOmZpcnN0LWNoaWxkIHtcbiAgbWluLXdpZHRoOiAyMHB4O1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdHI6bnRoLWNoaWxkKG9kZCkge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMTgxODE4O1xufVxuLnRhYmxlLWxpc3Qtc3R5bGUgdHI6bnRoLWNoaWxkKGV2ZW4pIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbn1cbiNzaW5nbGUtc3R1ZHktdGFibGUgdGQge1xuICB2ZXJ0aWNhbC1hbGlnbjogdG9wO1xuICBwYWRkaW5nOiA1cHg7XG59XG4jc2luZ2xlLXN0dWR5LWluZm8ge1xuICB0b3A6IDVweDtcbn1cbiNzaW5nbGUtc3R1ZHktaW5mbyB0ZCB7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIHBhZGRpbmc6IDVweDtcbn1cbi5tYXQtZGlhbG9nLXRpdGxlIHtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIG9yYW5nZTtcbiAgY29sb3I6IG9yYW5nZTtcbiAgZm9udC1zaXplOiAxNXB4O1xuICBtYXJnaW46IC0yNHB4IC0yNHB4IDBweCAtMjRweDtcbiAgbWluLXdpZHRoOiAyMDBweDtcbiAgcGFkZGluZzogMXB4IDEwcHg7XG59XG4ubWF0LWRpYWxvZy1jb250ZW50IHtcbiAgY29sb3I6ICNmZmY7XG4gIGZvbnQtc2l6ZTogMTVweDtcbiAgbWluLWhlaWdodDogNjAwcHg7XG4gIG1pbi13aWR0aDogNjUwcHg7XG4gIHBhZGRpbmc6IDEwcHggMTBweDtcbn1cbi5tYXQtZGlhbG9nLWFjdGlvbnMge1xuICBtYXJnaW4tcmlnaHQ6IC0xMnB4O1xufVxuLm1hdC1mb3JtLWZpZWxkIHtcbiAgd2lkdGg6IDEwMCU7XG59XG4ubWF0LXJhaXNlZC1idXR0b24ge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1O1xuICBib3JkZXI6IDFweCBzb2xpZCAjNzc3O1xuICBib3JkZXItcmFkaXVzOiAzcHg7XG4gIGNvbG9yOiAjZmZmO1xuICBmb250LXNpemU6IDEzcHg7XG4gIG1hcmdpbi1sZWZ0OiA2cHg7XG4gIHBhZGRpbmc6IDFweDtcbiAgd2lkdGg6IDEwMHB4O1xufVxuLm1hdC1yYWlzZWQtYnV0dG9uOmRpc2FibGVkOmhvdmVyIHtcbiAgY29sb3I6ICM1NTU7XG59XG4ubWF0LXJhaXNlZC1idXR0b246aG92ZXIge1xuICBjb2xvcjogb3JhbmdlO1xufVxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7XG4gIGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTtcbn1cbi5tYXRJbnB1dCB7XG4gIGNhcmV0LWNvbG9yOiBvcmFuZ2U7XG4gIGNvbG9yOiBncmVlbjtcbn1cbi5tYXQtaW5wdXQtZWxlbWVudCB7XG4gIHdpZHRoOiAxMDAlO1xuICBjYXJldC1jb2xvcjogb3JhbmdlO1xufVxuaW5wdXQge1xuICBiYWNrZ3JvdW5kOiAjMDAwO1xuICBjYXJldC1jb2xvcjogb3JhbmdlO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMDAwO1xufVxuaW5wdXQ6Zm9jdXMge1xuICAvKm91dGxpbmU6IG5vbmUgIWltcG9ydGFudDsqL1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgb3JhbmdlO1xufVxuaW5wdXQ6ZGlzYWJsZWQge1xuICBjb2xvcjogIzU1NTtcbn1cbi8qOjotd2Via2l0LWlubmVyLXNwaW4tYnV0dG9uIHsgZGlzcGxheTogbm9uZTsgfSovXG5zZWxlY3Qge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMDAwO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICB3aWR0aDogMTAwJTtcbn1cbiNzaW5nbGUtc3R1ZHktaW5mbyB7XG4gIHdpZHRoOiAzMDBweDtcbn1cbiNpbWFnZS1jb250YWluZXIge1xuICBsZWZ0OiAzNTBweDtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxleC13cmFwOiB3cmFwO1xuICB3aWR0aDogMzUwcHg7XG4gIG1heC1oZWlnaHQ6IDIyMHB4O1xuICBvdmVyZmxvdy15OiBhdXRvO1xufVxuI2h1bWFuLWxpY2Vuc2Uge1xuICB3aWR0aDogMzAwcHg7XG59XG4jaWNvbi1jb250YWluZXIge1xuICBkaXNwbGF5OiBmbGV4O1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgIzMzMztcbn1cbi5wYWNzLWljb24ge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wO1xufVxuLnBhY3MtaWNvbjpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLnBhY3MtaWNvbjphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vVHJhbnNmZXJfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tO1xufVxuLnBhY3MtaWNvbjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tO1xufVxuLm1lZGlhLWljb24ge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDtcbn1cbi5tZWRpYS1pY29uOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0V4cG9ydF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wO1xufVxuLm1lZGlhLWljb246YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL0V4cG9ydF82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207XG59XG4ubWVkaWEtaWNvbjpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTtcbn1cbi5pY29uLWJ1dHRvbiB7XG4gIGJvcmRlcjogbm9uZTtcbiAgd2lkdGg6IDYwcHg7XG4gIGhlaWdodDogNDBweDtcbn1cbi5pY29uLWJ1dHRvbjpmb2N1cyB7XG4gIG91dGxpbmU6IG5vbmU7XG59XG4jZXhwb3J0LWZvcm1hdC1hcmVhIHtcbiAgZGlzcGxheTogZmxleDtcbiAgbWFyZ2luLXRvcDogMjBweDtcbn1cbiNleHBvcnQtZm9ybWF0LXR5cGUge1xuICB3aWR0aDogMTAwcHg7XG4gIG1hcmdpbi1sZWZ0OiAxMDBweDtcbn1cbiN0cmFuc2Zlci1yb3cge1xuICBkaXNwbGF5OiBmbGV4O1xufVxuLnRkLWltYWdlIHtcbiAgcGFkZGluZy1yaWdodDogNXB4O1xufVxuLnNlY29uZC10ZCB7XG4gIHBhZGRpbmctbGVmdDogNTBweDtcbn1cbi50aHVtYm5haWwtdHlwZSB7XG4gIGJvcmRlcjogMXB4IHNvbGlkICM1NTU7XG4gIG1heC13aWR0aDogMTAwJTtcbiAgbWF4LWhlaWdodDogMTAwJTtcbiAgbWFyZ2luOiBhdXRvIGF1dG87XG59XG4uc2VsZWN0ZWQtaW1hZ2Uge1xuICBib3JkZXI6IDFweCBkb3R0ZWQgb3JhbmdlO1xufVxuLnJlY3QtaW1nIHtcbiAgaGVpZ2h0OiAxMDBweDtcbiAgd2lkdGg6IDEwMHB4O1xufVxuI3RhYi1tYXNrLWNvbnRlbnQge1xuICBtYXJnaW4tdG9wOiA1cHg7XG59XG4iLCJAaW1wb3J0IFwiLi4vLi4vLi4vLi4vLi4vdGhlbWVzLmxlc3NcIjtcblxuI2JvZHktY29udGVudCB7XG4gICAgd2lkdGg6IDcwMHB4O1xuICAgIG1pbi1oZWlnaHQgOiAyMDBweDtcbiAgICBtYXgtaGVpZ2h0IDogMzUwcHg7XG59XG5cbi50YWJsZS1saXN0LXN0eWxlIHtcbiAgICBvdmVyZmxvdzphdXRvO1xuXG4gICAgdGgge1xuICAgICAgICBwYWRkaW5nOiAzcHg7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgICAgIG1pbi13aWR0aDogMTAwcHg7XG4gICAgICAgIGJhY2tncm91bmQ6IEBoZWFkZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICB9XG5cbiAgICB0ZCB7XG4gICAgICAgIHBhZGRpbmc6IDNweDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICAgICAgbWluLXdpZHRoOiAxMDBweDtcbiAgICAgICAgLypjb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yOyovXG4gICAgfVxuXG4gICAgdGgsIHRkOmZpcnN0LWNoaWxkIHtcbiAgICAgICAgbWluLXdpZHRoOiAyMHB4O1xuICAgIH1cblxuICAgIHRyOm50aC1jaGlsZChvZGQpe1xuICAgICAgYmFja2dyb3VuZC1jb2xvcjogQG9kZC10ci1jb2xvcjtcbiAgICB9XG5cbiAgICB0cjpudGgtY2hpbGQoZXZlbil7XG4gICAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICB9XG59XG5cbiNzaW5nbGUtc3R1ZHktdGFibGUgdGR7XG4gICAgdmVydGljYWwtYWxpZ246dG9wO1xuICAgIHBhZGRpbmc6IDVweDtcbn1cblxuI3NpbmdsZS1zdHVkeS1pbmZvIHtcbiAgICB0b3A6IDVweDtcbn1cblxuI3NpbmdsZS1zdHVkeS1pbmZvIHRke1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgcGFkZGluZzogNXB4O1xufSAgIFxuXG4ubWF0LWRpYWxvZy10aXRsZSB7XG4gICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIEB1bmRlcmxpbmUtY29sb3I7XG4gICAgY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7XG4gICAgZm9udC1zaXplOiAxNXB4O1xuICAgIG1hcmdpbjogLTI0cHggLTI0cHggMHB4IC0yNHB4O1xuICAgIG1pbi13aWR0aDogMjAwcHg7XG4gICAgcGFkZGluZzogMXB4IDEwcHg7XG59XG5cbi5tYXQtZGlhbG9nLWNvbnRlbnQge1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBmb250LXNpemU6IDE1cHg7XG4gICAgbWluLWhlaWdodDogNjAwcHg7XG4gICAgbWluLXdpZHRoOiA2NTBweDtcbiAgICBwYWRkaW5nOiAxMHB4IDEwcHg7XG59XG5cbi5tYXQtZGlhbG9nLWFjdGlvbnMgeyBtYXJnaW4tcmlnaHQ6IC0xMnB4OyB9XG5cbi5tYXQtZm9ybS1maWVsZCB7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbi5tYXQtcmFpc2VkLWJ1dHRvbiB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICM3Nzc7XG4gICAgYm9yZGVyLXJhZGl1czogM3B4O1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICBmb250LXNpemU6IDEzcHg7XG4gICAgbWFyZ2luLWxlZnQ6IDZweDtcbiAgICBwYWRkaW5nOiAxcHg7XG4gICAgd2lkdGg6IDEwMHB4O1xufVxuXG4ubWF0LXJhaXNlZC1idXR0b246ZGlzYWJsZWQ6aG92ZXIgeyBjb2xvcjogQGRpc2FibGUtY29sb3I7IH1cblxuLm1hdC1yYWlzZWQtYnV0dG9uOmhvdmVyIHsgY29sb3I6IEB1bmRlcmxpbmUtY29sb3I7IH1cblxuLm1hdC1kaWFsb2ctYWN0aW9ucyB7IGZsZXgtZGlyZWN0aW9uOiByb3ctcmV2ZXJzZTsgfVxuXG4ubWF0SW5wdXQge1xuICAgIGNhcmV0LWNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGNvbG9yOiBncmVlbjtcbn1cblxuLm1hdC1pbnB1dC1lbGVtZW50IHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBjYXJldC1jb2xvcjogQHVuZGVybGluZS1jb2xvcjtcbn1cblxudGFibGUge1xuXG59XG5cbmlucHV0IHtcbiAgICBiYWNrZ3JvdW5kOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBjYXJldC1jb2xvcjpAdW5kZXJsaW5lLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBiYWNrZ3JvdW5kLWNvbG9yO1xufVxuXG5pbnB1dDpmb2N1c3tcbiAgICAvKm91dGxpbmU6IG5vbmUgIWltcG9ydGFudDsqL1xuICAgIGJvcmRlci1ib3R0b206MXB4IHNvbGlkIEB1bmRlcmxpbmUtY29sb3I7XG59XG5cbmlucHV0OmRpc2FibGVke1xuICAgIGNvbG9yOiBAZGlzYWJsZS1jb2xvcjtcbn1cblxuLyo6Oi13ZWJraXQtaW5uZXItc3Bpbi1idXR0b24geyBkaXNwbGF5OiBub25lOyB9Ki9cblxuc2VsZWN0IHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBib3JkZXI6IDFweCBzb2xpZCBAYm9yZGVyLWNvbG9yO1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG4jc2luZ2xlLXN0dWR5LWluZm8ge1xuICAgIHdpZHRoOiAzMDBweDtcbn1cblxuI2ltYWdlLWNvbnRhaW5lciB7XG4gICAgbGVmdDozNTBweDtcbiAgICBkaXNwbGF5OmZsZXg7XG4gICAgZmxleC13cmFwOiB3cmFwO1xuICAgIHdpZHRoOiAzNTBweDtcbiAgICBtYXgtaGVpZ2h0OiAyMjBweDtcbiAgICBvdmVyZmxvdy15OiBhdXRvO1xufVxuXG4jaHVtYW4tbGljZW5zZSB7XG4gICAgd2lkdGg6IDMwMHB4O1xufVxuXG4jaWNvbi1jb250YWluZXIge1xuICAgIGRpc3BsYXk6ZmxleDtcbiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbn1cblxuLnBhY3MtaWNvbiB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IH1cblxuLnBhY3MtaWNvbjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9UcmFuc2Zlcl82MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyB9XG5cbi5wYWNzLWljb246YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxuXG4ucGFjcy1pY29uOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL1RyYW5zZmVyXzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IH1cblxuLm1lZGlhLWljb24geyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDsgfVxuXG4ubWVkaWEtaWNvbjpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgfVxuXG4ubWVkaWEtaWNvbjphY3RpdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vRXhwb3J0XzYwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgfVxuXG4ubWVkaWEtaWNvbjpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9FeHBvcnRfNjBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTsgfVxuXG4uaWNvbi1idXR0b24ge1xuICAgIGJvcmRlcjpub25lO1xuICAgIHdpZHRoOjYwcHg7XG4gICAgaGVpZ2h0OjQwcHg7XG59XG5cbi5pY29uLWJ1dHRvbjpmb2N1cyB7XG4gICAgb3V0bGluZTogbm9uZTtcbn1cblxuI2V4cG9ydC1mb3JtYXQtYXJlYXtcbiAgICBkaXNwbGF5OmZsZXg7XG4gICAgbWFyZ2luLXRvcDoyMHB4O1xufVxuXG4jZXhwb3J0LWZvcm1hdC10eXBlIHtcbiAgICB3aWR0aDoxMDBweDtcbiAgICBtYXJnaW4tbGVmdDogMTAwcHg7XG59XG5cbiN0cmFuc2Zlci1yb3cge1xuICAgIGRpc3BsYXk6ZmxleDtcbn1cblxuLnRkLWltYWdlIHtcbiAgICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG59XG5cbi5zZWNvbmQtdGQge1xuICAgIHBhZGRpbmctbGVmdDo1MHB4O1xufVxuXG4udGh1bWJuYWlsLXR5cGUge1xuICAgIGJvcmRlciA6IDFweCBzb2xpZCBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG4gICAgbWF4LXdpZHRoOjEwMCU7XG4gICAgbWF4LWhlaWdodDoxMDAlO1xuICAgIG1hcmdpbjogYXV0byBhdXRvO1xufVxuXG4uc2VsZWN0ZWQtaW1hZ2Uge1xuICAgIGJvcmRlciA6IDFweCBkb3R0ZWQgQHVuZGVybGluZS1jb2xvcjtcbn1cblxuLnJlY3QtaW1nIHtcbiAgICBoZWlnaHQ6IDEwMHB4O1xuICAgIHdpZHRoOiAxMDBweDtcbn1cblxuI3RhYi1tYXNrLWNvbnRlbnQge1xuICAgIG1hcmdpbi10b3A6IDVweDtcbn0iXX0= */"
 
 /***/ }),
 
@@ -11380,14 +10984,14 @@ var ExportStudyComponent = /** @class */ (function () {
     };
     ExportStudyComponent.prototype.onOkClick = function () {
         var _this = this;
-        this.checkedImages = new Array();
-        this.childImages.forEach(function (child) {
-            if (child.isSelected()) {
-                _this.checkedImages.push(child.image);
-            }
-        });
         if (this.isShowPacs) {
+            this.checkedImages = new Array();
             this.checkedOtherPacs = new Array();
+            this.childImages.forEach(function (child) {
+                if (child.isSelected()) {
+                    _this.checkedImages.push(child.image);
+                }
+            });
             for (var _i = 0, _a = this.pacsList; _i < _a.length; _i++) {
                 var pacs = _a[_i];
                 if (pacs.pacsChecked === true) {
@@ -11417,7 +11021,6 @@ var ExportStudyComponent = /** @class */ (function () {
             else if (this.isRemovePatientInfo && this.isRemoveInstitutionName) {
                 strLastExportPatientInfoConfig = "8";
             }
-            this.databaseService.doExportJob(this.studies, this.checkedImages, this.selectedExportType, this.selectedTransferCompress, this.isRemovePatientInfo, this.isRemovePatientInfo, this.isIncludeCdViewer, this.isIncludeCdBurningTool, strLastExportPatientInfoConfig).subscribe();
         }
         this.dialogRef.close();
     };
@@ -11661,7 +11264,7 @@ var PatientEditComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\r\n    <table id=\"tblStudies\" class=\"table table-bordered table-condensed\">\r\n        <thead>\r\n            <tr id=\"trStudiesHeader\">\r\n                <th>\r\n                </th>\r\n                <th>\r\n                </th>\r\n                <th *ngFor=\"let col of worklistService.worklistColumns \" nowrap>\r\n                    <div id=\"headContent\" class=\"worklistHeader\">\r\n                        <table>\r\n                            <tr>\r\n                                <td>\r\n                                    <div (click)=\"onWorklistHeaderClicked(col.columnId)\">{{col.columnText}}</div>\r\n                                </td>\r\n                                <td>\r\n                                    <i id=\"orderIcon\" *ngIf=\"col.columnId == orderHeader\" [className]=\"isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'\"></i>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </th>\r\n            </tr>\r\n            <tr id=\"trStudiesQuery\">\r\n                <td>\r\n                    <input type=\"checkbox\" (click)=\"onAllStudyChecked($event)\" (change)=\"onCheckStudyChanged()\"/>\r\n                </td>\r\n                <td></td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\">\r\n                    <div *ngIf=\"col.controlType == 'TextBox'\">\r\n                        <input type=\"text\" [(ngModel)]=\"col.shortcutType[col.columnId]\" />\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'DropDownList'\">\r\n                        <div *ngIf=\"col.columnId == 'studyDate'; else notStudyDate\">\r\n                            <div>\r\n                                <select *ngIf=\"!initStudyDate; else showStudyDateRange\" [(ngModel)]=\"col.shortcutType[col.columnId]\" (change)=\"onStudyDateChangeSelect($event.target.selectedIndex)\">\r\n                                    <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                                </select>\r\n                                <ng-template #showStudyDateRange>\r\n                                    <table (click)=\"onStudyDateRangeTableClicked()\">\r\n                                        <tr>\r\n                                            <td>\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" [(ngModel)]=\"worklistService.shortcut.studyDateFrom\"/>\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker1></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                            <td id=\"tdStudyDateFrom\">\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker2\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"To\" [(ngModel)]=\"worklistService.shortcut.studyDateTo\" />\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker2></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                        </tr>\r\n                                    </table>\r\n                                </ng-template>\r\n                            </div>\r\n                        </div>\r\n                        <ng-template #notStudyDate>\r\n                            <select [(ngModel)]=\"col.shortcutType[col.columnId]\">\r\n                                <option value=\"\">All</option>\r\n                                <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                            </select>\r\n                        </ng-template>\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'Calendar'\">\r\n                        <table>\r\n                            <tr>\r\n                                <td id=\"no-border\">\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" (dateChange)=\"fromDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateFrom\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker1></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                                <td>\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker2\" [min]=\"toMinDate\" [max]=\"toMaxDate\" placeholder=\"To\" (dateChange)=\"toDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateTo\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker2></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let study of worklistService.studies\">\r\n                <td>\r\n                    <input type=\"checkbox\" [(ngModel)]=\"study.studyChecked\" (change)=\"onCheckStudyChanged()\" />\r\n                </td>\r\n                <td>\r\n                    <div *ngIf=\"study.scanStatus == 'Ended'; else scanStatusCompleted\" class=\"setReadCover\">\r\n                        <button class=\"setRead\" role=\"button\" title=\"Set Read\" (click)=\"onSetRead(study)\"></button>\r\n                    </div>\r\n                    <ng-template #scanStatusCompleted>\r\n                        <div class=\"setUnreadCover\">\r\n                            <button class=\"setUnread\" role=\"button\" title=\"Set Unread\" (click)=\"onSetUnread(study)\"></button>\r\n                        </div>\r\n                    </ng-template>\r\n                </td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\" (click)=\"onStudyChecked(study)\" nowrap>\r\n                    <div class=\"patientIdCol\" *ngIf=\"col.columnId == 'patientId'; else notPatientId\">\r\n                        <div *ngIf=\"study['instanceAvailability'] === 'Online'; else offlineStudy\" class=\"onlineStudy\" (click)=\"doShowStudy(study)\">\r\n                            {{study.patient[col.columnId]}}\r\n                        </div>\r\n                        <ng-template #offlineStudy>\r\n                            <div class=\"offlineStudy\">\r\n                                {{study.patient[col.columnId]}}\r\n                            </div>\r\n                        </ng-template>\r\n                    </div>\r\n                    <ng-template #notPatientId>\r\n                        <div *ngIf=\"study.patient[col.columnId]; else onlyStudy\">{{study.patient[col.columnId]}}</div>\r\n                        <ng-template #onlyStudy>\r\n                            <div *ngIf=\"col.columnId != 'bodyPartExamined'; else bodyPart\">{{study[col.columnId]}}</div>\r\n                            <ng-template #bodyPart>\r\n                                <span *ngFor=\"let bodyPart of study.bodyPartList; let i = index\">\r\n                                    <span *ngIf=\"i != 0\">\r\n                                        ,\r\n                                    </span>\r\n                                    {{bodyPart}}\r\n                                </span>\r\n                            </ng-template>\r\n                        </ng-template>\r\n                    </ng-template>\r\n                </td>\r\n            </tr>\r\n        </tbody>\r\n        <tfoot>\r\n            <tr id=\"trFoot\">\r\n                <td colspan=\"25\">\r\n                    <ul>\r\n                        <li>\r\n                            <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(1)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">First</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onPrevPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">Prev</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onNextPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Next</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(worklistService.pageCount)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Last</button>\r\n                        </li>\r\n                        <li>\r\n                            <select id=\"ddlPageIndex\" [(ngModel)]=\"currentPage\">\r\n                                <option *ngFor=\"let page of worklistService.pages;\">{{page+1}}</option>\r\n                            </select>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(currentPage)\" [disabled]=\"worklistService.pageCount == 1\">Goto</button>\r\n                        </li>\r\n                    </ul>\r\n                </td>\r\n            </tr>\r\n        </tfoot>\r\n    </table>\r\n</div>\r\n\r\n<mat-progress-spinner [style.visibility]=\"worklistService.querying? 'visible' : 'hidden'\" class=\"loading-shade\"\r\n                      [color]=\"color\"\r\n                      [mode]=\"mode\"\r\n                      [value]=\"value\">\r\n</mat-progress-spinner>\r\n"
+module.exports = "<div>\r\n    <table id=\"tblStudies\" class=\"table table-bordered table-condensed\">\r\n        <thead>\r\n            <tr id=\"trStudiesHeader\">\r\n                <th>\r\n                </th>\r\n                <th>\r\n                </th>\r\n                <th *ngFor=\"let col of worklistService.worklistColumns \" nowrap>\r\n                    <div id=\"headContent\" class=\"worklistHeader\">\r\n                        <table>\r\n                            <tr>\r\n                                <td>\r\n                                    <div (click)=\"onWorklistHeaderClicked(col.columnId)\">{{col.columnText}}</div>\r\n                                </td>\r\n                                <td>\r\n                                    <i id=\"orderIcon\" *ngIf=\"col.columnId == orderHeader\" [className]=\"isDesc ? 'glyphicon glyphicon-collapse-down' : 'glyphicon glyphicon-collapse-up'\"></i>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </th>\r\n            </tr>\r\n            <tr id=\"trStudiesQuery\">\r\n                <td>\r\n                    <input type=\"checkbox\" (click)=\"onAllStudyChecked($event)\" (change)=\"onCheckStudyChanged()\"/>\r\n                </td>\r\n                <td></td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\">\r\n                    <div *ngIf=\"col.controlType == 'TextBox'\">\r\n                        <input type=\"text\" [(ngModel)]=\"col.shortcutType[col.columnId]\" />\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'DropDownList'\">\r\n                        <div *ngIf=\"col.columnId == 'studyDate'; else notStudyDate\">\r\n                            <div>\r\n                                <select *ngIf=\"!initStudyDate; else showStudyDateRange\" [(ngModel)]=\"col.shortcutType[col.columnId]\" (change)=\"onStudyDateChangeSelect($event.target.selectedIndex)\">\r\n                                    <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                                </select>\r\n                                <ng-template #showStudyDateRange>\r\n                                    <table (click)=\"onStudyDateRangeTableClicked()\">\r\n                                        <tr>\r\n                                            <td>\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" [(ngModel)]=\"worklistService.shortcut.studyDateFrom\"/>\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker1></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                            <td id=\"tdStudyDateFrom\">\r\n                                                <mat-form-field>\r\n                                                    <input matInput [matDatepicker]=\"picker2\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"To\" [(ngModel)]=\"worklistService.shortcut.studyDateTo\" />\r\n                                                    <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                                    <mat-datepicker #picker2></mat-datepicker>\r\n                                                </mat-form-field>\r\n                                            </td>\r\n                                        </tr>\r\n                                    </table>\r\n                                </ng-template>\r\n                            </div>\r\n                        </div>\r\n                        <ng-template #notStudyDate>\r\n                            <select [(ngModel)]=\"col.shortcutType[col.columnId]\">\r\n                                <option value=\"\">All</option>\r\n                                <option *ngFor=\"let value of col.valueList | keyvalue\" [ngValue]=\"value.key\">{{value.value}}</option>\r\n                            </select>\r\n                        </ng-template>\r\n                    </div>\r\n                    <div *ngIf=\"col.controlType == 'Calendar'\">\r\n                        <table>\r\n                            <tr>\r\n                                <td id=\"no-border\">\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker1\" [min]=\"fromMinDate\" [max]=\"fromMaxDate\" placeholder=\"From\" (dateChange)=\"fromDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateFrom\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker1\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker1></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                                <td>\r\n                                    <mat-form-field>\r\n                                        <input matInput [matDatepicker]=\"picker2\" [min]=\"toMinDate\" [max]=\"toMaxDate\" placeholder=\"To\" (dateChange)=\"toDateChanged('change', $event)\" [(ngModel)]=\"worklistService.shortcut.patientBirthDateTo\" />\r\n                                        <mat-datepicker-toggle matSuffix [for]=\"picker2\"></mat-datepicker-toggle>\r\n                                        <mat-datepicker #picker2></mat-datepicker>\r\n                                    </mat-form-field>\r\n                                </td>\r\n                            </tr>\r\n                        </table>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n        </thead>\r\n        <tbody>\r\n            <tr *ngFor=\"let study of worklistService.studies\">\r\n                <td>\r\n                    <input type=\"checkbox\" [(ngModel)]=\"study.studyChecked\" (change)=\"onCheckStudyChanged()\" />\r\n                </td>\r\n                <td>\r\n                    <div *ngIf=\"study.scanStatus == 'Ended'; else scanStatusCompleted\" class=\"setReadCover\">\r\n                        <button class=\"setRead\" role=\"button\" title=\"Set Read\" (click)=\"onSetRead(study)\"></button>\r\n                    </div>\r\n                    <ng-template #scanStatusCompleted>\r\n                        <div class=\"setUnreadCover\">\r\n                            <button class=\"setUnread\" role=\"button\" title=\"Set Unread\" (click)=\"onSetUnread(study)\"></button>\r\n                        </div>\r\n                    </ng-template>\r\n                </td>\r\n                <td *ngFor=\"let col of worklistService.worklistColumns\" (click)=\"onStudyChecked(study)\" nowrap>\r\n                    <div class=\"patientIdCol\" *ngIf=\"col.columnId == 'patientId'; else notPatientId\">\r\n                        <div *ngIf=\"study['instanceAvailability'] === 'Online'; else offlineStudy\" class=\"onlineStudy\" (click)=\"doShowStudy(study)\">\r\n                            {{study.patient[col.columnId]}}\r\n                        </div>\r\n                        <ng-template #offlineStudy>\r\n                            <div class=\"offlineStudy\">\r\n                                {{study.patient[col.columnId]}}\r\n                            </div>\r\n                        </ng-template>\r\n                    </div>\r\n                    <ng-template #notPatientId>\r\n                        <div *ngIf=\"study.patient[col.columnId]; else onlyStudy\">{{study.patient[col.columnId]}}</div>\r\n                        <ng-template #onlyStudy>\r\n                            <div *ngIf=\"col.columnId != 'bodyPartExamined'; else bodyPart\">{{study[col.columnId]}}</div>\r\n                            <ng-template #bodyPart>\r\n                                <span *ngFor=\"let bodyPart of study.bodyPartList; let i = index\">\r\n                                    <span *ngIf=\"i != 0\">\r\n                                        ,\r\n                                    </span>\r\n                                    {{bodyPart}}\r\n                                </span>\r\n                            </ng-template>\r\n                        </ng-template>\r\n                    </ng-template>\r\n                </td>\r\n            </tr>\r\n        </tbody>\r\n        <tfoot>\r\n            <tr id=\"trFoot\">\r\n                <td colspan=\"5\">\r\n                    <ul>\r\n                        <li>\r\n                            <div>Pages:{{currentPage}}/{{worklistService.pageCount}}</div>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(1)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">First</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onPrevPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == 1\">Prev</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onNextPageClicked()\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Next</button>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(worklistService.pageCount)\" [disabled]=\"worklistService.pageCount == 1 || currentPage == worklistService.pageCount\">Last</button>\r\n                        </li>\r\n                        <li>\r\n                            <select id=\"ddlPageIndex\" [(ngModel)]=\"currentPage\">\r\n                                <option *ngFor=\"let page of worklistService.pages;\">{{page+1}}</option>\r\n                            </select>\r\n                        </li>\r\n                        <li>\r\n                            <button class=\"shortcut-name-button\" (click)=\"onCurrentPageClicked(currentPage)\" [disabled]=\"worklistService.pageCount == 1\">Goto</button>\r\n                        </li>\r\n                    </ul>\r\n                </td>\r\n            </tr>\r\n        </tfoot>\r\n    </table>\r\n</div>\r\n\r\n<mat-progress-spinner [style.visibility]=\"worklistService.querying? 'visible' : 'hidden'\" class=\"loading-shade\"\r\n                      [color]=\"color\"\r\n                      [mode]=\"mode\"\r\n                      [value]=\"value\">\r\n</mat-progress-spinner>\r\n"
 
 /***/ }),
 
@@ -11672,7 +11275,7 @@ module.exports = "<div>\r\n    <table id=\"tblStudies\" class=\"table table-bord
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n#tblStudies a {\n  color: #fff;\n}\nul {\n  list-style: none;\n  -webkit-padding-start: 0px;\n          padding-inline-start: 0px;\n}\nli {\n  float: left;\n  padding: 2px;\n}\nli button {\n  cursor: pointer;\n}\n#tblStudies {\n  border-spacing: 0px;\n  border: 1px solid #333 !important;\n  border-collapse: separate;\n}\nthead {\n  background: #555;\n}\nthead tr {\n  background-color: #555;\n}\nthead td {\n  background-color: #555;\n}\nthead div {\n  font-weight: normal;\n}\n.worklistHeader {\n  cursor: pointer;\n  min-width: 50px;\n}\n#headContent td tr {\n  border: 0px;\n}\n#tblStudies td {\n  border: 1px solid #333;\n  border-right: none;\n  border-bottom: none;\n  color: #ccc;\n}\n#tblStudies td td {\n  border: none;\n}\n#tblStudies th {\n  border: 1px solid #333;\n  border-right: none;\n  border-bottom: none;\n}\n#tblStudies tr.cust-info td {\n  background-color: #000;\n}\n#trStudiesHeader a {\n  color: #ccc;\n}\n#trSeriesHeader a {\n  color: #fff;\n}\n#trStudiesHeader tr td {\n  border: hidden;\n  padding-right: 5px;\n}\n#trStudiesQuery input[type=checkbox] {\n  background-color: #000;\n  border: 1px solid #333;\n  vertical-align: middle;\n  width: 20px;\n}\nselect {\n  background-color: #000;\n  border: 1px solid #333;\n  width: 100%;\n}\n#trStudiesQuery td:nth-child(n) {\n  margin: 0px;\n  padding: 1px;\n  vertical-align: middle;\n}\n#tblStudies tbody tr:nth-child(2n) {\n  background-color: #181818;\n}\n#tblStudies tbody tr:hover {\n  background-color: #555;\n  color: orange;\n}\n#trStudiesQuery .dropdown {\n  background-color: #555;\n  color: red;\n}\n#trStudiesQuery .dropdown .btn {\n  background-color: #555;\n  min-width: 70px;\n  padding: 1px 6px;\n}\n.loading-shade {\n  align-items: center;\n  background: #000;\n  bottom: 0px;\n  display: flex;\n  justify-content: center;\n  left: 0px;\n  margin: auto;\n  position: fixed;\n  right: 0px;\n  top: 0px;\n  z-index: 1;\n}\n.shortcut-name-button {\n  background-color: transparent;\n  border: none;\n  border-width: 0px;\n  color: inherit;\n  outline: none;\n}\n.shortcut-name-button:disabled {\n  color: #555;\n}\n.setRead,\n.setUnread {\n  border: none;\n  height: 40px;\n  outline: none;\n  width: 40px;\n}\n.setRead {\n  background: url('setRead_40_40_All.png') no-repeat left top;\n  background-size: cover;\n}\n.setRead:hover {\n  background: url('setRead_40_40_All.png') no-repeat right top;\n  background-size: cover;\n}\n.setRead:active {\n  background: url('setRead_40_40_All.png') no-repeat left bottom;\n  background-size: cover;\n}\n.setRead:disabled {\n  background: url('setRead_40_40_All.png') no-repeat right bottom;\n  background-size: cover;\n}\n.setReadCover {\n  height: 20px;\n  width: 20px;\n  overflow: hidden;\n}\n.setUnread {\n  background: url('setUnread_40_40_All.png') no-repeat left top;\n  background-size: cover;\n}\n.setUnread:hover {\n  background: url('setUnread_40_40_All.png') no-repeat right top;\n  background-size: cover;\n}\n.setUnread:active {\n  background: url('setUnread_40_40_All.png') no-repeat left bottom;\n  background-size: cover;\n}\n.setUnread:disabled {\n  background: url('setUnread_40_40_All.png') no-repeat right bottom;\n  background-size: cover;\n}\n.setUnreadCover {\n  height: 20px;\n  width: 20px;\n  overflow: hidden;\n}\n.onlineStudy {\n  color: #fff;\n  text-decoration: underline;\n  cursor: pointer;\n}\n.offlineStudy {\n  color: #555;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQubGVzcyIsInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9EOi9Xb3JrL0dpdC9JbWFnZVN1aXRlL1dlYlBhY3MvQ3NoLkltYWdlU3VpdGUuV2ViQ2xpZW50L3NyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQubGVzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7OztjQUljO0FBQ2Q7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7RUFtQkU7QUN0QkY7RUFDSSxXQUFBO0FEd0JKO0FDckJBO0VBQ0ksZ0JBQUE7RUFDQSwwQkFBQTtVQUFBLHlCQUFBO0FEdUJKO0FDcEJBO0VBQ0ksV0FBQTtFQUNBLFlBQUE7QURzQko7QUNuQkk7RUFDSSxlQUFBO0FEcUJSO0FDbEJBO0VBQ0ksbUJBQUE7RUFDQSxpQ0FBQTtFQUNBLHlCQUFBO0FEb0JKO0FDakJBO0VBQ0ksZ0JBQUE7QURtQko7QUNoQkE7RUFDSSxzQkFBQTtBRGtCSjtBQ2ZBO0VBQ0ksc0JBQUE7QURpQko7QUNkQTtFQUNJLG1CQUFBO0FEZ0JKO0FDYkE7RUFDSSxlQUFBO0VBQ0EsZUFBQTtBRGVKO0FDWkE7RUFDSSxXQUFBO0FEY0o7QUNYQTtFQUNJLHNCQUFBO0VBQ0Esa0JBQUE7RUFDQSxtQkFBQTtFQUNBLFdBQUE7QURhSjtBQ1ZBO0VBQ0ksWUFBQTtBRFlKO0FDUkE7RUFDSSxzQkFBQTtFQUNBLGtCQUFBO0VBQ0EsbUJBQUE7QURVSjtBQ1BBO0VBQ0ksc0JBQUE7QURTSjtBQ05BO0VBQ0ksV0FBQTtBRFFKO0FDTEE7RUFDSSxXQUFBO0FET0o7QUNKQTtFQUNJLGNBQUE7RUFDQSxrQkFBQTtBRE1KO0FDSEE7RUFDSSxzQkFBQTtFQUNBLHNCQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0FES0o7QUNGQTtFQUNJLHNCQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0FESUo7QUNEQTtFQUNJLFdBQUE7RUFDQSxZQUFBO0VBQ0Esc0JBQUE7QURHSjtBQ0lBO0VBQ0kseUJBQUE7QURGSjtBQ0tBO0VBQ0ksc0JBQUE7RUFDQSxhQUFBO0FESEo7QUNPQTtFQUNJLHNCQUFBO0VBQ0EsVUFBQTtBRExKO0FDUUk7RUFDSSxzQkFBQTtFQUNBLGVBQUE7RUFDQSxnQkFBQTtBRE5SO0FDU0E7RUFDSSxtQkFBQTtFQUNBLGdCQUFBO0VBQ0EsV0FBQTtFQUNBLGFBQUE7RUFDQSx1QkFBQTtFQUNBLFNBQUE7RUFDQSxZQUFBO0VBQ0EsZUFBQTtFQUNBLFVBQUE7RUFDQSxRQUFBO0VBQ0EsVUFBQTtBRFBKO0FDVUE7RUFDSSw2QkFBQTtFQUNBLFlBQUE7RUFDQSxpQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0FEUko7QUNXQTtFQUNJLFdBQUE7QURUSjtBQ1lBOztFQUNJLFlBQUE7RUFDQSxZQUFBO0VBQ0EsYUFBQTtFQUNBLFdBQUE7QURUSjtBQ1lBO0VBQ0ksMkRBQUE7RUFDQSxzQkFBQTtBRFZKO0FDY0E7RUFBaUIsNERBQUE7RUFBMEYsc0JBQUE7QURWM0c7QUNZQTtFQUFrQiw4REFBQTtFQUE0RixzQkFBQTtBRFI5RztBQ1VBO0VBQW9CLCtEQUFBO0VBQTZGLHNCQUFBO0FETmpIO0FDUUE7RUFDSSxZQUFBO0VBQ0EsV0FBQTtFQUNBLGdCQUFBO0FETko7QUNTQTtFQUFhLDZEQUFBO0VBQTJGLHNCQUFBO0FETHhHO0FDT0E7RUFBbUIsOERBQUE7RUFBNEYsc0JBQUE7QURIL0c7QUNLQTtFQUFvQixnRUFBQTtFQUE4RixzQkFBQTtBRERsSDtBQ0dBO0VBQXNCLGlFQUFBO0VBQStGLHNCQUFBO0FEQ3JIO0FDQ0E7RUFDSSxZQUFBO0VBQ0EsV0FBQTtFQUNBLGdCQUFBO0FEQ0o7QUNFQTtFQUNJLFdBQUE7RUFDQSwwQkFBQTtFQUNBLGVBQUE7QURBSjtBQ0dBO0VBQ0ksV0FBQTtBRERKIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQubGVzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qQGJsYWNrOiAjMDAwO1xuQG9yYW5nZTogb3JhbmdlO1xuQGdyYXk6ICM1NTU7XG5Ac2lsdmVyOiAjYWFhO1xuQHdoaXRlOiAjZmZmOyovXG4vKi50aGVtZS1kYXJrIHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEBibGFjaztcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHNpbHZlcjtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAZ3JheTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEBncmF5O1xuICAgIEBmb250LWNvbG9yIDogQHdoaXRlO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59XG5cblxuLnRoZW1lLWxpZ2h0IHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHdoaXRlO1xuICAgIEBkaXNhYmxlLWNvbG9yIDogQHdoaXRlO1xuICAgIEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZm9udC1jb2xvcjogQGJsYWNrO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59Ki9cbiN0YmxTdHVkaWVzIGEge1xuICBjb2xvcjogI2ZmZjtcbn1cbnVsIHtcbiAgbGlzdC1zdHlsZTogbm9uZTtcbiAgcGFkZGluZy1pbmxpbmUtc3RhcnQ6IDBweDtcbn1cbmxpIHtcbiAgZmxvYXQ6IGxlZnQ7XG4gIHBhZGRpbmc6IDJweDtcbn1cbmxpIGJ1dHRvbiB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cbiN0YmxTdHVkaWVzIHtcbiAgYm9yZGVyLXNwYWNpbmc6IDBweDtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMyAhaW1wb3J0YW50O1xuICBib3JkZXItY29sbGFwc2U6IHNlcGFyYXRlO1xufVxudGhlYWQge1xuICBiYWNrZ3JvdW5kOiAjNTU1O1xufVxudGhlYWQgdHIge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1O1xufVxudGhlYWQgdGQge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1O1xufVxudGhlYWQgZGl2IHtcbiAgZm9udC13ZWlnaHQ6IG5vcm1hbDtcbn1cbi53b3JrbGlzdEhlYWRlciB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgbWluLXdpZHRoOiA1MHB4O1xufVxuI2hlYWRDb250ZW50IHRkIHRyIHtcbiAgYm9yZGVyOiAwcHg7XG59XG4jdGJsU3R1ZGllcyB0ZCB7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIGJvcmRlci1yaWdodDogbm9uZTtcbiAgYm9yZGVyLWJvdHRvbTogbm9uZTtcbiAgY29sb3I6ICNjY2M7XG59XG4jdGJsU3R1ZGllcyB0ZCB0ZCB7XG4gIGJvcmRlcjogbm9uZTtcbn1cbiN0YmxTdHVkaWVzIHRoIHtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcbiAgYm9yZGVyLXJpZ2h0OiBub25lO1xuICBib3JkZXItYm90dG9tOiBub25lO1xufVxuI3RibFN0dWRpZXMgdHIuY3VzdC1pbmZvIHRkIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbn1cbiN0clN0dWRpZXNIZWFkZXIgYSB7XG4gIGNvbG9yOiAjY2NjO1xufVxuI3RyU2VyaWVzSGVhZGVyIGEge1xuICBjb2xvcjogI2ZmZjtcbn1cbiN0clN0dWRpZXNIZWFkZXIgdHIgdGQge1xuICBib3JkZXI6IGhpZGRlbjtcbiAgcGFkZGluZy1yaWdodDogNXB4O1xufVxuI3RyU3R1ZGllc1F1ZXJ5IGlucHV0W3R5cGU9Y2hlY2tib3hdIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbiAgYm9yZGVyOiAxcHggc29saWQgIzMzMztcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgd2lkdGg6IDIwcHg7XG59XG5zZWxlY3Qge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMDAwO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICB3aWR0aDogMTAwJTtcbn1cbiN0clN0dWRpZXNRdWVyeSB0ZDpudGgtY2hpbGQobikge1xuICBtYXJnaW46IDBweDtcbiAgcGFkZGluZzogMXB4O1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xufVxuI3RibFN0dWRpZXMgdGJvZHkgdHI6bnRoLWNoaWxkKDJuKSB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMxODE4MTg7XG59XG4jdGJsU3R1ZGllcyB0Ym9keSB0cjpob3ZlciB7XG4gIGJhY2tncm91bmQtY29sb3I6ICM1NTU7XG4gIGNvbG9yOiBvcmFuZ2U7XG59XG4jdHJTdHVkaWVzUXVlcnkgLmRyb3Bkb3duIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcbiAgY29sb3I6IHJlZDtcbn1cbiN0clN0dWRpZXNRdWVyeSAuZHJvcGRvd24gLmJ0biB7XG4gIGJhY2tncm91bmQtY29sb3I6ICM1NTU7XG4gIG1pbi13aWR0aDogNzBweDtcbiAgcGFkZGluZzogMXB4IDZweDtcbn1cbi5sb2FkaW5nLXNoYWRlIHtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgYmFja2dyb3VuZDogIzAwMDtcbiAgYm90dG9tOiAwcHg7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICBsZWZ0OiAwcHg7XG4gIG1hcmdpbjogYXV0bztcbiAgcG9zaXRpb246IGZpeGVkO1xuICByaWdodDogMHB4O1xuICB0b3A6IDBweDtcbiAgei1pbmRleDogMTtcbn1cbi5zaG9ydGN1dC1uYW1lLWJ1dHRvbiB7XG4gIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xuICBib3JkZXI6IG5vbmU7XG4gIGJvcmRlci13aWR0aDogMHB4O1xuICBjb2xvcjogaW5oZXJpdDtcbiAgb3V0bGluZTogbm9uZTtcbn1cbi5zaG9ydGN1dC1uYW1lLWJ1dHRvbjpkaXNhYmxlZCB7XG4gIGNvbG9yOiAjNTU1O1xufVxuLnNldFJlYWQsXG4uc2V0VW5yZWFkIHtcbiAgYm9yZGVyOiBub25lO1xuICBoZWlnaHQ6IDQwcHg7XG4gIG91dGxpbmU6IG5vbmU7XG4gIHdpZHRoOiA0MHB4O1xufVxuLnNldFJlYWQge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0UmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7XG4gIGJhY2tncm91bmQtc2l6ZTogY292ZXI7XG59XG4uc2V0UmVhZDpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7XG4gIGJhY2tncm91bmQtc2l6ZTogY292ZXI7XG59XG4uc2V0UmVhZDphY3RpdmUge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0UmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207XG4gIGJhY2tncm91bmQtc2l6ZTogY292ZXI7XG59XG4uc2V0UmVhZDpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207XG4gIGJhY2tncm91bmQtc2l6ZTogY292ZXI7XG59XG4uc2V0UmVhZENvdmVyIHtcbiAgaGVpZ2h0OiAyMHB4O1xuICB3aWR0aDogMjBweDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cbi5zZXRVbnJlYWQge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0VW5yZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDtcbiAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cbi5zZXRVbnJlYWQ6aG92ZXIge1xuICBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0VW5yZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7XG4gIGJhY2tncm91bmQtc2l6ZTogY292ZXI7XG59XG4uc2V0VW5yZWFkOmFjdGl2ZSB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRVbnJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgYm90dG9tO1xuICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xufVxuLnNldFVucmVhZDpkaXNhYmxlZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRVbnJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTtcbiAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cbi5zZXRVbnJlYWRDb3ZlciB7XG4gIGhlaWdodDogMjBweDtcbiAgd2lkdGg6IDIwcHg7XG4gIG92ZXJmbG93OiBoaWRkZW47XG59XG4ub25saW5lU3R1ZHkge1xuICBjb2xvcjogI2ZmZjtcbiAgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmU7XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cbi5vZmZsaW5lU3R1ZHkge1xuICBjb2xvcjogIzU1NTtcbn1cbiIsIkBpbXBvcnQgJy4uLy4uLy4uLy4uL3RoZW1lcy5sZXNzJztcblxuI3RibFN0dWRpZXMgYSB7XG4gICAgY29sb3I6IEBmb250LWNvbG9yO1xufVxuXG51bCB7XG4gICAgbGlzdC1zdHlsZTogbm9uZTtcbiAgICBwYWRkaW5nLWlubGluZS1zdGFydDogMHB4O1xufVxuXG5saSB7XG4gICAgZmxvYXQ6IGxlZnQ7XG4gICAgcGFkZGluZzogMnB4O1xufVxuXG4gICAgbGkgYnV0dG9uIHtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cblxuI3RibFN0dWRpZXMge1xuICAgIGJvcmRlci1zcGFjaW5nOiAwcHg7XG4gICAgYm9yZGVyOiAxcHggc29saWQgIzMzMyAhaW1wb3J0YW50O1xuICAgIGJvcmRlci1jb2xsYXBzZTogc2VwYXJhdGU7XG59XG5cbnRoZWFkIHtcbiAgICBiYWNrZ3JvdW5kOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG59XG5cbnRoZWFkIHRyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG59XG5cbnRoZWFkIHRkIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG59XG5cbnRoZWFkIGRpdiB7XG4gICAgZm9udC13ZWlnaHQ6IG5vcm1hbDtcbn1cblxuLndvcmtsaXN0SGVhZGVyIHtcbiAgICBjdXJzb3I6cG9pbnRlcjtcbiAgICBtaW4td2lkdGg6NTBweDtcbn1cblxuI2hlYWRDb250ZW50IHRkIHRye1xuICAgIGJvcmRlcjogMHB4O1xufVxuXG4jdGJsU3R1ZGllcyB0ZCB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICBib3JkZXItcmlnaHQ6bm9uZTtcbiAgICBib3JkZXItYm90dG9tOm5vbmU7XG4gICAgY29sb3I6IEBmb250LXNlY29uZC1jb2xvcjtcbn1cblxuI3RibFN0dWRpZXMgdGQgdGQge1xuICAgIGJvcmRlciA6IG5vbmU7XG59XG5cblxuI3RibFN0dWRpZXMgdGgge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgYm9yZGVyLXJpZ2h0Om5vbmU7XG4gICAgYm9yZGVyLWJvdHRvbTpub25lO1xufVxuXG4jdGJsU3R1ZGllcyB0ci5jdXN0LWluZm8gdGQge1xuICAgIGJhY2tncm91bmQtY29sb3I6IEBiYWNrZ3JvdW5kLWNvbG9yO1xufVxuXG4jdHJTdHVkaWVzSGVhZGVyIGEge1xuICAgIGNvbG9yOiBAZm9udC1zZWNvbmQtY29sb3I7XG59XG5cbiN0clNlcmllc0hlYWRlciBhIHtcbiAgICBjb2xvcjogQGZvbnQtY29sb3I7XG59XG5cbiN0clN0dWRpZXNIZWFkZXIgdHIgdGQge1xuICAgIGJvcmRlcjpoaWRkZW47XG4gICAgcGFkZGluZy1yaWdodDo1cHg7XG59XG5cbiN0clN0dWRpZXNRdWVyeSBpbnB1dFt0eXBlPWNoZWNrYm94XSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgIHdpZHRoOiAyMHB4O1xufVxuXG5zZWxlY3Qge1xuICAgIGJhY2tncm91bmQtY29sb3I6IEBiYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbiN0clN0dWRpZXNRdWVyeSB0ZDpudGgtY2hpbGQobikge1xuICAgIG1hcmdpbjogMHB4O1xuICAgIHBhZGRpbmc6IDFweDtcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xufVxuXG4jdGJsU3R1ZGllcyB0Ym9keSB7XG5cbn1cblxuI3RibFN0dWRpZXMgdGJvZHkgdHI6bnRoLWNoaWxkKDJuKSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQG9kZC10ci1jb2xvcjtcbn1cblxuI3RibFN0dWRpZXMgdGJvZHkgdHI6aG92ZXIge1xuICAgIGJhY2tncm91bmQtY29sb3I6IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICBjb2xvcjogQHVuZGVybGluZS1jb2xvcjtcbn1cblxuXG4jdHJTdHVkaWVzUXVlcnkgLmRyb3Bkb3duIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG4gICAgY29sb3I6IEBlcnJvci1jb2xvcjtcbn1cblxuICAgICN0clN0dWRpZXNRdWVyeSAuZHJvcGRvd24gLmJ0biB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICAgICAgbWluLXdpZHRoOiA3MHB4O1xuICAgICAgICBwYWRkaW5nOiAxcHggNnB4O1xuICAgIH1cblxuLmxvYWRpbmctc2hhZGUge1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgYmFja2dyb3VuZDogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm90dG9tOiAwcHg7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICBsZWZ0OiAwcHg7XG4gICAgbWFyZ2luOiBhdXRvO1xuICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICByaWdodDogMHB4O1xuICAgIHRvcDogMHB4O1xuICAgIHotaW5kZXg6IDE7XG59XG5cbi5zaG9ydGN1dC1uYW1lLWJ1dHRvbiB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIGJvcmRlci13aWR0aDogMHB4O1xuICAgIGNvbG9yOiBpbmhlcml0O1xuICAgIG91dGxpbmU6IG5vbmU7XG59XG5cbi5zaG9ydGN1dC1uYW1lLWJ1dHRvbjpkaXNhYmxlZCB7XG4gICAgY29sb3I6IEBkaXNhYmxlLWNvbG9yO1xufVxuXG4uc2V0UmVhZCwgLnNldFVucmVhZCB7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIGhlaWdodDogNDBweDtcbiAgICBvdXRsaW5lOiBub25lO1xuICAgIHdpZHRoOiA0MHB4O1xufVxuXG4uc2V0UmVhZCB7IFxuICAgIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcCA7XG4gICAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cblxuXG4uc2V0UmVhZDpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCB0b3A7IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0UmVhZDphY3RpdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0UmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0UmVhZDpkaXNhYmxlZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0UmVhZENvdmVyIHtcbiAgICBoZWlnaHQ6IDIwcHg7XG4gICAgd2lkdGg6IDIwcHg7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cblxuLnNldFVucmVhZCB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRVbnJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wOyBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO31cblxuLnNldFVucmVhZDpob3ZlciB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRVbnJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjt9XG5cbi5zZXRVbnJlYWQ6YWN0aXZlIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0VW5yZWFkOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tOyBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO31cblxuLnNldFVucmVhZENvdmVyIHtcbiAgICBoZWlnaHQ6IDIwcHg7XG4gICAgd2lkdGg6IDIwcHg7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cblxuLm9ubGluZVN0dWR5IHtcbiAgICBjb2xvcjogQGZvbnQtY29sb3I7XG4gICAgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmU7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4ub2ZmbGluZVN0dWR5IHtcbiAgICBjb2xvcjpAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3I7XG59XG5cbiJdfQ== */"
+module.exports = "/*@black: #000;\n@orange: orange;\n@gray: #555;\n@silver: #aaa;\n@white: #fff;*/\n/*.theme-dark {\n    @background-color : @black;\n    @underline-color : @orange;\n    @border-color : @silver;\n    @container-background-color : @gray;\n    @disable-color : @gray;\n    @font-color : @white;\n    .change-dark(@background-color);\n}\n\n\n.theme-light {\n    @background-color : @white;\n    @underline-color : @orange;\n    @border-color : @white;\n    @disable-color : @white;\n    @container-background-color : @white;\n    @font-color: @black;\n    .change-dark(@background-color);\n}*/\n#tblStudies a {\n  color: #fff;\n}\nul {\n  list-style: none;\n  -webkit-padding-start: 0px;\n          padding-inline-start: 0px;\n}\nli {\n  float: left;\n  padding: 2px;\n}\nli button {\n  cursor: pointer;\n}\nthead {\n  background: #555;\n}\nthead tr {\n  background-color: #555;\n}\nthead td {\n  background-color: #555;\n}\nthead div {\n  font-weight: normal;\n}\n.worklistHeader {\n  cursor: pointer;\n  min-width: 50px;\n}\n#headContent td tr {\n  border: 0px;\n}\n#tblStudies td {\n  border: 1px solid #333;\n  color: #ccc;\n}\n#tblStudies td td {\n  border: none;\n}\n#tblStudies th {\n  border: 1px solid #333;\n}\n#tblStudies tr.cust-info td {\n  background-color: #000;\n}\n#trStudiesHeader a {\n  color: #ccc;\n}\n#trSeriesHeader a {\n  color: #fff;\n}\n#trStudiesHeader tr td {\n  border: hidden;\n  padding-right: 5px;\n}\n/*#trStudiesQuery input[type=text] {\n    background-color: @background-color;\n    border: 1px solid @border-color;\n    vertical-align: middle;\n    width: 100%;\n\n    border-bottom:1px solid red;\n\n\n}*/\n/*input:focus{\n    outline: none;\n    border-bottom:1px solid green;\n}*/\n#trStudiesQuery input[type=checkbox] {\n  background-color: #000;\n  border: 1px solid #333;\n  vertical-align: middle;\n  width: 20px;\n}\nselect {\n  background-color: #000;\n  border: 1px solid #333;\n  width: 100%;\n}\n#trStudiesQuery td:nth-child(n) {\n  margin: 0px;\n  padding: 1px;\n  vertical-align: middle;\n}\n#tblStudies tbody tr:nth-child(2n) {\n  background-color: #181818;\n}\n#tblStudies tbody tr:hover {\n  background-color: #555;\n  color: orange;\n}\n#trStudiesQuery .dropdown {\n  background-color: #555;\n  color: red;\n}\n#trStudiesQuery .dropdown .btn {\n  background-color: #555;\n  min-width: 70px;\n  padding: 1px 6px;\n}\n.loading-shade {\n  align-items: center;\n  background: #000;\n  bottom: 0px;\n  display: flex;\n  justify-content: center;\n  left: 0px;\n  margin: auto;\n  position: fixed;\n  right: 0px;\n  top: 0px;\n  z-index: 1;\n}\n.shortcut-name-button {\n  background-color: transparent;\n  border: none;\n  border-width: 0px;\n  color: inherit;\n  outline: none;\n}\n.shortcut-name-button:disabled {\n  color: #555;\n}\n.setRead,\n.setUnread {\n  border: none;\n  height: 40px;\n  outline: none;\n  width: 40px;\n}\n.setRead {\n  background: url('setRead_40_40_All.png') no-repeat left top;\n  background-size: cover;\n}\n.setRead:hover {\n  background: url('setRead_40_40_All.png') no-repeat right top;\n  background-size: cover;\n}\n.setRead:active {\n  background: url('setRead_40_40_All.png') no-repeat left bottom;\n  background-size: cover;\n}\n.setRead:disabled {\n  background: url('setRead_40_40_All.png') no-repeat right bottom;\n  background-size: cover;\n}\n.setReadCover {\n  height: 20px;\n  width: 20px;\n  overflow: hidden;\n}\n.setUnread {\n  background: url('setUnread_40_40_All.png') no-repeat left top;\n  background-size: cover;\n}\n.setUnread:hover {\n  background: url('setUnread_40_40_All.png') no-repeat right top;\n  background-size: cover;\n}\n.setUnread:active {\n  background: url('setUnread_40_40_All.png') no-repeat left bottom;\n  background-size: cover;\n}\n.setUnread:disabled {\n  background: url('setUnread_40_40_All.png') no-repeat right bottom;\n  background-size: cover;\n}\n.setUnreadCover {\n  height: 20px;\n  width: 20px;\n  overflow: hidden;\n}\n.onlineStudy {\n  color: #fff;\n  text-decoration: underline;\n  cursor: pointer;\n}\n.offlineStudy {\n  color: #555;\n}\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQubGVzcyIsInNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC9EOi9Xb3JrL0dpdC9JbWFnZVN1aXRlL1dlYlBhY3MvQ3NoLkltYWdlU3VpdGUuV2ViQ2xpZW50L3NyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQubGVzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7OztjQUljO0FBQ2Q7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7RUFtQkU7QUN0QkY7RUFDSSxXQUFBO0FEd0JKO0FDckJBO0VBQ0ksZ0JBQUE7RUFDQSwwQkFBQTtVQUFBLHlCQUFBO0FEdUJKO0FDcEJBO0VBQ0ksV0FBQTtFQUNBLFlBQUE7QURzQko7QUNuQkk7RUFDSSxlQUFBO0FEcUJSO0FDbEJBO0VBQ0ksZ0JBQUE7QURvQko7QUNqQkE7RUFDSSxzQkFBQTtBRG1CSjtBQ2hCQTtFQUNJLHNCQUFBO0FEa0JKO0FDZkE7RUFDSSxtQkFBQTtBRGlCSjtBQ2RBO0VBQ0ksZUFBQTtFQUNBLGVBQUE7QURnQko7QUNiQTtFQUNJLFdBQUE7QURlSjtBQ1pBO0VBQ0ksc0JBQUE7RUFDQSxXQUFBO0FEY0o7QUNYQTtFQUNJLFlBQUE7QURhSjtBQ1RBO0VBQ0ksc0JBQUE7QURXSjtBQ1JBO0VBQ0ksc0JBQUE7QURVSjtBQ1BBO0VBQ0ksV0FBQTtBRFNKO0FDTkE7RUFDSSxXQUFBO0FEUUo7QUNMQTtFQUNJLGNBQUE7RUFDQSxrQkFBQTtBRE9KO0FBQ0E7Ozs7Ozs7OztFQVNFO0FBQ0Y7OztFQUdFO0FDQUY7RUFDSSxzQkFBQTtFQUNBLHNCQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0FERUo7QUNDQTtFQUNJLHNCQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0FEQ0o7QUNFQTtFQUNJLFdBQUE7RUFDQSxZQUFBO0VBQ0Esc0JBQUE7QURBSjtBQ0dBO0VBQ0kseUJBQUE7QURESjtBQ0lBO0VBQ0ksc0JBQUE7RUFDQSxhQUFBO0FERko7QUNNQTtFQUNJLHNCQUFBO0VBQ0EsVUFBQTtBREpKO0FDT0k7RUFDSSxzQkFBQTtFQUNBLGVBQUE7RUFDQSxnQkFBQTtBRExSO0FDUUE7RUFDSSxtQkFBQTtFQUNBLGdCQUFBO0VBQ0EsV0FBQTtFQUNBLGFBQUE7RUFDQSx1QkFBQTtFQUNBLFNBQUE7RUFDQSxZQUFBO0VBQ0EsZUFBQTtFQUNBLFVBQUE7RUFDQSxRQUFBO0VBQ0EsVUFBQTtBRE5KO0FDU0E7RUFDSSw2QkFBQTtFQUNBLFlBQUE7RUFDQSxpQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0FEUEo7QUNVQTtFQUNJLFdBQUE7QURSSjtBQ1dBOztFQUNJLFlBQUE7RUFDQSxZQUFBO0VBQ0EsYUFBQTtFQUNBLFdBQUE7QURSSjtBQ1dBO0VBQ0ksMkRBQUE7RUFDQSxzQkFBQTtBRFRKO0FDYUE7RUFBaUIsNERBQUE7RUFBMEYsc0JBQUE7QURUM0c7QUNXQTtFQUFrQiw4REFBQTtFQUE0RixzQkFBQTtBRFA5RztBQ1NBO0VBQW9CLCtEQUFBO0VBQTZGLHNCQUFBO0FETGpIO0FDT0E7RUFDSSxZQUFBO0VBQ0EsV0FBQTtFQUNBLGdCQUFBO0FETEo7QUNRQTtFQUFhLDZEQUFBO0VBQTJGLHNCQUFBO0FESnhHO0FDTUE7RUFBbUIsOERBQUE7RUFBNEYsc0JBQUE7QURGL0c7QUNJQTtFQUFvQixnRUFBQTtFQUE4RixzQkFBQTtBREFsSDtBQ0VBO0VBQXNCLGlFQUFBO0VBQStGLHNCQUFBO0FERXJIO0FDQUE7RUFDSSxZQUFBO0VBQ0EsV0FBQTtFQUNBLGdCQUFBO0FERUo7QUNDQTtFQUNJLFdBQUE7RUFDQSwwQkFBQTtFQUNBLGVBQUE7QURDSjtBQ0VBO0VBQ0ksV0FBQTtBREFKIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy93b3JrbGlzdC1zaGVsbC93b3JrbGlzdC93b3JrbGlzdC5jb21wb25lbnQubGVzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qQGJsYWNrOiAjMDAwO1xuQG9yYW5nZTogb3JhbmdlO1xuQGdyYXk6ICM1NTU7XG5Ac2lsdmVyOiAjYWFhO1xuQHdoaXRlOiAjZmZmOyovXG4vKi50aGVtZS1kYXJrIHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEBibGFjaztcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHNpbHZlcjtcbiAgICBAY29udGFpbmVyLWJhY2tncm91bmQtY29sb3IgOiBAZ3JheTtcbiAgICBAZGlzYWJsZS1jb2xvciA6IEBncmF5O1xuICAgIEBmb250LWNvbG9yIDogQHdoaXRlO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59XG5cblxuLnRoZW1lLWxpZ2h0IHtcbiAgICBAYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAdW5kZXJsaW5lLWNvbG9yIDogQG9yYW5nZTtcbiAgICBAYm9yZGVyLWNvbG9yIDogQHdoaXRlO1xuICAgIEBkaXNhYmxlLWNvbG9yIDogQHdoaXRlO1xuICAgIEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvciA6IEB3aGl0ZTtcbiAgICBAZm9udC1jb2xvcjogQGJsYWNrO1xuICAgIC5jaGFuZ2UtZGFyayhAYmFja2dyb3VuZC1jb2xvcik7XG59Ki9cbiN0YmxTdHVkaWVzIGEge1xuICBjb2xvcjogI2ZmZjtcbn1cbnVsIHtcbiAgbGlzdC1zdHlsZTogbm9uZTtcbiAgcGFkZGluZy1pbmxpbmUtc3RhcnQ6IDBweDtcbn1cbmxpIHtcbiAgZmxvYXQ6IGxlZnQ7XG4gIHBhZGRpbmc6IDJweDtcbn1cbmxpIGJ1dHRvbiB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cbnRoZWFkIHtcbiAgYmFja2dyb3VuZDogIzU1NTtcbn1cbnRoZWFkIHRyIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcbn1cbnRoZWFkIHRkIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcbn1cbnRoZWFkIGRpdiB7XG4gIGZvbnQtd2VpZ2h0OiBub3JtYWw7XG59XG4ud29ya2xpc3RIZWFkZXIge1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIG1pbi13aWR0aDogNTBweDtcbn1cbiNoZWFkQ29udGVudCB0ZCB0ciB7XG4gIGJvcmRlcjogMHB4O1xufVxuI3RibFN0dWRpZXMgdGQge1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICBjb2xvcjogI2NjYztcbn1cbiN0YmxTdHVkaWVzIHRkIHRkIHtcbiAgYm9yZGVyOiBub25lO1xufVxuI3RibFN0dWRpZXMgdGgge1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xufVxuI3RibFN0dWRpZXMgdHIuY3VzdC1pbmZvIHRkIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAwMDtcbn1cbiN0clN0dWRpZXNIZWFkZXIgYSB7XG4gIGNvbG9yOiAjY2NjO1xufVxuI3RyU2VyaWVzSGVhZGVyIGEge1xuICBjb2xvcjogI2ZmZjtcbn1cbiN0clN0dWRpZXNIZWFkZXIgdHIgdGQge1xuICBib3JkZXI6IGhpZGRlbjtcbiAgcGFkZGluZy1yaWdodDogNXB4O1xufVxuLyojdHJTdHVkaWVzUXVlcnkgaW5wdXRbdHlwZT10ZXh0XSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgIHdpZHRoOiAxMDAlO1xuXG4gICAgYm9yZGVyLWJvdHRvbToxcHggc29saWQgcmVkO1xuXG5cbn0qL1xuLyppbnB1dDpmb2N1c3tcbiAgICBvdXRsaW5lOiBub25lO1xuICAgIGJvcmRlci1ib3R0b206MXB4IHNvbGlkIGdyZWVuO1xufSovXG4jdHJTdHVkaWVzUXVlcnkgaW5wdXRbdHlwZT1jaGVja2JveF0ge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMDAwO1xuICBib3JkZXI6IDFweCBzb2xpZCAjMzMzO1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICB3aWR0aDogMjBweDtcbn1cbnNlbGVjdCB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMwMDA7XG4gIGJvcmRlcjogMXB4IHNvbGlkICMzMzM7XG4gIHdpZHRoOiAxMDAlO1xufVxuI3RyU3R1ZGllc1F1ZXJ5IHRkOm50aC1jaGlsZChuKSB7XG4gIG1hcmdpbjogMHB4O1xuICBwYWRkaW5nOiAxcHg7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG59XG4jdGJsU3R1ZGllcyB0Ym9keSB0cjpudGgtY2hpbGQoMm4pIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzE4MTgxODtcbn1cbiN0YmxTdHVkaWVzIHRib2R5IHRyOmhvdmVyIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcbiAgY29sb3I6IG9yYW5nZTtcbn1cbiN0clN0dWRpZXNRdWVyeSAuZHJvcGRvd24ge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNTU1O1xuICBjb2xvcjogcmVkO1xufVxuI3RyU3R1ZGllc1F1ZXJ5IC5kcm9wZG93biAuYnRuIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzU1NTtcbiAgbWluLXdpZHRoOiA3MHB4O1xuICBwYWRkaW5nOiAxcHggNnB4O1xufVxuLmxvYWRpbmctc2hhZGUge1xuICBhbGlnbi1pdGVtczogY2VudGVyO1xuICBiYWNrZ3JvdW5kOiAjMDAwO1xuICBib3R0b206IDBweDtcbiAgZGlzcGxheTogZmxleDtcbiAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gIGxlZnQ6IDBweDtcbiAgbWFyZ2luOiBhdXRvO1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIHJpZ2h0OiAwcHg7XG4gIHRvcDogMHB4O1xuICB6LWluZGV4OiAxO1xufVxuLnNob3J0Y3V0LW5hbWUtYnV0dG9uIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gIGJvcmRlcjogbm9uZTtcbiAgYm9yZGVyLXdpZHRoOiAwcHg7XG4gIGNvbG9yOiBpbmhlcml0O1xuICBvdXRsaW5lOiBub25lO1xufVxuLnNob3J0Y3V0LW5hbWUtYnV0dG9uOmRpc2FibGVkIHtcbiAgY29sb3I6ICM1NTU7XG59XG4uc2V0UmVhZCxcbi5zZXRVbnJlYWQge1xuICBib3JkZXI6IG5vbmU7XG4gIGhlaWdodDogNDBweDtcbiAgb3V0bGluZTogbm9uZTtcbiAgd2lkdGg6IDQwcHg7XG59XG4uc2V0UmVhZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IHRvcDtcbiAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cbi5zZXRSZWFkOmhvdmVyIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDtcbiAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cbi5zZXRSZWFkOmFjdGl2ZSB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTtcbiAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cbi5zZXRSZWFkOmRpc2FibGVkIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTtcbiAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cbi5zZXRSZWFkQ292ZXIge1xuICBoZWlnaHQ6IDIwcHg7XG4gIHdpZHRoOiAyMHB4O1xuICBvdmVyZmxvdzogaGlkZGVuO1xufVxuLnNldFVucmVhZCB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRVbnJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wO1xuICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xufVxuLnNldFVucmVhZDpob3ZlciB7XG4gIGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRVbnJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDtcbiAgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjtcbn1cbi5zZXRVbnJlYWQ6YWN0aXZlIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCBib3R0b207XG4gIGJhY2tncm91bmQtc2l6ZTogY292ZXI7XG59XG4uc2V0VW5yZWFkOmRpc2FibGVkIHtcbiAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgYm90dG9tO1xuICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xufVxuLnNldFVucmVhZENvdmVyIHtcbiAgaGVpZ2h0OiAyMHB4O1xuICB3aWR0aDogMjBweDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cbi5vbmxpbmVTdHVkeSB7XG4gIGNvbG9yOiAjZmZmO1xuICB0ZXh0LWRlY29yYXRpb246IHVuZGVybGluZTtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuLm9mZmxpbmVTdHVkeSB7XG4gIGNvbG9yOiAjNTU1O1xufVxuIiwiQGltcG9ydCAnLi4vLi4vLi4vLi4vdGhlbWVzLmxlc3MnO1xuXG4jdGJsU3R1ZGllcyBhIHtcbiAgICBjb2xvcjogQGZvbnQtY29sb3I7XG59XG5cbnVsIHtcbiAgICBsaXN0LXN0eWxlOiBub25lO1xuICAgIHBhZGRpbmctaW5saW5lLXN0YXJ0OiAwcHg7XG59XG5cbmxpIHtcbiAgICBmbG9hdDogbGVmdDtcbiAgICBwYWRkaW5nOiAycHg7XG59XG5cbiAgICBsaSBidXR0b24ge1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgfVxuXG50aGVhZCB7XG4gICAgYmFja2dyb3VuZDogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xufVxuXG50aGVhZCB0ciB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xufVxuXG50aGVhZCB0ZCB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xufVxuXG50aGVhZCBkaXYge1xuICAgIGZvbnQtd2VpZ2h0OiBub3JtYWw7XG59XG5cbi53b3JrbGlzdEhlYWRlciB7XG4gICAgY3Vyc29yOnBvaW50ZXI7XG4gICAgbWluLXdpZHRoOjUwcHg7XG59XG5cbiNoZWFkQ29udGVudCB0ZCB0cntcbiAgICBib3JkZXI6IDBweDtcbn1cblxuI3RibFN0dWRpZXMgdGQge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgY29sb3I6IEBmb250LXNlY29uZC1jb2xvcjtcbn1cblxuI3RibFN0dWRpZXMgdGQgdGQge1xuICAgIGJvcmRlciA6IG5vbmU7XG59XG5cblxuI3RibFN0dWRpZXMgdGgge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG59XG5cbiN0YmxTdHVkaWVzIHRyLmN1c3QtaW5mbyB0ZCB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGJhY2tncm91bmQtY29sb3I7XG59XG5cbiN0clN0dWRpZXNIZWFkZXIgYSB7XG4gICAgY29sb3I6IEBmb250LXNlY29uZC1jb2xvcjtcbn1cblxuI3RyU2VyaWVzSGVhZGVyIGEge1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbn1cblxuI3RyU3R1ZGllc0hlYWRlciB0ciB0ZCB7XG4gICAgYm9yZGVyOmhpZGRlbjtcbiAgICBwYWRkaW5nLXJpZ2h0OjVweDtcbn1cblxuLyojdHJTdHVkaWVzUXVlcnkgaW5wdXRbdHlwZT10ZXh0XSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgIHdpZHRoOiAxMDAlO1xuXG4gICAgYm9yZGVyLWJvdHRvbToxcHggc29saWQgcmVkO1xuXG5cbn0qL1xuXG4vKmlucHV0OmZvY3Vze1xuICAgIG91dGxpbmU6IG5vbmU7XG4gICAgYm9yZGVyLWJvdHRvbToxcHggc29saWQgZ3JlZW47XG59Ki9cblxuXG5cbiN0clN0dWRpZXNRdWVyeSBpbnB1dFt0eXBlPWNoZWNrYm94XSB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGJhY2tncm91bmQtY29sb3I7XG4gICAgYm9yZGVyOiAxcHggc29saWQgQGJvcmRlci1jb2xvcjtcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgIHdpZHRoOiAyMHB4O1xufVxuXG5zZWxlY3Qge1xuICAgIGJhY2tncm91bmQtY29sb3I6IEBiYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIEBib3JkZXItY29sb3I7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbiN0clN0dWRpZXNRdWVyeSB0ZDpudGgtY2hpbGQobikge1xuICAgIG1hcmdpbjogMHB4O1xuICAgIHBhZGRpbmc6IDFweDtcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xufVxuXG4jdGJsU3R1ZGllcyB0Ym9keSB0cjpudGgtY2hpbGQoMm4pIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBAb2RkLXRyLWNvbG9yO1xufVxuXG4jdGJsU3R1ZGllcyB0Ym9keSB0cjpob3ZlciB7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgIGNvbG9yOiBAdW5kZXJsaW5lLWNvbG9yO1xufVxuXG5cbiN0clN0dWRpZXNRdWVyeSAuZHJvcGRvd24ge1xuICAgIGJhY2tncm91bmQtY29sb3I6IEBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjtcbiAgICBjb2xvcjogQGVycm9yLWNvbG9yO1xufVxuXG4gICAgI3RyU3R1ZGllc1F1ZXJ5IC5kcm9wZG93biAuYnRuIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogQGNvbnRhaW5lci1iYWNrZ3JvdW5kLWNvbG9yO1xuICAgICAgICBtaW4td2lkdGg6IDcwcHg7XG4gICAgICAgIHBhZGRpbmc6IDFweCA2cHg7XG4gICAgfVxuXG4ubG9hZGluZy1zaGFkZSB7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBiYWNrZ3JvdW5kOiBAYmFja2dyb3VuZC1jb2xvcjtcbiAgICBib3R0b206IDBweDtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgIGxlZnQ6IDBweDtcbiAgICBtYXJnaW46IGF1dG87XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHJpZ2h0OiAwcHg7XG4gICAgdG9wOiAwcHg7XG4gICAgei1pbmRleDogMTtcbn1cblxuLnNob3J0Y3V0LW5hbWUtYnV0dG9uIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDtcbiAgICBib3JkZXI6IG5vbmU7XG4gICAgYm9yZGVyLXdpZHRoOiAwcHg7XG4gICAgY29sb3I6IGluaGVyaXQ7XG4gICAgb3V0bGluZTogbm9uZTtcbn1cblxuLnNob3J0Y3V0LW5hbWUtYnV0dG9uOmRpc2FibGVkIHtcbiAgICBjb2xvcjogQGRpc2FibGUtY29sb3I7XG59XG5cbi5zZXRSZWFkLCAuc2V0VW5yZWFkIHtcbiAgICBib3JkZXI6IG5vbmU7XG4gICAgaGVpZ2h0OiA0MHB4O1xuICAgIG91dGxpbmU6IG5vbmU7XG4gICAgd2lkdGg6IDQwcHg7XG59XG5cbi5zZXRSZWFkIHsgXG4gICAgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IGxlZnQgdG9wIDtcbiAgICBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO1xufVxuXG5cbi5zZXRSZWFkOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IHRvcDsgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjt9XG5cbi5zZXRSZWFkOmFjdGl2ZSB7IGJhY2tncm91bmQ6IHVybCguLi8uLi8uLi8uLi9hc3NldHMvaW1nL2J1dHRvbi9zZXRSZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjt9XG5cbi5zZXRSZWFkOmRpc2FibGVkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFJlYWRfNDBfNDBfQWxsLnBuZykgbm8tcmVwZWF0IHJpZ2h0IGJvdHRvbTsgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjt9XG5cbi5zZXRSZWFkQ292ZXIge1xuICAgIGhlaWdodDogMjBweDtcbiAgICB3aWR0aDogMjBweDtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG4uc2V0VW5yZWFkIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgbGVmdCB0b3A7IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0VW5yZWFkOmhvdmVyIHsgYmFja2dyb3VuZDogdXJsKC4uLy4uLy4uLy4uL2Fzc2V0cy9pbWcvYnV0dG9uL3NldFVucmVhZF80MF80MF9BbGwucG5nKSBuby1yZXBlYXQgcmlnaHQgdG9wOyBiYWNrZ3JvdW5kLXNpemU6IGNvdmVyO31cblxuLnNldFVucmVhZDphY3RpdmUgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0VW5yZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCBsZWZ0IGJvdHRvbTsgYmFja2dyb3VuZC1zaXplOiBjb3Zlcjt9XG5cbi5zZXRVbnJlYWQ6ZGlzYWJsZWQgeyBiYWNrZ3JvdW5kOiB1cmwoLi4vLi4vLi4vLi4vYXNzZXRzL2ltZy9idXR0b24vc2V0VW5yZWFkXzQwXzQwX0FsbC5wbmcpIG5vLXJlcGVhdCByaWdodCBib3R0b207IGJhY2tncm91bmQtc2l6ZTogY292ZXI7fVxuXG4uc2V0VW5yZWFkQ292ZXIge1xuICAgIGhlaWdodDogMjBweDtcbiAgICB3aWR0aDogMjBweDtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG4ub25saW5lU3R1ZHkge1xuICAgIGNvbG9yOiBAZm9udC1jb2xvcjtcbiAgICB0ZXh0LWRlY29yYXRpb246IHVuZGVybGluZTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5vZmZsaW5lU3R1ZHkge1xuICAgIGNvbG9yOkBjb250YWluZXItYmFja2dyb3VuZC1jb2xvcjtcbn1cblxuIl19 */"
 
 /***/ }),
 
@@ -11770,11 +11373,6 @@ var WorklistComponent = /** @class */ (function () {
         this.worklistService.onQueryStudies(1);
         this.worklistService.onQueryShortcuts();
         this.worklistService.onQueryWorklistCol();
-        // Set Header fixed
-        document.getElementById("div-scroll").addEventListener("scroll", function () {
-            var translate = "translate(0," + this.scrollTop + "px)";
-            this.querySelector("thead").style.transform = translate;
-        });
     };
     WorklistComponent.prototype.onStudyChecked = function (study) {
         study.studyChecked = !study.studyChecked;
@@ -12156,26 +11754,6 @@ var WindowLevelData = /** @class */ (function () {
 
 /***/ }),
 
-/***/ "./src/app/models/dicom.ts":
-/*!*********************************!*\
-  !*** ./src/app/models/dicom.ts ***!
-  \*********************************/
-/*! exports provided: DicomTagData */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DicomTagData", function() { return DicomTagData; });
-var DicomTagData = /** @class */ (function () {
-    function DicomTagData() {
-    }
-    return DicomTagData;
-}());
-
-
-
-/***/ }),
-
 /***/ "./src/app/models/dropdown-button-menu-data.ts":
 /*!*****************************************************!*\
   !*** ./src/app/models/dropdown-button-menu-data.ts ***!
@@ -12409,8 +11987,6 @@ var ImageContextEnum;
     ImageContextEnum[ImageContextEnum["CreateAnn"] = 7] = "CreateAnn";
     ImageContextEnum[ImageContextEnum["RoiWl"] = 8] = "RoiWl";
     ImageContextEnum[ImageContextEnum["SelectAnn"] = 9] = "SelectAnn";
-    ImageContextEnum[ImageContextEnum["PixelValueMeasurement"] = 10] = "PixelValueMeasurement";
-    ImageContextEnum[ImageContextEnum["DicomHeaderViewer"] = 11] = "DicomHeaderViewer";
 })(ImageContextEnum || (ImageContextEnum = {}));
 var ImageContextData = /** @class */ (function () {
     function ImageContextData(imageContextType, imageContextPara) {
@@ -12921,9 +12497,6 @@ var Image = /** @class */ (function (_super) {
         this.annData = annData;
         this.cornerStoneImageList[frameIndex] = ctImage;
         this.frameCount = Number(ctImage.data.intString("x00280008"));
-        if (isNaN(this.frameCount)) {
-            this.frameCount = 1;
-        }
     };
     Image.prototype.getNextFrameIndex = function (wheelUp) {
         var nextFrameIndex = -1;
@@ -12941,19 +12514,6 @@ var Image = /** @class */ (function (_super) {
     };
     Image.prototype.isValidFrameIndex = function (index) {
         return index >= 0 && index < this.frameCount;
-    };
-    Image.prototype.isPointInImage = function (point) {
-        return point.x >= 0 && point.x < this.imageColumns && point.y >= 0 && point.y < this.imageRows;
-    };
-    Image.prototype.getFlippedImagePoint = function (point, hFlipped, vFlipped) {
-        var flippedPoint = new _models_annotation__WEBPACK_IMPORTED_MODULE_0__["Point"](point.x, point.y);
-        if (hFlipped) {
-            flippedPoint.x = this.imageColumns - point.x;
-        }
-        if (vFlipped) {
-            flippedPoint.y = this.imageRows - point.y;
-        }
-        return flippedPoint;
     };
     return Image;
 }(Pssi));
@@ -13036,51 +12596,6 @@ var PatientTemp = /** @class */ (function () {
     }
     return PatientTemp;
 }());
-
-
-/***/ }),
-
-/***/ "./src/app/models/settings.ts":
-/*!************************************!*\
-  !*** ./src/app/models/settings.ts ***!
-  \************************************/
-/*! exports provided: TransferJob, TransferJobItem */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TransferJob", function() { return TransferJob; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TransferJobItem", function() { return TransferJobItem; });
-var TransferJob = /** @class */ (function () {
-    function TransferJob() {
-        this.jobUid = "";
-        this.deliveryStatus = "";
-        this.patientName = "";
-        this.patientId = "";
-        this.createdDate = "";
-        this.type = "";
-        this.imageCount = "";
-        this.deliveryName = "";
-        this.destination = "";
-        this.finishedNumber = "";
-        this.successNumber = "";
-        this.compressionRatio = "";
-    }
-    return TransferJob;
-}());
-
-var TransferJobItem = /** @class */ (function () {
-    function TransferJobItem() {
-        this.itemNo = "";
-        this.type = "";
-        this.patientId = "";
-        this.name = "";
-        this.executeStatus = "";
-        this.executeTime = "";
-    }
-    return TransferJobItem;
-}());
-
 
 
 /***/ }),
@@ -13987,7 +13502,6 @@ var DatabaseService = /** @class */ (function () {
         this.shortcutUrl = "shortcut"; // URL to web api
         this.pssiUrl = "pssi";
         this.worklistUrl = "worklist";
-        this.settingsUrl = "settings";
         this.overlayUrl = "overlay";
         this.id_patient = 1;
         this.id_study = 1;
@@ -14151,24 +13665,7 @@ var DatabaseService = /** @class */ (function () {
             isCreateNewGuid: isCreateNewGuid
         };
         return this.http.post(url, data, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('doTransfer')));
-    };
-    /* */
-    DatabaseService.prototype.doExportJob = function (studyList, imageList, imageType, imageCompressRate, isImageRemovePatientInformation, isImageRemoveInstitutionName, isImageIncludeDicomViewer, isImageBurningDicomViewCD, lastExportPatientInfoConfig) {
-        var url = this.worklistUrl + "/DoExportJob/";
-        var data = {
-            studyList: studyList,
-            imageList: imageList,
-            imageType: imageType,
-            imageCompressRate: imageCompressRate,
-            isImageRemovePatientInformation: isImageRemovePatientInformation,
-            isImageRemoveInstitutionName: isImageRemoveInstitutionName,
-            isImageIncludeDicomViewer: isImageIncludeDicomViewer,
-            isImageBurningDicomViewCD: isImageBurningDicomViewCD,
-            lastExportPatientInfoConfig: lastExportPatientInfoConfig
-        };
-        return this.http.post(url, data, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('doExportJob')));
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('transferStudy')));
     };
     DatabaseService.prototype.getOtherPacs = function () {
         var url = this.worklistUrl + "/GetOtherPacs/";
@@ -14179,23 +13676,6 @@ var DatabaseService = /** @class */ (function () {
         var url = this.worklistUrl + "/GetTransferCompress/";
         return this.http.post(url, "", httpOptions)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('worklistTest')));
-    };
-    DatabaseService.prototype.getTransferJob = function () {
-        var url = this.settingsUrl + "/GetTransferJob/";
-        return this.http.post(url, "", httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('GetTransferJob')));
-    };
-    DatabaseService.prototype.getTransferJobItem = function (jobUID) {
-        var url = this.settingsUrl + "/GetTransferJobItem/";
-        var data = { jobUID: jobUID };
-        return this.http.post(url, data, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('GetTransferJobItem')));
-    };
-    DatabaseService.prototype.setSelectedJobStatus = function (jobUID, newStatus) {
-        var url = this.settingsUrl + "/SetSelectedJobStatus/";
-        var data = { jobUID: jobUID, newStatus: newStatus };
-        return this.http.post(url, data, httpOptions)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["catchError"])(this.handleError('SetSelectedJobStatus')));
     };
     DatabaseService.prototype.getStudiesTest = function () {
         var aa = this.localTestData.sort(this.compareStudy);
@@ -14382,7 +13862,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_configuration_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/configuration.service */ "./src/app/services/configuration.service.ts");
 /* harmony import */ var _models_overlay__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../models/overlay */ "./src/app/models/overlay.ts");
 /* harmony import */ var _services_log_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/log.service */ "./src/app/services/log.service.ts");
-/* harmony import */ var _models_dicom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../models/dicom */ "./src/app/models/dicom.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -14392,7 +13871,6 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-
 
 
 
@@ -14409,12 +13887,7 @@ var DicomImageService = /** @class */ (function () {
         this.logPrefix = "DicomImageService: ";
         this.dicomImageUrl = "dicomImage";
         this.textOverlayDisplayGroupList = [];
-        this.dicomTagList = [];
         this.baseUrl = this.configurationService.getBaseUrl();
-        this.createDicomTagList();
-        this.logService.info("aaaaaa");
-        var aaa = this.dicomTagList["(4010,107B)"];
-        this.logService.info("aaaaaa");
     }
     /** Save Image annotation */
     DicomImageService.prototype.saveImageAnn = function (id, annString) {
@@ -14484,98 +13957,6 @@ var DicomImageService = /** @class */ (function () {
         var windowWidth = maxValue - minValue;
         var windowCenter = minValue + windowWidth / 2;
         return { windowCenter: Math.round(windowCenter), windowWidth: windowWidth };
-    };
-    DicomImageService.prototype.getPixelValueText = function (image, imagePoint) {
-        imagePoint.x = Math.round(imagePoint.x);
-        imagePoint.y = Math.round(imagePoint.y);
-        if (!image.isPointInImage(imagePoint)) {
-            return "";
-        }
-        var pixelData = image.cornerStoneImageList[0].getPixelData();
-        var index = image.width() * imagePoint.y + imagePoint.x;
-        var pixelText = "X=" + imagePoint.x + ", Y=" + imagePoint.y + ", ";
-        var photometricInterpretation = image.cornerStoneImageList[0].data.string("x00280004");
-        if (photometricInterpretation === "RGB") {
-            pixelText += "RGB = ";
-            var planarConfiguration = image.cornerStoneImageList[0].data.string("x00280006");
-            for (var i = 0; i < 3; i++) {
-                pixelText += pixelData[index * 4 + i] + ",";
-            }
-            pixelText = pixelText.slice(0, -1);
-        }
-        else {
-            if (image.series.modality === "CT") {
-                var rescaleIntercept = image.cornerStoneImageList[0].data.intString("x00281052");
-                var rescaleSlope = image.cornerStoneImageList[0].data.intString("x00281053");
-                var value = rescaleSlope * pixelData[index] + rescaleIntercept;
-                pixelText += "HounsField = " + value;
-            }
-            else {
-                pixelText += "Raw Value = " + pixelData[index];
-            }
-        }
-        return pixelText;
-    };
-    DicomImageService.prototype.getTagDataList = function (data, nestLevel, dicomTagDataList) {
-        var _this = this;
-        var tagList = Object.getOwnPropertyNames(data.elements);
-        // Sort the list
-        tagList.sort(function (n1, n2) {
-            return (n1 < n2) ? -1 : 1;
-        });
-        tagList.forEach(function (tagString) {
-            var tagDef = data.elements[tagString];
-            var tagData = new _models_dicom__WEBPACK_IMPORTED_MODULE_5__["DicomTagData"]();
-            var addToList = true;
-            // x00100010 => (0010,0010)
-            tagData.tag = "(" + tagString.substr(1, 4) + "," + tagString.substr(5, 4) + ")";
-            tagData.tag = tagData.tag.toUpperCase();
-            tagData.vr = tagDef.vr.toUpperCase();
-            tagData.name = _this.dicomTagList[tagData.tag];
-            if (tagData.vr === "OW" || tagData.vr === "OB") {
-                tagData.value = tagDef.length + " Bytes";
-            }
-            else if (tagData.vr === "US" || tagData.vr === "AT") {
-                tagData.value = data.uint16(tagString);
-            }
-            else if (tagData.vr === "SS") {
-                tagData.value = data.int16(tagString);
-            }
-            else if (tagData.vr === "FL") {
-                tagData.value = data.float(tagString);
-            }
-            else if (tagData.vr === "SL") {
-                tagData.value = data.int32(tagString);
-            }
-            else if (tagData.vr === "UL") {
-                addToList = false;
-            }
-            else if (tagData.vr === "FD") {
-                tagData.value = data.double(tagString);
-            }
-            else if (tagData.vr === "SQ") {
-                for (var i = 0; i < nestLevel; i++) {
-                    tagData.tag = "   " + tagData.tag;
-                }
-                dicomTagDataList.push(tagData);
-                tagDef.items.forEach(function (childItem) {
-                    _this.getTagDataList(childItem.dataSet, nestLevel + 1, dicomTagDataList);
-                });
-                addToList = false;
-            }
-            else {
-                tagData.value = data.text(tagString);
-            }
-            if (tagData.tag === "(FFFF,FFFF)" || !tagData.vr) {
-                addToList = false;
-            }
-            if (addToList) {
-                for (var i = 0; i < nestLevel; i++) {
-                    tagData.tag = "   " + tagData.tag;
-                }
-                dicomTagDataList.push(tagData);
-            }
-        });
     };
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Text overlay functions
@@ -14739,4120 +14120,6 @@ var DicomImageService = /** @class */ (function () {
         graphicOverlayData.desc = image.cornerStoneImageList[0].data.string(groupString + "0022");
         graphicOverlayData.label = image.cornerStoneImageList[0].data.string(groupString + "1500");
         return graphicOverlayData;
-    };
-    DicomImageService.prototype.createDicomTagList = function () {
-        // Can NOT find any API of cornerstone to get the dicom tag name for now. This is temp solution
-        this.dicomTagList["(0002,0000)"] = "File Meta Information Group Length";
-        this.dicomTagList["(0002,0001)"] = "File Meta Information Version";
-        this.dicomTagList["(0002,0002)"] = "Media Storage SOP Class UID";
-        this.dicomTagList["(0002,0003)"] = "Media Storage SOP Instance UID";
-        this.dicomTagList["(0002,0010)"] = "Transfer Syntax UID";
-        this.dicomTagList["(0002,0012)"] = "Implementation Class UID";
-        this.dicomTagList["(0002,0013)"] = "Implementation Version Name";
-        this.dicomTagList["(0002,0016)"] = "Source Application Entity Title";
-        this.dicomTagList["(0002,0017)"] = "Sending Application Entity Title";
-        this.dicomTagList["(0002,0018)"] = "Receiving Application Entity Title";
-        this.dicomTagList["(0002,0100)"] = "Private Information Creator UID";
-        this.dicomTagList["(0002,0102)"] = "Private Information";
-        this.dicomTagList["(0004,1130)"] = "File-set ID";
-        this.dicomTagList["(0004,1141)"] = "File-set Descriptor File ID";
-        this.dicomTagList["(0004,1142)"] = "Specific Character Set of File-set Descriptor File";
-        this.dicomTagList["(0004,1200)"] = "Offset of the First Directory Record of the Root Directory Entity";
-        this.dicomTagList["(0004,1202)"] = "Offset of the Last Directory Record of the Root Directory Entity";
-        this.dicomTagList["(0004,1212)"] = "File-set Consistency Flag";
-        this.dicomTagList["(0004,1220)"] = "Directory Record Sequence";
-        this.dicomTagList["(0004,1400)"] = "Offset of the Next Directory Record";
-        this.dicomTagList["(0004,1410)"] = "Record In-use Flag";
-        this.dicomTagList["(0004,1420)"] = "Offset of Referenced Lower-Level Directory Entity";
-        this.dicomTagList["(0004,1430)"] = "Directory Record Type";
-        this.dicomTagList["(0004,1432)"] = "Private Record UID";
-        this.dicomTagList["(0004,1500)"] = "Referenced File ID";
-        this.dicomTagList["(0004,1504)"] = "MRDR Directory Record Offset";
-        this.dicomTagList["(0004,1510)"] = "Referenced SOP Class UID in File";
-        this.dicomTagList["(0004,1511)"] = "Referenced SOP Instance UID in File";
-        this.dicomTagList["(0004,1512)"] = "Referenced Transfer Syntax UID in File";
-        this.dicomTagList["(0004,151A)"] = "Referenced Related General SOP Class UID in File";
-        this.dicomTagList["(0004,1600)"] = "Number of References";
-        this.dicomTagList["(0008,0001)"] = "Length to End";
-        this.dicomTagList["(0008,0005)"] = "Specific Character Set";
-        this.dicomTagList["(0008,0006)"] = "Language Code Sequence";
-        this.dicomTagList["(0008,0008)"] = "Image Type";
-        this.dicomTagList["(0008,0010)"] = "Recognition Code";
-        this.dicomTagList["(0008,0012)"] = "Instance Creation Date";
-        this.dicomTagList["(0008,0013)"] = "Instance Creation Time";
-        this.dicomTagList["(0008,0014)"] = "Instance Creator UID";
-        this.dicomTagList["(0008,0015)"] = "Instance Coercion DateTime";
-        this.dicomTagList["(0008,0016)"] = "SOP Class UID";
-        this.dicomTagList["(0008,0018)"] = "SOP Instance UID";
-        this.dicomTagList["(0008,001A)"] = "Related General SOP Class UID";
-        this.dicomTagList["(0008,001B)"] = "Original Specialized SOP Class UID";
-        this.dicomTagList["(0008,0020)"] = "Study Date";
-        this.dicomTagList["(0008,0021)"] = "Series Date";
-        this.dicomTagList["(0008,0022)"] = "Acquisition Date";
-        this.dicomTagList["(0008,0023)"] = "Content Date";
-        this.dicomTagList["(0008,0024)"] = "Overlay Date";
-        this.dicomTagList["(0008,0025)"] = "Curve Date";
-        this.dicomTagList["(0008,002A)"] = "Acquisition DateTime";
-        this.dicomTagList["(0008,0030)"] = "Study Time";
-        this.dicomTagList["(0008,0031)"] = "Series Time";
-        this.dicomTagList["(0008,0032)"] = "Acquisition Time";
-        this.dicomTagList["(0008,0033)"] = "Content Time";
-        this.dicomTagList["(0008,0034)"] = "Overlay Time";
-        this.dicomTagList["(0008,0035)"] = "Curve Time";
-        this.dicomTagList["(0008,0040)"] = "Data Set Type";
-        this.dicomTagList["(0008,0041)"] = "Data Set Subtype";
-        this.dicomTagList["(0008,0042)"] = "Nuclear Medicine Series Type";
-        this.dicomTagList["(0008,0050)"] = "Accession Number";
-        this.dicomTagList["(0008,0051)"] = "Issuer of Accession Number Sequence";
-        this.dicomTagList["(0008,0052)"] = "Query/Retrieve Level";
-        this.dicomTagList["(0008,0053)"] = "Query/Retrieve View";
-        this.dicomTagList["(0008,0054)"] = "Retrieve AE Title";
-        this.dicomTagList["(0008,0055)"] = "Station AE Title";
-        this.dicomTagList["(0008,0056)"] = "Instance Availability";
-        this.dicomTagList["(0008,0058)"] = "Failed SOP Instance UID List";
-        this.dicomTagList["(0008,0060)"] = "Modality";
-        this.dicomTagList["(0008,0061)"] = "Modalities in Study";
-        this.dicomTagList["(0008,0062)"] = "SOP Classes in Study";
-        this.dicomTagList["(0008,0064)"] = "Conversion Type";
-        this.dicomTagList["(0008,0068)"] = "Presentation Intent Type";
-        this.dicomTagList["(0008,0070)"] = "Manufacturer";
-        this.dicomTagList["(0008,0080)"] = "Institution Name";
-        this.dicomTagList["(0008,0081)"] = "Institution Address";
-        this.dicomTagList["(0008,0082)"] = "Institution Code Sequence";
-        this.dicomTagList["(0008,0090)"] = "Referring Physician's Name";
-        this.dicomTagList["(0008,0092)"] = "Referring Physician's Address";
-        this.dicomTagList["(0008,0094)"] = "Referring Physician's Telephone Numbers";
-        this.dicomTagList["(0008,0096)"] = "Referring Physician Identification Sequence";
-        this.dicomTagList["(0008,009C)"] = "Consulting Physician's Name";
-        this.dicomTagList["(0008,009D)"] = "Consulting Physician Identification Sequence";
-        this.dicomTagList["(0008,0100)"] = "Code Value";
-        this.dicomTagList["(0008,0101)"] = "Extended Code Value";
-        this.dicomTagList["(0008,0102)"] = "Coding Scheme Designator";
-        this.dicomTagList["(0008,0103)"] = "Coding Scheme Version";
-        this.dicomTagList["(0008,0104)"] = "Code Meaning";
-        this.dicomTagList["(0008,0105)"] = "Mapping Resource";
-        this.dicomTagList["(0008,0106)"] = "Context Group Version";
-        this.dicomTagList["(0008,0107)"] = "Context Group Local Version";
-        this.dicomTagList["(0008,0108)"] = "Extended Code Meaning";
-        this.dicomTagList["(0008,010B)"] = "Context Group Extension Flag";
-        this.dicomTagList["(0008,010C)"] = "Coding Scheme UID";
-        this.dicomTagList["(0008,010D)"] = "Context Group Extension Creator UID";
-        this.dicomTagList["(0008,010F)"] = "Context Identifier";
-        this.dicomTagList["(0008,0110)"] = "Coding Scheme Identification Sequence";
-        this.dicomTagList["(0008,0112)"] = "Coding Scheme Registry";
-        this.dicomTagList["(0008,0114)"] = "Coding Scheme External ID";
-        this.dicomTagList["(0008,0115)"] = "Coding Scheme Name";
-        this.dicomTagList["(0008,0116)"] = "Coding Scheme Responsible Organization";
-        this.dicomTagList["(0008,0117)"] = "Context UID";
-        this.dicomTagList["(0008,0118)"] = "Mapping Resource UID";
-        this.dicomTagList["(0008,0119)"] = "Long Code Value";
-        this.dicomTagList["(0008,0120)"] = "URN Code Value";
-        this.dicomTagList["(0008,0121)"] = "Equivalent Code Sequence";
-        this.dicomTagList["(0008,0122)"] = "Mapping Resource Name";
-        this.dicomTagList["(0008,0123)"] = "Context Group Identification Sequence";
-        this.dicomTagList["(0008,0124)"] = "Mapping Resource Identification Sequence";
-        this.dicomTagList["(0008,0201)"] = "Timezone Offset From UTC";
-        this.dicomTagList["(0008,0300)"] = "Private Data Element Characteristics Sequence";
-        this.dicomTagList["(0008,0301)"] = "Private Group Reference";
-        this.dicomTagList["(0008,0302)"] = "Private Creator Reference";
-        this.dicomTagList["(0008,0303)"] = "Block Identifying Information Status";
-        this.dicomTagList["(0008,0304)"] = "Nonidentifying Private Elements";
-        this.dicomTagList["(0008,0306)"] = "Identifying Private Elements";
-        this.dicomTagList["(0008,0305)"] = "Deidentification Action Sequence";
-        this.dicomTagList["(0008,0307)"] = "Deidentification Action";
-        this.dicomTagList["(0008,1000)"] = "Network ID";
-        this.dicomTagList["(0008,1010)"] = "Station Name";
-        this.dicomTagList["(0008,1030)"] = "Study Description";
-        this.dicomTagList["(0008,1032)"] = "Procedure Code Sequence";
-        this.dicomTagList["(0008,103E)"] = "Series Description";
-        this.dicomTagList["(0008,103F)"] = "Series Description Code Sequence";
-        this.dicomTagList["(0008,1040)"] = "Institutional Department Name";
-        this.dicomTagList["(0008,1048)"] = "Physician(s)of Record";
-        this.dicomTagList["(0008,1049)"] = "Physician(s)of Record Identification Sequence";
-        this.dicomTagList["(0008,1050)"] = "Performing Physician's Name";
-        this.dicomTagList["(0008,1052)"] = "Performing Physician Identification Sequence";
-        this.dicomTagList["(0008,1060)"] = "Name of Physician(s)Reading Study";
-        this.dicomTagList["(0008,1062)"] = "Physician(s)Reading Study Identification Sequence";
-        this.dicomTagList["(0008,1070)"] = "Operators' Name";
-        this.dicomTagList["(0008,1072)"] = "Operator Identification Sequence";
-        this.dicomTagList["(0008,1080)"] = "Admitting Diagnoses Description";
-        this.dicomTagList["(0008,1084)"] = "Admitting Diagnoses Code Sequence";
-        this.dicomTagList["(0008,1090)"] = "Manufacturer's Model Name";
-        this.dicomTagList["(0008,1100)"] = "Referenced Results Sequence";
-        this.dicomTagList["(0008,1110)"] = "Referenced Study Sequence";
-        this.dicomTagList["(0008,1111)"] = "Referenced Performed Procedure Step Sequence";
-        this.dicomTagList["(0008,1115)"] = "Referenced Series Sequence";
-        this.dicomTagList["(0008,1120)"] = "Referenced Patient Sequence";
-        this.dicomTagList["(0008,1125)"] = "Referenced Visit Sequence";
-        this.dicomTagList["(0008,1130)"] = "Referenced Overlay Sequence";
-        this.dicomTagList["(0008,1134)"] = "Referenced Stereometric Instance Sequence";
-        this.dicomTagList["(0008,113A)"] = "Referenced Waveform Sequence";
-        this.dicomTagList["(0008,1140)"] = "Referenced Image Sequence";
-        this.dicomTagList["(0008,1145)"] = "Referenced Curve Sequence";
-        this.dicomTagList["(0008,114A)"] = "Referenced Instance Sequence";
-        this.dicomTagList["(0008,114B)"] = "Referenced Real World Value Mapping Instance Sequence";
-        this.dicomTagList["(0008,1150)"] = "Referenced SOP Class UID";
-        this.dicomTagList["(0008,1155)"] = "Referenced SOP Instance UID";
-        this.dicomTagList["(0008,115A)"] = "SOP Classes Supported";
-        this.dicomTagList["(0008,1160)"] = "Referenced Frame Number";
-        this.dicomTagList["(0008,1161)"] = "Simple Frame List";
-        this.dicomTagList["(0008,1162)"] = "Calculated Frame List";
-        this.dicomTagList["(0008,1163)"] = "Time Range";
-        this.dicomTagList["(0008,1164)"] = "Frame Extraction Sequence";
-        this.dicomTagList["(0008,1167)"] = "Multi-frame Source SOP Instance UID";
-        this.dicomTagList["(0008,1190)"] = "Retrieve URL";
-        this.dicomTagList["(0008,1195)"] = "Transaction UID";
-        this.dicomTagList["(0008,1196)"] = "Warning Reason";
-        this.dicomTagList["(0008,1197)"] = "Failure Reason";
-        this.dicomTagList["(0008,1198)"] = "Failed SOP Sequence";
-        this.dicomTagList["(0008,1199)"] = "Referenced SOP Sequence";
-        this.dicomTagList["(0008,119A)"] = "Other Failures Sequence";
-        this.dicomTagList["(0008,1200)"] = "Studies Containing Other Referenced Instances Sequence";
-        this.dicomTagList["(0008,1250)"] = "Related Series Sequence";
-        this.dicomTagList["(0008,2110)"] = "Lossy Image Compression ()";
-        this.dicomTagList["(0008,2111)"] = "Derivation Description";
-        this.dicomTagList["(0008,2112)"] = "Source Image Sequence";
-        this.dicomTagList["(0008,2120)"] = "Stage Name";
-        this.dicomTagList["(0008,2122)"] = "Stage Number";
-        this.dicomTagList["(0008,2124)"] = "Number of Stages";
-        this.dicomTagList["(0008,2127)"] = "View Name";
-        this.dicomTagList["(0008,2128)"] = "View Number";
-        this.dicomTagList["(0008,2129)"] = "Number of Event Timers";
-        this.dicomTagList["(0008,212A)"] = "Number of Views in Stage";
-        this.dicomTagList["(0008,2130)"] = "Event Elapsed Time(s)";
-        this.dicomTagList["(0008,2132)"] = "Event Timer Name(s)";
-        this.dicomTagList["(0008,2133)"] = "Event Timer Sequence";
-        this.dicomTagList["(0008,2134)"] = "Event Time Offset";
-        this.dicomTagList["(0008,2135)"] = "Event Code Sequence";
-        this.dicomTagList["(0008,2142)"] = "Start Trim";
-        this.dicomTagList["(0008,2143)"] = "Stop Trim";
-        this.dicomTagList["(0008,2144)"] = "Recommended Display Frame Rate";
-        this.dicomTagList["(0008,2200)"] = "Transducer Position";
-        this.dicomTagList["(0008,2204)"] = "Transducer Orientation";
-        this.dicomTagList["(0008,2208)"] = "Anatomic Structure";
-        this.dicomTagList["(0008,2218)"] = "Anatomic Region Sequence";
-        this.dicomTagList["(0008,2220)"] = "Anatomic Region Modifier Sequence";
-        this.dicomTagList["(0008,2228)"] = "Primary Anatomic Structure Sequence";
-        this.dicomTagList["(0008,2229)"] = "Anatomic Structure, Space or Region Sequence";
-        this.dicomTagList["(0008,2230)"] = "Primary Anatomic Structure Modifier Sequence";
-        this.dicomTagList["(0008,2240)"] = "Transducer Position Sequence";
-        this.dicomTagList["(0008,2242)"] = "Transducer Position Modifier Sequence";
-        this.dicomTagList["(0008,2244)"] = "Transducer Orientation Sequence";
-        this.dicomTagList["(0008,2246)"] = "Transducer Orientation Modifier Sequence";
-        this.dicomTagList["(0008,2251)"] = "Anatomic Structure Space Or Region Code Sequence (Trial)";
-        this.dicomTagList["(0008,2253)"] = "Anatomic Portal Of Entrance Code Sequence (Trial)";
-        this.dicomTagList["(0008,2255)"] = "Anatomic Approach Direction Code Sequence (Trial)";
-        this.dicomTagList["(0008,2256)"] = "Anatomic Perspective Description (Trial)";
-        this.dicomTagList["(0008,2257)"] = "Anatomic Perspective Code Sequence (Trial)";
-        this.dicomTagList["(0008,2258)"] = "Anatomic Location Of Examining Instrument Description (Trial)";
-        this.dicomTagList["(0008,2259)"] = "Anatomic Location Of Examining Instrument Code Sequence (Trial)";
-        this.dicomTagList["(0008,225A)"] = "Anatomic Structure Space Or Region Modifier Code Sequence (Trial)";
-        this.dicomTagList["(0008,225C)"] = "On Axis Background Anatomic Structure Code Sequence (Trial)";
-        this.dicomTagList["(0008,3001)"] = "Alternate Representation Sequence";
-        this.dicomTagList["(0008,3010)"] = "Irradiation Event UID";
-        this.dicomTagList["(0008,3011)"] = "Source Irradiation Event Sequence";
-        this.dicomTagList["(0008,3012)"] = "Radiopharmaceutical Administration Event UID";
-        this.dicomTagList["(0008,4000)"] = "Identifying Comments";
-        this.dicomTagList["(0008,9007)"] = "Frame Type";
-        this.dicomTagList["(0008,9092)"] = "Referenced Image Evidence Sequence";
-        this.dicomTagList["(0008,9121)"] = "Referenced Raw Data Sequence";
-        this.dicomTagList["(0008,9123)"] = "Creator-Version UID";
-        this.dicomTagList["(0008,9124)"] = "Derivation Image Sequence";
-        this.dicomTagList["(0008,9154)"] = "Source Image Evidence Sequence";
-        this.dicomTagList["(0008,9205)"] = "Pixel Presentation";
-        this.dicomTagList["(0008,9206)"] = "Volumetric Properties";
-        this.dicomTagList["(0008,9207)"] = "Volume Based Calculation Technique";
-        this.dicomTagList["(0008,9208)"] = "Complex Image Component";
-        this.dicomTagList["(0008,9209)"] = "Acquisition Contrast";
-        this.dicomTagList["(0008,9215)"] = "Derivation Code Sequence";
-        this.dicomTagList["(0008,9237)"] = "Referenced Presentation State Sequence";
-        this.dicomTagList["(0008,9410)"] = "Referenced Other Plane Sequence";
-        this.dicomTagList["(0008,9458)"] = "Frame Display Sequence";
-        this.dicomTagList["(0008,9459)"] = "Recommended Display Frame Rate in Float";
-        this.dicomTagList["(0008,9460)"] = "Skip Frame Range Flag";
-        this.dicomTagList["(0010,0010)"] = "Patient's Name";
-        this.dicomTagList["(0010,0020)"] = "Patient ID";
-        this.dicomTagList["(0010,0021)"] = "Issuer of Patient ID";
-        this.dicomTagList["(0010,0022)"] = "Type of Patient ID";
-        this.dicomTagList["(0010,0024)"] = "Issuer of Patient ID Qualifiers Sequence";
-        this.dicomTagList["(0010,0026)"] = "Source Patient Group Identification Sequence";
-        this.dicomTagList["(0010,0027)"] = "Group of Patients Identification Sequence";
-        this.dicomTagList["(0010,0028)"] = "Subject Relative Position in Image";
-        this.dicomTagList["(0010,0030)"] = "Patient's Birth Date";
-        this.dicomTagList["(0010,0032)"] = "Patient's Birth Time";
-        this.dicomTagList["(0010,0033)"] = "Patient's Birth Date in Alternative Calendar";
-        this.dicomTagList["(0010,0034)"] = "Patient's Death Date in Alternative Calendar";
-        this.dicomTagList["(0010,0035)"] = "Patient's Alternative Calendar";
-        this.dicomTagList["(0010,0040)"] = "Patient's Sex";
-        this.dicomTagList["(0010,0050)"] = "Patient's Insurance Plan Code Sequence";
-        this.dicomTagList["(0010,0101)"] = "Patient's Primary Language Code Sequence";
-        this.dicomTagList["(0010,0102)"] = "Patient's Primary Language Modifier Code Sequence";
-        this.dicomTagList["(0010,0200)"] = "Quality Control Subject";
-        this.dicomTagList["(0010,0201)"] = "Quality Control Subject Type Code Sequence";
-        this.dicomTagList["(0010,0212)"] = "Strain Description";
-        this.dicomTagList["(0010,0213)"] = "Strain Nomenclature";
-        this.dicomTagList["(0010,0214)"] = "Strain Stock Number";
-        this.dicomTagList["(0010,0215)"] = "Strain Source Registry Code Sequence";
-        this.dicomTagList["(0010,0216)"] = "Strain Stock Sequence";
-        this.dicomTagList["(0010,0217)"] = "Strain Source";
-        this.dicomTagList["(0010,0218)"] = "Strain Additional Information";
-        this.dicomTagList["(0010,0219)"] = "Strain Code Sequence";
-        this.dicomTagList["(0010,1000)"] = "Other Patient IDs";
-        this.dicomTagList["(0010,1001)"] = "Other Patient Names";
-        this.dicomTagList["(0010,1002)"] = "Other Patient IDs Sequence";
-        this.dicomTagList["(0010,1005)"] = "Patient's Birth Name";
-        this.dicomTagList["(0010,1010)"] = "Patient's Age";
-        this.dicomTagList["(0010,1020)"] = "Patient's Size";
-        this.dicomTagList["(0010,1021)"] = "Patient's Size Code Sequence";
-        this.dicomTagList["(0010,1030)"] = "Patient's Weight";
-        this.dicomTagList["(0010,1040)"] = "Patient's Address";
-        this.dicomTagList["(0010,1050)"] = "Insurance Plan Identification";
-        this.dicomTagList["(0010,1060)"] = "Patient's Mother's Birth Name";
-        this.dicomTagList["(0010,1080)"] = "Military Rank";
-        this.dicomTagList["(0010,1081)"] = "Branch of Service";
-        this.dicomTagList["(0010,1090)"] = "Medical Record Locator";
-        this.dicomTagList["(0010,1100)"] = "Referenced Patient Photo Sequence";
-        this.dicomTagList["(0010,2000)"] = "Medical Alerts";
-        this.dicomTagList["(0010,2110)"] = "Allergies";
-        this.dicomTagList["(0010,2150)"] = "Country of Residence";
-        this.dicomTagList["(0010,2152)"] = "Region of Residence";
-        this.dicomTagList["(0010,2154)"] = "Patient's Telephone Numbers";
-        this.dicomTagList["(0010,2155)"] = "Patient's Telecom Information";
-        this.dicomTagList["(0010,2160)"] = "Ethnic Group";
-        this.dicomTagList["(0010,2180)"] = "Occupation";
-        this.dicomTagList["(0010,21A0)"] = "Smoking Status";
-        this.dicomTagList["(0010,21B0)"] = "Additional Patient History";
-        this.dicomTagList["(0010,21C0)"] = "Pregnancy Status";
-        this.dicomTagList["(0010,21D0)"] = "Last Menstrual Date";
-        this.dicomTagList["(0010,21F0)"] = "Patient's Religious Preference";
-        this.dicomTagList["(0010,2201)"] = "Patient Species Description";
-        this.dicomTagList["(0010,2202)"] = "Patient Species Code Sequence";
-        this.dicomTagList["(0010,2203)"] = "Patient's Sex Neutered";
-        this.dicomTagList["(0010,2210)"] = "Anatomical Orientation Type";
-        this.dicomTagList["(0010,2292)"] = "Patient Breed Description";
-        this.dicomTagList["(0010,2293)"] = "Patient Breed Code Sequence";
-        this.dicomTagList["(0010,2294)"] = "Breed Registration Sequence";
-        this.dicomTagList["(0010,2295)"] = "Breed Registration Number";
-        this.dicomTagList["(0010,2296)"] = "Breed Registry Code Sequence";
-        this.dicomTagList["(0010,2297)"] = "Responsible Person";
-        this.dicomTagList["(0010,2298)"] = "Responsible Person Role";
-        this.dicomTagList["(0010,2299)"] = "Responsible Organization";
-        this.dicomTagList["(0010,4000)"] = "Patient Comments";
-        this.dicomTagList["(0010,9431)"] = "Examined Body Thickness";
-        this.dicomTagList["(0012,0010)"] = "Clinical Trial Sponsor Name";
-        this.dicomTagList["(0012,0020)"] = "Clinical Trial Protocol ID";
-        this.dicomTagList["(0012,0021)"] = "Clinical Trial Protocol Name";
-        this.dicomTagList["(0012,0030)"] = "Clinical Trial Site ID";
-        this.dicomTagList["(0012,0031)"] = "Clinical Trial Site Name";
-        this.dicomTagList["(0012,0040)"] = "Clinical Trial Subject ID";
-        this.dicomTagList["(0012,0042)"] = "Clinical Trial Subject Reading ID";
-        this.dicomTagList["(0012,0050)"] = "Clinical Trial Time Point ID";
-        this.dicomTagList["(0012,0051)"] = "Clinical Trial Time Point Description";
-        this.dicomTagList["(0012,0060)"] = "Clinical Trial Coordinating Center Name";
-        this.dicomTagList["(0012,0062)"] = "Patient Identity Removed";
-        this.dicomTagList["(0012,0063)"] = "De-identification Method";
-        this.dicomTagList["(0012,0064)"] = "De-identification Method Code Sequence";
-        this.dicomTagList["(0012,0071)"] = "Clinical Trial Series ID";
-        this.dicomTagList["(0012,0072)"] = "Clinical Trial Series Description";
-        this.dicomTagList["(0012,0081)"] = "Clinical Trial Protocol Ethics Committee Name";
-        this.dicomTagList["(0012,0082)"] = "Clinical Trial Protocol Ethics Committee Approval Number";
-        this.dicomTagList["(0012,0083)"] = "Consent for Clinical Trial Use Sequence";
-        this.dicomTagList["(0012,0084)"] = "Distribution Type";
-        this.dicomTagList["(0012,0085)"] = "Consent for Distribution Flag";
-        this.dicomTagList["(0014,0023)"] = "CAD File Format";
-        this.dicomTagList["(0014,0024)"] = "Component Reference System";
-        this.dicomTagList["(0014,0025)"] = "Component Manufacturing Procedure";
-        this.dicomTagList["(0014,0028)"] = "Component Manufacturer";
-        this.dicomTagList["(0014,0030)"] = "Material Thickness";
-        this.dicomTagList["(0014,0032)"] = "Material Pipe Diameter";
-        this.dicomTagList["(0014,0034)"] = "Material Isolation Diameter";
-        this.dicomTagList["(0014,0042)"] = "Material Grade";
-        this.dicomTagList["(0014,0044)"] = "Material Properties Description";
-        this.dicomTagList["(0014,0045)"] = "Material Properties File Format ()";
-        this.dicomTagList["(0014,0046)"] = "Material Notes";
-        this.dicomTagList["(0014,0050)"] = "Component Shape";
-        this.dicomTagList["(0014,0052)"] = "Curvature Type";
-        this.dicomTagList["(0014,0054)"] = "Outer Diameter";
-        this.dicomTagList["(0014,0056)"] = "Inner Diameter";
-        this.dicomTagList["(0014,0100)"] = "Component Welder IDs";
-        this.dicomTagList["(0014,0101)"] = "Secondary Approval Status";
-        this.dicomTagList["(0014,0102)"] = "Secondary Review Date";
-        this.dicomTagList["(0014,0103)"] = "Secondary Review Time";
-        this.dicomTagList["(0014,0104)"] = "Secondary Reviewer Name";
-        this.dicomTagList["(0014,0105)"] = "Repair ID";
-        this.dicomTagList["(0014,0106)"] = "Multiple Component Approval Sequence";
-        this.dicomTagList["(0014,0107)"] = "Other Approval Status";
-        this.dicomTagList["(0014,0108)"] = "Other Secondary Approval Status";
-        this.dicomTagList["(0014,1010)"] = "Actual Environmental Conditions";
-        this.dicomTagList["(0014,1020)"] = "Expiry Date";
-        this.dicomTagList["(0014,1040)"] = "Environmental Conditions";
-        this.dicomTagList["(0014,2002)"] = "Evaluator Sequence";
-        this.dicomTagList["(0014,2004)"] = "Evaluator Number";
-        this.dicomTagList["(0014,2006)"] = "Evaluator Name";
-        this.dicomTagList["(0014,2008)"] = "Evaluation Attempt";
-        this.dicomTagList["(0014,2012)"] = "Indication Sequence";
-        this.dicomTagList["(0014,2014)"] = "Indication Number";
-        this.dicomTagList["(0014,2016)"] = "Indication Label";
-        this.dicomTagList["(0014,2018)"] = "Indication Description";
-        this.dicomTagList["(0014,201A)"] = "Indication Type";
-        this.dicomTagList["(0014,201C)"] = "Indication Disposition";
-        this.dicomTagList["(0014,201E)"] = "Indication ROI Sequence";
-        this.dicomTagList["(0014,2030)"] = "Indication Physical Property Sequence";
-        this.dicomTagList["(0014,2032)"] = "Property Label";
-        this.dicomTagList["(0014,2202)"] = "Coordinate System Number of Axes";
-        this.dicomTagList["(0014,2204)"] = "Coordinate System Axes Sequence";
-        this.dicomTagList["(0014,2206)"] = "Coordinate System Axis Description";
-        this.dicomTagList["(0014,2208)"] = "Coordinate System Data Set Mapping";
-        this.dicomTagList["(0014,220A)"] = "Coordinate System Axis Number";
-        this.dicomTagList["(0014,220C)"] = "Coordinate System Axis Type";
-        this.dicomTagList["(0014,220E)"] = "Coordinate System Axis Units";
-        this.dicomTagList["(0014,2210)"] = "Coordinate System Axis Values";
-        this.dicomTagList["(0014,2220)"] = "Coordinate System Transform Sequence";
-        this.dicomTagList["(0014,2222)"] = "Transform Description";
-        this.dicomTagList["(0014,2224)"] = "Transform Number of Axes";
-        this.dicomTagList["(0014,2226)"] = "Transform Order of Axes";
-        this.dicomTagList["(0014,2228)"] = "Transformed Axis Units";
-        this.dicomTagList["(0014,222A)"] = "Coordinate System Transform Rotation and Scale Matrix";
-        this.dicomTagList["(0014,222C)"] = "Coordinate System Transform Translation Matrix";
-        this.dicomTagList["(0014,3011)"] = "Internal Detector Frame Time";
-        this.dicomTagList["(0014,3012)"] = "Number of Frames Integrated";
-        this.dicomTagList["(0014,3020)"] = "Detector Temperature Sequence";
-        this.dicomTagList["(0014,3022)"] = "Sensor Name";
-        this.dicomTagList["(0014,3024)"] = "Horizontal Offset of Sensor";
-        this.dicomTagList["(0014,3026)"] = "Vertical Offset of Sensor";
-        this.dicomTagList["(0014,3028)"] = "Sensor Temperature";
-        this.dicomTagList["(0014,3040)"] = "Dark Current Sequence";
-        this.dicomTagList["(0014,3050)"] = "Dark Current Counts";
-        this.dicomTagList["(0014,3060)"] = "Gain Correction Reference Sequence";
-        this.dicomTagList["(0014,3070)"] = "Air Counts";
-        this.dicomTagList["(0014,3071)"] = "KV Used in Gain Calibration";
-        this.dicomTagList["(0014,3072)"] = "MA Used in Gain Calibration";
-        this.dicomTagList["(0014,3073)"] = "Number of Frames Used for Integration";
-        this.dicomTagList["(0014,3074)"] = "Filter Material Used in Gain Calibration";
-        this.dicomTagList["(0014,3075)"] = "Filter Thickness Used in Gain Calibration";
-        this.dicomTagList["(0014,3076)"] = "Date of Gain Calibration";
-        this.dicomTagList["(0014,3077)"] = "Time of Gain Calibration";
-        this.dicomTagList["(0014,3080)"] = "Bad Pixel Image";
-        this.dicomTagList["(0014,3099)"] = "Calibration Notes";
-        this.dicomTagList["(0014,4002)"] = "Pulser Equipment Sequence";
-        this.dicomTagList["(0014,4004)"] = "Pulser Type";
-        this.dicomTagList["(0014,4006)"] = "Pulser Notes";
-        this.dicomTagList["(0014,4008)"] = "Receiver Equipment Sequence";
-        this.dicomTagList["(0014,400A)"] = "Amplifier Type";
-        this.dicomTagList["(0014,400C)"] = "Receiver Notes";
-        this.dicomTagList["(0014,400E)"] = "Pre-Amplifier Equipment Sequence";
-        this.dicomTagList["(0014,400F)"] = "Pre-Amplifier Notes";
-        this.dicomTagList["(0014,4010)"] = "Transmit Transducer Sequence";
-        this.dicomTagList["(0014,4011)"] = "Receive Transducer Sequence";
-        this.dicomTagList["(0014,4012)"] = "Number of Elements";
-        this.dicomTagList["(0014,4013)"] = "Element Shape";
-        this.dicomTagList["(0014,4014)"] = "Element Dimension A";
-        this.dicomTagList["(0014,4015)"] = "Element Dimension B";
-        this.dicomTagList["(0014,4016)"] = "Element Pitch A";
-        this.dicomTagList["(0014,4017)"] = "Measured Beam Dimension A";
-        this.dicomTagList["(0014,4018)"] = "Measured Beam Dimension B";
-        this.dicomTagList["(0014,4019)"] = "Location of Measured Beam Diameter";
-        this.dicomTagList["(0014,401A)"] = "Nominal Frequency";
-        this.dicomTagList["(0014,401B)"] = "Measured Center Frequency";
-        this.dicomTagList["(0014,401C)"] = "Measured Bandwidth";
-        this.dicomTagList["(0014,401D)"] = "Element Pitch B";
-        this.dicomTagList["(0014,4020)"] = "Pulser Settings Sequence";
-        this.dicomTagList["(0014,4022)"] = "Pulse Width";
-        this.dicomTagList["(0014,4024)"] = "Excitation Frequency";
-        this.dicomTagList["(0014,4026)"] = "Modulation Type";
-        this.dicomTagList["(0014,4028)"] = "Damping";
-        this.dicomTagList["(0014,4030)"] = "Receiver Settings Sequence";
-        this.dicomTagList["(0014,4031)"] = "Acquired Soundpath Length";
-        this.dicomTagList["(0014,4032)"] = "Acquisition Compression Type";
-        this.dicomTagList["(0014,4033)"] = "Acquisition Sample Size";
-        this.dicomTagList["(0014,4034)"] = "Rectifier Smoothing";
-        this.dicomTagList["(0014,4035)"] = "DAC Sequence";
-        this.dicomTagList["(0014,4036)"] = "DAC Type";
-        this.dicomTagList["(0014,4038)"] = "DAC Gain Points";
-        this.dicomTagList["(0014,403A)"] = "DAC Time Points";
-        this.dicomTagList["(0014,403C)"] = "DAC Amplitude";
-        this.dicomTagList["(0014,4040)"] = "Pre-Amplifier Settings Sequence";
-        this.dicomTagList["(0014,4050)"] = "Transmit Transducer Settings Sequence";
-        this.dicomTagList["(0014,4051)"] = "Receive Transducer Settings Sequence";
-        this.dicomTagList["(0014,4052)"] = "Incident Angle";
-        this.dicomTagList["(0014,4054)"] = "Coupling Technique";
-        this.dicomTagList["(0014,4056)"] = "Coupling Medium";
-        this.dicomTagList["(0014,4057)"] = "Coupling Velocity";
-        this.dicomTagList["(0014,4058)"] = "Probe Center Location X";
-        this.dicomTagList["(0014,4059)"] = "Probe Center Location Z";
-        this.dicomTagList["(0014,405A)"] = "Sound Path Length";
-        this.dicomTagList["(0014,405C)"] = "Delay Law Identifier";
-        this.dicomTagList["(0014,4060)"] = "Gate Settings Sequence";
-        this.dicomTagList["(0014,4062)"] = "Gate Threshold";
-        this.dicomTagList["(0014,4064)"] = "Velocity of Sound";
-        this.dicomTagList["(0014,4070)"] = "Calibration Settings Sequence";
-        this.dicomTagList["(0014,4072)"] = "Calibration Procedure";
-        this.dicomTagList["(0014,4074)"] = "Procedure Version";
-        this.dicomTagList["(0014,4076)"] = "Procedure Creation Date";
-        this.dicomTagList["(0014,4078)"] = "Procedure Expiration Date";
-        this.dicomTagList["(0014,407A)"] = "Procedure Last Modified Date";
-        this.dicomTagList["(0014,407C)"] = "Calibration Time";
-        this.dicomTagList["(0014,407E)"] = "Calibration Date";
-        this.dicomTagList["(0014,4080)"] = "Probe Drive Equipment Sequence";
-        this.dicomTagList["(0014,4081)"] = "Drive Type";
-        this.dicomTagList["(0014,4082)"] = "Probe Drive Notes";
-        this.dicomTagList["(0014,4083)"] = "Drive Probe Sequence";
-        this.dicomTagList["(0014,4084)"] = "Probe Inductance";
-        this.dicomTagList["(0014,4085)"] = "Probe Resistance";
-        this.dicomTagList["(0014,4086)"] = "Receive Probe Sequence";
-        this.dicomTagList["(0014,4087)"] = "Probe Drive Settings Sequence";
-        this.dicomTagList["(0014,4088)"] = "Bridge Resistors";
-        this.dicomTagList["(0014,4089)"] = "Probe Orientation Angle";
-        this.dicomTagList["(0014,408B)"] = "User Selected Gain Y";
-        this.dicomTagList["(0014,408C)"] = "User Selected Phase";
-        this.dicomTagList["(0014,408D)"] = "User Selected Offset X";
-        this.dicomTagList["(0014,408E)"] = "User Selected Offset Y";
-        this.dicomTagList["(0014,4091)"] = "Channel Settings Sequence";
-        this.dicomTagList["(0014,4092)"] = "Channel Threshold";
-        this.dicomTagList["(0014,409A)"] = "Scanner Settings Sequence";
-        this.dicomTagList["(0014,409B)"] = "Scan Procedure";
-        this.dicomTagList["(0014,409C)"] = "Translation Rate X";
-        this.dicomTagList["(0014,409D)"] = "Translation Rate Y";
-        this.dicomTagList["(0014,409F)"] = "Channel Overlap";
-        this.dicomTagList["(0014,40A0)"] = "Image Quality Indicator Type";
-        this.dicomTagList["(0014,40A1)"] = "Image Quality Indicator Material";
-        this.dicomTagList["(0014,40A2)"] = "Image Quality Indicator Size";
-        this.dicomTagList["(0014,5002)"] = "LINAC Energy";
-        this.dicomTagList["(0014,5004)"] = "LINAC Output";
-        this.dicomTagList["(0014,5100)"] = "Active Aperture";
-        this.dicomTagList["(0014,5101)"] = "Total Aperture";
-        this.dicomTagList["(0014,5102)"] = "Aperture Elevation";
-        this.dicomTagList["(0014,5103)"] = "Main Lobe Angle";
-        this.dicomTagList["(0014,5104)"] = "Main Roof Angle";
-        this.dicomTagList["(0014,5105)"] = "Connector Type";
-        this.dicomTagList["(0014,5106)"] = "Wedge Model Number";
-        this.dicomTagList["(0014,5107)"] = "Wedge Angle Float";
-        this.dicomTagList["(0014,5108)"] = "Wedge Roof Angle";
-        this.dicomTagList["(0014,5109)"] = "Wedge Element 1 Position";
-        this.dicomTagList["(0014,510A)"] = "Wedge Material Velocity";
-        this.dicomTagList["(0014,510B)"] = "Wedge Material";
-        this.dicomTagList["(0014,510C)"] = "Wedge Offset Z";
-        this.dicomTagList["(0014,510D)"] = "Wedge Origin Offset X";
-        this.dicomTagList["(0014,510E)"] = "Wedge Time Delay";
-        this.dicomTagList["(0014,510F)"] = "Wedge Name";
-        this.dicomTagList["(0014,5110)"] = "Wedge Manufacturer Name";
-        this.dicomTagList["(0014,5111)"] = "Wedge Description";
-        this.dicomTagList["(0014,5112)"] = "Nominal Beam Angle";
-        this.dicomTagList["(0014,5113)"] = "Wedge Offset X";
-        this.dicomTagList["(0014,5114)"] = "Wedge Offset Y";
-        this.dicomTagList["(0014,5115)"] = "Wedge Total Length";
-        this.dicomTagList["(0014,5116)"] = "Wedge In Contact Length";
-        this.dicomTagList["(0014,5117)"] = "Wedge Front Gap";
-        this.dicomTagList["(0014,5118)"] = "Wedge Total Height";
-        this.dicomTagList["(0014,5119)"] = "Wedge Front Height";
-        this.dicomTagList["(0014,511A)"] = "Wedge Rear Height";
-        this.dicomTagList["(0014,511B)"] = "Wedge Total Width";
-        this.dicomTagList["(0014,511C)"] = "Wedge In Contact Width";
-        this.dicomTagList["(0014,511D)"] = "Wedge Chamfer Height";
-        this.dicomTagList["(0014,511E)"] = "Wedge Curve";
-        this.dicomTagList["(0014,511F)"] = "Radius Along the Wedge";
-        this.dicomTagList["(0018,0010)"] = "Contrast/Bolus Agent";
-        this.dicomTagList["(0018,0012)"] = "Contrast/Bolus Agent Sequence";
-        this.dicomTagList["(0018,0013)"] = "Contrast/Bolus T1 Relaxivity";
-        this.dicomTagList["(0018,0014)"] = "Contrast/Bolus Administration Route Sequence";
-        this.dicomTagList["(0018,0015)"] = "Body Part Examined";
-        this.dicomTagList["(0018,0020)"] = "Scanning Sequence";
-        this.dicomTagList["(0018,0021)"] = "Sequence Variant";
-        this.dicomTagList["(0018,0022)"] = "Scan Options";
-        this.dicomTagList["(0018,0023)"] = "MR Acquisition Type";
-        this.dicomTagList["(0018,0024)"] = "Sequence Name";
-        this.dicomTagList["(0018,0025)"] = "Angio Flag";
-        this.dicomTagList["(0018,0026)"] = "Intervention Drug Information Sequence";
-        this.dicomTagList["(0018,0027)"] = "Intervention Drug Stop Time";
-        this.dicomTagList["(0018,0028)"] = "Intervention Drug Dose";
-        this.dicomTagList["(0018,0029)"] = "Intervention Drug Code Sequence";
-        this.dicomTagList["(0018,002A)"] = "Additional Drug Sequence";
-        this.dicomTagList["(0018,0030)"] = "Radionuclide";
-        this.dicomTagList["(0018,0031)"] = "Radiopharmaceutical";
-        this.dicomTagList["(0018,0032)"] = "Energy Window Centerline";
-        this.dicomTagList["(0018,0033)"] = "Energy Window Total Width";
-        this.dicomTagList["(0018,0034)"] = "Intervention Drug Name";
-        this.dicomTagList["(0018,0035)"] = "Intervention Drug Start Time";
-        this.dicomTagList["(0018,0036)"] = "Intervention Sequence";
-        this.dicomTagList["(0018,0037)"] = "Therapy Type";
-        this.dicomTagList["(0018,0038)"] = "Intervention Status";
-        this.dicomTagList["(0018,0039)"] = "Therapy Description";
-        this.dicomTagList["(0018,003A)"] = "Intervention Description";
-        this.dicomTagList["(0018,0040)"] = "Cine Rate";
-        this.dicomTagList["(0018,0042)"] = "Initial Cine Run State";
-        this.dicomTagList["(0018,0050)"] = "Slice Thickness";
-        this.dicomTagList["(0018,0060)"] = "KVP";
-        this.dicomTagList["(0018,0070)"] = "Counts Accumulated";
-        this.dicomTagList["(0018,0071)"] = "Acquisition Termination Condition";
-        this.dicomTagList["(0018,0072)"] = "Effective Duration";
-        this.dicomTagList["(0018,0073)"] = "Acquisition Start Condition";
-        this.dicomTagList["(0018,0074)"] = "Acquisition Start Condition Data";
-        this.dicomTagList["(0018,0075)"] = "Acquisition Termination Condition Data";
-        this.dicomTagList["(0018,0080)"] = "Repetition Time";
-        this.dicomTagList["(0018,0081)"] = "Echo Time";
-        this.dicomTagList["(0018,0082)"] = "Inversion Time";
-        this.dicomTagList["(0018,0083)"] = "Number of Averages";
-        this.dicomTagList["(0018,0084)"] = "Imaging Frequency";
-        this.dicomTagList["(0018,0085)"] = "Imaged Nucleus";
-        this.dicomTagList["(0018,0086)"] = "Echo Number(s)";
-        this.dicomTagList["(0018,0087)"] = "Magnetic Field Strength";
-        this.dicomTagList["(0018,0088)"] = "Spacing Between Slices";
-        this.dicomTagList["(0018,0089)"] = "Number of Phase Encoding Steps";
-        this.dicomTagList["(0018,0090)"] = "Data Collection Diameter";
-        this.dicomTagList["(0018,0091)"] = "Echo Train Length";
-        this.dicomTagList["(0018,0093)"] = "Percent Sampling";
-        this.dicomTagList["(0018,0094)"] = "Percent Phase Field of View";
-        this.dicomTagList["(0018,0095)"] = "Pixel Bandwidth";
-        this.dicomTagList["(0018,1000)"] = "Device Serial Number";
-        this.dicomTagList["(0018,1002)"] = "Device UID";
-        this.dicomTagList["(0018,1003)"] = "Device ID";
-        this.dicomTagList["(0018,1004)"] = "Plate ID";
-        this.dicomTagList["(0018,1005)"] = "Generator ID";
-        this.dicomTagList["(0018,1006)"] = "Grid ID";
-        this.dicomTagList["(0018,1007)"] = "Cassette ID";
-        this.dicomTagList["(0018,1008)"] = "Gantry ID";
-        this.dicomTagList["(0018,1010)"] = "Secondary Capture Device ID";
-        this.dicomTagList["(0018,1011)"] = "Hardcopy Creation Device ID";
-        this.dicomTagList["(0018,1012)"] = "Date of Secondary Capture";
-        this.dicomTagList["(0018,1014)"] = "Time of Secondary Capture";
-        this.dicomTagList["(0018,1016)"] = "Secondary Capture Device Manufacturer";
-        this.dicomTagList["(0018,1017)"] = "Hardcopy Device Manufacturer";
-        this.dicomTagList["(0018,1018)"] = "Secondary Capture Device Manufacturer's Model Name";
-        this.dicomTagList["(0018,1019)"] = "Secondary Capture Device Software Versions";
-        this.dicomTagList["(0018,101A)"] = "Hardcopy Device Software Version";
-        this.dicomTagList["(0018,101B)"] = "Hardcopy Device Manufacturer's Model Name";
-        this.dicomTagList["(0018,1020)"] = "Software Version(s)";
-        this.dicomTagList["(0018,1022)"] = "Video Image Format Acquired";
-        this.dicomTagList["(0018,1023)"] = "Digital Image Format Acquired";
-        this.dicomTagList["(0018,1030)"] = "Protocol Name";
-        this.dicomTagList["(0018,1040)"] = "Contrast/Bolus Route";
-        this.dicomTagList["(0018,1041)"] = "Contrast/Bolus Volume";
-        this.dicomTagList["(0018,1042)"] = "Contrast/Bolus Start Time";
-        this.dicomTagList["(0018,1043)"] = "Contrast/Bolus Stop Time";
-        this.dicomTagList["(0018,1044)"] = "Contrast/Bolus Total Dose";
-        this.dicomTagList["(0018,1045)"] = "Syringe Counts";
-        this.dicomTagList["(0018,1046)"] = "Contrast Flow Rate";
-        this.dicomTagList["(0018,1047)"] = "Contrast Flow Duration";
-        this.dicomTagList["(0018,1048)"] = "Contrast/Bolus Ingredient";
-        this.dicomTagList["(0018,1049)"] = "Contrast/Bolus Ingredient Concentration";
-        this.dicomTagList["(0018,1050)"] = "Spatial Resolution";
-        this.dicomTagList["(0018,1060)"] = "Trigger Time";
-        this.dicomTagList["(0018,1061)"] = "Trigger Source or Type";
-        this.dicomTagList["(0018,1062)"] = "Nominal Interval";
-        this.dicomTagList["(0018,1063)"] = "Frame Time";
-        this.dicomTagList["(0018,1064)"] = "Cardiac Framing Type";
-        this.dicomTagList["(0018,1065)"] = "Frame Time Vector";
-        this.dicomTagList["(0018,1066)"] = "Frame Delay";
-        this.dicomTagList["(0018,1067)"] = "Image Trigger Delay";
-        this.dicomTagList["(0018,1068)"] = "Multiplex Group Time Offset";
-        this.dicomTagList["(0018,1069)"] = "Trigger Time Offset";
-        this.dicomTagList["(0018,106A)"] = "Synchronization Trigger";
-        this.dicomTagList["(0018,106C)"] = "Synchronization Channel";
-        this.dicomTagList["(0018,106E)"] = "Trigger Sample Position";
-        this.dicomTagList["(0018,1070)"] = "Radiopharmaceutical Route";
-        this.dicomTagList["(0018,1071)"] = "Radiopharmaceutical Volume";
-        this.dicomTagList["(0018,1072)"] = "Radiopharmaceutical Start Time";
-        this.dicomTagList["(0018,1073)"] = "Radiopharmaceutical Stop Time";
-        this.dicomTagList["(0018,1074)"] = "Radionuclide Total Dose";
-        this.dicomTagList["(0018,1075)"] = "Radionuclide Half Life";
-        this.dicomTagList["(0018,1076)"] = "Radionuclide Positron Fraction";
-        this.dicomTagList["(0018,1077)"] = "Radiopharmaceutical Specific Activity";
-        this.dicomTagList["(0018,1078)"] = "Radiopharmaceutical Start DateTime";
-        this.dicomTagList["(0018,1079)"] = "Radiopharmaceutical Stop DateTime";
-        this.dicomTagList["(0018,1080)"] = "Beat Rejection Flag";
-        this.dicomTagList["(0018,1081)"] = "Low R-R Value";
-        this.dicomTagList["(0018,1082)"] = "High R-R Value";
-        this.dicomTagList["(0018,1083)"] = "Intervals Acquired";
-        this.dicomTagList["(0018,1084)"] = "Intervals Rejected";
-        this.dicomTagList["(0018,1085)"] = "PVC Rejection";
-        this.dicomTagList["(0018,1086)"] = "Skip Beats";
-        this.dicomTagList["(0018,1088)"] = "Heart Rate";
-        this.dicomTagList["(0018,1090)"] = "Cardiac Number of Images";
-        this.dicomTagList["(0018,1094)"] = "Trigger Window";
-        this.dicomTagList["(0018,1100)"] = "Reconstruction Diameter";
-        this.dicomTagList["(0018,1110)"] = "Distance Source to Detector";
-        this.dicomTagList["(0018,1111)"] = "Distance Source to Patient";
-        this.dicomTagList["(0018,1114)"] = "Estimated Radiographic Magnification Factor";
-        this.dicomTagList["(0018,1120)"] = "Gantry/Detector Tilt";
-        this.dicomTagList["(0018,1121)"] = "Gantry/Detector Slew";
-        this.dicomTagList["(0018,1130)"] = "Table Height";
-        this.dicomTagList["(0018,1131)"] = "Table Traverse";
-        this.dicomTagList["(0018,1134)"] = "Table Motion";
-        this.dicomTagList["(0018,1135)"] = "Table Vertical Increment";
-        this.dicomTagList["(0018,1136)"] = "Table Lateral Increment";
-        this.dicomTagList["(0018,1137)"] = "Table Longitudinal Increment";
-        this.dicomTagList["(0018,1138)"] = "Table Angle";
-        this.dicomTagList["(0018,113A)"] = "Table Type";
-        this.dicomTagList["(0018,1140)"] = "Rotation Direction";
-        this.dicomTagList["(0018,1141)"] = "Angular Position";
-        this.dicomTagList["(0018,1142)"] = "Radial Position";
-        this.dicomTagList["(0018,1143)"] = "Scan Arc";
-        this.dicomTagList["(0018,1144)"] = "Angular Step";
-        this.dicomTagList["(0018,1145)"] = "Center of Rotation Offset";
-        this.dicomTagList["(0018,1146)"] = "Rotation Offset";
-        this.dicomTagList["(0018,1147)"] = "Field of View Shape";
-        this.dicomTagList["(0018,1149)"] = "Field of View Dimension(s)";
-        this.dicomTagList["(0018,1150)"] = "Exposure Time";
-        this.dicomTagList["(0018,1151)"] = "X-Ray Tube Current";
-        this.dicomTagList["(0018,1152)"] = "Exposure";
-        this.dicomTagList["(0018,1153)"] = "Exposure in µAs";
-        this.dicomTagList["(0018,1154)"] = "Average Pulse Width";
-        this.dicomTagList["(0018,1155)"] = "Radiation Setting";
-        this.dicomTagList["(0018,1156)"] = "Rectification Type";
-        this.dicomTagList["(0018,115A)"] = "Radiation Mode";
-        this.dicomTagList["(0018,115E)"] = "Image and Fluoroscopy Area Dose Product";
-        this.dicomTagList["(0018,1160)"] = "Filter Type";
-        this.dicomTagList["(0018,1161)"] = "Type of Filters";
-        this.dicomTagList["(0018,1162)"] = "Intensifier Size";
-        this.dicomTagList["(0018,1164)"] = "Imager Pixel Spacing";
-        this.dicomTagList["(0018,1166)"] = "Grid";
-        this.dicomTagList["(0018,1170)"] = "Generator Power";
-        this.dicomTagList["(0018,1180)"] = "Collimator/grid Name";
-        this.dicomTagList["(0018,1181)"] = "Collimator Type";
-        this.dicomTagList["(0018,1182)"] = "Focal Distance";
-        this.dicomTagList["(0018,1183)"] = "X Focus Center";
-        this.dicomTagList["(0018,1184)"] = "Y Focus Center";
-        this.dicomTagList["(0018,1190)"] = "Focal Spot(s)";
-        this.dicomTagList["(0018,1191)"] = "Anode Target Material";
-        this.dicomTagList["(0018,11A0)"] = "Body Part Thickness";
-        this.dicomTagList["(0018,11A2)"] = "Compression Force";
-        this.dicomTagList["(0018,11A4)"] = "Paddle Description";
-        this.dicomTagList["(0018,1200)"] = "Date of Last Calibration";
-        this.dicomTagList["(0018,1201)"] = "Time of Last Calibration";
-        this.dicomTagList["(0018,1202)"] = "DateTime of Last Calibration";
-        this.dicomTagList["(0018,1210)"] = "Convolution Kernel";
-        this.dicomTagList["(0018,1240)"] = "Upper/Lower Pixel Values";
-        this.dicomTagList["(0018,1242)"] = "Actual Frame Duration";
-        this.dicomTagList["(0018,1243)"] = "Count Rate";
-        this.dicomTagList["(0018,1244)"] = "Preferred Playback Sequencing";
-        this.dicomTagList["(0018,1250)"] = "Receive Coil Name";
-        this.dicomTagList["(0018,1251)"] = "Transmit Coil Name";
-        this.dicomTagList["(0018,1260)"] = "Plate Type";
-        this.dicomTagList["(0018,1261)"] = "Phosphor Type";
-        this.dicomTagList["(0018,1271)"] = "Water Equivalent Diameter";
-        this.dicomTagList["(0018,1272)"] = "Water Equivalent Diameter Calculation Method Code Sequence";
-        this.dicomTagList["(0018,1300)"] = "Scan Velocity";
-        this.dicomTagList["(0018,1301)"] = "Whole Body Technique";
-        this.dicomTagList["(0018,1302)"] = "Scan Length";
-        this.dicomTagList["(0018,1310)"] = "Acquisition Matrix";
-        this.dicomTagList["(0018,1312)"] = "In-plane Phase Encoding Direction";
-        this.dicomTagList["(0018,1314)"] = "Flip Angle";
-        this.dicomTagList["(0018,1315)"] = "Variable Flip Angle Flag";
-        this.dicomTagList["(0018,1316)"] = "SAR";
-        this.dicomTagList["(0018,1318)"] = "dB/dt";
-        this.dicomTagList["(0018,1320)"] = "B1rms";
-        this.dicomTagList["(0018,1400)"] = "Acquisition Device Processing Description";
-        this.dicomTagList["(0018,1401)"] = "Acquisition Device Processing Code";
-        this.dicomTagList["(0018,1402)"] = "Cassette Orientation";
-        this.dicomTagList["(0018,1403)"] = "Cassette Size";
-        this.dicomTagList["(0018,1404)"] = "Exposures on Plate";
-        this.dicomTagList["(0018,1405)"] = "Relative X-Ray Exposure";
-        this.dicomTagList["(0018,1411)"] = "Exposure Index";
-        this.dicomTagList["(0018,1412)"] = "Target Exposure Index";
-        this.dicomTagList["(0018,1413)"] = "Deviation Index";
-        this.dicomTagList["(0018,1450)"] = "Column Angulation";
-        this.dicomTagList["(0018,1460)"] = "Tomo Layer Height";
-        this.dicomTagList["(0018,1470)"] = "Tomo Angle";
-        this.dicomTagList["(0018,1480)"] = "Tomo Time";
-        this.dicomTagList["(0018,1490)"] = "Tomo Type";
-        this.dicomTagList["(0018,1491)"] = "Tomo Class";
-        this.dicomTagList["(0018,1495)"] = "Number of Tomosynthesis Source Images";
-        this.dicomTagList["(0018,1500)"] = "Positioner Motion";
-        this.dicomTagList["(0018,1508)"] = "Positioner Type";
-        this.dicomTagList["(0018,1510)"] = "Positioner Primary Angle";
-        this.dicomTagList["(0018,1511)"] = "Positioner Secondary Angle";
-        this.dicomTagList["(0018,1520)"] = "Positioner Primary Angle Increment";
-        this.dicomTagList["(0018,1521)"] = "Positioner Secondary Angle Increment";
-        this.dicomTagList["(0018,1530)"] = "Detector Primary Angle";
-        this.dicomTagList["(0018,1531)"] = "Detector Secondary Angle";
-        this.dicomTagList["(0018,1600)"] = "Shutter Shape";
-        this.dicomTagList["(0018,1602)"] = "Shutter Left Vertical Edge";
-        this.dicomTagList["(0018,1604)"] = "Shutter Right Vertical Edge";
-        this.dicomTagList["(0018,1606)"] = "Shutter Upper Horizontal Edge";
-        this.dicomTagList["(0018,1608)"] = "Shutter Lower Horizontal Edge";
-        this.dicomTagList["(0018,1610)"] = "Center of Circular Shutter";
-        this.dicomTagList["(0018,1612)"] = "Radius of Circular Shutter";
-        this.dicomTagList["(0018,1620)"] = "Vertices of the Polygonal Shutter";
-        this.dicomTagList["(0018,1622)"] = "Shutter Presentation Value";
-        this.dicomTagList["(0018,1623)"] = "Shutter Overlay Group";
-        this.dicomTagList["(0018,1624)"] = "Shutter Presentation Color CIELab Value";
-        this.dicomTagList["(0018,1700)"] = "Collimator Shape";
-        this.dicomTagList["(0018,1702)"] = "Collimator Left Vertical Edge";
-        this.dicomTagList["(0018,1704)"] = "Collimator Right Vertical Edge";
-        this.dicomTagList["(0018,1706)"] = "Collimator Upper Horizontal Edge";
-        this.dicomTagList["(0018,1708)"] = "Collimator Lower Horizontal Edge";
-        this.dicomTagList["(0018,1710)"] = "Center of Circular Collimator";
-        this.dicomTagList["(0018,1712)"] = "Radius of Circular Collimator";
-        this.dicomTagList["(0018,1720)"] = "Vertices of the Polygonal Collimator";
-        this.dicomTagList["(0018,1800)"] = "Acquisition Time Synchronized";
-        this.dicomTagList["(0018,1801)"] = "Time Source";
-        this.dicomTagList["(0018,1802)"] = "Time Distribution Protocol";
-        this.dicomTagList["(0018,1803)"] = "NTP Source Address";
-        this.dicomTagList["(0018,2001)"] = "Page Number Vector";
-        this.dicomTagList["(0018,2002)"] = "Frame Label Vector";
-        this.dicomTagList["(0018,2003)"] = "Frame Primary Angle Vector";
-        this.dicomTagList["(0018,2004)"] = "Frame Secondary Angle Vector";
-        this.dicomTagList["(0018,2005)"] = "Slice Location Vector";
-        this.dicomTagList["(0018,2006)"] = "Display Window Label Vector";
-        this.dicomTagList["(0018,2010)"] = "Nominal Scanned Pixel Spacing";
-        this.dicomTagList["(0018,2020)"] = "Digitizing Device Transport Direction";
-        this.dicomTagList["(0018,2030)"] = "Rotation of Scanned Film";
-        this.dicomTagList["(0018,2041)"] = "Biopsy Target Sequence";
-        this.dicomTagList["(0018,2042)"] = "Target UID";
-        this.dicomTagList["(0018,2043)"] = "Localizing Cursor Position";
-        this.dicomTagList["(0018,2044)"] = "Calculated Target Position";
-        this.dicomTagList["(0018,2045)"] = "Target Label";
-        this.dicomTagList["(0018,2046)"] = "Displayed Z Value";
-        this.dicomTagList["(0018,3100)"] = "IVUS Acquisition";
-        this.dicomTagList["(0018,3101)"] = "IVUS Pullback Rate";
-        this.dicomTagList["(0018,3102)"] = "IVUS Gated Rate";
-        this.dicomTagList["(0018,3103)"] = "IVUS Pullback Start Frame Number";
-        this.dicomTagList["(0018,3104)"] = "IVUS Pullback Stop Frame Number";
-        this.dicomTagList["(0018,3105)"] = "Lesion Number";
-        this.dicomTagList["(0018,4000)"] = "Acquisition Comments";
-        this.dicomTagList["(0018,5000)"] = "Output Power";
-        this.dicomTagList["(0018,5010)"] = "Transducer Data";
-        this.dicomTagList["(0018,5012)"] = "Focus Depth";
-        this.dicomTagList["(0018,5020)"] = "Processing Function";
-        this.dicomTagList["(0018,5021)"] = "Postprocessing Function";
-        this.dicomTagList["(0018,5022)"] = "Mechanical Index";
-        this.dicomTagList["(0018,5024)"] = "Bone Thermal Index";
-        this.dicomTagList["(0018,5026)"] = "Cranial Thermal Index";
-        this.dicomTagList["(0018,5027)"] = "Soft Tissue Thermal Index";
-        this.dicomTagList["(0018,5028)"] = "Soft Tissue-focus Thermal Index";
-        this.dicomTagList["(0018,5029)"] = "Soft Tissue-surface Thermal Index";
-        this.dicomTagList["(0018,5030)"] = "Dynamic Range";
-        this.dicomTagList["(0018,5040)"] = "Total Gain";
-        this.dicomTagList["(0018,5050)"] = "Depth of Scan Field";
-        this.dicomTagList["(0018,5100)"] = "Patient Position";
-        this.dicomTagList["(0018,5101)"] = "View Position";
-        this.dicomTagList["(0018,5104)"] = "Projection Eponymous Name Code Sequence";
-        this.dicomTagList["(0018,5210)"] = "Image Transformation Matrix";
-        this.dicomTagList["(0018,5212)"] = "Image Translation Vector";
-        this.dicomTagList["(0018,6000)"] = "Sensitivity";
-        this.dicomTagList["(0018,6011)"] = "Sequence of Ultrasound Regions";
-        this.dicomTagList["(0018,6012)"] = "Region Spatial Format";
-        this.dicomTagList["(0018,6014)"] = "Region Data Type";
-        this.dicomTagList["(0018,6016)"] = "Region Flags";
-        this.dicomTagList["(0018,6018)"] = "Region Location Min X0";
-        this.dicomTagList["(0018,601A)"] = "Region Location Min Y0";
-        this.dicomTagList["(0018,601C)"] = "Region Location Max X1";
-        this.dicomTagList["(0018,601E)"] = "Region Location Max Y1";
-        this.dicomTagList["(0018,6020)"] = "Reference Pixel X0";
-        this.dicomTagList["(0018,6022)"] = "Reference Pixel Y0";
-        this.dicomTagList["(0018,6024)"] = "Physical Units X Direction";
-        this.dicomTagList["(0018,6026)"] = "Physical Units Y Direction";
-        this.dicomTagList["(0018,6028)"] = "Reference Pixel Physical Value X";
-        this.dicomTagList["(0018,602A)"] = "Reference Pixel Physical Value Y";
-        this.dicomTagList["(0018,602C)"] = "Physical Delta X";
-        this.dicomTagList["(0018,602E)"] = "Physical Delta Y";
-        this.dicomTagList["(0018,6030)"] = "Transducer Frequency";
-        this.dicomTagList["(0018,6031)"] = "Transducer Type";
-        this.dicomTagList["(0018,6032)"] = "Pulse Repetition Frequency";
-        this.dicomTagList["(0018,6034)"] = "Doppler Correction Angle";
-        this.dicomTagList["(0018,6036)"] = "Steering Angle";
-        this.dicomTagList["(0018,6038)"] = "Doppler Sample Volume X Position ()";
-        this.dicomTagList["(0018,6039)"] = "Doppler Sample Volume X Position";
-        this.dicomTagList["(0018,603A)"] = "Doppler Sample Volume Y Position ()";
-        this.dicomTagList["(0018,603B)"] = "Doppler Sample Volume Y Position";
-        this.dicomTagList["(0018,603C)"] = "TM-Line Position X0 ()";
-        this.dicomTagList["(0018,603D)"] = "TM-Line Position X0";
-        this.dicomTagList["(0018,603E)"] = "TM-Line Position Y0 ()";
-        this.dicomTagList["(0018,603F)"] = "TM-Line Position Y0";
-        this.dicomTagList["(0018,6040)"] = "TM-Line Position X1 ()";
-        this.dicomTagList["(0018,6041)"] = "TM-Line Position X1";
-        this.dicomTagList["(0018,6042)"] = "TM-Line Position Y1 ()";
-        this.dicomTagList["(0018,6043)"] = "TM-Line Position Y1";
-        this.dicomTagList["(0018,6044)"] = "Pixel Component Organization";
-        this.dicomTagList["(0018,6046)"] = "Pixel Component Mask";
-        this.dicomTagList["(0018,6048)"] = "Pixel Component Range Start";
-        this.dicomTagList["(0018,604A)"] = "Pixel Component Range Stop";
-        this.dicomTagList["(0018,604C)"] = "Pixel Component Physical Units";
-        this.dicomTagList["(0018,604E)"] = "Pixel Component Data Type";
-        this.dicomTagList["(0018,6050)"] = "Number of Table Break Points";
-        this.dicomTagList["(0018,6052)"] = "Table of X Break Points";
-        this.dicomTagList["(0018,6054)"] = "Table of Y Break Points";
-        this.dicomTagList["(0018,6056)"] = "Number of Table Entries";
-        this.dicomTagList["(0018,6058)"] = "Table of Pixel Values";
-        this.dicomTagList["(0018,605A)"] = "Table of Parameter Values";
-        this.dicomTagList["(0018,6060)"] = "R Wave Time Vector";
-        this.dicomTagList["(0018,7000)"] = "Detector Conditions Nominal Flag";
-        this.dicomTagList["(0018,7001)"] = "Detector Temperature";
-        this.dicomTagList["(0018,7004)"] = "Detector Type";
-        this.dicomTagList["(0018,7005)"] = "Detector Configuration";
-        this.dicomTagList["(0018,7006)"] = "Detector Description";
-        this.dicomTagList["(0018,7008)"] = "Detector Mode";
-        this.dicomTagList["(0018,700A)"] = "Detector ID";
-        this.dicomTagList["(0018,700C)"] = "Date of Last Detector Calibration";
-        this.dicomTagList["(0018,700E)"] = "Time of Last Detector Calibration";
-        this.dicomTagList["(0018,7010)"] = "Exposures on Detector Since Last Calibration";
-        this.dicomTagList["(0018,7011)"] = "Exposures on Detector Since Manufactured";
-        this.dicomTagList["(0018,7012)"] = "Detector Time Since Last Exposure";
-        this.dicomTagList["(0018,7014)"] = "Detector Active Time";
-        this.dicomTagList["(0018,7016)"] = "Detector Activation Offset From Exposure";
-        this.dicomTagList["(0018,701A)"] = "Detector Binning";
-        this.dicomTagList["(0018,7020)"] = "Detector Element Physical Size";
-        this.dicomTagList["(0018,7022)"] = "Detector Element Spacing";
-        this.dicomTagList["(0018,7024)"] = "Detector Active Shape";
-        this.dicomTagList["(0018,7026)"] = "Detector Active Dimension(s)";
-        this.dicomTagList["(0018,7028)"] = "Detector Active Origin";
-        this.dicomTagList["(0018,702A)"] = "Detector Manufacturer Name";
-        this.dicomTagList["(0018,702B)"] = "Detector Manufacturer's Model Name";
-        this.dicomTagList["(0018,7030)"] = "Field of View Origin";
-        this.dicomTagList["(0018,7032)"] = "Field of View Rotation";
-        this.dicomTagList["(0018,7034)"] = "Field of View Horizontal Flip";
-        this.dicomTagList["(0018,7036)"] = "Pixel Data Area Origin Relative To FOV";
-        this.dicomTagList["(0018,7038)"] = "Pixel Data Area Rotation Angle Relative To FOV";
-        this.dicomTagList["(0018,7040)"] = "Grid Absorbing Material";
-        this.dicomTagList["(0018,7041)"] = "Grid Spacing Material";
-        this.dicomTagList["(0018,7042)"] = "Grid Thickness";
-        this.dicomTagList["(0018,7044)"] = "Grid Pitch";
-        this.dicomTagList["(0018,7046)"] = "Grid Aspect Ratio";
-        this.dicomTagList["(0018,7048)"] = "Grid Period";
-        this.dicomTagList["(0018,704C)"] = "Grid Focal Distance";
-        this.dicomTagList["(0018,7050)"] = "Filter Material";
-        this.dicomTagList["(0018,7052)"] = "Filter Thickness Minimum";
-        this.dicomTagList["(0018,7054)"] = "Filter Thickness Maximum";
-        this.dicomTagList["(0018,7056)"] = "Filter Beam Path Length Minimum";
-        this.dicomTagList["(0018,7058)"] = "Filter Beam Path Length Maximum";
-        this.dicomTagList["(0018,7060)"] = "Exposure Control Mode";
-        this.dicomTagList["(0018,7062)"] = "Exposure Control Mode Description";
-        this.dicomTagList["(0018,7064)"] = "Exposure Status";
-        this.dicomTagList["(0018,7065)"] = "Phototimer Setting";
-        this.dicomTagList["(0018,8150)"] = "Exposure Time in µS";
-        this.dicomTagList["(0018,8151)"] = "X-Ray Tube Current in µA";
-        this.dicomTagList["(0018,9004)"] = "Content Qualification";
-        this.dicomTagList["(0018,9005)"] = "Pulse Sequence Name";
-        this.dicomTagList["(0018,9006)"] = "MR Imaging Modifier Sequence";
-        this.dicomTagList["(0018,9008)"] = "Echo Pulse Sequence";
-        this.dicomTagList["(0018,9009)"] = "Inversion Recovery";
-        this.dicomTagList["(0018,9010)"] = "Flow Compensation";
-        this.dicomTagList["(0018,9011)"] = "Multiple Spin Echo";
-        this.dicomTagList["(0018,9012)"] = "Multi-planar Excitation";
-        this.dicomTagList["(0018,9014)"] = "Phase Contrast";
-        this.dicomTagList["(0018,9015)"] = "Time of Flight Contrast";
-        this.dicomTagList["(0018,9016)"] = "Spoiling";
-        this.dicomTagList["(0018,9017)"] = "Steady State Pulse Sequence";
-        this.dicomTagList["(0018,9018)"] = "Echo Planar Pulse Sequence";
-        this.dicomTagList["(0018,9019)"] = "Tag Angle First Axis";
-        this.dicomTagList["(0018,9020)"] = "Magnetization Transfer";
-        this.dicomTagList["(0018,9021)"] = "T2 Preparation";
-        this.dicomTagList["(0018,9022)"] = "Blood Signal Nulling";
-        this.dicomTagList["(0018,9024)"] = "Saturation Recovery";
-        this.dicomTagList["(0018,9025)"] = "Spectrally Selected Suppression";
-        this.dicomTagList["(0018,9026)"] = "Spectrally Selected Excitation";
-        this.dicomTagList["(0018,9027)"] = "Spatial Pre-saturation";
-        this.dicomTagList["(0018,9028)"] = "Tagging";
-        this.dicomTagList["(0018,9029)"] = "Oversampling Phase";
-        this.dicomTagList["(0018,9030)"] = "Tag Spacing First Dimension";
-        this.dicomTagList["(0018,9032)"] = "Geometry of k-Space Traversal";
-        this.dicomTagList["(0018,9033)"] = "Segmented k-Space Traversal";
-        this.dicomTagList["(0018,9034)"] = "Rectilinear Phase Encode Reordering";
-        this.dicomTagList["(0018,9035)"] = "Tag Thickness";
-        this.dicomTagList["(0018,9036)"] = "Partial Fourier Direction";
-        this.dicomTagList["(0018,9037)"] = "Cardiac Synchronization Technique";
-        this.dicomTagList["(0018,9041)"] = "Receive Coil Manufacturer Name";
-        this.dicomTagList["(0018,9042)"] = "MR Receive Coil Sequence";
-        this.dicomTagList["(0018,9043)"] = "Receive Coil Type";
-        this.dicomTagList["(0018,9044)"] = "Quadrature Receive Coil";
-        this.dicomTagList["(0018,9045)"] = "Multi-Coil Definition Sequence";
-        this.dicomTagList["(0018,9046)"] = "Multi-Coil Configuration";
-        this.dicomTagList["(0018,9047)"] = "Multi-Coil Element Name";
-        this.dicomTagList["(0018,9048)"] = "Multi-Coil Element Used";
-        this.dicomTagList["(0018,9049)"] = "MR Transmit Coil Sequence";
-        this.dicomTagList["(0018,9050)"] = "Transmit Coil Manufacturer Name";
-        this.dicomTagList["(0018,9051)"] = "Transmit Coil Type";
-        this.dicomTagList["(0018,9052)"] = "Spectral Width";
-        this.dicomTagList["(0018,9053)"] = "Chemical Shift Reference";
-        this.dicomTagList["(0018,9054)"] = "Volume Localization Technique";
-        this.dicomTagList["(0018,9058)"] = "MR Acquisition Frequency Encoding Steps";
-        this.dicomTagList["(0018,9059)"] = "De-coupling";
-        this.dicomTagList["(0018,9060)"] = "De-coupled Nucleus";
-        this.dicomTagList["(0018,9061)"] = "De-coupling Frequency";
-        this.dicomTagList["(0018,9062)"] = "De-coupling Method";
-        this.dicomTagList["(0018,9063)"] = "De-coupling Chemical Shift Reference";
-        this.dicomTagList["(0018,9064)"] = "k-space Filtering";
-        this.dicomTagList["(0018,9065)"] = "Time Domain Filtering";
-        this.dicomTagList["(0018,9066)"] = "Number of Zero Fills";
-        this.dicomTagList["(0018,9067)"] = "Baseline Correction";
-        this.dicomTagList["(0018,9069)"] = "Parallel Reduction Factor In-plane";
-        this.dicomTagList["(0018,9070)"] = "Cardiac R-R Interval Specified";
-        this.dicomTagList["(0018,9073)"] = "Acquisition Duration";
-        this.dicomTagList["(0018,9074)"] = "Frame Acquisition DateTime";
-        this.dicomTagList["(0018,9075)"] = "Diffusion Directionality";
-        this.dicomTagList["(0018,9076)"] = "Diffusion Gradient Direction Sequence";
-        this.dicomTagList["(0018,9077)"] = "Parallel Acquisition";
-        this.dicomTagList["(0018,9078)"] = "Parallel Acquisition Technique";
-        this.dicomTagList["(0018,9079)"] = "Inversion Times";
-        this.dicomTagList["(0018,9080)"] = "Metabolite Map Description";
-        this.dicomTagList["(0018,9081)"] = "Partial Fourier";
-        this.dicomTagList["(0018,9082)"] = "Effective Echo Time";
-        this.dicomTagList["(0018,9083)"] = "Metabolite Map Code Sequence";
-        this.dicomTagList["(0018,9084)"] = "Chemical Shift Sequence";
-        this.dicomTagList["(0018,9085)"] = "Cardiac Signal Source";
-        this.dicomTagList["(0018,9087)"] = "Diffusion b-value";
-        this.dicomTagList["(0018,9089)"] = "Diffusion Gradient Orientation";
-        this.dicomTagList["(0018,9090)"] = "Velocity Encoding Direction";
-        this.dicomTagList["(0018,9091)"] = "Velocity Encoding Minimum Value";
-        this.dicomTagList["(0018,9092)"] = "Velocity Encoding Acquisition Sequence";
-        this.dicomTagList["(0018,9093)"] = "Number of k-Space Trajectories";
-        this.dicomTagList["(0018,9094)"] = "Coverage of k-Space";
-        this.dicomTagList["(0018,9095)"] = "Spectroscopy Acquisition Phase Rows";
-        this.dicomTagList["(0018,9096)"] = "Parallel Reduction Factor In-plane ()";
-        this.dicomTagList["(0018,9098)"] = "Transmitter Frequency";
-        this.dicomTagList["(0018,9100)"] = "Resonant Nucleus";
-        this.dicomTagList["(0018,9101)"] = "Frequency Correction";
-        this.dicomTagList["(0018,9103)"] = "MR Spectroscopy FOV/Geometry Sequence";
-        this.dicomTagList["(0018,9104)"] = "Slab Thickness";
-        this.dicomTagList["(0018,9105)"] = "Slab Orientation";
-        this.dicomTagList["(0018,9106)"] = "Mid Slab Position";
-        this.dicomTagList["(0018,9107)"] = "MR Spatial Saturation Sequence";
-        this.dicomTagList["(0018,9112)"] = "MR Timing and Related Parameters Sequence";
-        this.dicomTagList["(0018,9114)"] = "MR Echo Sequence";
-        this.dicomTagList["(0018,9115)"] = "MR Modifier Sequence";
-        this.dicomTagList["(0018,9117)"] = "MR Diffusion Sequence";
-        this.dicomTagList["(0018,9118)"] = "Cardiac Synchronization Sequence";
-        this.dicomTagList["(0018,9119)"] = "MR Averages Sequence";
-        this.dicomTagList["(0018,9125)"] = "MR FOV/Geometry Sequence";
-        this.dicomTagList["(0018,9126)"] = "Volume Localization Sequence";
-        this.dicomTagList["(0018,9127)"] = "Spectroscopy Acquisition Data Columns";
-        this.dicomTagList["(0018,9147)"] = "Diffusion Anisotropy Type";
-        this.dicomTagList["(0018,9151)"] = "Frame Reference DateTime";
-        this.dicomTagList["(0018,9152)"] = "MR Metabolite Map Sequence";
-        this.dicomTagList["(0018,9155)"] = "Parallel Reduction Factor out-of-plane";
-        this.dicomTagList["(0018,9159)"] = "Spectroscopy Acquisition Out-of-plane Phase Steps";
-        this.dicomTagList["(0018,9166)"] = "Bulk Motion Status";
-        this.dicomTagList["(0018,9168)"] = "Parallel Reduction Factor Second In-plane";
-        this.dicomTagList["(0018,9169)"] = "Cardiac Beat Rejection Technique";
-        this.dicomTagList["(0018,9170)"] = "Respiratory Motion Compensation Technique";
-        this.dicomTagList["(0018,9171)"] = "Respiratory Signal Source";
-        this.dicomTagList["(0018,9172)"] = "Bulk Motion Compensation Technique";
-        this.dicomTagList["(0018,9173)"] = "Bulk Motion Signal Source";
-        this.dicomTagList["(0018,9174)"] = "Applicable Safety Standard Agency";
-        this.dicomTagList["(0018,9175)"] = "Applicable Safety Standard Description";
-        this.dicomTagList["(0018,9176)"] = "Operating Mode Sequence";
-        this.dicomTagList["(0018,9177)"] = "Operating Mode Type";
-        this.dicomTagList["(0018,9178)"] = "Operating Mode";
-        this.dicomTagList["(0018,9179)"] = "Specific Absorption Rate Definition";
-        this.dicomTagList["(0018,9180)"] = "Gradient Output Type";
-        this.dicomTagList["(0018,9181)"] = "Specific Absorption Rate Value";
-        this.dicomTagList["(0018,9182)"] = "Gradient Output";
-        this.dicomTagList["(0018,9183)"] = "Flow Compensation Direction";
-        this.dicomTagList["(0018,9184)"] = "Tagging Delay";
-        this.dicomTagList["(0018,9185)"] = "Respiratory Motion Compensation Technique Description";
-        this.dicomTagList["(0018,9186)"] = "Respiratory Signal Source ID";
-        this.dicomTagList["(0018,9195)"] = "Chemical Shift Minimum Integration Limit in Hz";
-        this.dicomTagList["(0018,9196)"] = "Chemical Shift Maximum Integration Limit in Hz";
-        this.dicomTagList["(0018,9197)"] = "MR Velocity Encoding Sequence";
-        this.dicomTagList["(0018,9198)"] = "First Order Phase Correction";
-        this.dicomTagList["(0018,9199)"] = "Water Referenced Phase Correction";
-        this.dicomTagList["(0018,9200)"] = "MR Spectroscopy Acquisition Type";
-        this.dicomTagList["(0018,9214)"] = "Respiratory Cycle Position";
-        this.dicomTagList["(0018,9217)"] = "Velocity Encoding Maximum Value";
-        this.dicomTagList["(0018,9218)"] = "Tag Spacing Second Dimension";
-        this.dicomTagList["(0018,9219)"] = "Tag Angle Second Axis";
-        this.dicomTagList["(0018,9220)"] = "Frame Acquisition Duration";
-        this.dicomTagList["(0018,9226)"] = "MR Image Frame Type Sequence";
-        this.dicomTagList["(0018,9227)"] = "MR Spectroscopy Frame Type Sequence";
-        this.dicomTagList["(0018,9231)"] = "MR Acquisition Phase Encoding Steps in-plane";
-        this.dicomTagList["(0018,9232)"] = "MR Acquisition Phase Encoding Steps out-of-plane";
-        this.dicomTagList["(0018,9234)"] = "Spectroscopy Acquisition Phase Columns";
-        this.dicomTagList["(0018,9236)"] = "Cardiac Cycle Position";
-        this.dicomTagList["(0018,9239)"] = "Specific Absorption Rate Sequence";
-        this.dicomTagList["(0018,9240)"] = "RF Echo Train Length";
-        this.dicomTagList["(0018,9241)"] = "Gradient Echo Train Length";
-        this.dicomTagList["(0018,9250)"] = "Arterial Spin Labeling Contrast";
-        this.dicomTagList["(0018,9251)"] = "MR Arterial Spin Labeling Sequence";
-        this.dicomTagList["(0018,9252)"] = "ASL Technique Description";
-        this.dicomTagList["(0018,9253)"] = "ASL Slab Number";
-        this.dicomTagList["(0018,9254)"] = "ASL Slab Thickness";
-        this.dicomTagList["(0018,9255)"] = "ASL Slab Orientation";
-        this.dicomTagList["(0018,9256)"] = "ASL Mid Slab Position";
-        this.dicomTagList["(0018,9257)"] = "ASL Context";
-        this.dicomTagList["(0018,9258)"] = "ASL Pulse Train Duration";
-        this.dicomTagList["(0018,9259)"] = "ASL Crusher Flag";
-        this.dicomTagList["(0018,925A)"] = "ASL Crusher Flow Limit";
-        this.dicomTagList["(0018,925B)"] = "ASL Crusher Description";
-        this.dicomTagList["(0018,925C)"] = "ASL Bolus Cut-off Flag";
-        this.dicomTagList["(0018,925D)"] = "ASL Bolus Cut-off Timing Sequence";
-        this.dicomTagList["(0018,925E)"] = "ASL Bolus Cut-off Technique";
-        this.dicomTagList["(0018,925F)"] = "ASL Bolus Cut-off Delay Time";
-        this.dicomTagList["(0018,9260)"] = "ASL Slab Sequence";
-        this.dicomTagList["(0018,9295)"] = "Chemical Shift Minimum Integration Limit in ppm";
-        this.dicomTagList["(0018,9296)"] = "Chemical Shift Maximum Integration Limit in ppm";
-        this.dicomTagList["(0018,9297)"] = "Water Reference Acquisition";
-        this.dicomTagList["(0018,9298)"] = "Echo Peak Position";
-        this.dicomTagList["(0018,9301)"] = "CT Acquisition Type Sequence";
-        this.dicomTagList["(0018,9302)"] = "Acquisition Type";
-        this.dicomTagList["(0018,9303)"] = "Tube Angle";
-        this.dicomTagList["(0018,9304)"] = "CT Acquisition Details Sequence";
-        this.dicomTagList["(0018,9305)"] = "Revolution Time";
-        this.dicomTagList["(0018,9306)"] = "Single Collimation Width";
-        this.dicomTagList["(0018,9307)"] = "Total Collimation Width";
-        this.dicomTagList["(0018,9308)"] = "CT Table Dynamics Sequence";
-        this.dicomTagList["(0018,9309)"] = "Table Speed";
-        this.dicomTagList["(0018,9310)"] = "Table Feed per Rotation";
-        this.dicomTagList["(0018,9311)"] = "Spiral Pitch Factor";
-        this.dicomTagList["(0018,9312)"] = "CT Geometry Sequence";
-        this.dicomTagList["(0018,9313)"] = "Data Collection Center (Patient)";
-        this.dicomTagList["(0018,9314)"] = "CT Reconstruction Sequence";
-        this.dicomTagList["(0018,9315)"] = "Reconstruction Algorithm";
-        this.dicomTagList["(0018,9316)"] = "Convolution Kernel Group";
-        this.dicomTagList["(0018,9317)"] = "Reconstruction Field of View";
-        this.dicomTagList["(0018,9318)"] = "Reconstruction Target Center (Patient)";
-        this.dicomTagList["(0018,9319)"] = "Reconstruction Angle";
-        this.dicomTagList["(0018,9320)"] = "Image Filter";
-        this.dicomTagList["(0018,9321)"] = "CT Exposure Sequence";
-        this.dicomTagList["(0018,9322)"] = "Reconstruction Pixel Spacing";
-        this.dicomTagList["(0018,9323)"] = "Exposure Modulation Type";
-        this.dicomTagList["(0018,9324)"] = "Estimated Dose Saving";
-        this.dicomTagList["(0018,9325)"] = "CT X-Ray Details Sequence";
-        this.dicomTagList["(0018,9326)"] = "CT Position Sequence";
-        this.dicomTagList["(0018,9327)"] = "Table Position";
-        this.dicomTagList["(0018,9328)"] = "Exposure Time in ms";
-        this.dicomTagList["(0018,9329)"] = "CT Image Frame Type Sequence";
-        this.dicomTagList["(0018,9330)"] = "X-Ray Tube Current in mA";
-        this.dicomTagList["(0018,9332)"] = "Exposure in mAs";
-        this.dicomTagList["(0018,9333)"] = "Constant Volume Flag";
-        this.dicomTagList["(0018,9334)"] = "Fluoroscopy Flag";
-        this.dicomTagList["(0018,9335)"] = "Distance Source to Data Collection Center";
-        this.dicomTagList["(0018,9337)"] = "Contrast/Bolus Agent Number";
-        this.dicomTagList["(0018,9338)"] = "Contrast/Bolus Ingredient Code Sequence";
-        this.dicomTagList["(0018,9340)"] = "Contrast Administration Profile Sequence";
-        this.dicomTagList["(0018,9341)"] = "Contrast/Bolus Usage Sequence";
-        this.dicomTagList["(0018,9342)"] = "Contrast/Bolus Agent Administered";
-        this.dicomTagList["(0018,9343)"] = "Contrast/Bolus Agent Detected";
-        this.dicomTagList["(0018,9344)"] = "Contrast/Bolus Agent Phase";
-        this.dicomTagList["(0018,9345)"] = "CTDIvol";
-        this.dicomTagList["(0018,9346)"] = "CTDI Phantom Type Code Sequence";
-        this.dicomTagList["(0018,9351)"] = "Calcium Scoring Mass Factor Patient";
-        this.dicomTagList["(0018,9352)"] = "Calcium Scoring Mass Factor Device";
-        this.dicomTagList["(0018,9353)"] = "Energy Weighting Factor";
-        this.dicomTagList["(0018,9360)"] = "CT Additional X-Ray Source Sequence";
-        this.dicomTagList["(0018,9401)"] = "Projection Pixel Calibration Sequence";
-        this.dicomTagList["(0018,9402)"] = "Distance Source to Isocenter";
-        this.dicomTagList["(0018,9403)"] = "Distance Object to Table Top";
-        this.dicomTagList["(0018,9404)"] = "Object Pixel Spacing in Center of Beam";
-        this.dicomTagList["(0018,9405)"] = "Positioner Position Sequence";
-        this.dicomTagList["(0018,9406)"] = "Table Position Sequence";
-        this.dicomTagList["(0018,9407)"] = "Collimator Shape Sequence";
-        this.dicomTagList["(0018,9410)"] = "Planes in Acquisition";
-        this.dicomTagList["(0018,9412)"] = "XA/XRF Frame Characteristics Sequence";
-        this.dicomTagList["(0018,9417)"] = "Frame Acquisition Sequence";
-        this.dicomTagList["(0018,9420)"] = "X-Ray Receptor Type";
-        this.dicomTagList["(0018,9423)"] = "Acquisition Protocol Name";
-        this.dicomTagList["(0018,9424)"] = "Acquisition Protocol Description";
-        this.dicomTagList["(0018,9425)"] = "Contrast/Bolus Ingredient Opaque";
-        this.dicomTagList["(0018,9426)"] = "Distance Receptor Plane to Detector Housing";
-        this.dicomTagList["(0018,9427)"] = "Intensifier Active Shape";
-        this.dicomTagList["(0018,9428)"] = "Intensifier Active Dimension(s)";
-        this.dicomTagList["(0018,9429)"] = "Physical Detector Size";
-        this.dicomTagList["(0018,9430)"] = "Position of Isocenter Projection";
-        this.dicomTagList["(0018,9432)"] = "Field of View Sequence";
-        this.dicomTagList["(0018,9433)"] = "Field of View Description";
-        this.dicomTagList["(0018,9434)"] = "Exposure Control Sensing Regions Sequence";
-        this.dicomTagList["(0018,9435)"] = "Exposure Control Sensing Region Shape";
-        this.dicomTagList["(0018,9436)"] = "Exposure Control Sensing Region Left Vertical Edge";
-        this.dicomTagList["(0018,9437)"] = "Exposure Control Sensing Region Right Vertical Edge";
-        this.dicomTagList["(0018,9438)"] = "Exposure Control Sensing Region Upper Horizontal Edge";
-        this.dicomTagList["(0018,9439)"] = "Exposure Control Sensing Region Lower Horizontal Edge";
-        this.dicomTagList["(0018,9440)"] = "Center of Circular Exposure Control Sensing Region";
-        this.dicomTagList["(0018,9441)"] = "Radius of Circular Exposure Control Sensing Region";
-        this.dicomTagList["(0018,9442)"] = "Vertices of the Polygonal Exposure Control Sensing Region";
-        this.dicomTagList["(0018,9447)"] = "Column Angulation (Patient)";
-        this.dicomTagList["(0018,9449)"] = "Beam Angle";
-        this.dicomTagList["(0018,9451)"] = "Frame Detector Parameters Sequence";
-        this.dicomTagList["(0018,9452)"] = "Calculated Anatomy Thickness";
-        this.dicomTagList["(0018,9455)"] = "Calibration Sequence";
-        this.dicomTagList["(0018,9456)"] = "Object Thickness Sequence";
-        this.dicomTagList["(0018,9457)"] = "Plane Identification";
-        this.dicomTagList["(0018,9461)"] = "Field of View Dimension(s)in Float";
-        this.dicomTagList["(0018,9462)"] = "Isocenter Reference System Sequence";
-        this.dicomTagList["(0018,9463)"] = "Positioner Isocenter Primary Angle";
-        this.dicomTagList["(0018,9464)"] = "Positioner Isocenter Secondary Angle";
-        this.dicomTagList["(0018,9465)"] = "Positioner Isocenter Detector Rotation Angle";
-        this.dicomTagList["(0018,9466)"] = "Table X Position to Isocenter";
-        this.dicomTagList["(0018,9467)"] = "Table Y Position to Isocenter";
-        this.dicomTagList["(0018,9468)"] = "Table Z Position to Isocenter";
-        this.dicomTagList["(0018,9469)"] = "Table Horizontal Rotation Angle";
-        this.dicomTagList["(0018,9470)"] = "Table Head Tilt Angle";
-        this.dicomTagList["(0018,9471)"] = "Table Cradle Tilt Angle";
-        this.dicomTagList["(0018,9472)"] = "Frame Display Shutter Sequence";
-        this.dicomTagList["(0018,9473)"] = "Acquired Image Area Dose Product";
-        this.dicomTagList["(0018,9474)"] = "C-arm Positioner Tabletop Relationship";
-        this.dicomTagList["(0018,9476)"] = "X-Ray Geometry Sequence";
-        this.dicomTagList["(0018,9477)"] = "Irradiation Event Identification Sequence";
-        this.dicomTagList["(0018,9504)"] = "X-Ray 3D Frame Type Sequence";
-        this.dicomTagList["(0018,9506)"] = "Contributing Sources Sequence";
-        this.dicomTagList["(0018,9507)"] = "X-Ray 3D Acquisition Sequence";
-        this.dicomTagList["(0018,9508)"] = "Primary Positioner Scan Arc";
-        this.dicomTagList["(0018,9509)"] = "Secondary Positioner Scan Arc";
-        this.dicomTagList["(0018,9510)"] = "Primary Positioner Scan Start Angle";
-        this.dicomTagList["(0018,9511)"] = "Secondary Positioner Scan Start Angle";
-        this.dicomTagList["(0018,9514)"] = "Primary Positioner Increment";
-        this.dicomTagList["(0018,9515)"] = "Secondary Positioner Increment";
-        this.dicomTagList["(0018,9516)"] = "Start Acquisition DateTime";
-        this.dicomTagList["(0018,9517)"] = "End Acquisition DateTime";
-        this.dicomTagList["(0018,9518)"] = "Primary Positioner Increment Sign";
-        this.dicomTagList["(0018,9519)"] = "Secondary Positioner Increment Sign";
-        this.dicomTagList["(0018,9524)"] = "Application Name";
-        this.dicomTagList["(0018,9525)"] = "Application Version";
-        this.dicomTagList["(0018,9526)"] = "Application Manufacturer";
-        this.dicomTagList["(0018,9527)"] = "Algorithm Type";
-        this.dicomTagList["(0018,9528)"] = "Algorithm Description";
-        this.dicomTagList["(0018,9530)"] = "X-Ray 3D Reconstruction Sequence";
-        this.dicomTagList["(0018,9531)"] = "Reconstruction Description";
-        this.dicomTagList["(0018,9538)"] = "Per Projection Acquisition Sequence";
-        this.dicomTagList["(0018,9541)"] = "Detector Position Sequence";
-        this.dicomTagList["(0018,9542)"] = "X-Ray Acquisition Dose Sequence";
-        this.dicomTagList["(0018,9543)"] = "X-Ray Source Isocenter Primary Angle";
-        this.dicomTagList["(0018,9544)"] = "X-Ray Source Isocenter Secondary Angle";
-        this.dicomTagList["(0018,9545)"] = "Breast Support Isocenter Primary Angle";
-        this.dicomTagList["(0018,9546)"] = "Breast Support Isocenter Secondary Angle";
-        this.dicomTagList["(0018,9547)"] = "Breast Support X Position to Isocenter";
-        this.dicomTagList["(0018,9548)"] = "Breast Support Y Position to Isocenter";
-        this.dicomTagList["(0018,9549)"] = "Breast Support Z Position to Isocenter";
-        this.dicomTagList["(0018,9550)"] = "Detector Isocenter Primary Angle";
-        this.dicomTagList["(0018,9551)"] = "Detector Isocenter Secondary Angle";
-        this.dicomTagList["(0018,9552)"] = "Detector X Position to Isocenter";
-        this.dicomTagList["(0018,9553)"] = "Detector Y Position to Isocenter";
-        this.dicomTagList["(0018,9554)"] = "Detector Z Position to Isocenter";
-        this.dicomTagList["(0018,9555)"] = "X-Ray Grid Sequence";
-        this.dicomTagList["(0018,9556)"] = "X-Ray Filter Sequence";
-        this.dicomTagList["(0018,9557)"] = "Detector Active Area TLHC Position";
-        this.dicomTagList["(0018,9558)"] = "Detector Active Area Orientation";
-        this.dicomTagList["(0018,9559)"] = "Positioner Primary Angle Direction";
-        this.dicomTagList["(0018,9601)"] = "Diffusion b-matrix Sequence";
-        this.dicomTagList["(0018,9602)"] = "Diffusion b-value XX";
-        this.dicomTagList["(0018,9603)"] = "Diffusion b-value XY";
-        this.dicomTagList["(0018,9604)"] = "Diffusion b-value XZ";
-        this.dicomTagList["(0018,9605)"] = "Diffusion b-value YY";
-        this.dicomTagList["(0018,9606)"] = "Diffusion b-value YZ";
-        this.dicomTagList["(0018,9607)"] = "Diffusion b-value ZZ";
-        this.dicomTagList["(0018,9621)"] = "Functional MR Sequence";
-        this.dicomTagList["(0018,9622)"] = "Functional Settling Phase Frames Present";
-        this.dicomTagList["(0018,9623)"] = "Functional Sync Pulse";
-        this.dicomTagList["(0018,9624)"] = "Settling Phase Frame";
-        this.dicomTagList["(0018,9701)"] = "Decay Correction DateTime";
-        this.dicomTagList["(0018,9715)"] = "Start Density Threshold";
-        this.dicomTagList["(0018,9716)"] = "Start Relative Density Difference Threshold";
-        this.dicomTagList["(0018,9717)"] = "Start Cardiac Trigger Count Threshold";
-        this.dicomTagList["(0018,9718)"] = "Start Respiratory Trigger Count Threshold";
-        this.dicomTagList["(0018,9719)"] = "Termination Counts Threshold";
-        this.dicomTagList["(0018,9720)"] = "Termination Density Threshold";
-        this.dicomTagList["(0018,9721)"] = "Termination Relative Density Threshold";
-        this.dicomTagList["(0018,9722)"] = "Termination Time Threshold";
-        this.dicomTagList["(0018,9723)"] = "Termination Cardiac Trigger Count Threshold";
-        this.dicomTagList["(0018,9724)"] = "Termination Respiratory Trigger Count Threshold";
-        this.dicomTagList["(0018,9725)"] = "Detector Geometry";
-        this.dicomTagList["(0018,9726)"] = "Transverse Detector Separation";
-        this.dicomTagList["(0018,9727)"] = "Axial Detector Dimension";
-        this.dicomTagList["(0018,9729)"] = "Radiopharmaceutical Agent Number";
-        this.dicomTagList["(0018,9732)"] = "PET Frame Acquisition Sequence";
-        this.dicomTagList["(0018,9733)"] = "PET Detector Motion Details Sequence";
-        this.dicomTagList["(0018,9734)"] = "PET Table Dynamics Sequence";
-        this.dicomTagList["(0018,9735)"] = "PET Position Sequence";
-        this.dicomTagList["(0018,9736)"] = "PET Frame Correction Factors Sequence";
-        this.dicomTagList["(0018,9737)"] = "Radiopharmaceutical Usage Sequence";
-        this.dicomTagList["(0018,9738)"] = "Attenuation Correction Source";
-        this.dicomTagList["(0018,9739)"] = "Number of Iterations";
-        this.dicomTagList["(0018,9740)"] = "Number of Subsets";
-        this.dicomTagList["(0018,9749)"] = "PET Reconstruction Sequence";
-        this.dicomTagList["(0018,9751)"] = "PET Frame Type Sequence";
-        this.dicomTagList["(0018,9755)"] = "Time of Flight Information Used";
-        this.dicomTagList["(0018,9756)"] = "Reconstruction Type";
-        this.dicomTagList["(0018,9758)"] = "Decay Corrected";
-        this.dicomTagList["(0018,9759)"] = "Attenuation Corrected";
-        this.dicomTagList["(0018,9760)"] = "Scatter Corrected";
-        this.dicomTagList["(0018,9761)"] = "Dead Time Corrected";
-        this.dicomTagList["(0018,9762)"] = "Gantry Motion Corrected";
-        this.dicomTagList["(0018,9763)"] = "Patient Motion Corrected";
-        this.dicomTagList["(0018,9764)"] = "Count Loss Normalization Corrected";
-        this.dicomTagList["(0018,9765)"] = "Randoms Corrected";
-        this.dicomTagList["(0018,9766)"] = "Non-uniform Radial Sampling Corrected";
-        this.dicomTagList["(0018,9767)"] = "Sensitivity Calibrated";
-        this.dicomTagList["(0018,9768)"] = "Detector Normalization Correction";
-        this.dicomTagList["(0018,9769)"] = "Iterative Reconstruction Method";
-        this.dicomTagList["(0018,9770)"] = "Attenuation Correction Temporal Relationship";
-        this.dicomTagList["(0018,9771)"] = "Patient Physiological State Sequence";
-        this.dicomTagList["(0018,9772)"] = "Patient Physiological State Code Sequence";
-        this.dicomTagList["(0018,9801)"] = "Depth(s)of Focus";
-        this.dicomTagList["(0018,9803)"] = "Excluded Intervals Sequence";
-        this.dicomTagList["(0018,9804)"] = "Exclusion Start DateTime";
-        this.dicomTagList["(0018,9805)"] = "Exclusion Duration";
-        this.dicomTagList["(0018,9806)"] = "US Image Description Sequence";
-        this.dicomTagList["(0018,9807)"] = "Image Data Type Sequence";
-        this.dicomTagList["(0018,9808)"] = "Data Type";
-        this.dicomTagList["(0018,9809)"] = "Transducer Scan Pattern Code Sequence";
-        this.dicomTagList["(0018,980B)"] = "Aliased Data Type";
-        this.dicomTagList["(0018,980C)"] = "Position Measuring Device Used";
-        this.dicomTagList["(0018,980D)"] = "Transducer Geometry Code Sequence";
-        this.dicomTagList["(0018,980E)"] = "Transducer Beam Steering Code Sequence";
-        this.dicomTagList["(0018,980F)"] = "Transducer Application Code Sequence";
-        this.dicomTagList["(0018,9810)"] = "Zero Velocity Pixel Value";
-        this.dicomTagList["(0018,A001)"] = "Contributing Equipment Sequence";
-        this.dicomTagList["(0018,A002)"] = "Contribution DateTime";
-        this.dicomTagList["(0018,A003)"] = "Contribution Description";
-        this.dicomTagList["(0020,000D)"] = "Study Instance UID";
-        this.dicomTagList["(0020,000E)"] = "Series Instance UID";
-        this.dicomTagList["(0020,0010)"] = "Study ID";
-        this.dicomTagList["(0020,0011)"] = "Series Number";
-        this.dicomTagList["(0020,0012)"] = "Acquisition Number";
-        this.dicomTagList["(0020,0013)"] = "Instance Number";
-        this.dicomTagList["(0020,0014)"] = "Isotope Number";
-        this.dicomTagList["(0020,0015)"] = "Phase Number";
-        this.dicomTagList["(0020,0016)"] = "Interval Number";
-        this.dicomTagList["(0020,0017)"] = "Time Slot Number";
-        this.dicomTagList["(0020,0018)"] = "Angle Number";
-        this.dicomTagList["(0020,0019)"] = "Item Number";
-        this.dicomTagList["(0020,0020)"] = "Patient Orientation";
-        this.dicomTagList["(0020,0022)"] = "Overlay Number";
-        this.dicomTagList["(0020,0024)"] = "Curve Number";
-        this.dicomTagList["(0020,0026)"] = "LUT Number";
-        this.dicomTagList["(0020,0030)"] = "Image Position";
-        this.dicomTagList["(0020,0032)"] = "Image Position (Patient)";
-        this.dicomTagList["(0020,0035)"] = "Image Orientation";
-        this.dicomTagList["(0020,0037)"] = "Image Orientation (Patient)";
-        this.dicomTagList["(0020,0050)"] = "Location";
-        this.dicomTagList["(0020,0052)"] = "Frame of Reference UID";
-        this.dicomTagList["(0020,0060)"] = "Laterality";
-        this.dicomTagList["(0020,0062)"] = "Image Laterality";
-        this.dicomTagList["(0020,0070)"] = "Image Geometry Type";
-        this.dicomTagList["(0020,0080)"] = "Masking Image";
-        this.dicomTagList["(0020,00AA)"] = "Report Number";
-        this.dicomTagList["(0020,0100)"] = "Temporal Position Identifier";
-        this.dicomTagList["(0020,0105)"] = "Number of Temporal Positions";
-        this.dicomTagList["(0020,0110)"] = "Temporal Resolution";
-        this.dicomTagList["(0020,0200)"] = "Synchronization Frame of Reference UID";
-        this.dicomTagList["(0020,0242)"] = "SOP Instance UID of Concatenation Source";
-        this.dicomTagList["(0020,1000)"] = "Series in Study";
-        this.dicomTagList["(0020,1001)"] = "Acquisitions in Series";
-        this.dicomTagList["(0020,1002)"] = "Images in Acquisition";
-        this.dicomTagList["(0020,1003)"] = "Images in Series";
-        this.dicomTagList["(0020,1004)"] = "Acquisitions in Study";
-        this.dicomTagList["(0020,1005)"] = "Images in Study";
-        this.dicomTagList["(0020,1020)"] = "Reference";
-        this.dicomTagList["(0020,1040)"] = "Position Reference Indicator";
-        this.dicomTagList["(0020,1041)"] = "Slice Location";
-        this.dicomTagList["(0020,1070)"] = "Other Study Numbers";
-        this.dicomTagList["(0020,1200)"] = "Number of Patient Related Studies";
-        this.dicomTagList["(0020,1202)"] = "Number of Patient Related Series";
-        this.dicomTagList["(0020,1204)"] = "Number of Patient Related Instances";
-        this.dicomTagList["(0020,1206)"] = "Number of Study Related Series";
-        this.dicomTagList["(0020,1208)"] = "Number of Study Related Instances";
-        this.dicomTagList["(0020,1209)"] = "Number of Series Related Instances";
-        this.dicomTagList["(0020,31xx)"] = "Source Image IDs";
-        this.dicomTagList["(0020,3401)"] = "Modifying Device ID";
-        this.dicomTagList["(0020,3402)"] = "Modified Image ID";
-        this.dicomTagList["(0020,3403)"] = "Modified Image Date";
-        this.dicomTagList["(0020,3404)"] = "Modifying Device Manufacturer";
-        this.dicomTagList["(0020,3405)"] = "Modified Image Time";
-        this.dicomTagList["(0020,3406)"] = "Modified Image Description";
-        this.dicomTagList["(0020,4000)"] = "Image Comments";
-        this.dicomTagList["(0020,5000)"] = "Original Image Identification";
-        this.dicomTagList["(0020,5002)"] = "Original Image Identification Nomenclature";
-        this.dicomTagList["(0020,9056)"] = "Stack ID";
-        this.dicomTagList["(0020,9057)"] = "In-Stack Position Number";
-        this.dicomTagList["(0020,9071)"] = "Frame Anatomy Sequence";
-        this.dicomTagList["(0020,9072)"] = "Frame Laterality";
-        this.dicomTagList["(0020,9111)"] = "Frame Content Sequence";
-        this.dicomTagList["(0020,9113)"] = "Plane Position Sequence";
-        this.dicomTagList["(0020,9116)"] = "Plane Orientation Sequence";
-        this.dicomTagList["(0020,9128)"] = "Temporal Position Index";
-        this.dicomTagList["(0020,9153)"] = "Nominal Cardiac Trigger Delay Time";
-        this.dicomTagList["(0020,9154)"] = "Nominal Cardiac Trigger Time Prior To R-Peak";
-        this.dicomTagList["(0020,9155)"] = "Actual Cardiac Trigger Time Prior To R-Peak";
-        this.dicomTagList["(0020,9156)"] = "Frame Acquisition Number";
-        this.dicomTagList["(0020,9157)"] = "Dimension Index Values";
-        this.dicomTagList["(0020,9158)"] = "Frame Comments";
-        this.dicomTagList["(0020,9161)"] = "Concatenation UID";
-        this.dicomTagList["(0020,9162)"] = "In-concatenation Number";
-        this.dicomTagList["(0020,9163)"] = "In-concatenation Total Number";
-        this.dicomTagList["(0020,9164)"] = "Dimension Organization UID";
-        this.dicomTagList["(0020,9165)"] = "Dimension Index Pointer";
-        this.dicomTagList["(0020,9167)"] = "Functional Group Pointer";
-        this.dicomTagList["(0020,9170)"] = "Unassigned Shared Converted Attributes Sequence";
-        this.dicomTagList["(0020,9171)"] = "Unassigned Per-Frame Converted Attributes Sequence";
-        this.dicomTagList["(0020,9172)"] = "Conversion Source Attributes Sequence";
-        this.dicomTagList["(0020,9213)"] = "Dimension Index Private Creator";
-        this.dicomTagList["(0020,9221)"] = "Dimension Organization Sequence";
-        this.dicomTagList["(0020,9222)"] = "Dimension Index Sequence";
-        this.dicomTagList["(0020,9228)"] = "Concatenation Frame Offset Number";
-        this.dicomTagList["(0020,9238)"] = "Functional Group Private Creator";
-        this.dicomTagList["(0020,9241)"] = "Nominal Percentage of Cardiac Phase";
-        this.dicomTagList["(0020,9245)"] = "Nominal Percentage of Respiratory Phase";
-        this.dicomTagList["(0020,9246)"] = "Starting Respiratory Amplitude";
-        this.dicomTagList["(0020,9247)"] = "Starting Respiratory Phase";
-        this.dicomTagList["(0020,9248)"] = "Ending Respiratory Amplitude";
-        this.dicomTagList["(0020,9249)"] = "Ending Respiratory Phase";
-        this.dicomTagList["(0020,9250)"] = "Respiratory Trigger Type";
-        this.dicomTagList["(0020,9251)"] = "R-R Interval Time Nominal";
-        this.dicomTagList["(0020,9252)"] = "Actual Cardiac Trigger Delay Time";
-        this.dicomTagList["(0020,9253)"] = "Respiratory Synchronization Sequence";
-        this.dicomTagList["(0020,9254)"] = "Respiratory Interval Time";
-        this.dicomTagList["(0020,9255)"] = "Nominal Respiratory Trigger Delay Time";
-        this.dicomTagList["(0020,9256)"] = "Respiratory Trigger Delay Threshold";
-        this.dicomTagList["(0020,9257)"] = "Actual Respiratory Trigger Delay Time";
-        this.dicomTagList["(0020,9301)"] = "Image Position (Volume)";
-        this.dicomTagList["(0020,9302)"] = "Image Orientation (Volume)";
-        this.dicomTagList["(0020,9307)"] = "Ultrasound Acquisition Geometry";
-        this.dicomTagList["(0020,9308)"] = "Apex Position";
-        this.dicomTagList["(0020,9309)"] = "Volume to Transducer Mapping Matrix";
-        this.dicomTagList["(0020,930A)"] = "Volume to Table Mapping Matrix";
-        this.dicomTagList["(0020,930B)"] = "Volume to Transducer Relationship";
-        this.dicomTagList["(0020,930C)"] = "Patient Frame of Reference Source";
-        this.dicomTagList["(0020,930D)"] = "Temporal Position Time Offset";
-        this.dicomTagList["(0020,930E)"] = "Plane Position (Volume)Sequence";
-        this.dicomTagList["(0020,930F)"] = "Plane Orientation (Volume)Sequence";
-        this.dicomTagList["(0020,9310)"] = "Temporal Position Sequence";
-        this.dicomTagList["(0020,9311)"] = "Dimension Organization Type";
-        this.dicomTagList["(0020,9312)"] = "Volume Frame of Reference UID";
-        this.dicomTagList["(0020,9313)"] = "Table Frame of Reference UID";
-        this.dicomTagList["(0020,9421)"] = "Dimension Description Label";
-        this.dicomTagList["(0020,9450)"] = "Patient Orientation in Frame Sequence";
-        this.dicomTagList["(0020,9453)"] = "Frame Label";
-        this.dicomTagList["(0020,9518)"] = "Acquisition Index";
-        this.dicomTagList["(0020,9529)"] = "Contributing SOP Instances Reference Sequence";
-        this.dicomTagList["(0020,9536)"] = "Reconstruction Index";
-        this.dicomTagList["(0022,0001)"] = "Light Path Filter Pass-Through Wavelength";
-        this.dicomTagList["(0022,0002)"] = "Light Path Filter Pass Band";
-        this.dicomTagList["(0022,0003)"] = "Image Path Filter Pass-Through Wavelength";
-        this.dicomTagList["(0022,0004)"] = "Image Path Filter Pass Band";
-        this.dicomTagList["(0022,0005)"] = "Patient Eye Movement Commanded";
-        this.dicomTagList["(0022,0006)"] = "Patient Eye Movement Command Code Sequence";
-        this.dicomTagList["(0022,0007)"] = "Spherical Lens Power";
-        this.dicomTagList["(0022,0008)"] = "Cylinder Lens Power";
-        this.dicomTagList["(0022,0009)"] = "Cylinder Axis";
-        this.dicomTagList["(0022,000A)"] = "Emmetropic Magnification";
-        this.dicomTagList["(0022,000B)"] = "Intra Ocular Pressure";
-        this.dicomTagList["(0022,000C)"] = "Horizontal Field of View";
-        this.dicomTagList["(0022,000D)"] = "Pupil Dilated";
-        this.dicomTagList["(0022,000E)"] = "Degree of Dilation";
-        this.dicomTagList["(0022,0010)"] = "Stereo Baseline Angle";
-        this.dicomTagList["(0022,0011)"] = "Stereo Baseline Displacement";
-        this.dicomTagList["(0022,0012)"] = "Stereo Horizontal Pixel Offset";
-        this.dicomTagList["(0022,0013)"] = "Stereo Vertical Pixel Offset";
-        this.dicomTagList["(0022,0014)"] = "Stereo Rotation";
-        this.dicomTagList["(0022,0015)"] = "Acquisition Device Type Code Sequence";
-        this.dicomTagList["(0022,0016)"] = "Illumination Type Code Sequence";
-        this.dicomTagList["(0022,0017)"] = "Light Path Filter Type Stack Code Sequence";
-        this.dicomTagList["(0022,0018)"] = "Image Path Filter Type Stack Code Sequence";
-        this.dicomTagList["(0022,0019)"] = "Lenses Code Sequence";
-        this.dicomTagList["(0022,001A)"] = "Channel Description Code Sequence";
-        this.dicomTagList["(0022,001B)"] = "Refractive State Sequence";
-        this.dicomTagList["(0022,001C)"] = "Mydriatic Agent Code Sequence";
-        this.dicomTagList["(0022,001D)"] = "Relative Image Position Code Sequence";
-        this.dicomTagList["(0022,001E)"] = "Camera Angle of View";
-        this.dicomTagList["(0022,0020)"] = "Stereo Pairs Sequence";
-        this.dicomTagList["(0022,0021)"] = "Left Image Sequence";
-        this.dicomTagList["(0022,0022)"] = "Right Image Sequence";
-        this.dicomTagList["(0022,0028)"] = "Stereo Pairs Present";
-        this.dicomTagList["(0022,0030)"] = "Axial Length of the Eye";
-        this.dicomTagList["(0022,0031)"] = "Ophthalmic Frame Location Sequence";
-        this.dicomTagList["(0022,0032)"] = "Reference Coordinates";
-        this.dicomTagList["(0022,0035)"] = "Depth Spatial Resolution";
-        this.dicomTagList["(0022,0036)"] = "Maximum Depth Distortion";
-        this.dicomTagList["(0022,0037)"] = "Along-scan Spatial Resolution";
-        this.dicomTagList["(0022,0038)"] = "Maximum Along-scan Distortion";
-        this.dicomTagList["(0022,0039)"] = "Ophthalmic Image Orientation";
-        this.dicomTagList["(0022,0041)"] = "Depth of Transverse Image";
-        this.dicomTagList["(0022,0042)"] = "Mydriatic Agent Concentration Units Sequence";
-        this.dicomTagList["(0022,0048)"] = "Across-scan Spatial Resolution";
-        this.dicomTagList["(0022,0049)"] = "Maximum Across-scan Distortion";
-        this.dicomTagList["(0022,004E)"] = "Mydriatic Agent Concentration";
-        this.dicomTagList["(0022,0055)"] = "Illumination Wave Length";
-        this.dicomTagList["(0022,0056)"] = "Illumination Power";
-        this.dicomTagList["(0022,0057)"] = "Illumination Bandwidth";
-        this.dicomTagList["(0022,0058)"] = "Mydriatic Agent Sequence";
-        this.dicomTagList["(0022,1007)"] = "Ophthalmic Axial Measurements Right Eye Sequence";
-        this.dicomTagList["(0022,1008)"] = "Ophthalmic Axial Measurements Left Eye Sequence";
-        this.dicomTagList["(0022,1009)"] = "Ophthalmic Axial Measurements Device Type";
-        this.dicomTagList["(0022,1010)"] = "Ophthalmic Axial Length Measurements Type";
-        this.dicomTagList["(0022,1012)"] = "Ophthalmic Axial Length Sequence";
-        this.dicomTagList["(0022,1019)"] = "Ophthalmic Axial Length";
-        this.dicomTagList["(0022,1024)"] = "Lens Status Code Sequence";
-        this.dicomTagList["(0022,1025)"] = "Vitreous Status Code Sequence";
-        this.dicomTagList["(0022,1028)"] = "IOL Formula Code Sequence";
-        this.dicomTagList["(0022,1029)"] = "IOL Formula Detail";
-        this.dicomTagList["(0022,1033)"] = "Keratometer Index";
-        this.dicomTagList["(0022,1035)"] = "Source of Ophthalmic Axial Length Code Sequence";
-        this.dicomTagList["(0022,1037)"] = "Target Refraction";
-        this.dicomTagList["(0022,1039)"] = "Refractive Procedure Occurred";
-        this.dicomTagList["(0022,1040)"] = "Refractive Surgery Type Code Sequence";
-        this.dicomTagList["(0022,1044)"] = "Ophthalmic Ultrasound Method Code Sequence";
-        this.dicomTagList["(0022,1050)"] = "Ophthalmic Axial Length Measurements Sequence";
-        this.dicomTagList["(0022,1053)"] = "IOL Power";
-        this.dicomTagList["(0022,1054)"] = "Predicted Refractive Error";
-        this.dicomTagList["(0022,1059)"] = "Ophthalmic Axial Length Velocity";
-        this.dicomTagList["(0022,1065)"] = "Lens Status Description";
-        this.dicomTagList["(0022,1066)"] = "Vitreous Status Description";
-        this.dicomTagList["(0022,1090)"] = "IOL Power Sequence";
-        this.dicomTagList["(0022,1092)"] = "Lens Constant Sequence";
-        this.dicomTagList["(0022,1093)"] = "IOL Manufacturer";
-        this.dicomTagList["(0022,1094)"] = "Lens Constant Description";
-        this.dicomTagList["(0022,1095)"] = "Implant Name";
-        this.dicomTagList["(0022,1096)"] = "Keratometry Measurement Type Code Sequence";
-        this.dicomTagList["(0022,1097)"] = "Implant Part Number";
-        this.dicomTagList["(0022,1100)"] = "Referenced Ophthalmic Axial Measurements Sequence";
-        this.dicomTagList["(0022,1101)"] = "Ophthalmic Axial Length Measurements Segment Name Code Sequence";
-        this.dicomTagList["(0022,1103)"] = "Refractive Error Before Refractive Surgery Code Sequence";
-        this.dicomTagList["(0022,1121)"] = "IOL Power For Exact Emmetropia";
-        this.dicomTagList["(0022,1122)"] = "IOL Power For Exact Target Refraction";
-        this.dicomTagList["(0022,1125)"] = "Anterior Chamber Depth Definition Code Sequence";
-        this.dicomTagList["(0022,1127)"] = "Lens Thickness Sequence";
-        this.dicomTagList["(0022,1128)"] = "Anterior Chamber Depth Sequence";
-        this.dicomTagList["(0022,1130)"] = "Lens Thickness";
-        this.dicomTagList["(0022,1131)"] = "Anterior Chamber Depth";
-        this.dicomTagList["(0022,1132)"] = "Source of Lens Thickness Data Code Sequence";
-        this.dicomTagList["(0022,1133)"] = "Source of Anterior Chamber Depth Data Code Sequence";
-        this.dicomTagList["(0022,1134)"] = "Source of Refractive Measurements Sequence";
-        this.dicomTagList["(0022,1135)"] = "Source of Refractive Measurements Code Sequence";
-        this.dicomTagList["(0022,1140)"] = "Ophthalmic Axial Length Measurement Modified";
-        this.dicomTagList["(0022,1150)"] = "Ophthalmic Axial Length Data Source Code Sequence";
-        this.dicomTagList["(0022,1153)"] = "Ophthalmic Axial Length Acquisition Method Code Sequence";
-        this.dicomTagList["(0022,1155)"] = "Signal to Noise Ratio";
-        this.dicomTagList["(0022,1159)"] = "Ophthalmic Axial Length Data Source Description";
-        this.dicomTagList["(0022,1210)"] = "Ophthalmic Axial Length Measurements Total Length Sequence";
-        this.dicomTagList["(0022,1211)"] = "Ophthalmic Axial Length Measurements Segmental Length Sequence";
-        this.dicomTagList["(0022,1212)"] = "Ophthalmic Axial Length Measurements Length Summation Sequence";
-        this.dicomTagList["(0022,1220)"] = "Ultrasound Ophthalmic Axial Length Measurements Sequence";
-        this.dicomTagList["(0022,1225)"] = "Optical Ophthalmic Axial Length Measurements Sequence";
-        this.dicomTagList["(0022,1230)"] = "Ultrasound Selected Ophthalmic Axial Length Sequence";
-        this.dicomTagList["(0022,1250)"] = "Ophthalmic Axial Length Selection Method Code Sequence";
-        this.dicomTagList["(0022,1255)"] = "Optical Selected Ophthalmic Axial Length Sequence";
-        this.dicomTagList["(0022,1257)"] = "Selected Segmental Ophthalmic Axial Length Sequence";
-        this.dicomTagList["(0022,1260)"] = "Selected Total Ophthalmic Axial Length Sequence";
-        this.dicomTagList["(0022,1262)"] = "Ophthalmic Axial Length Quality Metric Sequence";
-        this.dicomTagList["(0022,1265)"] = "Ophthalmic Axial Length Quality Metric Type Code Sequence";
-        this.dicomTagList["(0022,1273)"] = "Ophthalmic Axial Length Quality Metric Type Description";
-        this.dicomTagList["(0022,1300)"] = "Intraocular Lens Calculations Right Eye Sequence";
-        this.dicomTagList["(0022,1310)"] = "Intraocular Lens Calculations Left Eye Sequence";
-        this.dicomTagList["(0022,1330)"] = "Referenced Ophthalmic Axial Length Measurement QC Image Sequence";
-        this.dicomTagList["(0022,1415)"] = "Ophthalmic Mapping Device Type";
-        this.dicomTagList["(0022,1420)"] = "Acquisition Method Code Sequence";
-        this.dicomTagList["(0022,1423)"] = "Acquisition Method Algorithm Sequence";
-        this.dicomTagList["(0022,1436)"] = "Ophthalmic Thickness Map Type Code Sequence";
-        this.dicomTagList["(0022,1443)"] = "Ophthalmic Thickness Mapping Normals Sequence";
-        this.dicomTagList["(0022,1445)"] = "Retinal Thickness Definition Code Sequence";
-        this.dicomTagList["(0022,1450)"] = "Pixel Value Mapping to Coded Concept Sequence";
-        this.dicomTagList["(0022,1452)"] = "Mapped Pixel Value";
-        this.dicomTagList["(0022,1454)"] = "Pixel Value Mapping Explanation";
-        this.dicomTagList["(0022,1458)"] = "Ophthalmic Thickness Map Quality Threshold Sequence";
-        this.dicomTagList["(0022,1460)"] = "Ophthalmic Thickness Map Threshold Quality Rating";
-        this.dicomTagList["(0022,1463)"] = "Anatomic Structure Reference Point";
-        this.dicomTagList["(0022,1465)"] = "Registration to Localizer Sequence";
-        this.dicomTagList["(0022,1466)"] = "Registered Localizer Units";
-        this.dicomTagList["(0022,1467)"] = "Registered Localizer Top Left Hand Corner";
-        this.dicomTagList["(0022,1468)"] = "Registered Localizer Bottom Right Hand Corner";
-        this.dicomTagList["(0022,1470)"] = "Ophthalmic Thickness Map Quality Rating Sequence";
-        this.dicomTagList["(0022,1472)"] = "Relevant OPT Attributes Sequence";
-        this.dicomTagList["(0022,1512)"] = "Transformation Method Code Sequence";
-        this.dicomTagList["(0022,1513)"] = "Transformation Algorithm Sequence";
-        this.dicomTagList["(0022,1515)"] = "Ophthalmic Axial Length Method";
-        this.dicomTagList["(0022,1517)"] = "Ophthalmic FOV";
-        this.dicomTagList["(0022,1518)"] = "Two Dimensional to Three Dimensional Map Sequence";
-        this.dicomTagList["(0022,1525)"] = "Wide Field Ophthalmic Photography Quality Rating Sequence";
-        this.dicomTagList["(0022,1526)"] = "Wide Field Ophthalmic Photography Quality Threshold Sequence";
-        this.dicomTagList["(0022,1527)"] = "Wide Field Ophthalmic Photography Threshold Quality Rating";
-        this.dicomTagList["(0022,1528)"] = "X Coordinates Center Pixel View Angle";
-        this.dicomTagList["(0022,1529)"] = "Y Coordinates Center Pixel View Angle";
-        this.dicomTagList["(0022,1530)"] = "Number of Map Points";
-        this.dicomTagList["(0022,1531)"] = "Two Dimensional to Three Dimensional Map Data";
-        this.dicomTagList["(0024,0010)"] = "Visual Field Horizontal Extent";
-        this.dicomTagList["(0024,0011)"] = "Visual Field Vertical Extent";
-        this.dicomTagList["(0024,0012)"] = "Visual Field Shape";
-        this.dicomTagList["(0024,0016)"] = "Screening Test Mode Code Sequence";
-        this.dicomTagList["(0024,0018)"] = "Maximum Stimulus Luminance";
-        this.dicomTagList["(0024,0020)"] = "Background Luminance";
-        this.dicomTagList["(0024,0021)"] = "Stimulus Color Code Sequence";
-        this.dicomTagList["(0024,0024)"] = "Background Illumination Color Code Sequence";
-        this.dicomTagList["(0024,0025)"] = "Stimulus Area";
-        this.dicomTagList["(0024,0028)"] = "Stimulus Presentation Time";
-        this.dicomTagList["(0024,0032)"] = "Fixation Sequence";
-        this.dicomTagList["(0024,0033)"] = "Fixation Monitoring Code Sequence";
-        this.dicomTagList["(0024,0034)"] = "Visual Field Catch Trial Sequence";
-        this.dicomTagList["(0024,0035)"] = "Fixation Checked Quantity";
-        this.dicomTagList["(0024,0036)"] = "Patient Not Properly Fixated Quantity";
-        this.dicomTagList["(0024,0037)"] = "Presented Visual Stimuli Data Flag";
-        this.dicomTagList["(0024,0038)"] = "Number of Visual Stimuli";
-        this.dicomTagList["(0024,0039)"] = "Excessive Fixation Losses Data Flag";
-        this.dicomTagList["(0024,0040)"] = "Excessive Fixation Losses";
-        this.dicomTagList["(0024,0042)"] = "Stimuli Retesting Quantity";
-        this.dicomTagList["(0024,0044)"] = "Comments on Patient's Performance of Visual Field";
-        this.dicomTagList["(0024,0045)"] = "False Negatives Estimate Flag";
-        this.dicomTagList["(0024,0046)"] = "False Negatives Estimate";
-        this.dicomTagList["(0024,0048)"] = "Negative Catch Trials Quantity";
-        this.dicomTagList["(0024,0050)"] = "False Negatives Quantity";
-        this.dicomTagList["(0024,0051)"] = "Excessive False Negatives Data Flag";
-        this.dicomTagList["(0024,0052)"] = "Excessive False Negatives";
-        this.dicomTagList["(0024,0053)"] = "False Positives Estimate Flag";
-        this.dicomTagList["(0024,0054)"] = "False Positives Estimate";
-        this.dicomTagList["(0024,0055)"] = "Catch Trials Data Flag";
-        this.dicomTagList["(0024,0056)"] = "Positive Catch Trials Quantity";
-        this.dicomTagList["(0024,0057)"] = "Test Point Normals Data Flag";
-        this.dicomTagList["(0024,0058)"] = "Test Point Normals Sequence";
-        this.dicomTagList["(0024,0059)"] = "Global Deviation Probability Normals Flag";
-        this.dicomTagList["(0024,0060)"] = "False Positives Quantity";
-        this.dicomTagList["(0024,0061)"] = "Excessive False Positives Data Flag";
-        this.dicomTagList["(0024,0062)"] = "Excessive False Positives";
-        this.dicomTagList["(0024,0063)"] = "Visual Field Test Normals Flag";
-        this.dicomTagList["(0024,0064)"] = "Results Normals Sequence";
-        this.dicomTagList["(0024,0065)"] = "Age Corrected Sensitivity Deviation Algorithm Sequence";
-        this.dicomTagList["(0024,0066)"] = "Global Deviation From Normal";
-        this.dicomTagList["(0024,0067)"] = "Generalized Defect Sensitivity Deviation Algorithm Sequence";
-        this.dicomTagList["(0024,0068)"] = "Localized Deviation From Normal";
-        this.dicomTagList["(0024,0069)"] = "Patient Reliability Indicator";
-        this.dicomTagList["(0024,0070)"] = "Visual Field Mean Sensitivity";
-        this.dicomTagList["(0024,0071)"] = "Global Deviation Probability";
-        this.dicomTagList["(0024,0072)"] = "Local Deviation Probability Normals Flag";
-        this.dicomTagList["(0024,0073)"] = "Localized Deviation Probability";
-        this.dicomTagList["(0024,0074)"] = "Short Term Fluctuation Calculated";
-        this.dicomTagList["(0024,0075)"] = "Short Term Fluctuation";
-        this.dicomTagList["(0024,0076)"] = "Short Term Fluctuation Probability Calculated";
-        this.dicomTagList["(0024,0077)"] = "Short Term Fluctuation Probability";
-        this.dicomTagList["(0024,0078)"] = "Corrected Localized Deviation From Normal Calculated";
-        this.dicomTagList["(0024,0079)"] = "Corrected Localized Deviation From Normal";
-        this.dicomTagList["(0024,0080)"] = "Corrected Localized Deviation From Normal Probability Calculated";
-        this.dicomTagList["(0024,0081)"] = "Corrected Localized Deviation From Normal Probability";
-        this.dicomTagList["(0024,0083)"] = "Global Deviation Probability Sequence";
-        this.dicomTagList["(0024,0085)"] = "Localized Deviation Probability Sequence";
-        this.dicomTagList["(0024,0086)"] = "Foveal Sensitivity Measured";
-        this.dicomTagList["(0024,0087)"] = "Foveal Sensitivity";
-        this.dicomTagList["(0024,0088)"] = "Visual Field Test Duration";
-        this.dicomTagList["(0024,0089)"] = "Visual Field Test Point Sequence";
-        this.dicomTagList["(0024,0090)"] = "Visual Field Test Point X-Coordinate";
-        this.dicomTagList["(0024,0091)"] = "Visual Field Test Point Y-Coordinate";
-        this.dicomTagList["(0024,0092)"] = "Age Corrected Sensitivity Deviation Value";
-        this.dicomTagList["(0024,0093)"] = "Stimulus Results";
-        this.dicomTagList["(0024,0094)"] = "Sensitivity Value";
-        this.dicomTagList["(0024,0095)"] = "Retest Stimulus Seen";
-        this.dicomTagList["(0024,0096)"] = "Retest Sensitivity Value";
-        this.dicomTagList["(0024,0097)"] = "Visual Field Test Point Normals Sequence";
-        this.dicomTagList["(0024,0098)"] = "Quantified Defect";
-        this.dicomTagList["(0024,0100)"] = "Age Corrected Sensitivity Deviation Probability Value";
-        this.dicomTagList["(0024,0102)"] = "Generalized Defect Corrected Sensitivity Deviation Flag";
-        this.dicomTagList["(0024,0103)"] = "Generalized Defect Corrected Sensitivity Deviation Value";
-        this.dicomTagList["(0024,0104)"] = "Generalized Defect Corrected Sensitivity Deviation Probability Value";
-        this.dicomTagList["(0024,0105)"] = "Minimum Sensitivity Value";
-        this.dicomTagList["(0024,0106)"] = "Blind Spot Localized";
-        this.dicomTagList["(0024,0107)"] = "Blind Spot X-Coordinate";
-        this.dicomTagList["(0024,0108)"] = "Blind Spot Y-Coordinate";
-        this.dicomTagList["(0024,0110)"] = "Visual Acuity Measurement Sequence";
-        this.dicomTagList["(0024,0112)"] = "Refractive Parameters Used on Patient Sequence";
-        this.dicomTagList["(0024,0113)"] = "Measurement Laterality";
-        this.dicomTagList["(0024,0114)"] = "Ophthalmic Patient Clinical Information Left Eye Sequence";
-        this.dicomTagList["(0024,0115)"] = "Ophthalmic Patient Clinical Information Right Eye Sequence";
-        this.dicomTagList["(0024,0117)"] = "Foveal Point Normative Data Flag";
-        this.dicomTagList["(0024,0118)"] = "Foveal Point Probability Value";
-        this.dicomTagList["(0024,0120)"] = "Screening Baseline Measured";
-        this.dicomTagList["(0024,0122)"] = "Screening Baseline Measured Sequence";
-        this.dicomTagList["(0024,0124)"] = "Screening Baseline Type";
-        this.dicomTagList["(0024,0126)"] = "Screening Baseline Value";
-        this.dicomTagList["(0024,0202)"] = "Algorithm Source";
-        this.dicomTagList["(0024,0306)"] = "Data Set Name";
-        this.dicomTagList["(0024,0307)"] = "Data Set Version";
-        this.dicomTagList["(0024,0308)"] = "Data Set Source";
-        this.dicomTagList["(0024,0309)"] = "Data Set Description";
-        this.dicomTagList["(0024,0317)"] = "Visual Field Test Reliability Global Index Sequence";
-        this.dicomTagList["(0024,0320)"] = "Visual Field Global Results Index Sequence";
-        this.dicomTagList["(0024,0325)"] = "Data Observation Sequence";
-        this.dicomTagList["(0024,0338)"] = "Index Normals Flag";
-        this.dicomTagList["(0024,0341)"] = "Index Probability";
-        this.dicomTagList["(0024,0344)"] = "Index Probability Sequence";
-        this.dicomTagList["(0028,0002)"] = "Samples per Pixel";
-        this.dicomTagList["(0028,0003)"] = "Samples per Pixel Used";
-        this.dicomTagList["(0028,0004)"] = "Photometric Interpretation";
-        this.dicomTagList["(0028,0005)"] = "Image Dimensions";
-        this.dicomTagList["(0028,0006)"] = "Planar Configuration";
-        this.dicomTagList["(0028,0008)"] = "Number of Frames";
-        this.dicomTagList["(0028,0009)"] = "Frame Increment Pointer";
-        this.dicomTagList["(0028,000A)"] = "Frame Dimension Pointer";
-        this.dicomTagList["(0028,0010)"] = "Rows";
-        this.dicomTagList["(0028,0011)"] = "Columns";
-        this.dicomTagList["(0028,0012)"] = "Planes";
-        this.dicomTagList["(0028,0014)"] = "Ultrasound Color Data Present";
-        this.dicomTagList["(0028,0030)"] = "Pixel Spacing";
-        this.dicomTagList["(0028,0031)"] = "Zoom Factor";
-        this.dicomTagList["(0028,0032)"] = "Zoom Center";
-        this.dicomTagList["(0028,0034)"] = "Pixel Aspect Ratio";
-        this.dicomTagList["(0028,0040)"] = "Image Format";
-        this.dicomTagList["(0028,0050)"] = "Manipulated Image";
-        this.dicomTagList["(0028,0051)"] = "Corrected Image";
-        this.dicomTagList["(0028,005F)"] = "Compression Recognition Code";
-        this.dicomTagList["(0028,0060)"] = "Compression Code";
-        this.dicomTagList["(0028,0061)"] = "Compression Originator";
-        this.dicomTagList["(0028,0062)"] = "Compression Label";
-        this.dicomTagList["(0028,0063)"] = "Compression Description";
-        this.dicomTagList["(0028,0065)"] = "Compression Sequence";
-        this.dicomTagList["(0028,0066)"] = "Compression Step Pointers";
-        this.dicomTagList["(0028,0068)"] = "Repeat Interval";
-        this.dicomTagList["(0028,0069)"] = "Bits Grouped";
-        this.dicomTagList["(0028,0070)"] = "Perimeter Table";
-        this.dicomTagList["(0028,0071)"] = "Perimeter Value";
-        this.dicomTagList["(0028,0080)"] = "Predictor Rows";
-        this.dicomTagList["(0028,0081)"] = "Predictor Columns";
-        this.dicomTagList["(0028,0082)"] = "Predictor Constants";
-        this.dicomTagList["(0028,0090)"] = "Blocked Pixels";
-        this.dicomTagList["(0028,0091)"] = "Block Rows";
-        this.dicomTagList["(0028,0092)"] = "Block Columns";
-        this.dicomTagList["(0028,0093)"] = "Row Overlap";
-        this.dicomTagList["(0028,0094)"] = "Column Overlap";
-        this.dicomTagList["(0028,0100)"] = "Bits Allocated";
-        this.dicomTagList["(0028,0101)"] = "Bits Stored";
-        this.dicomTagList["(0028,0102)"] = "High Bit";
-        this.dicomTagList["(0028,0103)"] = "Pixel Representation";
-        this.dicomTagList["(0028,0104)"] = "Smallest Valid Pixel Value";
-        this.dicomTagList["(0028,0105)"] = "Largest Valid Pixel Value";
-        this.dicomTagList["(0028,0106)"] = "Smallest Image Pixel Value";
-        this.dicomTagList["(0028,0107)"] = "Largest Image Pixel Value";
-        this.dicomTagList["(0028,0108)"] = "Smallest Pixel Value in Series";
-        this.dicomTagList["(0028,0109)"] = "Largest Pixel Value in Series";
-        this.dicomTagList["(0028,0110)"] = "Smallest Image Pixel Value in Plane";
-        this.dicomTagList["(0028,0111)"] = "Largest Image Pixel Value in Plane";
-        this.dicomTagList["(0028,0120)"] = "Pixel Padding Value";
-        this.dicomTagList["(0028,0121)"] = "Pixel Padding Range Limit";
-        this.dicomTagList["(0028,0122)"] = "Float Pixel Padding Value";
-        this.dicomTagList["(0028,0123)"] = "Double Float Pixel Padding Value";
-        this.dicomTagList["(0028,0124)"] = "Float Pixel Padding Range Limit";
-        this.dicomTagList["(0028,0125)"] = "Double Float Pixel Padding Range Limit";
-        this.dicomTagList["(0028,0200)"] = "Image Location";
-        this.dicomTagList["(0028,0300)"] = "Quality Control Image";
-        this.dicomTagList["(0028,0301)"] = "Burned In Annotation";
-        this.dicomTagList["(0028,0302)"] = "Recognizable Visual Features";
-        this.dicomTagList["(0028,0303)"] = "Longitudinal Temporal Information Modified";
-        this.dicomTagList["(0028,0304)"] = "Referenced Color Palette Instance UID";
-        this.dicomTagList["(0028,0400)"] = "Transform Label";
-        this.dicomTagList["(0028,0401)"] = "Transform Version Number";
-        this.dicomTagList["(0028,0402)"] = "Number of Transform Steps";
-        this.dicomTagList["(0028,0403)"] = "Sequence of Compressed Data";
-        this.dicomTagList["(0028,0404)"] = "Details of Coefficients";
-        this.dicomTagList["(0028,04x0)"] = "Rows For Nth Order Coefficients";
-        this.dicomTagList["(0028,04x1)"] = "Columns For Nth Order Coefficients";
-        this.dicomTagList["(0028,04x2)"] = "Coefficient Coding";
-        this.dicomTagList["(0028,04x3)"] = "Coefficient Coding Pointers";
-        this.dicomTagList["(0028,0700)"] = "DCT Label";
-        this.dicomTagList["(0028,0701)"] = "Data Block Description";
-        this.dicomTagList["(0028,0702)"] = "Data Block";
-        this.dicomTagList["(0028,0710)"] = "Normalization Factor Format";
-        this.dicomTagList["(0028,0720)"] = "Zonal Map Number Format";
-        this.dicomTagList["(0028,0721)"] = "Zonal Map Location";
-        this.dicomTagList["(0028,0722)"] = "Zonal Map Format";
-        this.dicomTagList["(0028,0730)"] = "Adaptive Map Format";
-        this.dicomTagList["(0028,0740)"] = "Code Number Format";
-        this.dicomTagList["(0028,08x0)"] = "Code Label";
-        this.dicomTagList["(0028,08x2)"] = "Number of Tables";
-        this.dicomTagList["(0028,08x3)"] = "Code Table Location";
-        this.dicomTagList["(0028,08x4)"] = "Bits For Code Word";
-        this.dicomTagList["(0028,08x8)"] = "Image Data Location";
-        this.dicomTagList["(0028,0A02)"] = "Pixel Spacing Calibration Type";
-        this.dicomTagList["(0028,0A04)"] = "Pixel Spacing Calibration Description";
-        this.dicomTagList["(0028,1040)"] = "Pixel Intensity Relationship";
-        this.dicomTagList["(0028,1041)"] = "Pixel Intensity Relationship Sign";
-        this.dicomTagList["(0028,1050)"] = "Window Center";
-        this.dicomTagList["(0028,1051)"] = "Window Width";
-        this.dicomTagList["(0028,1052)"] = "Rescale Intercept";
-        this.dicomTagList["(0028,1053)"] = "Rescale Slope";
-        this.dicomTagList["(0028,1054)"] = "Rescale Type";
-        this.dicomTagList["(0028,1055)"] = "Window Center & Width Explanation";
-        this.dicomTagList["(0028,1056)"] = "VOI LUT Function";
-        this.dicomTagList["(0028,1080)"] = "Gray Scale";
-        this.dicomTagList["(0028,1090)"] = "Recommended Viewing Mode";
-        this.dicomTagList["(0028,1100)"] = "Gray Lookup Table Descriptor";
-        this.dicomTagList["(0028,1101)"] = "Red Palette Color Lookup Table Descriptor";
-        this.dicomTagList["(0028,1102)"] = "Green Palette Color Lookup Table Descriptor";
-        this.dicomTagList["(0028,1103)"] = "Blue Palette Color Lookup Table Descriptor";
-        this.dicomTagList["(0028,1104)"] = "Alpha Palette Color Lookup Table Descriptor";
-        this.dicomTagList["(0028,1111)"] = "Large Red Palette Color Lookup Table Descriptor";
-        this.dicomTagList["(0028,1112)"] = "Large Green Palette Color Lookup Table Descriptor";
-        this.dicomTagList["(0028,1113)"] = "Large Blue Palette Color Lookup Table Descriptor";
-        this.dicomTagList["(0028,1199)"] = "Palette Color Lookup Table UID";
-        this.dicomTagList["(0028,1200)"] = "Gray Lookup Table Data";
-        this.dicomTagList["(0028,1201)"] = "Red Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1202)"] = "Green Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1203)"] = "Blue Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1204)"] = "Alpha Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1211)"] = "Large Red Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1212)"] = "Large Green Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1213)"] = "Large Blue Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1214)"] = "Large Palette Color Lookup Table UID";
-        this.dicomTagList["(0028,1221)"] = "Segmented Red Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1222)"] = "Segmented Green Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1223)"] = "Segmented Blue Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1224)"] = "Segmented Alpha Palette Color Lookup Table Data";
-        this.dicomTagList["(0028,1300)"] = "Breast Implant Present";
-        this.dicomTagList["(0028,1350)"] = "Partial View";
-        this.dicomTagList["(0028,1351)"] = "Partial View Description";
-        this.dicomTagList["(0028,1352)"] = "Partial View Code Sequence";
-        this.dicomTagList["(0028,135A)"] = "Spatial Locations Preserved";
-        this.dicomTagList["(0028,1401)"] = "Data Frame Assignment Sequence";
-        this.dicomTagList["(0028,1402)"] = "Data Path Assignment";
-        this.dicomTagList["(0028,1403)"] = "Bits Mapped to Color Lookup Table";
-        this.dicomTagList["(0028,1404)"] = "Blending LUT 1 Sequence";
-        this.dicomTagList["(0028,1405)"] = "Blending LUT 1 Transfer Function";
-        this.dicomTagList["(0028,1406)"] = "Blending Weight Constant";
-        this.dicomTagList["(0028,1407)"] = "Blending Lookup Table Descriptor";
-        this.dicomTagList["(0028,1408)"] = "Blending Lookup Table Data";
-        this.dicomTagList["(0028,140B)"] = "Enhanced Palette Color Lookup Table Sequence";
-        this.dicomTagList["(0028,140C)"] = "Blending LUT 2 Sequence";
-        this.dicomTagList["(0028,140D)"] = "Blending LUT 2 Transfer Function";
-        this.dicomTagList["(0028,140E)"] = "Data Path ID";
-        this.dicomTagList["(0028,140F)"] = "RGB LUT Transfer Function";
-        this.dicomTagList["(0028,1410)"] = "Alpha LUT Transfer Function";
-        this.dicomTagList["(0028,2000)"] = "ICC Profile";
-        this.dicomTagList["(0028,2002)"] = "Color Space";
-        this.dicomTagList["(0028,2110)"] = "Lossy Image Compression";
-        this.dicomTagList["(0028,2112)"] = "Lossy Image Compression Ratio";
-        this.dicomTagList["(0028,2114)"] = "Lossy Image Compression Method";
-        this.dicomTagList["(0028,3000)"] = "Modality LUT Sequence";
-        this.dicomTagList["(0028,3002)"] = "LUT Descriptor";
-        this.dicomTagList["(0028,3003)"] = "LUT Explanation";
-        this.dicomTagList["(0028,3004)"] = "Modality LUT Type";
-        this.dicomTagList["(0028,3006)"] = "LUT Data";
-        this.dicomTagList["(0028,3010)"] = "VOI LUT Sequence";
-        this.dicomTagList["(0028,3110)"] = "Softcopy VOI LUT Sequence";
-        this.dicomTagList["(0028,4000)"] = "Image Presentation Comments";
-        this.dicomTagList["(0028,5000)"] = "Bi-Plane Acquisition Sequence";
-        this.dicomTagList["(0028,6010)"] = "Representative Frame Number";
-        this.dicomTagList["(0028,6020)"] = "Frame Numbers of Interest (FOI)";
-        this.dicomTagList["(0028,6022)"] = "Frame of Interest Description";
-        this.dicomTagList["(0028,6023)"] = "Frame of Interest Type";
-        this.dicomTagList["(0028,6030)"] = "Mask Pointer(s)";
-        this.dicomTagList["(0028,6040)"] = "R Wave Pointer";
-        this.dicomTagList["(0028,6100)"] = "Mask Subtraction Sequence";
-        this.dicomTagList["(0028,6101)"] = "Mask Operation";
-        this.dicomTagList["(0028,6102)"] = "Applicable Frame Range";
-        this.dicomTagList["(0028,6110)"] = "Mask Frame Numbers";
-        this.dicomTagList["(0028,6112)"] = "Contrast Frame Averaging";
-        this.dicomTagList["(0028,6114)"] = "Mask Sub-pixel Shift";
-        this.dicomTagList["(0028,6120)"] = "TID Offset";
-        this.dicomTagList["(0028,6190)"] = "Mask Operation Explanation";
-        this.dicomTagList["(0028,7000)"] = "Equipment Administrator Sequence";
-        this.dicomTagList["(0028,7001)"] = "Number of Display Subsystems";
-        this.dicomTagList["(0028,7002)"] = "Current Configuration ID";
-        this.dicomTagList["(0028,7003)"] = "Display Subsystem ID";
-        this.dicomTagList["(0028,7004)"] = "Display Subsystem Name";
-        this.dicomTagList["(0028,7005)"] = "Display Subsystem Description";
-        this.dicomTagList["(0028,7006)"] = "System Status";
-        this.dicomTagList["(0028,7007)"] = "System Status Comment";
-        this.dicomTagList["(0028,7008)"] = "Target Luminance Characteristics Sequence";
-        this.dicomTagList["(0028,7009)"] = "Luminance Characteristics ID";
-        this.dicomTagList["(0028,700A)"] = "Display Subsystem Configuration Sequence";
-        this.dicomTagList["(0028,700B)"] = "Configuration ID";
-        this.dicomTagList["(0028,700C)"] = "Configuration Name";
-        this.dicomTagList["(0028,700D)"] = "Configuration Description";
-        this.dicomTagList["(0028,700E)"] = "Referenced Target Luminance Characteristics ID";
-        this.dicomTagList["(0028,700F)"] = "QA Results Sequence";
-        this.dicomTagList["(0028,7010)"] = "Display Subsystem QA Results Sequence";
-        this.dicomTagList["(0028,7011)"] = "Configuration QA Results Sequence";
-        this.dicomTagList["(0028,7012)"] = "Measurement Equipment Sequence";
-        this.dicomTagList["(0028,7013)"] = "Measurement Functions";
-        this.dicomTagList["(0028,7014)"] = "Measurement Equipment Type";
-        this.dicomTagList["(0028,7015)"] = "Visual Evaluation Result Sequence";
-        this.dicomTagList["(0028,7016)"] = "Display Calibration Result Sequence";
-        this.dicomTagList["(0028,7017)"] = "DDL Value";
-        this.dicomTagList["(0028,7018)"] = "CIExy White Point";
-        this.dicomTagList["(0028,7019)"] = "Display Function Type";
-        this.dicomTagList["(0028,701A)"] = "Gamma Value";
-        this.dicomTagList["(0028,701B)"] = "Number of Luminance Points";
-        this.dicomTagList["(0028,701C)"] = "Luminance Response Sequence";
-        this.dicomTagList["(0028,701D)"] = "Target Minimum Luminance";
-        this.dicomTagList["(0028,701E)"] = "Target Maximum Luminance";
-        this.dicomTagList["(0028,701F)"] = "Luminance Value";
-        this.dicomTagList["(0028,7020)"] = "Luminance Response Description";
-        this.dicomTagList["(0028,7021)"] = "White Point Flag";
-        this.dicomTagList["(0028,7022)"] = "Display Device Type Code Sequence";
-        this.dicomTagList["(0028,7023)"] = "Display Subsystem Sequence";
-        this.dicomTagList["(0028,7024)"] = "Luminance Result Sequence";
-        this.dicomTagList["(0028,7025)"] = "Ambient Light Value Source";
-        this.dicomTagList["(0028,7026)"] = "Measured Characteristics";
-        this.dicomTagList["(0028,7027)"] = "Luminance Uniformity Result Sequence";
-        this.dicomTagList["(0028,7028)"] = "Visual Evaluation Test Sequence";
-        this.dicomTagList["(0028,7029)"] = "Test Result";
-        this.dicomTagList["(0028,702A)"] = "Test Result Comment";
-        this.dicomTagList["(0028,702B)"] = "Test Image Validation";
-        this.dicomTagList["(0028,702C)"] = "Test Pattern Code Sequence";
-        this.dicomTagList["(0028,702D)"] = "Measurement Pattern Code Sequence";
-        this.dicomTagList["(0028,702E)"] = "Visual Evaluation Method Code Sequence";
-        this.dicomTagList["(0028,7FE0)"] = "Pixel Data Provider URL";
-        this.dicomTagList["(0028,9001)"] = "Data Point Rows";
-        this.dicomTagList["(0028,9002)"] = "Data Point Columns";
-        this.dicomTagList["(0028,9003)"] = "Signal Domain Columns";
-        this.dicomTagList["(0028,9099)"] = "Largest Monochrome Pixel Value";
-        this.dicomTagList["(0028,9108)"] = "Data Representation";
-        this.dicomTagList["(0028,9110)"] = "Pixel Measures Sequence";
-        this.dicomTagList["(0028,9132)"] = "Frame VOI LUT Sequence";
-        this.dicomTagList["(0028,9145)"] = "Pixel Value Transformation Sequence";
-        this.dicomTagList["(0028,9235)"] = "Signal Domain Rows";
-        this.dicomTagList["(0028,9411)"] = "Display Filter Percentage";
-        this.dicomTagList["(0028,9415)"] = "Frame Pixel Shift Sequence";
-        this.dicomTagList["(0028,9416)"] = "Subtraction Item ID";
-        this.dicomTagList["(0028,9422)"] = "Pixel Intensity Relationship LUT Sequence";
-        this.dicomTagList["(0028,9443)"] = "Frame Pixel Data Properties Sequence";
-        this.dicomTagList["(0028,9444)"] = "Geometrical Properties";
-        this.dicomTagList["(0028,9445)"] = "Geometric Maximum Distortion";
-        this.dicomTagList["(0028,9446)"] = "Image Processing Applied";
-        this.dicomTagList["(0028,9454)"] = "Mask Selection Mode";
-        this.dicomTagList["(0028,9474)"] = "LUT Function";
-        this.dicomTagList["(0028,9478)"] = "Mask Visibility Percentage";
-        this.dicomTagList["(0028,9501)"] = "Pixel Shift Sequence";
-        this.dicomTagList["(0028,9502)"] = "Region Pixel Shift Sequence";
-        this.dicomTagList["(0028,9503)"] = "Vertices of the Region";
-        this.dicomTagList["(0028,9505)"] = "Multi-frame Presentation Sequence";
-        this.dicomTagList["(0028,9506)"] = "Pixel Shift Frame Range";
-        this.dicomTagList["(0028,9507)"] = "LUT Frame Range";
-        this.dicomTagList["(0028,9520)"] = "Image to Equipment Mapping Matrix";
-        this.dicomTagList["(0028,9537)"] = "Equipment Coordinate System Identification";
-        this.dicomTagList["(0032,000A)"] = "Study Status ID";
-        this.dicomTagList["(0032,000C)"] = "Study Priority ID";
-        this.dicomTagList["(0032,0012)"] = "Study ID Issuer";
-        this.dicomTagList["(0032,0032)"] = "Study Verified Date";
-        this.dicomTagList["(0032,0033)"] = "Study Verified Time";
-        this.dicomTagList["(0032,0034)"] = "Study Read Date";
-        this.dicomTagList["(0032,0035)"] = "Study Read Time";
-        this.dicomTagList["(0032,1000)"] = "Scheduled Study Start Date";
-        this.dicomTagList["(0032,1001)"] = "Scheduled Study Start Time";
-        this.dicomTagList["(0032,1010)"] = "Scheduled Study Stop Date";
-        this.dicomTagList["(0032,1011)"] = "Scheduled Study Stop Time";
-        this.dicomTagList["(0032,1020)"] = "Scheduled Study Location";
-        this.dicomTagList["(0032,1021)"] = "Scheduled Study Location AE Title";
-        this.dicomTagList["(0032,1030)"] = "Reason for Study";
-        this.dicomTagList["(0032,1031)"] = "Requesting Physician Identification Sequence";
-        this.dicomTagList["(0032,1032)"] = "Requesting Physician";
-        this.dicomTagList["(0032,1033)"] = "Requesting Service";
-        this.dicomTagList["(0032,1034)"] = "Requesting Service Code Sequence";
-        this.dicomTagList["(0032,1040)"] = "Study Arrival Date";
-        this.dicomTagList["(0032,1041)"] = "Study Arrival Time";
-        this.dicomTagList["(0032,1050)"] = "Study Completion Date";
-        this.dicomTagList["(0032,1051)"] = "Study Completion Time";
-        this.dicomTagList["(0032,1055)"] = "Study Component Status ID";
-        this.dicomTagList["(0032,1060)"] = "Requested Procedure Description";
-        this.dicomTagList["(0032,1064)"] = "Requested Procedure Code Sequence";
-        this.dicomTagList["(0032,1070)"] = "Requested Contrast Agent";
-        this.dicomTagList["(0032,4000)"] = "Study Comments";
-        this.dicomTagList["(0038,0004)"] = "Referenced Patient Alias Sequence";
-        this.dicomTagList["(0038,0008)"] = "Visit Status ID";
-        this.dicomTagList["(0038,0010)"] = "Admission ID";
-        this.dicomTagList["(0038,0011)"] = "Issuer of Admission ID";
-        this.dicomTagList["(0038,0014)"] = "Issuer of Admission ID Sequence";
-        this.dicomTagList["(0038,0016)"] = "Route of Admissions";
-        this.dicomTagList["(0038,001A)"] = "Scheduled Admission Date";
-        this.dicomTagList["(0038,001B)"] = "Scheduled Admission Time";
-        this.dicomTagList["(0038,001C)"] = "Scheduled Discharge Date";
-        this.dicomTagList["(0038,001D)"] = "Scheduled Discharge Time";
-        this.dicomTagList["(0038,001E)"] = "Scheduled Patient Institution Residence";
-        this.dicomTagList["(0038,0020)"] = "Admitting Date";
-        this.dicomTagList["(0038,0021)"] = "Admitting Time";
-        this.dicomTagList["(0038,0030)"] = "Discharge Date";
-        this.dicomTagList["(0038,0032)"] = "Discharge Time";
-        this.dicomTagList["(0038,0040)"] = "Discharge Diagnosis Description";
-        this.dicomTagList["(0038,0044)"] = "Discharge Diagnosis Code Sequence";
-        this.dicomTagList["(0038,0050)"] = "Special Needs";
-        this.dicomTagList["(0038,0060)"] = "Service Episode ID";
-        this.dicomTagList["(0038,0061)"] = "Issuer of Service Episode ID";
-        this.dicomTagList["(0038,0062)"] = "Service Episode Description";
-        this.dicomTagList["(0038,0064)"] = "Issuer of Service Episode ID Sequence";
-        this.dicomTagList["(0038,0100)"] = "Pertinent Documents Sequence";
-        this.dicomTagList["(0038,0101)"] = "Pertinent Resources Sequence";
-        this.dicomTagList["(0038,0102)"] = "Resource Description";
-        this.dicomTagList["(0038,0300)"] = "Current Patient Location";
-        this.dicomTagList["(0038,0400)"] = "Patient's Institution Residence";
-        this.dicomTagList["(0038,0500)"] = "Patient State";
-        this.dicomTagList["(0038,0502)"] = "Patient Clinical Trial Participation Sequence";
-        this.dicomTagList["(0038,4000)"] = "Visit Comments";
-        this.dicomTagList["(003A,0004)"] = "Waveform Originality";
-        this.dicomTagList["(003A,0005)"] = "Number of Waveform Channels";
-        this.dicomTagList["(003A,0010)"] = "Number of Waveform Samples";
-        this.dicomTagList["(003A,001A)"] = "Sampling Frequency";
-        this.dicomTagList["(003A,0020)"] = "Multiplex Group Label";
-        this.dicomTagList["(003A,0200)"] = "Channel Definition Sequence";
-        this.dicomTagList["(003A,0202)"] = "Waveform Channel Number";
-        this.dicomTagList["(003A,0203)"] = "Channel Label";
-        this.dicomTagList["(003A,0205)"] = "Channel Status";
-        this.dicomTagList["(003A,0208)"] = "Channel Source Sequence";
-        this.dicomTagList["(003A,0209)"] = "Channel Source Modifiers Sequence";
-        this.dicomTagList["(003A,020A)"] = "Source Waveform Sequence";
-        this.dicomTagList["(003A,020C)"] = "Channel Derivation Description";
-        this.dicomTagList["(003A,0210)"] = "Channel Sensitivity";
-        this.dicomTagList["(003A,0211)"] = "Channel Sensitivity Units Sequence";
-        this.dicomTagList["(003A,0212)"] = "Channel Sensitivity Correction Factor";
-        this.dicomTagList["(003A,0213)"] = "Channel Baseline";
-        this.dicomTagList["(003A,0214)"] = "Channel Time Skew";
-        this.dicomTagList["(003A,0215)"] = "Channel Sample Skew";
-        this.dicomTagList["(003A,0218)"] = "Channel Offset";
-        this.dicomTagList["(003A,021A)"] = "Waveform Bits Stored";
-        this.dicomTagList["(003A,0220)"] = "Filter Low Frequency";
-        this.dicomTagList["(003A,0221)"] = "Filter High Frequency";
-        this.dicomTagList["(003A,0222)"] = "Notch Filter Frequency";
-        this.dicomTagList["(003A,0223)"] = "Notch Filter Bandwidth";
-        this.dicomTagList["(003A,0230)"] = "Waveform Data Display Scale";
-        this.dicomTagList["(003A,0231)"] = "Waveform Display Background CIELab Value";
-        this.dicomTagList["(003A,0240)"] = "Waveform Presentation Group Sequence";
-        this.dicomTagList["(003A,0241)"] = "Presentation Group Number";
-        this.dicomTagList["(003A,0242)"] = "Channel Display Sequence";
-        this.dicomTagList["(003A,0244)"] = "Channel Recommended Display CIELab Value";
-        this.dicomTagList["(003A,0245)"] = "Channel Position";
-        this.dicomTagList["(003A,0246)"] = "Display Shading Flag";
-        this.dicomTagList["(003A,0247)"] = "Fractional Channel Display Scale";
-        this.dicomTagList["(003A,0248)"] = "Absolute Channel Display Scale";
-        this.dicomTagList["(003A,0300)"] = "Multiplexed Audio Channels Description Code Sequence";
-        this.dicomTagList["(003A,0301)"] = "Channel Identification Code";
-        this.dicomTagList["(003A,0302)"] = "Channel Mode";
-        this.dicomTagList["(0040,0001)"] = "Scheduled Station AE Title";
-        this.dicomTagList["(0040,0002)"] = "Scheduled Procedure Step Start Date";
-        this.dicomTagList["(0040,0003)"] = "Scheduled Procedure Step Start Time";
-        this.dicomTagList["(0040,0004)"] = "Scheduled Procedure Step End Date";
-        this.dicomTagList["(0040,0005)"] = "Scheduled Procedure Step End Time";
-        this.dicomTagList["(0040,0006)"] = "Scheduled Performing Physician's Name";
-        this.dicomTagList["(0040,0007)"] = "Scheduled Procedure Step Description";
-        this.dicomTagList["(0040,0008)"] = "Scheduled Protocol Code Sequence";
-        this.dicomTagList["(0040,0009)"] = "Scheduled Procedure Step ID";
-        this.dicomTagList["(0040,000A)"] = "Stage Code Sequence";
-        this.dicomTagList["(0040,000B)"] = "Scheduled Performing Physician Identification Sequence";
-        this.dicomTagList["(0040,0010)"] = "Scheduled Station Name";
-        this.dicomTagList["(0040,0011)"] = "Scheduled Procedure Step Location";
-        this.dicomTagList["(0040,0012)"] = "Pre-Medication";
-        this.dicomTagList["(0040,0020)"] = "Scheduled Procedure Step Status";
-        this.dicomTagList["(0040,0026)"] = "Order Placer Identifier Sequence";
-        this.dicomTagList["(0040,0027)"] = "Order Filler Identifier Sequence";
-        this.dicomTagList["(0040,0031)"] = "Local Namespace Entity ID";
-        this.dicomTagList["(0040,0032)"] = "Universal Entity ID";
-        this.dicomTagList["(0040,0033)"] = "Universal Entity ID Type";
-        this.dicomTagList["(0040,0035)"] = "Identifier Type Code";
-        this.dicomTagList["(0040,0036)"] = "Assigning Facility Sequence";
-        this.dicomTagList["(0040,0039)"] = "Assigning Jurisdiction Code Sequence";
-        this.dicomTagList["(0040,003A)"] = "Assigning Agency or Department Code Sequence";
-        this.dicomTagList["(0040,0100)"] = "Scheduled Procedure Step Sequence";
-        this.dicomTagList["(0040,0220)"] = "Referenced Non-Image Composite SOP Instance Sequence";
-        this.dicomTagList["(0040,0241)"] = "Performed Station AE Title";
-        this.dicomTagList["(0040,0242)"] = "Performed Station Name";
-        this.dicomTagList["(0040,0243)"] = "Performed Location";
-        this.dicomTagList["(0040,0244)"] = "Performed Procedure Step Start Date";
-        this.dicomTagList["(0040,0245)"] = "Performed Procedure Step Start Time";
-        this.dicomTagList["(0040,0250)"] = "Performed Procedure Step End Date";
-        this.dicomTagList["(0040,0251)"] = "Performed Procedure Step End Time";
-        this.dicomTagList["(0040,0252)"] = "Performed Procedure Step Status";
-        this.dicomTagList["(0040,0253)"] = "Performed Procedure Step ID";
-        this.dicomTagList["(0040,0254)"] = "Performed Procedure Step Description";
-        this.dicomTagList["(0040,0255)"] = "Performed Procedure Type Description";
-        this.dicomTagList["(0040,0260)"] = "Performed Protocol Code Sequence";
-        this.dicomTagList["(0040,0261)"] = "Performed Protocol Type";
-        this.dicomTagList["(0040,0270)"] = "Scheduled Step Attributes Sequence";
-        this.dicomTagList["(0040,0275)"] = "Request Attributes Sequence";
-        this.dicomTagList["(0040,0280)"] = "Comments on the Performed Procedure Step";
-        this.dicomTagList["(0040,0281)"] = "Performed Procedure Step Discontinuation Reason Code Sequence";
-        this.dicomTagList["(0040,0293)"] = "Quantity Sequence";
-        this.dicomTagList["(0040,0294)"] = "Quantity";
-        this.dicomTagList["(0040,0295)"] = "Measuring Units Sequence";
-        this.dicomTagList["(0040,0296)"] = "Billing Item Sequence";
-        this.dicomTagList["(0040,0300)"] = "Total Time of Fluoroscopy";
-        this.dicomTagList["(0040,0301)"] = "Total Number of Exposures";
-        this.dicomTagList["(0040,0302)"] = "Entrance Dose";
-        this.dicomTagList["(0040,0303)"] = "Exposed Area";
-        this.dicomTagList["(0040,0306)"] = "Distance Source to Entrance";
-        this.dicomTagList["(0040,0307)"] = "Distance Source to Support";
-        this.dicomTagList["(0040,030E)"] = "Exposure Dose Sequence";
-        this.dicomTagList["(0040,0310)"] = "Comments on Radiation Dose";
-        this.dicomTagList["(0040,0312)"] = "X-Ray Output";
-        this.dicomTagList["(0040,0314)"] = "Half Value Layer";
-        this.dicomTagList["(0040,0316)"] = "Organ Dose";
-        this.dicomTagList["(0040,0318)"] = "Organ Exposed";
-        this.dicomTagList["(0040,0320)"] = "Billing Procedure Step Sequence";
-        this.dicomTagList["(0040,0321)"] = "Film Consumption Sequence";
-        this.dicomTagList["(0040,0324)"] = "Billing Supplies and Devices Sequence";
-        this.dicomTagList["(0040,0330)"] = "Referenced Procedure Step Sequence";
-        this.dicomTagList["(0040,0340)"] = "Performed Series Sequence";
-        this.dicomTagList["(0040,0400)"] = "Comments on the Scheduled Procedure Step";
-        this.dicomTagList["(0040,0440)"] = "Protocol Context Sequence";
-        this.dicomTagList["(0040,0441)"] = "Content Item Modifier Sequence";
-        this.dicomTagList["(0040,0500)"] = "Scheduled Specimen Sequence";
-        this.dicomTagList["(0040,050A)"] = "Specimen Accession Number";
-        this.dicomTagList["(0040,0512)"] = "Container Identifier";
-        this.dicomTagList["(0040,0513)"] = "Issuer of the Container Identifier Sequence";
-        this.dicomTagList["(0040,0515)"] = "Alternate Container Identifier Sequence";
-        this.dicomTagList["(0040,0518)"] = "Container Type Code Sequence";
-        this.dicomTagList["(0040,051A)"] = "Container Description";
-        this.dicomTagList["(0040,0520)"] = "Container Component Sequence";
-        this.dicomTagList["(0040,0550)"] = "Specimen Sequence";
-        this.dicomTagList["(0040,0551)"] = "Specimen Identifier";
-        this.dicomTagList["(0040,0552)"] = "Specimen Description Sequence (Trial)";
-        this.dicomTagList["(0040,0553)"] = "Specimen Description (Trial)";
-        this.dicomTagList["(0040,0554)"] = "Specimen UID";
-        this.dicomTagList["(0040,0555)"] = "Acquisition Context Sequence";
-        this.dicomTagList["(0040,0556)"] = "Acquisition Context Description";
-        this.dicomTagList["(0040,059A)"] = "Specimen Type Code Sequence";
-        this.dicomTagList["(0040,0560)"] = "Specimen Description Sequence";
-        this.dicomTagList["(0040,0562)"] = "Issuer of the Specimen Identifier Sequence";
-        this.dicomTagList["(0040,0600)"] = "Specimen Short Description";
-        this.dicomTagList["(0040,0602)"] = "Specimen Detailed Description";
-        this.dicomTagList["(0040,0610)"] = "Specimen Preparation Sequence";
-        this.dicomTagList["(0040,0612)"] = "Specimen Preparation Step Content Item Sequence";
-        this.dicomTagList["(0040,0620)"] = "Specimen Localization Content Item Sequence";
-        this.dicomTagList["(0040,06FA)"] = "Slide Identifier";
-        this.dicomTagList["(0040,071A)"] = "Image Center Point Coordinates Sequence";
-        this.dicomTagList["(0040,072A)"] = "X Offset in Slide Coordinate System";
-        this.dicomTagList["(0040,073A)"] = "Y Offset in Slide Coordinate System";
-        this.dicomTagList["(0040,074A)"] = "Z Offset in Slide Coordinate System";
-        this.dicomTagList["(0040,08D8)"] = "Pixel Spacing Sequence";
-        this.dicomTagList["(0040,08DA)"] = "Coordinate System Axis Code Sequence";
-        this.dicomTagList["(0040,08EA)"] = "Measurement Units Code Sequence";
-        this.dicomTagList["(0040,09F8)"] = "Vital Stain Code Sequence (Trial)";
-        this.dicomTagList["(0040,1001)"] = "Requested Procedure ID";
-        this.dicomTagList["(0040,1002)"] = "Reason for the Requested Procedure";
-        this.dicomTagList["(0040,1003)"] = "Requested Procedure Priority";
-        this.dicomTagList["(0040,1004)"] = "Patient Transport Arrangements";
-        this.dicomTagList["(0040,1005)"] = "Requested Procedure Location";
-        this.dicomTagList["(0040,1006)"] = "Placer Order Number / Procedure";
-        this.dicomTagList["(0040,1007)"] = "Filler Order Number / Procedure";
-        this.dicomTagList["(0040,1008)"] = "Confidentiality Code";
-        this.dicomTagList["(0040,1009)"] = "Reporting Priority";
-        this.dicomTagList["(0040,100A)"] = "Reason for Requested Procedure Code Sequence";
-        this.dicomTagList["(0040,1010)"] = "Names of Intended Recipients of Results";
-        this.dicomTagList["(0040,1011)"] = "Intended Recipients of Results Identification Sequence";
-        this.dicomTagList["(0040,1012)"] = "Reason For Performed Procedure Code Sequence";
-        this.dicomTagList["(0040,1060)"] = "Requested Procedure Description (Trial)";
-        this.dicomTagList["(0040,1101)"] = "Person Identification Code Sequence";
-        this.dicomTagList["(0040,1102)"] = "Person's Address";
-        this.dicomTagList["(0040,1103)"] = "Person's Telephone Numbers";
-        this.dicomTagList["(0040,1104)"] = "Person's Telecom Information";
-        this.dicomTagList["(0040,1400)"] = "Requested Procedure Comments";
-        this.dicomTagList["(0040,2001)"] = "Reason for the Imaging Service Request";
-        this.dicomTagList["(0040,2004)"] = "Issue Date of Imaging Service Request";
-        this.dicomTagList["(0040,2005)"] = "Issue Time of Imaging Service Request";
-        this.dicomTagList["(0040,2006)"] = "Placer Order Number / Imaging Service Request ()";
-        this.dicomTagList["(0040,2007)"] = "Filler Order Number / Imaging Service Request ()";
-        this.dicomTagList["(0040,2008)"] = "Order Entered By";
-        this.dicomTagList["(0040,2009)"] = "Order Enterer's Location";
-        this.dicomTagList["(0040,2010)"] = "Order Callback Phone Number";
-        this.dicomTagList["(0040,2011)"] = "Order Callback Telecom Information";
-        this.dicomTagList["(0040,2016)"] = "Placer Order Number / Imaging Service Request";
-        this.dicomTagList["(0040,2017)"] = "Filler Order Number / Imaging Service Request";
-        this.dicomTagList["(0040,2400)"] = "Imaging Service Request Comments";
-        this.dicomTagList["(0040,3001)"] = "Confidentiality Constraint on Patient Data Description";
-        this.dicomTagList["(0040,4001)"] = "General Purpose Scheduled Procedure Step Status";
-        this.dicomTagList["(0040,4002)"] = "General Purpose Performed Procedure Step Status";
-        this.dicomTagList["(0040,4003)"] = "General Purpose Scheduled Procedure Step Priority";
-        this.dicomTagList["(0040,4004)"] = "Scheduled Processing Applications Code Sequence";
-        this.dicomTagList["(0040,4005)"] = "Scheduled Procedure Step Start DateTime";
-        this.dicomTagList["(0040,4006)"] = "Multiple Copies Flag";
-        this.dicomTagList["(0040,4007)"] = "Performed Processing Applications Code Sequence";
-        this.dicomTagList["(0040,4009)"] = "Human Performer Code Sequence";
-        this.dicomTagList["(0040,4010)"] = "Scheduled Procedure Step Modification DateTime";
-        this.dicomTagList["(0040,4011)"] = "Expected Completion DateTime";
-        this.dicomTagList["(0040,4015)"] = "Resulting General Purpose Performed Procedure Steps Sequence";
-        this.dicomTagList["(0040,4016)"] = "Referenced General Purpose Scheduled Procedure Step Sequence";
-        this.dicomTagList["(0040,4018)"] = "Scheduled Workitem Code Sequence";
-        this.dicomTagList["(0040,4019)"] = "Performed Workitem Code Sequence";
-        this.dicomTagList["(0040,4020)"] = "Input Availability Flag";
-        this.dicomTagList["(0040,4021)"] = "Input Information Sequence";
-        this.dicomTagList["(0040,4022)"] = "Relevant Information Sequence";
-        this.dicomTagList["(0040,4023)"] = "Referenced General Purpose Scheduled Procedure Step Transaction UID";
-        this.dicomTagList["(0040,4025)"] = "Scheduled Station Name Code Sequence";
-        this.dicomTagList["(0040,4026)"] = "Scheduled Station Class Code Sequence";
-        this.dicomTagList["(0040,4027)"] = "Scheduled Station Geographic Location Code Sequence";
-        this.dicomTagList["(0040,4028)"] = "Performed Station Name Code Sequence";
-        this.dicomTagList["(0040,4029)"] = "Performed Station Class Code Sequence";
-        this.dicomTagList["(0040,4030)"] = "Performed Station Geographic Location Code Sequence";
-        this.dicomTagList["(0040,4031)"] = "Requested Subsequent Workitem Code Sequence";
-        this.dicomTagList["(0040,4032)"] = "Non-DICOM Output Code Sequence";
-        this.dicomTagList["(0040,4033)"] = "Output Information Sequence";
-        this.dicomTagList["(0040,4034)"] = "Scheduled Human Performers Sequence";
-        this.dicomTagList["(0040,4035)"] = "Actual Human Performers Sequence";
-        this.dicomTagList["(0040,4036)"] = "Human Performer's Organization";
-        this.dicomTagList["(0040,4037)"] = "Human Performer's Name";
-        this.dicomTagList["(0040,4040)"] = "Raw Data Handling";
-        this.dicomTagList["(0040,4041)"] = "Input Readiness State";
-        this.dicomTagList["(0040,4050)"] = "Performed Procedure Step Start DateTime";
-        this.dicomTagList["(0040,4051)"] = "Performed Procedure Step End DateTime";
-        this.dicomTagList["(0040,4052)"] = "Procedure Step Cancellation DateTime";
-        this.dicomTagList["(0040,4070)"] = "Output Destination Sequence";
-        this.dicomTagList["(0040,4071)"] = "DICOM Storage Sequence";
-        this.dicomTagList["(0040,4072)"] = "STOW-RS Storage Sequence";
-        this.dicomTagList["(0040,4073)"] = "Storage URL";
-        this.dicomTagList["(0040,4074)"] = "XDS Storage Sequence";
-        this.dicomTagList["(0040,8302)"] = "Entrance Dose in mGy";
-        this.dicomTagList["(0040,9092)"] = "Parametric Map Frame Type Sequence";
-        this.dicomTagList["(0040,9094)"] = "Referenced Image Real World Value Mapping Sequence";
-        this.dicomTagList["(0040,9096)"] = "Real World Value Mapping Sequence";
-        this.dicomTagList["(0040,9098)"] = "Pixel Value Mapping Code Sequence";
-        this.dicomTagList["(0040,9210)"] = "LUT Label";
-        this.dicomTagList["(0040,9211)"] = "Real World Value Last Value Mapped";
-        this.dicomTagList["(0040,9212)"] = "Real World Value LUT Data";
-        this.dicomTagList["(0040,9213)"] = "Double Float Real World Value Last Value Mapped";
-        this.dicomTagList["(0040,9214)"] = "Double Float Real World Value First Value Mapped";
-        this.dicomTagList["(0040,9216)"] = "Real World Value First Value Mapped";
-        this.dicomTagList["(0040,9220)"] = "Quantity Definition Sequence";
-        this.dicomTagList["(0040,9224)"] = "Real World Value Intercept";
-        this.dicomTagList["(0040,9225)"] = "Real World Value Slope";
-        this.dicomTagList["(0040,A007)"] = "Findings Flag (Trial)";
-        this.dicomTagList["(0040,A010)"] = "Relationship Type";
-        this.dicomTagList["(0040,A020)"] = "Findings Sequence (Trial)";
-        this.dicomTagList["(0040,A021)"] = "Findings Group UID (Trial)";
-        this.dicomTagList["(0040,A022)"] = "Referenced Findings Group UID (Trial)";
-        this.dicomTagList["(0040,A023)"] = "Findings Group Recording Date (Trial)";
-        this.dicomTagList["(0040,A024)"] = "Findings Group Recording Time (Trial)";
-        this.dicomTagList["(0040,A026)"] = "Findings Source Category Code Sequence (Trial)";
-        this.dicomTagList["(0040,A027)"] = "Verifying Organization";
-        this.dicomTagList["(0040,A028)"] = "Documenting Organization Identifier Code Sequence (Trial)";
-        this.dicomTagList["(0040,A030)"] = "Verification DateTime";
-        this.dicomTagList["(0040,A032)"] = "Observation DateTime";
-        this.dicomTagList["(0040,A040)"] = "Value Type";
-        this.dicomTagList["(0040,A043)"] = "Concept Name Code Sequence";
-        this.dicomTagList["(0040,A047)"] = "Measurement Precision Description (Trial)";
-        this.dicomTagList["(0040,A050)"] = "Continuity Of Content";
-        this.dicomTagList["(0040,A057)"] = "Urgency or Priority Alerts (Trial)";
-        this.dicomTagList["(0040,A060)"] = "Sequencing Indicator (Trial)";
-        this.dicomTagList["(0040,A066)"] = "Document Identifier Code Sequence (Trial)";
-        this.dicomTagList["(0040,A067)"] = "Document Author (Trial)";
-        this.dicomTagList["(0040,A068)"] = "Document Author Identifier Code Sequence (Trial)";
-        this.dicomTagList["(0040,A070)"] = "Identifier Code Sequence (Trial)";
-        this.dicomTagList["(0040,A073)"] = "Verifying Observer Sequence";
-        this.dicomTagList["(0040,A074)"] = "Object Binary Identifier (Trial)";
-        this.dicomTagList["(0040,A075)"] = "Verifying Observer Name";
-        this.dicomTagList["(0040,A076)"] = "Documenting Observer Identifier Code Sequence (Trial)";
-        this.dicomTagList["(0040,A078)"] = "Author Observer Sequence";
-        this.dicomTagList["(0040,A07A)"] = "Participant Sequence";
-        this.dicomTagList["(0040,A07C)"] = "Custodial Organization Sequence";
-        this.dicomTagList["(0040,A080)"] = "Participation Type";
-        this.dicomTagList["(0040,A082)"] = "Participation DateTime";
-        this.dicomTagList["(0040,A084)"] = "Observer Type";
-        this.dicomTagList["(0040,A085)"] = "Procedure Identifier Code Sequence (Trial)";
-        this.dicomTagList["(0040,A088)"] = "Verifying Observer Identification Code Sequence";
-        this.dicomTagList["(0040,A089)"] = "Object Directory Binary Identifier (Trial)";
-        this.dicomTagList["(0040,A090)"] = "Equivalent CDA Document Sequence";
-        this.dicomTagList["(0040,A0B0)"] = "Referenced Waveform Channels";
-        this.dicomTagList["(0040,A110)"] = "Date of Document or Verbal Transaction (Trial)";
-        this.dicomTagList["(0040,A112)"] = "Time of Document Creation or Verbal Transaction (Trial)";
-        this.dicomTagList["(0040,A120)"] = "DateTime";
-        this.dicomTagList["(0040,A121)"] = "Date";
-        this.dicomTagList["(0040,A122)"] = "Time";
-        this.dicomTagList["(0040,A123)"] = "Person Name";
-        this.dicomTagList["(0040,A124)"] = "UID";
-        this.dicomTagList["(0040,A125)"] = "Report Status ID (Trial)";
-        this.dicomTagList["(0040,A130)"] = "Temporal Range Type";
-        this.dicomTagList["(0040,A132)"] = "Referenced Sample Positions";
-        this.dicomTagList["(0040,A136)"] = "Referenced Frame Numbers";
-        this.dicomTagList["(0040,A138)"] = "Referenced Time Offsets";
-        this.dicomTagList["(0040,A13A)"] = "Referenced DateTime";
-        this.dicomTagList["(0040,A160)"] = "Text Value";
-        this.dicomTagList["(0040,A161)"] = "Floating Point Value";
-        this.dicomTagList["(0040,A162)"] = "Rational Numerator Value";
-        this.dicomTagList["(0040,A163)"] = "Rational Denominator Value";
-        this.dicomTagList["(0040,A167)"] = "Observation Category Code Sequence (Trial)";
-        this.dicomTagList["(0040,A168)"] = "Concept Code Sequence";
-        this.dicomTagList["(0040,A16A)"] = "Bibliographic Citation (Trial)";
-        this.dicomTagList["(0040,A170)"] = "Purpose of Reference Code Sequence";
-        this.dicomTagList["(0040,A171)"] = "Observation UID";
-        this.dicomTagList["(0040,A172)"] = "Referenced Observation UID (Trial)";
-        this.dicomTagList["(0040,A173)"] = "Referenced Observation Class (Trial)";
-        this.dicomTagList["(0040,A174)"] = "Referenced Object Observation Class (Trial)";
-        this.dicomTagList["(0040,A180)"] = "Annotation Group Number";
-        this.dicomTagList["(0040,A192)"] = "Observation Date (Trial)";
-        this.dicomTagList["(0040,A193)"] = "Observation Time (Trial)";
-        this.dicomTagList["(0040,A194)"] = "Measurement Automation (Trial)";
-        this.dicomTagList["(0040,A195)"] = "Modifier Code Sequence";
-        this.dicomTagList["(0040,A224)"] = "Identification Description (Trial)";
-        this.dicomTagList["(0040,A290)"] = "Coordinates Set Geometric Type (Trial)";
-        this.dicomTagList["(0040,A296)"] = "Algorithm Code Sequence (Trial)";
-        this.dicomTagList["(0040,A297)"] = "Algorithm Description (Trial)";
-        this.dicomTagList["(0040,A29A)"] = "Pixel Coordinates Set (Trial)";
-        this.dicomTagList["(0040,A300)"] = "Measured Value Sequence";
-        this.dicomTagList["(0040,A301)"] = "Numeric Value Qualifier Code Sequence";
-        this.dicomTagList["(0040,A307)"] = "Current Observer (Trial)";
-        this.dicomTagList["(0040,A30A)"] = "Numeric Value";
-        this.dicomTagList["(0040,A313)"] = "Referenced Accession Sequence (Trial)";
-        this.dicomTagList["(0040,A33A)"] = "Report Status Comment (Trial)";
-        this.dicomTagList["(0040,A340)"] = "Procedure Context Sequence (Trial)";
-        this.dicomTagList["(0040,A352)"] = "Verbal Source (Trial)";
-        this.dicomTagList["(0040,A353)"] = "Address (Trial)";
-        this.dicomTagList["(0040,A354)"] = "Telephone Number (Trial)";
-        this.dicomTagList["(0040,A358)"] = "Verbal Source Identifier Code Sequence (Trial)";
-        this.dicomTagList["(0040,A360)"] = "Predecessor Documents Sequence";
-        this.dicomTagList["(0040,A370)"] = "Referenced Request Sequence";
-        this.dicomTagList["(0040,A372)"] = "Performed Procedure Code Sequence";
-        this.dicomTagList["(0040,A375)"] = "Current Requested Procedure Evidence Sequence";
-        this.dicomTagList["(0040,A380)"] = "Report Detail Sequence (Trial)";
-        this.dicomTagList["(0040,A385)"] = "Pertinent Other Evidence Sequence";
-        this.dicomTagList["(0040,A390)"] = "HL7 Structured Document Reference Sequence";
-        this.dicomTagList["(0040,A402)"] = "Observation Subject UID (Trial)";
-        this.dicomTagList["(0040,A403)"] = "Observation Subject Class (Trial)";
-        this.dicomTagList["(0040,A404)"] = "Observation Subject Type Code Sequence (Trial)";
-        this.dicomTagList["(0040,A491)"] = "Completion Flag";
-        this.dicomTagList["(0040,A492)"] = "Completion Flag Description";
-        this.dicomTagList["(0040,A493)"] = "Verification Flag";
-        this.dicomTagList["(0040,A494)"] = "Archive Requested";
-        this.dicomTagList["(0040,A496)"] = "Preliminary Flag";
-        this.dicomTagList["(0040,A504)"] = "Content Template Sequence";
-        this.dicomTagList["(0040,A525)"] = "Identical Documents Sequence";
-        this.dicomTagList["(0040,A600)"] = "Observation Subject Context Flag (Trial)";
-        this.dicomTagList["(0040,A601)"] = "Observer Context Flag (Trial)";
-        this.dicomTagList["(0040,A603)"] = "Procedure Context Flag (Trial)";
-        this.dicomTagList["(0040,A730)"] = "Content Sequence";
-        this.dicomTagList["(0040,A731)"] = "Relationship Sequence (Trial)";
-        this.dicomTagList["(0040,A732)"] = "Relationship Type Code Sequence (Trial)";
-        this.dicomTagList["(0040,A744)"] = "Language Code Sequence (Trial)";
-        this.dicomTagList["(0040,A992)"] = "Uniform Resource Locator (Trial)";
-        this.dicomTagList["(0040,B020)"] = "Waveform Annotation Sequence";
-        this.dicomTagList["(0040,DB00)"] = "Template Identifier";
-        this.dicomTagList["(0040,DB06)"] = "Template Version";
-        this.dicomTagList["(0040,DB07)"] = "Template Local Version";
-        this.dicomTagList["(0040,DB0B)"] = "Template Extension Flag";
-        this.dicomTagList["(0040,DB0C)"] = "Template Extension Organization UID";
-        this.dicomTagList["(0040,DB0D)"] = "Template Extension Creator UID";
-        this.dicomTagList["(0040,DB73)"] = "Referenced Content Item Identifier";
-        this.dicomTagList["(0040,E001)"] = "HL7 Instance Identifier";
-        this.dicomTagList["(0040,E004)"] = "HL7 Document Effective Time";
-        this.dicomTagList["(0040,E006)"] = "HL7 Document Type Code Sequence";
-        this.dicomTagList["(0040,E008)"] = "Document Class Code Sequence";
-        this.dicomTagList["(0040,E010)"] = "Retrieve URI";
-        this.dicomTagList["(0040,E011)"] = "Retrieve Location UID";
-        this.dicomTagList["(0040,E020)"] = "Type of Instances";
-        this.dicomTagList["(0040,E021)"] = "DICOM Retrieval Sequence";
-        this.dicomTagList["(0040,E022)"] = "DICOM Media Retrieval Sequence";
-        this.dicomTagList["(0040,E023)"] = "WADO Retrieval Sequence";
-        this.dicomTagList["(0040,E024)"] = "XDS Retrieval Sequence";
-        this.dicomTagList["(0040,E025)"] = "WADO-RS Retrieval Sequence";
-        this.dicomTagList["(0040,E030)"] = "Repository Unique ID";
-        this.dicomTagList["(0040,E031)"] = "Home Community ID";
-        this.dicomTagList["(0042,0010)"] = "Document Title";
-        this.dicomTagList["(0042,0011)"] = "Encapsulated Document";
-        this.dicomTagList["(0042,0012)"] = "MIME Type of Encapsulated Document";
-        this.dicomTagList["(0042,0013)"] = "Source Instance Sequence";
-        this.dicomTagList["(0042,0014)"] = "List of MIME Types";
-        this.dicomTagList["(0044,0001)"] = "Product Package Identifier";
-        this.dicomTagList["(0044,0002)"] = "Substance Administration Approval";
-        this.dicomTagList["(0044,0003)"] = "Approval Status Further Description";
-        this.dicomTagList["(0044,0004)"] = "Approval Status DateTime";
-        this.dicomTagList["(0044,0007)"] = "Product Type Code Sequence";
-        this.dicomTagList["(0044,0008)"] = "Product Name";
-        this.dicomTagList["(0044,0009)"] = "Product Description";
-        this.dicomTagList["(0044,000A)"] = "Product Lot Identifier";
-        this.dicomTagList["(0044,000B)"] = "Product Expiration DateTime";
-        this.dicomTagList["(0044,0010)"] = "Substance Administration DateTime";
-        this.dicomTagList["(0044,0011)"] = "Substance Administration Notes";
-        this.dicomTagList["(0044,0012)"] = "Substance Administration Device ID";
-        this.dicomTagList["(0044,0013)"] = "Product Parameter Sequence";
-        this.dicomTagList["(0044,0019)"] = "Substance Administration Parameter Sequence";
-        this.dicomTagList["(0046,0012)"] = "Lens Description";
-        this.dicomTagList["(0046,0014)"] = "Right Lens Sequence";
-        this.dicomTagList["(0046,0015)"] = "Left Lens Sequence";
-        this.dicomTagList["(0046,0016)"] = "Unspecified Laterality Lens Sequence";
-        this.dicomTagList["(0046,0018)"] = "Cylinder Sequence";
-        this.dicomTagList["(0046,0028)"] = "Prism Sequence";
-        this.dicomTagList["(0046,0030)"] = "Horizontal Prism Power";
-        this.dicomTagList["(0046,0032)"] = "Horizontal Prism Base";
-        this.dicomTagList["(0046,0034)"] = "Vertical Prism Power";
-        this.dicomTagList["(0046,0036)"] = "Vertical Prism Base";
-        this.dicomTagList["(0046,0038)"] = "Lens Segment Type";
-        this.dicomTagList["(0046,0040)"] = "Optical Transmittance";
-        this.dicomTagList["(0046,0042)"] = "Channel Width";
-        this.dicomTagList["(0046,0044)"] = "Pupil Size";
-        this.dicomTagList["(0046,0046)"] = "Corneal Size";
-        this.dicomTagList["(0046,0050)"] = "Autorefraction Right Eye Sequence";
-        this.dicomTagList["(0046,0052)"] = "Autorefraction Left Eye Sequence";
-        this.dicomTagList["(0046,0060)"] = "Distance Pupillary Distance";
-        this.dicomTagList["(0046,0062)"] = "Near Pupillary Distance";
-        this.dicomTagList["(0046,0063)"] = "Intermediate Pupillary Distance";
-        this.dicomTagList["(0046,0064)"] = "Other Pupillary Distance";
-        this.dicomTagList["(0046,0070)"] = "Keratometry Right Eye Sequence";
-        this.dicomTagList["(0046,0071)"] = "Keratometry Left Eye Sequence";
-        this.dicomTagList["(0046,0074)"] = "Steep Keratometric Axis Sequence";
-        this.dicomTagList["(0046,0075)"] = "Radius of Curvature";
-        this.dicomTagList["(0046,0076)"] = "Keratometric Power";
-        this.dicomTagList["(0046,0077)"] = "Keratometric Axis";
-        this.dicomTagList["(0046,0080)"] = "Flat Keratometric Axis Sequence";
-        this.dicomTagList["(0046,0092)"] = "Background Color";
-        this.dicomTagList["(0046,0094)"] = "Optotype";
-        this.dicomTagList["(0046,0095)"] = "Optotype Presentation";
-        this.dicomTagList["(0046,0097)"] = "Subjective Refraction Right Eye Sequence";
-        this.dicomTagList["(0046,0098)"] = "Subjective Refraction Left Eye Sequence";
-        this.dicomTagList["(0046,0100)"] = "Add Near Sequence";
-        this.dicomTagList["(0046,0101)"] = "Add Intermediate Sequence";
-        this.dicomTagList["(0046,0102)"] = "Add Other Sequence";
-        this.dicomTagList["(0046,0104)"] = "Add Power";
-        this.dicomTagList["(0046,0106)"] = "Viewing Distance";
-        this.dicomTagList["(0046,0121)"] = "Visual Acuity Type Code Sequence";
-        this.dicomTagList["(0046,0122)"] = "Visual Acuity Right Eye Sequence";
-        this.dicomTagList["(0046,0123)"] = "Visual Acuity Left Eye Sequence";
-        this.dicomTagList["(0046,0124)"] = "Visual Acuity Both Eyes Open Sequence";
-        this.dicomTagList["(0046,0125)"] = "Viewing Distance Type";
-        this.dicomTagList["(0046,0135)"] = "Visual Acuity Modifiers";
-        this.dicomTagList["(0046,0137)"] = "Decimal Visual Acuity";
-        this.dicomTagList["(0046,0139)"] = "Optotype Detailed Definition";
-        this.dicomTagList["(0046,0145)"] = "Referenced Refractive Measurements Sequence";
-        this.dicomTagList["(0046,0146)"] = "Sphere Power";
-        this.dicomTagList["(0046,0147)"] = "Cylinder Power";
-        this.dicomTagList["(0046,0201)"] = "Corneal Topography Surface";
-        this.dicomTagList["(0046,0202)"] = "Corneal Vertex Location";
-        this.dicomTagList["(0046,0203)"] = "Pupil Centroid X-Coordinate";
-        this.dicomTagList["(0046,0204)"] = "Pupil Centroid Y-Coordinate";
-        this.dicomTagList["(0046,0205)"] = "Equivalent Pupil Radius";
-        this.dicomTagList["(0046,0207)"] = "Corneal Topography Map Type Code Sequence";
-        this.dicomTagList["(0046,0208)"] = "Vertices of the Outline of Pupil";
-        this.dicomTagList["(0046,0210)"] = "Corneal Topography Mapping Normals Sequence";
-        this.dicomTagList["(0046,0211)"] = "Maximum Corneal Curvature Sequence";
-        this.dicomTagList["(0046,0212)"] = "Maximum Corneal Curvature";
-        this.dicomTagList["(0046,0213)"] = "Maximum Corneal Curvature Location";
-        this.dicomTagList["(0046,0215)"] = "Minimum Keratometric Sequence";
-        this.dicomTagList["(0046,0218)"] = "Simulated Keratometric Cylinder Sequence";
-        this.dicomTagList["(0046,0220)"] = "Average Corneal Power";
-        this.dicomTagList["(0046,0224)"] = "Corneal I-S Value";
-        this.dicomTagList["(0046,0227)"] = "Analyzed Area";
-        this.dicomTagList["(0046,0230)"] = "Surface Regularity Index";
-        this.dicomTagList["(0046,0232)"] = "Surface Asymmetry Index";
-        this.dicomTagList["(0046,0234)"] = "Corneal Eccentricity Index";
-        this.dicomTagList["(0046,0236)"] = "Keratoconus Prediction Index";
-        this.dicomTagList["(0046,0238)"] = "Decimal Potential Visual Acuity";
-        this.dicomTagList["(0046,0242)"] = "Corneal Topography Map Quality Evaluation";
-        this.dicomTagList["(0046,0244)"] = "Source Image Corneal Processed Data Sequence";
-        this.dicomTagList["(0046,0247)"] = "Corneal Point Location";
-        this.dicomTagList["(0046,0248)"] = "Corneal Point Estimated";
-        this.dicomTagList["(0046,0249)"] = "Axial Power";
-        this.dicomTagList["(0046,0250)"] = "Tangential Power";
-        this.dicomTagList["(0046,0251)"] = "Refractive Power";
-        this.dicomTagList["(0046,0252)"] = "Relative Elevation";
-        this.dicomTagList["(0046,0253)"] = "Corneal Wavefront";
-        this.dicomTagList["(0048,0001)"] = "Imaged Volume Width";
-        this.dicomTagList["(0048,0002)"] = "Imaged Volume Height";
-        this.dicomTagList["(0048,0003)"] = "Imaged Volume Depth";
-        this.dicomTagList["(0048,0006)"] = "Total Pixel Matrix Columns";
-        this.dicomTagList["(0048,0007)"] = "Total Pixel Matrix Rows";
-        this.dicomTagList["(0048,0008)"] = "Total Pixel Matrix Origin Sequence";
-        this.dicomTagList["(0048,0010)"] = "Specimen Label in Image";
-        this.dicomTagList["(0048,0011)"] = "Focus Method";
-        this.dicomTagList["(0048,0012)"] = "Extended Depth of Field";
-        this.dicomTagList["(0048,0013)"] = "Number of Focal Planes";
-        this.dicomTagList["(0048,0014)"] = "Distance Between Focal Planes";
-        this.dicomTagList["(0048,0015)"] = "Recommended Absent Pixel CIELab Value";
-        this.dicomTagList["(0048,0100)"] = "Illuminator Type Code Sequence";
-        this.dicomTagList["(0048,0102)"] = "Image Orientation (Slide)";
-        this.dicomTagList["(0048,0105)"] = "Optical Path Sequence";
-        this.dicomTagList["(0048,0106)"] = "Optical Path Identifier";
-        this.dicomTagList["(0048,0107)"] = "Optical Path Description";
-        this.dicomTagList["(0048,0108)"] = "Illumination Color Code Sequence";
-        this.dicomTagList["(0048,0110)"] = "Specimen Reference Sequence";
-        this.dicomTagList["(0048,0111)"] = "Condenser Lens Power";
-        this.dicomTagList["(0048,0112)"] = "Objective Lens Power";
-        this.dicomTagList["(0048,0113)"] = "Objective Lens Numerical Aperture";
-        this.dicomTagList["(0048,0120)"] = "Palette Color Lookup Table Sequence";
-        this.dicomTagList["(0048,0200)"] = "Referenced Image Navigation Sequence";
-        this.dicomTagList["(0048,0201)"] = "Top Left Hand Corner of Localizer Area";
-        this.dicomTagList["(0048,0202)"] = "Bottom Right Hand Corner of Localizer Area";
-        this.dicomTagList["(0048,0207)"] = "Optical Path Identification Sequence";
-        this.dicomTagList["(0048,021A)"] = "Plane Position (Slide)Sequence";
-        this.dicomTagList["(0048,021E)"] = "Column Position In Total Image Pixel Matrix";
-        this.dicomTagList["(0048,021F)"] = "Row Position In Total Image Pixel Matrix";
-        this.dicomTagList["(0048,0301)"] = "Pixel Origin Interpretation";
-        this.dicomTagList["(0050,0004)"] = "Calibration Image";
-        this.dicomTagList["(0050,0010)"] = "Device Sequence";
-        this.dicomTagList["(0050,0012)"] = "Container Component Type Code Sequence";
-        this.dicomTagList["(0050,0013)"] = "Container Component Thickness";
-        this.dicomTagList["(0050,0014)"] = "Device Length";
-        this.dicomTagList["(0050,0015)"] = "Container Component Width";
-        this.dicomTagList["(0050,0016)"] = "Device Diameter";
-        this.dicomTagList["(0050,0017)"] = "Device Diameter Units";
-        this.dicomTagList["(0050,0018)"] = "Device Volume";
-        this.dicomTagList["(0050,0019)"] = "Inter-Marker Distance";
-        this.dicomTagList["(0050,001A)"] = "Container Component Material";
-        this.dicomTagList["(0050,001B)"] = "Container Component ID";
-        this.dicomTagList["(0050,001C)"] = "Container Component Length";
-        this.dicomTagList["(0050,001D)"] = "Container Component Diameter";
-        this.dicomTagList["(0050,001E)"] = "Container Component Description";
-        this.dicomTagList["(0050,0020)"] = "Device Description";
-        this.dicomTagList["(0052,0001)"] = "Contrast/Bolus Ingredient Percent by Volume";
-        this.dicomTagList["(0052,0002)"] = "OCT Focal Distance";
-        this.dicomTagList["(0052,0003)"] = "Beam Spot Size";
-        this.dicomTagList["(0052,0004)"] = "Effective Refractive Index";
-        this.dicomTagList["(0052,0006)"] = "OCT Acquisition Domain";
-        this.dicomTagList["(0052,0007)"] = "OCT Optical Center Wavelength";
-        this.dicomTagList["(0052,0008)"] = "Axial Resolution";
-        this.dicomTagList["(0052,0009)"] = "Ranging Depth";
-        this.dicomTagList["(0052,0011)"] = "A-line Rate";
-        this.dicomTagList["(0052,0012)"] = "A-lines Per Frame";
-        this.dicomTagList["(0052,0013)"] = "Catheter Rotational Rate";
-        this.dicomTagList["(0052,0014)"] = "A-line Pixel Spacing";
-        this.dicomTagList["(0052,0016)"] = "Mode of Percutaneous Access Sequence";
-        this.dicomTagList["(0052,0025)"] = "Intravascular OCT Frame Type Sequence";
-        this.dicomTagList["(0052,0026)"] = "OCT Z Offset Applied";
-        this.dicomTagList["(0052,0027)"] = "Intravascular Frame Content Sequence";
-        this.dicomTagList["(0052,0028)"] = "Intravascular Longitudinal Distance";
-        this.dicomTagList["(0052,0029)"] = "Intravascular OCT Frame Content Sequence";
-        this.dicomTagList["(0052,0030)"] = "OCT Z Offset Correction";
-        this.dicomTagList["(0052,0031)"] = "Catheter Direction of Rotation";
-        this.dicomTagList["(0052,0033)"] = "Seam Line Location";
-        this.dicomTagList["(0052,0034)"] = "First A-line Location";
-        this.dicomTagList["(0052,0036)"] = "Seam Line Index";
-        this.dicomTagList["(0052,0038)"] = "Number of Padded A-lines";
-        this.dicomTagList["(0052,0039)"] = "Interpolation Type";
-        this.dicomTagList["(0052,003A)"] = "Refractive Index Applied";
-        this.dicomTagList["(0054,0010)"] = "Energy Window Vector";
-        this.dicomTagList["(0054,0011)"] = "Number of Energy Windows";
-        this.dicomTagList["(0054,0012)"] = "Energy Window Information Sequence";
-        this.dicomTagList["(0054,0013)"] = "Energy Window Range Sequence";
-        this.dicomTagList["(0054,0014)"] = "Energy Window Lower Limit";
-        this.dicomTagList["(0054,0015)"] = "Energy Window Upper Limit";
-        this.dicomTagList["(0054,0016)"] = "Radiopharmaceutical Information Sequence";
-        this.dicomTagList["(0054,0017)"] = "Residual Syringe Counts";
-        this.dicomTagList["(0054,0018)"] = "Energy Window Name";
-        this.dicomTagList["(0054,0020)"] = "Detector Vector";
-        this.dicomTagList["(0054,0021)"] = "Number of Detectors";
-        this.dicomTagList["(0054,0022)"] = "Detector Information Sequence";
-        this.dicomTagList["(0054,0030)"] = "Phase Vector";
-        this.dicomTagList["(0054,0031)"] = "Number of Phases";
-        this.dicomTagList["(0054,0032)"] = "Phase Information Sequence";
-        this.dicomTagList["(0054,0033)"] = "Number of Frames in Phase";
-        this.dicomTagList["(0054,0036)"] = "Phase Delay";
-        this.dicomTagList["(0054,0038)"] = "Pause Between Frames";
-        this.dicomTagList["(0054,0039)"] = "Phase Description";
-        this.dicomTagList["(0054,0050)"] = "Rotation Vector";
-        this.dicomTagList["(0054,0051)"] = "Number of Rotations";
-        this.dicomTagList["(0054,0052)"] = "Rotation Information Sequence";
-        this.dicomTagList["(0054,0053)"] = "Number of Frames in Rotation";
-        this.dicomTagList["(0054,0060)"] = "R-R Interval Vector";
-        this.dicomTagList["(0054,0061)"] = "Number of R-R Intervals";
-        this.dicomTagList["(0054,0062)"] = "Gated Information Sequence";
-        this.dicomTagList["(0054,0063)"] = "Data Information Sequence";
-        this.dicomTagList["(0054,0070)"] = "Time Slot Vector";
-        this.dicomTagList["(0054,0071)"] = "Number of Time Slots";
-        this.dicomTagList["(0054,0072)"] = "Time Slot Information Sequence";
-        this.dicomTagList["(0054,0073)"] = "Time Slot Time";
-        this.dicomTagList["(0054,0080)"] = "Slice Vector";
-        this.dicomTagList["(0054,0081)"] = "Number of Slices";
-        this.dicomTagList["(0054,0090)"] = "Angular View Vector";
-        this.dicomTagList["(0054,0100)"] = "Time Slice Vector";
-        this.dicomTagList["(0054,0101)"] = "Number of Time Slices";
-        this.dicomTagList["(0054,0200)"] = "Start Angle";
-        this.dicomTagList["(0054,0202)"] = "Type of Detector Motion";
-        this.dicomTagList["(0054,0210)"] = "Trigger Vector";
-        this.dicomTagList["(0054,0211)"] = "Number of Triggers in Phase";
-        this.dicomTagList["(0054,0220)"] = "View Code Sequence";
-        this.dicomTagList["(0054,0222)"] = "View Modifier Code Sequence";
-        this.dicomTagList["(0054,0300)"] = "Radionuclide Code Sequence";
-        this.dicomTagList["(0054,0302)"] = "Administration Route Code Sequence";
-        this.dicomTagList["(0054,0304)"] = "Radiopharmaceutical Code Sequence";
-        this.dicomTagList["(0054,0306)"] = "Calibration Data Sequence";
-        this.dicomTagList["(0054,0308)"] = "Energy Window Number";
-        this.dicomTagList["(0054,0400)"] = "Image ID";
-        this.dicomTagList["(0054,0410)"] = "Patient Orientation Code Sequence";
-        this.dicomTagList["(0054,0412)"] = "Patient Orientation Modifier Code Sequence";
-        this.dicomTagList["(0054,0414)"] = "Patient Gantry Relationship Code Sequence";
-        this.dicomTagList["(0054,0500)"] = "Slice Progression Direction";
-        this.dicomTagList["(0054,0501)"] = "Scan Progression Direction";
-        this.dicomTagList["(0054,1000)"] = "Series Type";
-        this.dicomTagList["(0054,1001)"] = "Units";
-        this.dicomTagList["(0054,1002)"] = "Counts Source";
-        this.dicomTagList["(0054,1004)"] = "Reprojection Method";
-        this.dicomTagList["(0054,1006)"] = "SUV Type";
-        this.dicomTagList["(0054,1100)"] = "Randoms Correction Method";
-        this.dicomTagList["(0054,1101)"] = "Attenuation Correction Method";
-        this.dicomTagList["(0054,1102)"] = "Decay Correction";
-        this.dicomTagList["(0054,1103)"] = "Reconstruction Method";
-        this.dicomTagList["(0054,1104)"] = "Detector Lines of Response Used";
-        this.dicomTagList["(0054,1105)"] = "Scatter Correction Method";
-        this.dicomTagList["(0054,1200)"] = "Axial Acceptance";
-        this.dicomTagList["(0054,1201)"] = "Axial Mash";
-        this.dicomTagList["(0054,1202)"] = "Transverse Mash";
-        this.dicomTagList["(0054,1203)"] = "Detector Element Size";
-        this.dicomTagList["(0054,1210)"] = "Coincidence Window Width";
-        this.dicomTagList["(0054,1220)"] = "Secondary Counts Type";
-        this.dicomTagList["(0054,1300)"] = "Frame Reference Time";
-        this.dicomTagList["(0054,1310)"] = "Primary (Prompts)Counts Accumulated";
-        this.dicomTagList["(0054,1311)"] = "Secondary Counts Accumulated";
-        this.dicomTagList["(0054,1320)"] = "Slice Sensitivity Factor";
-        this.dicomTagList["(0054,1321)"] = "Decay Factor";
-        this.dicomTagList["(0054,1322)"] = "Dose Calibration Factor";
-        this.dicomTagList["(0054,1323)"] = "Scatter Fraction Factor";
-        this.dicomTagList["(0054,1324)"] = "Dead Time Factor";
-        this.dicomTagList["(0054,1330)"] = "Image Index";
-        this.dicomTagList["(0054,1400)"] = "Counts Included";
-        this.dicomTagList["(0054,1401)"] = "Dead Time Correction Flag";
-        this.dicomTagList["(0060,3000)"] = "Histogram Sequence";
-        this.dicomTagList["(0060,3002)"] = "Histogram Number of Bins";
-        this.dicomTagList["(0060,3004)"] = "Histogram First Bin Value";
-        this.dicomTagList["(0060,3006)"] = "Histogram Last Bin Value";
-        this.dicomTagList["(0060,3008)"] = "Histogram Bin Width";
-        this.dicomTagList["(0060,3010)"] = "Histogram Explanation";
-        this.dicomTagList["(0060,3020)"] = "Histogram Data";
-        this.dicomTagList["(0062,0001)"] = "Segmentation Type";
-        this.dicomTagList["(0062,0002)"] = "Segment Sequence";
-        this.dicomTagList["(0062,0003)"] = "Segmented Property Category Code Sequence";
-        this.dicomTagList["(0062,0004)"] = "Segment Number";
-        this.dicomTagList["(0062,0005)"] = "Segment Label";
-        this.dicomTagList["(0062,0006)"] = "Segment Description";
-        this.dicomTagList["(0062,0008)"] = "Segment Algorithm Type";
-        this.dicomTagList["(0062,0009)"] = "Segment Algorithm Name";
-        this.dicomTagList["(0062,000A)"] = "Segment Identification Sequence";
-        this.dicomTagList["(0062,000B)"] = "Referenced Segment Number";
-        this.dicomTagList["(0062,000C)"] = "Recommended Display Grayscale Value";
-        this.dicomTagList["(0062,000D)"] = "Recommended Display CIELab Value";
-        this.dicomTagList["(0062,000E)"] = "Maximum Fractional Value";
-        this.dicomTagList["(0062,000F)"] = "Segmented Property Type Code Sequence";
-        this.dicomTagList["(0062,0010)"] = "Segmentation Fractional Type";
-        this.dicomTagList["(0062,0011)"] = "Segmented Property Type Modifier Code Sequence";
-        this.dicomTagList["(0062,0012)"] = "Used Segments Sequence";
-        this.dicomTagList["(0062,0020)"] = "Tracking ID";
-        this.dicomTagList["(0062,0021)"] = "Tracking UID";
-        this.dicomTagList["(0064,0002)"] = "Deformable Registration Sequence";
-        this.dicomTagList["(0064,0003)"] = "Source Frame of Reference UID";
-        this.dicomTagList["(0064,0005)"] = "Deformable Registration Grid Sequence";
-        this.dicomTagList["(0064,0007)"] = "Grid Dimensions";
-        this.dicomTagList["(0064,0008)"] = "Grid Resolution";
-        this.dicomTagList["(0064,0009)"] = "Vector Grid Data";
-        this.dicomTagList["(0064,000F)"] = "Pre Deformation Matrix Registration Sequence";
-        this.dicomTagList["(0064,0010)"] = "Post Deformation Matrix Registration Sequence";
-        this.dicomTagList["(0066,0001)"] = "Number of Surfaces";
-        this.dicomTagList["(0066,0002)"] = "Surface Sequence";
-        this.dicomTagList["(0066,0003)"] = "Surface Number";
-        this.dicomTagList["(0066,0004)"] = "Surface Comments";
-        this.dicomTagList["(0066,0009)"] = "Surface Processing";
-        this.dicomTagList["(0066,000A)"] = "Surface Processing Ratio";
-        this.dicomTagList["(0066,000B)"] = "Surface Processing Description";
-        this.dicomTagList["(0066,000C)"] = "Recommended Presentation Opacity";
-        this.dicomTagList["(0066,000D)"] = "Recommended Presentation Type";
-        this.dicomTagList["(0066,000E)"] = "Finite Volume";
-        this.dicomTagList["(0066,0010)"] = "Manifold";
-        this.dicomTagList["(0066,0011)"] = "Surface Points Sequence";
-        this.dicomTagList["(0066,0012)"] = "Surface Points Normals Sequence";
-        this.dicomTagList["(0066,0013)"] = "Surface Mesh Primitives Sequence";
-        this.dicomTagList["(0066,0015)"] = "Number of Surface Points";
-        this.dicomTagList["(0066,0016)"] = "Point Coordinates Data";
-        this.dicomTagList["(0066,0017)"] = "Point Position Accuracy";
-        this.dicomTagList["(0066,0018)"] = "Mean Point Distance";
-        this.dicomTagList["(0066,0019)"] = "Maximum Point Distance";
-        this.dicomTagList["(0066,001A)"] = "Points Bounding Box Coordinates";
-        this.dicomTagList["(0066,001B)"] = "Axis of Rotation";
-        this.dicomTagList["(0066,001C)"] = "Center of Rotation";
-        this.dicomTagList["(0066,001E)"] = "Number of Vectors";
-        this.dicomTagList["(0066,001F)"] = "Vector Dimensionality";
-        this.dicomTagList["(0066,0020)"] = "Vector Accuracy";
-        this.dicomTagList["(0066,0021)"] = "Vector Coordinate Data";
-        this.dicomTagList["(0066,0023)"] = "Triangle Point Index List";
-        this.dicomTagList["(0066,0024)"] = "Edge Point Index List";
-        this.dicomTagList["(0066,0025)"] = "Vertex Point Index List";
-        this.dicomTagList["(0066,0026)"] = "Triangle Strip Sequence";
-        this.dicomTagList["(0066,0027)"] = "Triangle Fan Sequence";
-        this.dicomTagList["(0066,0028)"] = "Line Sequence";
-        this.dicomTagList["(0066,0029)"] = "Primitive Point Index List";
-        this.dicomTagList["(0066,002A)"] = "Surface Count";
-        this.dicomTagList["(0066,002B)"] = "Referenced Surface Sequence";
-        this.dicomTagList["(0066,002C)"] = "Referenced Surface Number";
-        this.dicomTagList["(0066,002D)"] = "Segment Surface Generation Algorithm Identification Sequence";
-        this.dicomTagList["(0066,002E)"] = "Segment Surface Source Instance Sequence";
-        this.dicomTagList["(0066,002F)"] = "Algorithm Family Code Sequence";
-        this.dicomTagList["(0066,0030)"] = "Algorithm Name Code Sequence";
-        this.dicomTagList["(0066,0031)"] = "Algorithm Version";
-        this.dicomTagList["(0066,0032)"] = "Algorithm Parameters";
-        this.dicomTagList["(0066,0034)"] = "Facet Sequence";
-        this.dicomTagList["(0066,0035)"] = "Surface Processing Algorithm Identification Sequence";
-        this.dicomTagList["(0066,0036)"] = "Algorithm Name";
-        this.dicomTagList["(0066,0037)"] = "Recommended Point Radius";
-        this.dicomTagList["(0066,0038)"] = "Recommended Line Thickness";
-        this.dicomTagList["(0066,0040)"] = "Long Primitive Point Index List";
-        this.dicomTagList["(0066,0041)"] = "Long Triangle Point Index List";
-        this.dicomTagList["(0066,0042)"] = "Long Edge Point Index List";
-        this.dicomTagList["(0066,0043)"] = "Long Vertex Point Index List";
-        this.dicomTagList["(0066,0101)"] = "Track Set Sequence";
-        this.dicomTagList["(0066,0102)"] = "Track Sequence";
-        this.dicomTagList["(0066,0103)"] = "Recommended Display CIELab Value List";
-        this.dicomTagList["(0066,0104)"] = "Tracking Algorithm Identification Sequence";
-        this.dicomTagList["(0066,0105)"] = "Track Set Number";
-        this.dicomTagList["(0066,0106)"] = "Track Set Label";
-        this.dicomTagList["(0066,0107)"] = "Track Set Description";
-        this.dicomTagList["(0066,0108)"] = "Track Set Anatomical Type Code Sequence";
-        this.dicomTagList["(0066,0121)"] = "Measurements Sequence";
-        this.dicomTagList["(0066,0124)"] = "Track Set Statistics Sequence";
-        this.dicomTagList["(0066,0125)"] = "Floating Point Values";
-        this.dicomTagList["(0066,0129)"] = "Track Point Index List";
-        this.dicomTagList["(0066,0130)"] = "Track Statistics Sequence";
-        this.dicomTagList["(0066,0132)"] = "Measurement Values Sequence";
-        this.dicomTagList["(0066,0133)"] = "Diffusion Acquisition Code Sequence";
-        this.dicomTagList["(0066,0134)"] = "Diffusion Model Code Sequence";
-        this.dicomTagList["(0068,6210)"] = "Implant Size";
-        this.dicomTagList["(0068,6221)"] = "Implant Template Version";
-        this.dicomTagList["(0068,6222)"] = "Replaced Implant Template Sequence";
-        this.dicomTagList["(0068,6223)"] = "Implant Type";
-        this.dicomTagList["(0068,6224)"] = "Derivation Implant Template Sequence";
-        this.dicomTagList["(0068,6225)"] = "Original Implant Template Sequence";
-        this.dicomTagList["(0068,6226)"] = "Effective DateTime";
-        this.dicomTagList["(0068,6230)"] = "Implant Target Anatomy Sequence";
-        this.dicomTagList["(0068,6260)"] = "Information From Manufacturer Sequence";
-        this.dicomTagList["(0068,6265)"] = "Notification From Manufacturer Sequence";
-        this.dicomTagList["(0068,6270)"] = "Information Issue DateTime";
-        this.dicomTagList["(0068,6280)"] = "Information Summary";
-        this.dicomTagList["(0068,62A0)"] = "Implant Regulatory Disapproval Code Sequence";
-        this.dicomTagList["(0068,62A5)"] = "Overall Template Spatial Tolerance";
-        this.dicomTagList["(0068,62C0)"] = "HPGL Document Sequence";
-        this.dicomTagList["(0068,62D0)"] = "HPGL Document ID";
-        this.dicomTagList["(0068,62D5)"] = "HPGL Document Label";
-        this.dicomTagList["(0068,62E0)"] = "View Orientation Code Sequence";
-        this.dicomTagList["(0068,62F0)"] = "View Orientation Modifier";
-        this.dicomTagList["(0068,62F2)"] = "HPGL Document Scaling";
-        this.dicomTagList["(0068,6300)"] = "HPGL Document";
-        this.dicomTagList["(0068,6310)"] = "HPGL Contour Pen Number";
-        this.dicomTagList["(0068,6320)"] = "HPGL Pen Sequence";
-        this.dicomTagList["(0068,6330)"] = "HPGL Pen Number";
-        this.dicomTagList["(0068,6340)"] = "HPGL Pen Label";
-        this.dicomTagList["(0068,6345)"] = "HPGL Pen Description";
-        this.dicomTagList["(0068,6346)"] = "Recommended Rotation Point";
-        this.dicomTagList["(0068,6347)"] = "Bounding Rectangle";
-        this.dicomTagList["(0068,6350)"] = "Implant Template 3D Model Surface Number";
-        this.dicomTagList["(0068,6360)"] = "Surface Model Description Sequence";
-        this.dicomTagList["(0068,6380)"] = "Surface Model Label";
-        this.dicomTagList["(0068,6390)"] = "Surface Model Scaling Factor";
-        this.dicomTagList["(0068,63A0)"] = "Materials Code Sequence";
-        this.dicomTagList["(0068,63A4)"] = "Coating Materials Code Sequence";
-        this.dicomTagList["(0068,63A8)"] = "Implant Type Code Sequence";
-        this.dicomTagList["(0068,63AC)"] = "Fixation Method Code Sequence";
-        this.dicomTagList["(0068,63B0)"] = "Mating Feature Sets Sequence";
-        this.dicomTagList["(0068,63C0)"] = "Mating Feature Set ID";
-        this.dicomTagList["(0068,63D0)"] = "Mating Feature Set Label";
-        this.dicomTagList["(0068,63E0)"] = "Mating Feature Sequence";
-        this.dicomTagList["(0068,63F0)"] = "Mating Feature ID";
-        this.dicomTagList["(0068,6400)"] = "Mating Feature Degree of Freedom Sequence";
-        this.dicomTagList["(0068,6410)"] = "Degree of Freedom ID";
-        this.dicomTagList["(0068,6420)"] = "Degree of Freedom Type";
-        this.dicomTagList["(0068,6430)"] = "2D Mating Feature Coordinates Sequence";
-        this.dicomTagList["(0068,6440)"] = "Referenced HPGL Document ID";
-        this.dicomTagList["(0068,6450)"] = "2D Mating Point";
-        this.dicomTagList["(0068,6460)"] = "2D Mating Axes";
-        this.dicomTagList["(0068,6470)"] = "2D Degree of Freedom Sequence";
-        this.dicomTagList["(0068,6490)"] = "3D Degree of Freedom Axis";
-        this.dicomTagList["(0068,64A0)"] = "Range of Freedom";
-        this.dicomTagList["(0068,64C0)"] = "3D Mating Point";
-        this.dicomTagList["(0068,64D0)"] = "3D Mating Axes";
-        this.dicomTagList["(0068,64F0)"] = "2D Degree of Freedom Axis";
-        this.dicomTagList["(0068,6500)"] = "Planning Landmark Point Sequence";
-        this.dicomTagList["(0068,6510)"] = "Planning Landmark Line Sequence";
-        this.dicomTagList["(0068,6520)"] = "Planning Landmark Plane Sequence";
-        this.dicomTagList["(0068,6530)"] = "Planning Landmark ID";
-        this.dicomTagList["(0068,6540)"] = "Planning Landmark Description";
-        this.dicomTagList["(0068,6545)"] = "Planning Landmark Identification Code Sequence";
-        this.dicomTagList["(0068,6550)"] = "2D Point Coordinates Sequence";
-        this.dicomTagList["(0068,6560)"] = "2D Point Coordinates";
-        this.dicomTagList["(0068,6590)"] = "3D Point Coordinates";
-        this.dicomTagList["(0068,65A0)"] = "2D Line Coordinates Sequence";
-        this.dicomTagList["(0068,65B0)"] = "2D Line Coordinates";
-        this.dicomTagList["(0068,65D0)"] = "3D Line Coordinates";
-        this.dicomTagList["(0068,65E0)"] = "2D Plane Coordinates Sequence";
-        this.dicomTagList["(0068,65F0)"] = "2D Plane Intersection";
-        this.dicomTagList["(0068,6610)"] = "3D Plane Origin";
-        this.dicomTagList["(0068,6620)"] = "3D Plane Normal";
-        this.dicomTagList["(0070,0001)"] = "Graphic Annotation Sequence";
-        this.dicomTagList["(0070,0002)"] = "Graphic Layer";
-        this.dicomTagList["(0070,0003)"] = "Bounding Box Annotation Units";
-        this.dicomTagList["(0070,0004)"] = "Anchor Point Annotation Units";
-        this.dicomTagList["(0070,0005)"] = "Graphic Annotation Units";
-        this.dicomTagList["(0070,0006)"] = "Unformatted Text Value";
-        this.dicomTagList["(0070,0008)"] = "Text Object Sequence";
-        this.dicomTagList["(0070,0009)"] = "Graphic Object Sequence";
-        this.dicomTagList["(0070,0010)"] = "Bounding Box Top Left Hand Corner";
-        this.dicomTagList["(0070,0011)"] = "Bounding Box Bottom Right Hand Corner";
-        this.dicomTagList["(0070,0012)"] = "Bounding Box Text Horizontal Justification";
-        this.dicomTagList["(0070,0014)"] = "Anchor Point";
-        this.dicomTagList["(0070,0015)"] = "Anchor Point Visibility";
-        this.dicomTagList["(0070,0020)"] = "Graphic Dimensions";
-        this.dicomTagList["(0070,0021)"] = "Number of Graphic Points";
-        this.dicomTagList["(0070,0022)"] = "Graphic Data";
-        this.dicomTagList["(0070,0023)"] = "Graphic Type";
-        this.dicomTagList["(0070,0024)"] = "Graphic Filled";
-        this.dicomTagList["(0070,0040)"] = "Image Rotation ()";
-        this.dicomTagList["(0070,0041)"] = "Image Horizontal Flip";
-        this.dicomTagList["(0070,0042)"] = "Image Rotation";
-        this.dicomTagList["(0070,0050)"] = "Displayed Area Top Left Hand Corner (Trial)";
-        this.dicomTagList["(0070,0051)"] = "Displayed Area Bottom Right Hand Corner (Trial)";
-        this.dicomTagList["(0070,0052)"] = "Displayed Area Top Left Hand Corner";
-        this.dicomTagList["(0070,0053)"] = "Displayed Area Bottom Right Hand Corner";
-        this.dicomTagList["(0070,005A)"] = "Displayed Area Selection Sequence";
-        this.dicomTagList["(0070,0060)"] = "Graphic Layer Sequence";
-        this.dicomTagList["(0070,0062)"] = "Graphic Layer Order";
-        this.dicomTagList["(0070,0066)"] = "Graphic Layer Recommended Display Grayscale Value";
-        this.dicomTagList["(0070,0067)"] = "Graphic Layer Recommended Display RGB Value";
-        this.dicomTagList["(0070,0068)"] = "Graphic Layer Description";
-        this.dicomTagList["(0070,0080)"] = "Content Label";
-        this.dicomTagList["(0070,0081)"] = "Content Description";
-        this.dicomTagList["(0070,0082)"] = "Presentation Creation Date";
-        this.dicomTagList["(0070,0083)"] = "Presentation Creation Time";
-        this.dicomTagList["(0070,0084)"] = "Content Creator's Name";
-        this.dicomTagList["(0070,0086)"] = "Content Creator's Identification Code Sequence";
-        this.dicomTagList["(0070,0087)"] = "Alternate Content Description Sequence";
-        this.dicomTagList["(0070,0100)"] = "Presentation Size Mode";
-        this.dicomTagList["(0070,0101)"] = "Presentation Pixel Spacing";
-        this.dicomTagList["(0070,0102)"] = "Presentation Pixel Aspect Ratio";
-        this.dicomTagList["(0070,0103)"] = "Presentation Pixel Magnification Ratio";
-        this.dicomTagList["(0070,0207)"] = "Graphic Group Label";
-        this.dicomTagList["(0070,0208)"] = "Graphic Group Description";
-        this.dicomTagList["(0070,0209)"] = "Compound Graphic Sequence";
-        this.dicomTagList["(0070,0226)"] = "Compound Graphic Instance ID";
-        this.dicomTagList["(0070,0227)"] = "Font Name";
-        this.dicomTagList["(0070,0228)"] = "Font Name Type";
-        this.dicomTagList["(0070,0229)"] = "CSS Font Name";
-        this.dicomTagList["(0070,0230)"] = "Rotation Angle";
-        this.dicomTagList["(0070,0231)"] = "Text Style Sequence";
-        this.dicomTagList["(0070,0232)"] = "Line Style Sequence";
-        this.dicomTagList["(0070,0233)"] = "Fill Style Sequence";
-        this.dicomTagList["(0070,0234)"] = "Graphic Group Sequence";
-        this.dicomTagList["(0070,0241)"] = "Text Color CIELab Value";
-        this.dicomTagList["(0070,0242)"] = "Horizontal Alignment";
-        this.dicomTagList["(0070,0243)"] = "Vertical Alignment";
-        this.dicomTagList["(0070,0244)"] = "Shadow Style";
-        this.dicomTagList["(0070,0245)"] = "Shadow Offset X";
-        this.dicomTagList["(0070,0246)"] = "Shadow Offset Y";
-        this.dicomTagList["(0070,0247)"] = "Shadow Color CIELab Value";
-        this.dicomTagList["(0070,0248)"] = "Underlined";
-        this.dicomTagList["(0070,0249)"] = "Bold";
-        this.dicomTagList["(0070,0250)"] = "Italic";
-        this.dicomTagList["(0070,0251)"] = "Pattern On Color CIELab Value";
-        this.dicomTagList["(0070,0252)"] = "Pattern Off Color CIELab Value";
-        this.dicomTagList["(0070,0253)"] = "Line Thickness";
-        this.dicomTagList["(0070,0254)"] = "Line Dashing Style";
-        this.dicomTagList["(0070,0255)"] = "Line Pattern";
-        this.dicomTagList["(0070,0256)"] = "Fill Pattern";
-        this.dicomTagList["(0070,0257)"] = "Fill Mode";
-        this.dicomTagList["(0070,0258)"] = "Shadow Opacity";
-        this.dicomTagList["(0070,0261)"] = "Gap Length";
-        this.dicomTagList["(0070,0262)"] = "Diameter of Visibility";
-        this.dicomTagList["(0070,0273)"] = "Rotation Point";
-        this.dicomTagList["(0070,0274)"] = "Tick Alignment";
-        this.dicomTagList["(0070,0278)"] = "Show Tick Label";
-        this.dicomTagList["(0070,0279)"] = "Tick Label Alignment";
-        this.dicomTagList["(0070,0282)"] = "Compound Graphic Units";
-        this.dicomTagList["(0070,0284)"] = "Pattern On Opacity";
-        this.dicomTagList["(0070,0285)"] = "Pattern Off Opacity";
-        this.dicomTagList["(0070,0287)"] = "Major Ticks Sequence";
-        this.dicomTagList["(0070,0288)"] = "Tick Position";
-        this.dicomTagList["(0070,0289)"] = "Tick Label";
-        this.dicomTagList["(0070,0294)"] = "Compound Graphic Type";
-        this.dicomTagList["(0070,0295)"] = "Graphic Group ID";
-        this.dicomTagList["(0070,0306)"] = "Shape Type";
-        this.dicomTagList["(0070,0308)"] = "Registration Sequence";
-        this.dicomTagList["(0070,0309)"] = "Matrix Registration Sequence";
-        this.dicomTagList["(0070,030A)"] = "Matrix Sequence";
-        this.dicomTagList["(0070,030B)"] = "Frame of Reference to Displayed Coordinate System Transformation Matrix";
-        this.dicomTagList["(0070,030C)"] = "Frame of Reference Transformation Matrix Type";
-        this.dicomTagList["(0070,030D)"] = "Registration Type Code Sequence";
-        this.dicomTagList["(0070,030F)"] = "Fiducial Description";
-        this.dicomTagList["(0070,0310)"] = "Fiducial Identifier";
-        this.dicomTagList["(0070,0311)"] = "Fiducial Identifier Code Sequence";
-        this.dicomTagList["(0070,0312)"] = "Contour Uncertainty Radius";
-        this.dicomTagList["(0070,0314)"] = "Used Fiducials Sequence";
-        this.dicomTagList["(0070,0318)"] = "Graphic Coordinates Data Sequence";
-        this.dicomTagList["(0070,031A)"] = "Fiducial UID";
-        this.dicomTagList["(0070,031C)"] = "Fiducial Set Sequence";
-        this.dicomTagList["(0070,031E)"] = "Fiducial Sequence";
-        this.dicomTagList["(0070,0401)"] = "Graphic Layer Recommended Display CIELab Value";
-        this.dicomTagList["(0070,0402)"] = "Blending Sequence";
-        this.dicomTagList["(0070,0403)"] = "Relative Opacity";
-        this.dicomTagList["(0070,0404)"] = "Referenced Spatial Registration Sequence";
-        this.dicomTagList["(0070,0405)"] = "Blending Position";
-        this.dicomTagList["(0070,1101)"] = "Presentation Display Collection UID";
-        this.dicomTagList["(0070,1102)"] = "Presentation Sequence Collection UID";
-        this.dicomTagList["(0070,1103)"] = "Presentation Sequence Position Index";
-        this.dicomTagList["(0070,1104)"] = "Rendered Image Reference Sequence";
-        this.dicomTagList["(0070,1201)"] = "Volumetric Presentation State Input Sequence";
-        this.dicomTagList["(0070,1202)"] = "Presentation Input Type";
-        this.dicomTagList["(0070,1203)"] = "Input Sequence Position Index";
-        this.dicomTagList["(0070,1204)"] = "Crop";
-        this.dicomTagList["(0070,1205)"] = "Cropping Specification Index";
-        this.dicomTagList["(0070,1206)"] = "Compositing Method";
-        this.dicomTagList["(0070,1207)"] = "Volumetric Presentation Input Number";
-        this.dicomTagList["(0070,1208)"] = "Image Volume Geometry";
-        this.dicomTagList["(0070,1301)"] = "Volume Cropping Sequence";
-        this.dicomTagList["(0070,1302)"] = "Volume Cropping Method";
-        this.dicomTagList["(0070,1303)"] = "Bounding Box Crop";
-        this.dicomTagList["(0070,1304)"] = "Oblique Cropping Plane Sequence";
-        this.dicomTagList["(0070,1305)"] = "Plane";
-        this.dicomTagList["(0070,1306)"] = "Plane Normal";
-        this.dicomTagList["(0070,1309)"] = "Cropping Specification Number";
-        this.dicomTagList["(0070,1501)"] = "Multi-Planar Reconstruction Style";
-        this.dicomTagList["(0070,1502)"] = "MPR Thickness Type";
-        this.dicomTagList["(0070,1503)"] = "MPR Slab Thickness";
-        this.dicomTagList["(0070,1505)"] = "MPR Top Left Hand Corner";
-        this.dicomTagList["(0070,1507)"] = "MPR View Width Direction";
-        this.dicomTagList["(0070,1508)"] = "MPR View Width";
-        this.dicomTagList["(0070,150C)"] = "Number of Volumetric Curve Points";
-        this.dicomTagList["(0070,150D)"] = "Volumetric Curve Points";
-        this.dicomTagList["(0070,1511)"] = "MPR View Height Direction";
-        this.dicomTagList["(0070,1512)"] = "MPR View Height";
-        this.dicomTagList["(0070,1801)"] = "Presentation State Classification Component Sequence";
-        this.dicomTagList["(0070,1802)"] = "Component Type";
-        this.dicomTagList["(0070,1803)"] = "Component Input Sequence";
-        this.dicomTagList["(0070,1804)"] = "Volumetric Presentation Input Index";
-        this.dicomTagList["(0070,1805)"] = "Presentation State Compositor Component Sequence";
-        this.dicomTagList["(0070,1806)"] = "Weighting Transfer Function Sequence";
-        this.dicomTagList["(0070,1807)"] = "Weighting Lookup Table Descriptor";
-        this.dicomTagList["(0070,1808)"] = "Weighting Lookup Table Data";
-        this.dicomTagList["(0070,1901)"] = "Volumetric Annotation Sequence";
-        this.dicomTagList["(0070,1903)"] = "Referenced Structured Context Sequence";
-        this.dicomTagList["(0070,1904)"] = "Referenced Content Item";
-        this.dicomTagList["(0070,1905)"] = "Volumetric Presentation Input Annotation Sequence";
-        this.dicomTagList["(0070,1907)"] = "Annotation Clipping";
-        this.dicomTagList["(0070,1A01)"] = "Presentation Animation Style";
-        this.dicomTagList["(0070,1A03)"] = "Recommended Animation Rate";
-        this.dicomTagList["(0070,1A04)"] = "Animation Curve Sequence";
-        this.dicomTagList["(0070,1A05)"] = "Animation Step Size";
-        this.dicomTagList["(0072,0002)"] = "Hanging Protocol Name";
-        this.dicomTagList["(0072,0004)"] = "Hanging Protocol Description";
-        this.dicomTagList["(0072,0006)"] = "Hanging Protocol Level";
-        this.dicomTagList["(0072,0008)"] = "Hanging Protocol Creator";
-        this.dicomTagList["(0072,000A)"] = "Hanging Protocol Creation DateTime";
-        this.dicomTagList["(0072,000C)"] = "Hanging Protocol Definition Sequence";
-        this.dicomTagList["(0072,000E)"] = "Hanging Protocol User Identification Code Sequence";
-        this.dicomTagList["(0072,0010)"] = "Hanging Protocol User Group Name";
-        this.dicomTagList["(0072,0012)"] = "Source Hanging Protocol Sequence";
-        this.dicomTagList["(0072,0014)"] = "Number of Priors Referenced";
-        this.dicomTagList["(0072,0020)"] = "Image Sets Sequence";
-        this.dicomTagList["(0072,0022)"] = "Image Set Selector Sequence";
-        this.dicomTagList["(0072,0024)"] = "Image Set Selector Usage Flag";
-        this.dicomTagList["(0072,0026)"] = "Selector Attribute";
-        this.dicomTagList["(0072,0028)"] = "Selector Value Number";
-        this.dicomTagList["(0072,0030)"] = "Time Based Image Sets Sequence";
-        this.dicomTagList["(0072,0032)"] = "Image Set Number";
-        this.dicomTagList["(0072,0034)"] = "Image Set Selector Category";
-        this.dicomTagList["(0072,0038)"] = "Relative Time";
-        this.dicomTagList["(0072,003A)"] = "Relative Time Units";
-        this.dicomTagList["(0072,003C)"] = "Abstract Prior Value";
-        this.dicomTagList["(0072,003E)"] = "Abstract Prior Code Sequence";
-        this.dicomTagList["(0072,0040)"] = "Image Set Label";
-        this.dicomTagList["(0072,0050)"] = "Selector Attribute VR";
-        this.dicomTagList["(0072,0052)"] = "Selector Sequence Pointer";
-        this.dicomTagList["(0072,0054)"] = "Selector Sequence Pointer Private Creator";
-        this.dicomTagList["(0072,0056)"] = "Selector Attribute Private Creator";
-        this.dicomTagList["(0072,005E)"] = "Selector AE Value";
-        this.dicomTagList["(0072,005F)"] = "Selector AS Value";
-        this.dicomTagList["(0072,0060)"] = "Selector AT Value";
-        this.dicomTagList["(0072,0061)"] = "Selector DA Value";
-        this.dicomTagList["(0072,0062)"] = "Selector CS Value";
-        this.dicomTagList["(0072,0063)"] = "Selector DT Value";
-        this.dicomTagList["(0072,0064)"] = "Selector IS Value";
-        this.dicomTagList["(0072,0065)"] = "Selector OB Value";
-        this.dicomTagList["(0072,0066)"] = "Selector LO Value";
-        this.dicomTagList["(0072,0067)"] = "Selector OF Value";
-        this.dicomTagList["(0072,0068)"] = "Selector LT Value";
-        this.dicomTagList["(0072,0069)"] = "Selector OW Value";
-        this.dicomTagList["(0072,006A)"] = "Selector PN Value";
-        this.dicomTagList["(0072,006B)"] = "Selector TM Value";
-        this.dicomTagList["(0072,006C)"] = "Selector SH Value";
-        this.dicomTagList["(0072,006D)"] = "Selector UN Value";
-        this.dicomTagList["(0072,006E)"] = "Selector ST Value";
-        this.dicomTagList["(0072,006F)"] = "Selector UC Value";
-        this.dicomTagList["(0072,0070)"] = "Selector UT Value";
-        this.dicomTagList["(0072,0071)"] = "Selector UR Value";
-        this.dicomTagList["(0072,0072)"] = "Selector DS Value";
-        this.dicomTagList["(0072,0073)"] = "Selector OD Value";
-        this.dicomTagList["(0072,0074)"] = "Selector FD Value";
-        this.dicomTagList["(0072,0075)"] = "Selector OL Value";
-        this.dicomTagList["(0072,0076)"] = "Selector FL Value";
-        this.dicomTagList["(0072,0078)"] = "Selector UL Value";
-        this.dicomTagList["(0072,007A)"] = "Selector US Value";
-        this.dicomTagList["(0072,007C)"] = "Selector SL Value";
-        this.dicomTagList["(0072,007E)"] = "Selector SS Value";
-        this.dicomTagList["(0072,007F)"] = "Selector UI Value";
-        this.dicomTagList["(0072,0080)"] = "Selector Code Sequence Value";
-        this.dicomTagList["(0072,0100)"] = "Number of Screens";
-        this.dicomTagList["(0072,0102)"] = "Nominal Screen Definition Sequence";
-        this.dicomTagList["(0072,0104)"] = "Number of Vertical Pixels";
-        this.dicomTagList["(0072,0106)"] = "Number of Horizontal Pixels";
-        this.dicomTagList["(0072,0108)"] = "Display Environment Spatial Position";
-        this.dicomTagList["(0072,010A)"] = "Screen Minimum Grayscale Bit Depth";
-        this.dicomTagList["(0072,010C)"] = "Screen Minimum Color Bit Depth";
-        this.dicomTagList["(0072,010E)"] = "Application Maximum Repaint Time";
-        this.dicomTagList["(0072,0200)"] = "Display Sets Sequence";
-        this.dicomTagList["(0072,0202)"] = "Display Set Number";
-        this.dicomTagList["(0072,0203)"] = "Display Set Label";
-        this.dicomTagList["(0072,0204)"] = "Display Set Presentation Group";
-        this.dicomTagList["(0072,0206)"] = "Display Set Presentation Group Description";
-        this.dicomTagList["(0072,0208)"] = "Partial Data Display Handling";
-        this.dicomTagList["(0072,0210)"] = "Synchronized Scrolling Sequence";
-        this.dicomTagList["(0072,0212)"] = "Display Set Scrolling Group";
-        this.dicomTagList["(0072,0214)"] = "Navigation Indicator Sequence";
-        this.dicomTagList["(0072,0216)"] = "Navigation Display Set";
-        this.dicomTagList["(0072,0218)"] = "Reference Display Sets";
-        this.dicomTagList["(0072,0300)"] = "Image Boxes Sequence";
-        this.dicomTagList["(0072,0302)"] = "Image Box Number";
-        this.dicomTagList["(0072,0304)"] = "Image Box Layout Type";
-        this.dicomTagList["(0072,0306)"] = "Image Box Tile Horizontal Dimension";
-        this.dicomTagList["(0072,0308)"] = "Image Box Tile Vertical Dimension";
-        this.dicomTagList["(0072,0310)"] = "Image Box Scroll Direction";
-        this.dicomTagList["(0072,0312)"] = "Image Box Small Scroll Type";
-        this.dicomTagList["(0072,0314)"] = "Image Box Small Scroll Amount";
-        this.dicomTagList["(0072,0316)"] = "Image Box Large Scroll Type";
-        this.dicomTagList["(0072,0318)"] = "Image Box Large Scroll Amount";
-        this.dicomTagList["(0072,0320)"] = "Image Box Overlap Priority";
-        this.dicomTagList["(0072,0330)"] = "Cine Relative to Real-Time";
-        this.dicomTagList["(0072,0400)"] = "Filter Operations Sequence";
-        this.dicomTagList["(0072,0402)"] = "Filter-by Category";
-        this.dicomTagList["(0072,0404)"] = "Filter-by Attribute Presence";
-        this.dicomTagList["(0072,0406)"] = "Filter-by Operator";
-        this.dicomTagList["(0072,0420)"] = "Structured Display Background CIELab Value";
-        this.dicomTagList["(0072,0421)"] = "Empty Image Box CIELab Value";
-        this.dicomTagList["(0072,0422)"] = "Structured Display Image Box Sequence";
-        this.dicomTagList["(0072,0424)"] = "Structured Display Text Box Sequence";
-        this.dicomTagList["(0072,0427)"] = "Referenced First Frame Sequence";
-        this.dicomTagList["(0072,0430)"] = "Image Box Synchronization Sequence";
-        this.dicomTagList["(0072,0432)"] = "Synchronized Image Box List";
-        this.dicomTagList["(0072,0434)"] = "Type of Synchronization";
-        this.dicomTagList["(0072,0500)"] = "Blending Operation Type";
-        this.dicomTagList["(0072,0510)"] = "Reformatting Operation Type";
-        this.dicomTagList["(0072,0512)"] = "Reformatting Thickness";
-        this.dicomTagList["(0072,0514)"] = "Reformatting Interval";
-        this.dicomTagList["(0072,0516)"] = "Reformatting Operation Initial View Direction";
-        this.dicomTagList["(0072,0520)"] = "3D Rendering Type";
-        this.dicomTagList["(0072,0600)"] = "Sorting Operations Sequence";
-        this.dicomTagList["(0072,0602)"] = "Sort-by Category";
-        this.dicomTagList["(0072,0604)"] = "Sorting Direction";
-        this.dicomTagList["(0072,0700)"] = "Display Set Patient Orientation";
-        this.dicomTagList["(0072,0702)"] = "VOI Type";
-        this.dicomTagList["(0072,0704)"] = "Pseudo-Color Type";
-        this.dicomTagList["(0072,0705)"] = "Pseudo-Color Palette Instance Reference Sequence";
-        this.dicomTagList["(0072,0706)"] = "Show Grayscale Inverted";
-        this.dicomTagList["(0072,0710)"] = "Show Image True Size Flag";
-        this.dicomTagList["(0072,0712)"] = "Show Graphic Annotation Flag";
-        this.dicomTagList["(0072,0714)"] = "Show Patient Demographics Flag";
-        this.dicomTagList["(0072,0716)"] = "Show Acquisition Techniques Flag";
-        this.dicomTagList["(0072,0717)"] = "Display Set Horizontal Justification";
-        this.dicomTagList["(0072,0718)"] = "Display Set Vertical Justification";
-        this.dicomTagList["(0074,0120)"] = "Continuation Start Meterset";
-        this.dicomTagList["(0074,0121)"] = "Continuation End Meterset";
-        this.dicomTagList["(0074,1000)"] = "Procedure Step State";
-        this.dicomTagList["(0074,1002)"] = "Procedure Step Progress Information Sequence";
-        this.dicomTagList["(0074,1004)"] = "Procedure Step Progress";
-        this.dicomTagList["(0074,1006)"] = "Procedure Step Progress Description";
-        this.dicomTagList["(0074,1008)"] = "Procedure Step Communications URI Sequence";
-        this.dicomTagList["(0074,100A)"] = "Contact URI";
-        this.dicomTagList["(0074,100C)"] = "Contact Display Name";
-        this.dicomTagList["(0074,100E)"] = "Procedure Step Discontinuation Reason Code Sequence";
-        this.dicomTagList["(0074,1020)"] = "Beam Task Sequence";
-        this.dicomTagList["(0074,1022)"] = "Beam Task Type";
-        this.dicomTagList["(0074,1024)"] = "Beam Order Index (Trial)";
-        this.dicomTagList["(0074,1025)"] = "Autosequence Flag";
-        this.dicomTagList["(0074,1026)"] = "Table Top Vertical Adjusted Position";
-        this.dicomTagList["(0074,1027)"] = "Table Top Longitudinal Adjusted Position";
-        this.dicomTagList["(0074,1028)"] = "Table Top Lateral Adjusted Position";
-        this.dicomTagList["(0074,102A)"] = "Patient Support Adjusted Angle";
-        this.dicomTagList["(0074,102B)"] = "Table Top Eccentric Adjusted Angle";
-        this.dicomTagList["(0074,102C)"] = "Table Top Pitch Adjusted Angle";
-        this.dicomTagList["(0074,102D)"] = "Table Top Roll Adjusted Angle";
-        this.dicomTagList["(0074,1030)"] = "Delivery Verification Image Sequence";
-        this.dicomTagList["(0074,1032)"] = "Verification Image Timing";
-        this.dicomTagList["(0074,1034)"] = "Double Exposure Flag";
-        this.dicomTagList["(0074,1036)"] = "Double Exposure Ordering";
-        this.dicomTagList["(0074,1038)"] = "Double Exposure Meterset (Trial)";
-        this.dicomTagList["(0074,103A)"] = "Double Exposure Field Delta (Trial)";
-        this.dicomTagList["(0074,1040)"] = "Related Reference RT Image Sequence";
-        this.dicomTagList["(0074,1042)"] = "General Machine Verification Sequence";
-        this.dicomTagList["(0074,1044)"] = "Conventional Machine Verification Sequence";
-        this.dicomTagList["(0074,1046)"] = "Ion Machine Verification Sequence";
-        this.dicomTagList["(0074,1048)"] = "Failed Attributes Sequence";
-        this.dicomTagList["(0074,104A)"] = "Overridden Attributes Sequence";
-        this.dicomTagList["(0074,104C)"] = "Conventional Control Point Verification Sequence";
-        this.dicomTagList["(0074,104E)"] = "Ion Control Point Verification Sequence";
-        this.dicomTagList["(0074,1050)"] = "Attribute Occurrence Sequence";
-        this.dicomTagList["(0074,1052)"] = "Attribute Occurrence Pointer";
-        this.dicomTagList["(0074,1054)"] = "Attribute Item Selector";
-        this.dicomTagList["(0074,1056)"] = "Attribute Occurrence Private Creator";
-        this.dicomTagList["(0074,1057)"] = "Selector Sequence Pointer Items";
-        this.dicomTagList["(0074,1200)"] = "Scheduled Procedure Step Priority";
-        this.dicomTagList["(0074,1202)"] = "Worklist Label";
-        this.dicomTagList["(0074,1204)"] = "Procedure Step Label";
-        this.dicomTagList["(0074,1210)"] = "Scheduled Processing Parameters Sequence";
-        this.dicomTagList["(0074,1212)"] = "Performed Processing Parameters Sequence";
-        this.dicomTagList["(0074,1216)"] = "Unified Procedure Step Performed Procedure Sequence";
-        this.dicomTagList["(0074,1220)"] = "Related Procedure Step Sequence";
-        this.dicomTagList["(0074,1222)"] = "Procedure Step Relationship Type";
-        this.dicomTagList["(0074,1224)"] = "Replaced Procedure Step Sequence";
-        this.dicomTagList["(0074,1230)"] = "Deletion Lock";
-        this.dicomTagList["(0074,1234)"] = "Receiving AE";
-        this.dicomTagList["(0074,1236)"] = "Requesting AE";
-        this.dicomTagList["(0074,1238)"] = "Reason for Cancellation";
-        this.dicomTagList["(0074,1242)"] = "SCP Status";
-        this.dicomTagList["(0074,1244)"] = "Subscription List Status";
-        this.dicomTagList["(0074,1246)"] = "Unified Procedure Step List Status";
-        this.dicomTagList["(0074,1324)"] = "Beam Order Index";
-        this.dicomTagList["(0074,1338)"] = "Double Exposure Meterset";
-        this.dicomTagList["(0074,133A)"] = "Double Exposure Field Delta";
-        this.dicomTagList["(0074,1401)"] = "Brachy Task Sequence";
-        this.dicomTagList["(0074,1402)"] = "Continuation Start Total Reference Air Kerma";
-        this.dicomTagList["(0074,1403)"] = "Continuation End Total Reference Air Kerma";
-        this.dicomTagList["(0074,1404)"] = "Continuation Pulse Number";
-        this.dicomTagList["(0074,1405)"] = "Channel Delivery Order Sequence";
-        this.dicomTagList["(0074,1406)"] = "Referenced Channel Number";
-        this.dicomTagList["(0074,1407)"] = "Start Cumulative Time Weight";
-        this.dicomTagList["(0074,1408)"] = "End Cumulative Time Weight";
-        this.dicomTagList["(0074,1409)"] = "Omitted Channel Sequence";
-        this.dicomTagList["(0074,140A)"] = "Reason for Channel Omission";
-        this.dicomTagList["(0074,140B)"] = "Reason for Channel Omission Description";
-        this.dicomTagList["(0074,140C)"] = "Channel Delivery Order Index";
-        this.dicomTagList["(0074,140D)"] = "Channel Delivery Continuation Sequence";
-        this.dicomTagList["(0074,140E)"] = "Omitted Application Setup Sequence";
-        this.dicomTagList["(0076,0001)"] = "Implant Assembly Template Name";
-        this.dicomTagList["(0076,0003)"] = "Implant Assembly Template Issuer";
-        this.dicomTagList["(0076,0006)"] = "Implant Assembly Template Version";
-        this.dicomTagList["(0076,0008)"] = "Replaced Implant Assembly Template Sequence";
-        this.dicomTagList["(0076,000A)"] = "Implant Assembly Template Type";
-        this.dicomTagList["(0076,000C)"] = "Original Implant Assembly Template Sequence";
-        this.dicomTagList["(0076,000E)"] = "Derivation Implant Assembly Template Sequence";
-        this.dicomTagList["(0076,0010)"] = "Implant Assembly Template Target Anatomy Sequence";
-        this.dicomTagList["(0076,0020)"] = "Procedure Type Code Sequence";
-        this.dicomTagList["(0076,0030)"] = "Surgical Technique";
-        this.dicomTagList["(0076,0032)"] = "Component Types Sequence";
-        this.dicomTagList["(0076,0034)"] = "Component Type Code Sequence";
-        this.dicomTagList["(0076,0036)"] = "Exclusive Component Type";
-        this.dicomTagList["(0076,0038)"] = "Mandatory Component Type";
-        this.dicomTagList["(0076,0040)"] = "Component Sequence";
-        this.dicomTagList["(0076,0055)"] = "Component ID";
-        this.dicomTagList["(0076,0060)"] = "Component Assembly Sequence";
-        this.dicomTagList["(0076,0070)"] = "Component 1 Referenced ID";
-        this.dicomTagList["(0076,0080)"] = "Component 1 Referenced Mating Feature Set ID";
-        this.dicomTagList["(0076,0090)"] = "Component 1 Referenced Mating Feature ID";
-        this.dicomTagList["(0076,00A0)"] = "Component 2 Referenced ID";
-        this.dicomTagList["(0076,00B0)"] = "Component 2 Referenced Mating Feature Set ID";
-        this.dicomTagList["(0076,00C0)"] = "Component 2 Referenced Mating Feature ID";
-        this.dicomTagList["(0078,0001)"] = "Implant Template Group Name";
-        this.dicomTagList["(0078,0010)"] = "Implant Template Group Description";
-        this.dicomTagList["(0078,0020)"] = "Implant Template Group Issuer";
-        this.dicomTagList["(0078,0024)"] = "Implant Template Group Version";
-        this.dicomTagList["(0078,0026)"] = "Replaced Implant Template Group Sequence";
-        this.dicomTagList["(0078,0028)"] = "Implant Template Group Target Anatomy Sequence";
-        this.dicomTagList["(0078,002A)"] = "Implant Template Group Members Sequence";
-        this.dicomTagList["(0078,002E)"] = "Implant Template Group Member ID";
-        this.dicomTagList["(0078,0050)"] = "3D Implant Template Group Member Matching Point";
-        this.dicomTagList["(0078,0060)"] = "3D Implant Template Group Member Matching Axes";
-        this.dicomTagList["(0078,0070)"] = "Implant Template Group Member Matching 2D Coordinates Sequence";
-        this.dicomTagList["(0078,0090)"] = "2D Implant Template Group Member Matching Point";
-        this.dicomTagList["(0078,00A0)"] = "2D Implant Template Group Member Matching Axes";
-        this.dicomTagList["(0078,00B0)"] = "Implant Template Group Variation Dimension Sequence";
-        this.dicomTagList["(0078,00B2)"] = "Implant Template Group Variation Dimension Name";
-        this.dicomTagList["(0078,00B4)"] = "Implant Template Group Variation Dimension Rank Sequence";
-        this.dicomTagList["(0078,00B6)"] = "Referenced Implant Template Group Member ID";
-        this.dicomTagList["(0078,00B8)"] = "Implant Template Group Variation Dimension Rank";
-        this.dicomTagList["(0080,0001)"] = "Surface Scan Acquisition Type Code Sequence";
-        this.dicomTagList["(0080,0002)"] = "Surface Scan Mode Code Sequence";
-        this.dicomTagList["(0080,0003)"] = "Registration Method Code Sequence";
-        this.dicomTagList["(0080,0004)"] = "Shot Duration Time";
-        this.dicomTagList["(0080,0005)"] = "Shot Offset Time";
-        this.dicomTagList["(0080,0006)"] = "Surface Point Presentation Value Data";
-        this.dicomTagList["(0080,0007)"] = "Surface Point Color CIELab Value Data";
-        this.dicomTagList["(0080,0008)"] = "UV Mapping Sequence";
-        this.dicomTagList["(0080,0009)"] = "Texture Label";
-        this.dicomTagList["(0080,0010)"] = "U Value Data";
-        this.dicomTagList["(0080,0011)"] = "V Value Data";
-        this.dicomTagList["(0080,0012)"] = "Referenced Texture Sequence";
-        this.dicomTagList["(0080,0013)"] = "Referenced Surface Data Sequence";
-        this.dicomTagList["(0082,0001)"] = "Assessment Summary";
-        this.dicomTagList["(0082,0003)"] = "Assessment Summary Description";
-        this.dicomTagList["(0082,0004)"] = "Assessed SOP Instance Sequence";
-        this.dicomTagList["(0082,0005)"] = "Referenced Comparison SOP Instance Sequence";
-        this.dicomTagList["(0082,0006)"] = "Number of Assessment Observations";
-        this.dicomTagList["(0082,0007)"] = "Assessment Observations Sequence";
-        this.dicomTagList["(0082,0008)"] = "Observation Significance";
-        this.dicomTagList["(0082,000A)"] = "Observation Description";
-        this.dicomTagList["(0082,000C)"] = "Structured Constraint Observation Sequence";
-        this.dicomTagList["(0082,0010)"] = "Assessed Attribute Value Sequence";
-        this.dicomTagList["(0082,0016)"] = "Assessment Set ID";
-        this.dicomTagList["(0082,0017)"] = "Assessment Requester Sequence";
-        this.dicomTagList["(0082,0018)"] = "Selector Attribute Name";
-        this.dicomTagList["(0082,0019)"] = "Selector Attribute Keyword";
-        this.dicomTagList["(0082,0021)"] = "Assessment Type Code Sequence";
-        this.dicomTagList["(0082,0022)"] = "Observation Basis Code Sequence";
-        this.dicomTagList["(0082,0023)"] = "Assessment Label";
-        this.dicomTagList["(0082,0032)"] = "Constraint Type";
-        this.dicomTagList["(0082,0033)"] = "Specification Selection Guidance";
-        this.dicomTagList["(0082,0034)"] = "Constraint Value Sequence";
-        this.dicomTagList["(0082,0035)"] = "Recommended Default Value Sequence";
-        this.dicomTagList["(0082,0036)"] = "Constraint Violation Significance";
-        this.dicomTagList["(0082,0037)"] = "Constraint Violation Condition";
-        this.dicomTagList["(0088,0130)"] = "Storage Media File-set ID";
-        this.dicomTagList["(0088,0140)"] = "Storage Media File-set UID";
-        this.dicomTagList["(0088,0200)"] = "Icon Image Sequence";
-        this.dicomTagList["(0088,0904)"] = "Topic Title";
-        this.dicomTagList["(0088,0906)"] = "Topic Subject";
-        this.dicomTagList["(0088,0910)"] = "Topic Author";
-        this.dicomTagList["(0088,0912)"] = "Topic Keywords";
-        this.dicomTagList["(0100,0410)"] = "SOP Instance Status";
-        this.dicomTagList["(0100,0420)"] = "SOP Authorization DateTime";
-        this.dicomTagList["(0100,0424)"] = "SOP Authorization Comment";
-        this.dicomTagList["(0100,0426)"] = "Authorization Equipment Certification Number";
-        this.dicomTagList["(0400,0005)"] = "MAC ID Number";
-        this.dicomTagList["(0400,0010)"] = "MAC Calculation Transfer Syntax UID";
-        this.dicomTagList["(0400,0015)"] = "MAC Algorithm";
-        this.dicomTagList["(0400,0020)"] = "Data Elements Signed";
-        this.dicomTagList["(0400,0100)"] = "Digital Signature UID";
-        this.dicomTagList["(0400,0105)"] = "Digital Signature DateTime";
-        this.dicomTagList["(0400,0110)"] = "Certificate Type";
-        this.dicomTagList["(0400,0115)"] = "Certificate of Signer";
-        this.dicomTagList["(0400,0120)"] = "Signature";
-        this.dicomTagList["(0400,0305)"] = "Certified Timestamp Type";
-        this.dicomTagList["(0400,0310)"] = "Certified Timestamp";
-        this.dicomTagList["(0400,0401)"] = "Digital Signature Purpose Code Sequence";
-        this.dicomTagList["(0400,0402)"] = "Referenced Digital Signature Sequence";
-        this.dicomTagList["(0400,0403)"] = "Referenced SOP Instance MAC Sequence";
-        this.dicomTagList["(0400,0404)"] = "MAC";
-        this.dicomTagList["(0400,0500)"] = "Encrypted Attributes Sequence";
-        this.dicomTagList["(0400,0510)"] = "Encrypted Content Transfer Syntax UID";
-        this.dicomTagList["(0400,0520)"] = "Encrypted Content";
-        this.dicomTagList["(0400,0550)"] = "Modified Attributes Sequence";
-        this.dicomTagList["(0400,0561)"] = "Original Attributes Sequence";
-        this.dicomTagList["(0400,0562)"] = "Attribute Modification DateTime";
-        this.dicomTagList["(0400,0563)"] = "Modifying System";
-        this.dicomTagList["(0400,0564)"] = "Source of Previous Values";
-        this.dicomTagList["(0400,0565)"] = "Reason for the Attribute Modification";
-        this.dicomTagList["(1000,xxx0)"] = "Escape Triplet";
-        this.dicomTagList["(1000,xxx1)"] = "Run Length Triplet";
-        this.dicomTagList["(1000,xxx2)"] = "Huffman Table Size";
-        this.dicomTagList["(1000,xxx3)"] = "Huffman Table Triplet";
-        this.dicomTagList["(1000,xxx4)"] = "Shift Table Size";
-        this.dicomTagList["(1000,xxx5)"] = "Shift Table Triplet";
-        this.dicomTagList["(1010,xxxx)"] = "Zonal Map";
-        this.dicomTagList["(2000,0010)"] = "Number of Copies";
-        this.dicomTagList["(2000,001E)"] = "Printer Configuration Sequence";
-        this.dicomTagList["(2000,0020)"] = "Print Priority";
-        this.dicomTagList["(2000,0030)"] = "Medium Type";
-        this.dicomTagList["(2000,0040)"] = "Film Destination";
-        this.dicomTagList["(2000,0050)"] = "Film Session Label";
-        this.dicomTagList["(2000,0060)"] = "Memory Allocation";
-        this.dicomTagList["(2000,0061)"] = "Maximum Memory Allocation";
-        this.dicomTagList["(2000,0062)"] = "Color Image Printing Flag";
-        this.dicomTagList["(2000,0063)"] = "Collation Flag";
-        this.dicomTagList["(2000,0065)"] = "Annotation Flag";
-        this.dicomTagList["(2000,0067)"] = "Image Overlay Flag";
-        this.dicomTagList["(2000,0069)"] = "Presentation LUT Flag";
-        this.dicomTagList["(2000,006A)"] = "Image Box Presentation LUT Flag";
-        this.dicomTagList["(2000,00A0)"] = "Memory Bit Depth";
-        this.dicomTagList["(2000,00A1)"] = "Printing Bit Depth";
-        this.dicomTagList["(2000,00A2)"] = "Media Installed Sequence";
-        this.dicomTagList["(2000,00A4)"] = "Other Media Available Sequence";
-        this.dicomTagList["(2000,00A8)"] = "Supported Image Display Formats Sequence";
-        this.dicomTagList["(2000,0500)"] = "Referenced Film Box Sequence";
-        this.dicomTagList["(2000,0510)"] = "Referenced Stored Print Sequence";
-        this.dicomTagList["(2010,0010)"] = "Image Display Format";
-        this.dicomTagList["(2010,0030)"] = "Annotation Display Format ID";
-        this.dicomTagList["(2010,0040)"] = "Film Orientation";
-        this.dicomTagList["(2010,0050)"] = "Film Size ID";
-        this.dicomTagList["(2010,0052)"] = "Printer Resolution ID";
-        this.dicomTagList["(2010,0054)"] = "Default Printer Resolution ID";
-        this.dicomTagList["(2010,0060)"] = "Magnification Type";
-        this.dicomTagList["(2010,0080)"] = "Smoothing Type";
-        this.dicomTagList["(2010,00A6)"] = "Default Magnification Type";
-        this.dicomTagList["(2010,00A7)"] = "Other Magnification Types Available";
-        this.dicomTagList["(2010,00A8)"] = "Default Smoothing Type";
-        this.dicomTagList["(2010,00A9)"] = "Other Smoothing Types Available";
-        this.dicomTagList["(2010,0100)"] = "Border Density";
-        this.dicomTagList["(2010,0110)"] = "Empty Image Density";
-        this.dicomTagList["(2010,0120)"] = "Min Density";
-        this.dicomTagList["(2010,0130)"] = "Max Density";
-        this.dicomTagList["(2010,0140)"] = "Trim";
-        this.dicomTagList["(2010,0150)"] = "Configuration Information";
-        this.dicomTagList["(2010,0152)"] = "Configuration Information Description";
-        this.dicomTagList["(2010,0154)"] = "Maximum Collated Films";
-        this.dicomTagList["(2010,015E)"] = "Illumination";
-        this.dicomTagList["(2010,0160)"] = "Reflected Ambient Light";
-        this.dicomTagList["(2010,0376)"] = "Printer Pixel Spacing";
-        this.dicomTagList["(2010,0500)"] = "Referenced Film Session Sequence";
-        this.dicomTagList["(2010,0510)"] = "Referenced Image Box Sequence";
-        this.dicomTagList["(2010,0520)"] = "Referenced Basic Annotation Box Sequence";
-        this.dicomTagList["(2020,0010)"] = "Image Box Position";
-        this.dicomTagList["(2020,0020)"] = "Polarity";
-        this.dicomTagList["(2020,0030)"] = "Requested Image Size";
-        this.dicomTagList["(2020,0040)"] = "Requested Decimate/Crop Behavior";
-        this.dicomTagList["(2020,0050)"] = "Requested Resolution ID";
-        this.dicomTagList["(2020,00A0)"] = "Requested Image Size Flag";
-        this.dicomTagList["(2020,00A2)"] = "Decimate/Crop Result";
-        this.dicomTagList["(2020,0110)"] = "Basic Grayscale Image Sequence";
-        this.dicomTagList["(2020,0111)"] = "Basic Color Image Sequence";
-        this.dicomTagList["(2020,0130)"] = "Referenced Image Overlay Box Sequence";
-        this.dicomTagList["(2020,0140)"] = "Referenced VOI LUT Box Sequence";
-        this.dicomTagList["(2030,0010)"] = "Annotation Position";
-        this.dicomTagList["(2030,0020)"] = "Text String";
-        this.dicomTagList["(2040,0010)"] = "Referenced Overlay Plane Sequence";
-        this.dicomTagList["(2040,0011)"] = "Referenced Overlay Plane Groups";
-        this.dicomTagList["(2040,0020)"] = "Overlay Pixel Data Sequence";
-        this.dicomTagList["(2040,0060)"] = "Overlay Magnification Type";
-        this.dicomTagList["(2040,0070)"] = "Overlay Smoothing Type";
-        this.dicomTagList["(2040,0072)"] = "Overlay or Image Magnification";
-        this.dicomTagList["(2040,0074)"] = "Magnify to Number of Columns";
-        this.dicomTagList["(2040,0080)"] = "Overlay Foreground Density";
-        this.dicomTagList["(2040,0082)"] = "Overlay Background Density";
-        this.dicomTagList["(2040,0090)"] = "Overlay Mode";
-        this.dicomTagList["(2040,0100)"] = "Threshold Density";
-        this.dicomTagList["(2040,0500)"] = "Referenced Image Box Sequence ()";
-        this.dicomTagList["(2050,0010)"] = "Presentation LUT Sequence";
-        this.dicomTagList["(2050,0020)"] = "Presentation LUT Shape";
-        this.dicomTagList["(2050,0500)"] = "Referenced Presentation LUT Sequence";
-        this.dicomTagList["(2100,0010)"] = "Print Job ID";
-        this.dicomTagList["(2100,0020)"] = "Execution Status";
-        this.dicomTagList["(2100,0030)"] = "Execution Status Info";
-        this.dicomTagList["(2100,0040)"] = "Creation Date";
-        this.dicomTagList["(2100,0050)"] = "Creation Time";
-        this.dicomTagList["(2100,0070)"] = "Originator";
-        this.dicomTagList["(2100,0140)"] = "Destination AE";
-        this.dicomTagList["(2100,0160)"] = "Owner ID";
-        this.dicomTagList["(2100,0170)"] = "Number of Films";
-        this.dicomTagList["(2100,0500)"] = "Referenced Print Job Sequence (Pull Stored Print)";
-        this.dicomTagList["(2110,0010)"] = "Printer Status";
-        this.dicomTagList["(2110,0020)"] = "Printer Status Info";
-        this.dicomTagList["(2110,0030)"] = "Printer Name";
-        this.dicomTagList["(2110,0099)"] = "Print Queue ID";
-        this.dicomTagList["(2120,0010)"] = "Queue Status";
-        this.dicomTagList["(2120,0050)"] = "Print Job Description Sequence";
-        this.dicomTagList["(2120,0070)"] = "Referenced Print Job Sequence";
-        this.dicomTagList["(2130,0010)"] = "Print Management Capabilities Sequence";
-        this.dicomTagList["(2130,0015)"] = "Printer Characteristics Sequence";
-        this.dicomTagList["(2130,0030)"] = "Film Box Content Sequence";
-        this.dicomTagList["(2130,0040)"] = "Image Box Content Sequence";
-        this.dicomTagList["(2130,0050)"] = "Annotation Content Sequence";
-        this.dicomTagList["(2130,0060)"] = "Image Overlay Box Content Sequence";
-        this.dicomTagList["(2130,0080)"] = "Presentation LUT Content Sequence";
-        this.dicomTagList["(2130,00A0)"] = "Proposed Study Sequence";
-        this.dicomTagList["(2130,00C0)"] = "Original Image Sequence";
-        this.dicomTagList["(2200,0001)"] = "Label Using Information Extracted From Instances";
-        this.dicomTagList["(2200,0002)"] = "Label Text";
-        this.dicomTagList["(2200,0003)"] = "Label Style Selection";
-        this.dicomTagList["(2200,0004)"] = "Media Disposition";
-        this.dicomTagList["(2200,0005)"] = "Barcode Value";
-        this.dicomTagList["(2200,0006)"] = "Barcode Symbology";
-        this.dicomTagList["(2200,0007)"] = "Allow Media Splitting";
-        this.dicomTagList["(2200,0008)"] = "Include Non-DICOM Objects";
-        this.dicomTagList["(2200,0009)"] = "Include Display Application";
-        this.dicomTagList["(2200,000A)"] = "Preserve Composite Instances After Media Creation";
-        this.dicomTagList["(2200,000B)"] = "Total Number of Pieces of Media Created";
-        this.dicomTagList["(2200,000C)"] = "Requested Media Application Profile";
-        this.dicomTagList["(2200,000D)"] = "Referenced Storage Media Sequence";
-        this.dicomTagList["(2200,000E)"] = "Failure Attributes";
-        this.dicomTagList["(2200,000F)"] = "Allow Lossy Compression";
-        this.dicomTagList["(2200,0020)"] = "Request Priority";
-        this.dicomTagList["(3002,0002)"] = "RT Image Label";
-        this.dicomTagList["(3002,0003)"] = "RT Image Name";
-        this.dicomTagList["(3002,0004)"] = "RT Image Description";
-        this.dicomTagList["(3002,000A)"] = "Reported Values Origin";
-        this.dicomTagList["(3002,000C)"] = "RT Image Plane";
-        this.dicomTagList["(3002,000D)"] = "X-Ray Image Receptor Translation";
-        this.dicomTagList["(3002,000E)"] = "X-Ray Image Receptor Angle";
-        this.dicomTagList["(3002,0010)"] = "RT Image Orientation";
-        this.dicomTagList["(3002,0011)"] = "Image Plane Pixel Spacing";
-        this.dicomTagList["(3002,0012)"] = "RT Image Position";
-        this.dicomTagList["(3002,0020)"] = "Radiation Machine Name";
-        this.dicomTagList["(3002,0022)"] = "Radiation Machine SAD";
-        this.dicomTagList["(3002,0024)"] = "Radiation Machine SSD";
-        this.dicomTagList["(3002,0026)"] = "RT Image SID";
-        this.dicomTagList["(3002,0028)"] = "Source to Reference Object Distance";
-        this.dicomTagList["(3002,0029)"] = "Fraction Number";
-        this.dicomTagList["(3002,0030)"] = "Exposure Sequence";
-        this.dicomTagList["(3002,0032)"] = "Meterset Exposure";
-        this.dicomTagList["(3002,0034)"] = "Diaphragm Position";
-        this.dicomTagList["(3002,0040)"] = "Fluence Map Sequence";
-        this.dicomTagList["(3002,0041)"] = "Fluence Data Source";
-        this.dicomTagList["(3002,0042)"] = "Fluence Data Scale";
-        this.dicomTagList["(3002,0050)"] = "Primary Fluence Mode Sequence";
-        this.dicomTagList["(3002,0051)"] = "Fluence Mode";
-        this.dicomTagList["(3002,0052)"] = "Fluence Mode ID";
-        this.dicomTagList["(3004,0001)"] = "DVH Type";
-        this.dicomTagList["(3004,0002)"] = "Dose Units";
-        this.dicomTagList["(3004,0004)"] = "Dose Type";
-        this.dicomTagList["(3004,0005)"] = "Spatial Transform of Dose";
-        this.dicomTagList["(3004,0006)"] = "Dose Comment";
-        this.dicomTagList["(3004,0008)"] = "Normalization Point";
-        this.dicomTagList["(3004,000A)"] = "Dose Summation Type";
-        this.dicomTagList["(3004,000C)"] = "Grid Frame Offset Vector";
-        this.dicomTagList["(3004,000E)"] = "Dose Grid Scaling";
-        this.dicomTagList["(3004,0010)"] = "RT Dose ROI Sequence";
-        this.dicomTagList["(3004,0012)"] = "Dose Value";
-        this.dicomTagList["(3004,0014)"] = "Tissue Heterogeneity Correction";
-        this.dicomTagList["(3004,0040)"] = "DVH Normalization Point";
-        this.dicomTagList["(3004,0042)"] = "DVH Normalization Dose Value";
-        this.dicomTagList["(3004,0050)"] = "DVH Sequence";
-        this.dicomTagList["(3004,0052)"] = "DVH Dose Scaling";
-        this.dicomTagList["(3004,0054)"] = "DVH Volume Units";
-        this.dicomTagList["(3004,0056)"] = "DVH Number of Bins";
-        this.dicomTagList["(3004,0058)"] = "DVH Data";
-        this.dicomTagList["(3004,0060)"] = "DVH Referenced ROI Sequence";
-        this.dicomTagList["(3004,0062)"] = "DVH ROI Contribution Type";
-        this.dicomTagList["(3004,0070)"] = "DVH Minimum Dose";
-        this.dicomTagList["(3004,0072)"] = "DVH Maximum Dose";
-        this.dicomTagList["(3004,0074)"] = "DVH Mean Dose";
-        this.dicomTagList["(3006,0002)"] = "Structure Set Label";
-        this.dicomTagList["(3006,0004)"] = "Structure Set Name";
-        this.dicomTagList["(3006,0006)"] = "Structure Set Description";
-        this.dicomTagList["(3006,0008)"] = "Structure Set Date";
-        this.dicomTagList["(3006,0009)"] = "Structure Set Time";
-        this.dicomTagList["(3006,0010)"] = "Referenced Frame of Reference Sequence";
-        this.dicomTagList["(3006,0012)"] = "RT Referenced Study Sequence";
-        this.dicomTagList["(3006,0014)"] = "RT Referenced Series Sequence";
-        this.dicomTagList["(3006,0016)"] = "Contour Image Sequence";
-        this.dicomTagList["(3006,0018)"] = "Predecessor Structure Set Sequence";
-        this.dicomTagList["(3006,0020)"] = "Structure Set ROI Sequence";
-        this.dicomTagList["(3006,0022)"] = "ROI Number";
-        this.dicomTagList["(3006,0024)"] = "Referenced Frame of Reference UID";
-        this.dicomTagList["(3006,0026)"] = "ROI Name";
-        this.dicomTagList["(3006,0028)"] = "ROI Description";
-        this.dicomTagList["(3006,002A)"] = "ROI Display Color";
-        this.dicomTagList["(3006,002C)"] = "ROI Volume";
-        this.dicomTagList["(3006,0030)"] = "RT Related ROI Sequence";
-        this.dicomTagList["(3006,0033)"] = "RT ROI Relationship";
-        this.dicomTagList["(3006,0036)"] = "ROI Generation Algorithm";
-        this.dicomTagList["(3006,0038)"] = "ROI Generation Description";
-        this.dicomTagList["(3006,0039)"] = "ROI Contour Sequence";
-        this.dicomTagList["(3006,0040)"] = "Contour Sequence";
-        this.dicomTagList["(3006,0042)"] = "Contour Geometric Type";
-        this.dicomTagList["(3006,0044)"] = "Contour Slab Thickness";
-        this.dicomTagList["(3006,0045)"] = "Contour Offset Vector";
-        this.dicomTagList["(3006,0046)"] = "Number of Contour Points";
-        this.dicomTagList["(3006,0048)"] = "Contour Number";
-        this.dicomTagList["(3006,0049)"] = "Attached Contours";
-        this.dicomTagList["(3006,0050)"] = "Contour Data";
-        this.dicomTagList["(3006,0080)"] = "RT ROI Observations Sequence";
-        this.dicomTagList["(3006,0082)"] = "Observation Number";
-        this.dicomTagList["(3006,0084)"] = "Referenced ROI Number";
-        this.dicomTagList["(3006,0085)"] = "ROI Observation Label";
-        this.dicomTagList["(3006,0086)"] = "RT ROI Identification Code Sequence";
-        this.dicomTagList["(3006,0088)"] = "ROI Observation Description";
-        this.dicomTagList["(3006,00A0)"] = "Related RT ROI Observations Sequence";
-        this.dicomTagList["(3006,00A4)"] = "RT ROI Interpreted Type";
-        this.dicomTagList["(3006,00A6)"] = "ROI Interpreter";
-        this.dicomTagList["(3006,00B0)"] = "ROI Physical Properties Sequence";
-        this.dicomTagList["(3006,00B2)"] = "ROI Physical Property";
-        this.dicomTagList["(3006,00B4)"] = "ROI Physical Property Value";
-        this.dicomTagList["(3006,00B6)"] = "ROI Elemental Composition Sequence";
-        this.dicomTagList["(3006,00B7)"] = "ROI Elemental Composition Atomic Number";
-        this.dicomTagList["(3006,00B8)"] = "ROI Elemental Composition Atomic Mass Fraction";
-        this.dicomTagList["(3006,00B9)"] = "Additional RT ROI Identification Code Sequence";
-        this.dicomTagList["(3006,00C0)"] = "Frame of Reference Relationship Sequence";
-        this.dicomTagList["(3006,00C2)"] = "Related Frame of Reference UID";
-        this.dicomTagList["(3006,00C4)"] = "Frame of Reference Transformation Type";
-        this.dicomTagList["(3006,00C6)"] = "Frame of Reference Transformation Matrix";
-        this.dicomTagList["(3006,00C8)"] = "Frame of Reference Transformation Comment";
-        this.dicomTagList["(3008,0010)"] = "Measured Dose Reference Sequence";
-        this.dicomTagList["(3008,0012)"] = "Measured Dose Description";
-        this.dicomTagList["(3008,0014)"] = "Measured Dose Type";
-        this.dicomTagList["(3008,0016)"] = "Measured Dose Value";
-        this.dicomTagList["(3008,0020)"] = "Treatment Session Beam Sequence";
-        this.dicomTagList["(3008,0021)"] = "Treatment Session Ion Beam Sequence";
-        this.dicomTagList["(3008,0022)"] = "Current Fraction Number";
-        this.dicomTagList["(3008,0024)"] = "Treatment Control Point Date";
-        this.dicomTagList["(3008,0025)"] = "Treatment Control Point Time";
-        this.dicomTagList["(3008,002A)"] = "Treatment Termination Status";
-        this.dicomTagList["(3008,002B)"] = "Treatment Termination Code";
-        this.dicomTagList["(3008,002C)"] = "Treatment Verification Status";
-        this.dicomTagList["(3008,0030)"] = "Referenced Treatment Record Sequence";
-        this.dicomTagList["(3008,0032)"] = "Specified Primary Meterset";
-        this.dicomTagList["(3008,0033)"] = "Specified Secondary Meterset";
-        this.dicomTagList["(3008,0036)"] = "Delivered Primary Meterset";
-        this.dicomTagList["(3008,0037)"] = "Delivered Secondary Meterset";
-        this.dicomTagList["(3008,003A)"] = "Specified Treatment Time";
-        this.dicomTagList["(3008,003B)"] = "Delivered Treatment Time";
-        this.dicomTagList["(3008,0040)"] = "Control Point Delivery Sequence";
-        this.dicomTagList["(3008,0041)"] = "Ion Control Point Delivery Sequence";
-        this.dicomTagList["(3008,0042)"] = "Specified Meterset";
-        this.dicomTagList["(3008,0044)"] = "Delivered Meterset";
-        this.dicomTagList["(3008,0045)"] = "Meterset Rate Set";
-        this.dicomTagList["(3008,0046)"] = "Meterset Rate Delivered";
-        this.dicomTagList["(3008,0047)"] = "Scan Spot Metersets Delivered";
-        this.dicomTagList["(3008,0048)"] = "Dose Rate Delivered";
-        this.dicomTagList["(3008,0050)"] = "Treatment Summary Calculated Dose Reference Sequence";
-        this.dicomTagList["(3008,0052)"] = "Cumulative Dose to Dose Reference";
-        this.dicomTagList["(3008,0054)"] = "First Treatment Date";
-        this.dicomTagList["(3008,0056)"] = "Most Recent Treatment Date";
-        this.dicomTagList["(3008,005A)"] = "Number of Fractions Delivered";
-        this.dicomTagList["(3008,0060)"] = "Override Sequence";
-        this.dicomTagList["(3008,0061)"] = "Parameter Sequence Pointer";
-        this.dicomTagList["(3008,0062)"] = "Override Parameter Pointer";
-        this.dicomTagList["(3008,0063)"] = "Parameter Item Index";
-        this.dicomTagList["(3008,0064)"] = "Measured Dose Reference Number";
-        this.dicomTagList["(3008,0065)"] = "Parameter Pointer";
-        this.dicomTagList["(3008,0066)"] = "Override Reason";
-        this.dicomTagList["(3008,0068)"] = "Corrected Parameter Sequence";
-        this.dicomTagList["(3008,006A)"] = "Correction Value";
-        this.dicomTagList["(3008,0070)"] = "Calculated Dose Reference Sequence";
-        this.dicomTagList["(3008,0072)"] = "Calculated Dose Reference Number";
-        this.dicomTagList["(3008,0074)"] = "Calculated Dose Reference Description";
-        this.dicomTagList["(3008,0076)"] = "Calculated Dose Reference Dose Value";
-        this.dicomTagList["(3008,0078)"] = "Start Meterset";
-        this.dicomTagList["(3008,007A)"] = "End Meterset";
-        this.dicomTagList["(3008,0080)"] = "Referenced Measured Dose Reference Sequence";
-        this.dicomTagList["(3008,0082)"] = "Referenced Measured Dose Reference Number";
-        this.dicomTagList["(3008,0090)"] = "Referenced Calculated Dose Reference Sequence";
-        this.dicomTagList["(3008,0092)"] = "Referenced Calculated Dose Reference Number";
-        this.dicomTagList["(3008,00A0)"] = "Beam Limiting Device Leaf Pairs Sequence";
-        this.dicomTagList["(3008,00B0)"] = "Recorded Wedge Sequence";
-        this.dicomTagList["(3008,00C0)"] = "Recorded Compensator Sequence";
-        this.dicomTagList["(3008,00D0)"] = "Recorded Block Sequence";
-        this.dicomTagList["(3008,00E0)"] = "Treatment Summary Measured Dose Reference Sequence";
-        this.dicomTagList["(3008,00F0)"] = "Recorded Snout Sequence";
-        this.dicomTagList["(3008,00F2)"] = "Recorded Range Shifter Sequence";
-        this.dicomTagList["(3008,00F4)"] = "Recorded Lateral Spreading Device Sequence";
-        this.dicomTagList["(3008,00F6)"] = "Recorded Range Modulator Sequence";
-        this.dicomTagList["(3008,0100)"] = "Recorded Source Sequence";
-        this.dicomTagList["(3008,0105)"] = "Source Serial Number";
-        this.dicomTagList["(3008,0110)"] = "Treatment Session Application Setup Sequence";
-        this.dicomTagList["(3008,0116)"] = "Application Setup Check";
-        this.dicomTagList["(3008,0120)"] = "Recorded Brachy Accessory Device Sequence";
-        this.dicomTagList["(3008,0122)"] = "Referenced Brachy Accessory Device Number";
-        this.dicomTagList["(3008,0130)"] = "Recorded Channel Sequence";
-        this.dicomTagList["(3008,0132)"] = "Specified Channel Total Time";
-        this.dicomTagList["(3008,0134)"] = "Delivered Channel Total Time";
-        this.dicomTagList["(3008,0136)"] = "Specified Number of Pulses";
-        this.dicomTagList["(3008,0138)"] = "Delivered Number of Pulses";
-        this.dicomTagList["(3008,013A)"] = "Specified Pulse Repetition Interval";
-        this.dicomTagList["(3008,013C)"] = "Delivered Pulse Repetition Interval";
-        this.dicomTagList["(3008,0140)"] = "Recorded Source Applicator Sequence";
-        this.dicomTagList["(3008,0142)"] = "Referenced Source Applicator Number";
-        this.dicomTagList["(3008,0150)"] = "Recorded Channel Shield Sequence";
-        this.dicomTagList["(3008,0152)"] = "Referenced Channel Shield Number";
-        this.dicomTagList["(3008,0160)"] = "Brachy Control Point Delivered Sequence";
-        this.dicomTagList["(3008,0162)"] = "Safe Position Exit Date";
-        this.dicomTagList["(3008,0164)"] = "Safe Position Exit Time";
-        this.dicomTagList["(3008,0166)"] = "Safe Position Return Date";
-        this.dicomTagList["(3008,0168)"] = "Safe Position Return Time";
-        this.dicomTagList["(3008,0171)"] = "Pulse Specific Brachy Control Point Delivered Sequence";
-        this.dicomTagList["(3008,0172)"] = "Pulse Number";
-        this.dicomTagList["(3008,0173)"] = "Brachy Pulse Control Point Delivered Sequence";
-        this.dicomTagList["(3008,0200)"] = "Current Treatment Status";
-        this.dicomTagList["(3008,0202)"] = "Treatment Status Comment";
-        this.dicomTagList["(3008,0220)"] = "Fraction Group Summary Sequence";
-        this.dicomTagList["(3008,0223)"] = "Referenced Fraction Number";
-        this.dicomTagList["(3008,0224)"] = "Fraction Group Type";
-        this.dicomTagList["(3008,0230)"] = "Beam Stopper Position";
-        this.dicomTagList["(3008,0240)"] = "Fraction Status Summary Sequence";
-        this.dicomTagList["(3008,0250)"] = "Treatment Date";
-        this.dicomTagList["(3008,0251)"] = "Treatment Time";
-        this.dicomTagList["(300A,0002)"] = "RT Plan Label";
-        this.dicomTagList["(300A,0003)"] = "RT Plan Name";
-        this.dicomTagList["(300A,0004)"] = "RT Plan Description";
-        this.dicomTagList["(300A,0006)"] = "RT Plan Date";
-        this.dicomTagList["(300A,0007)"] = "RT Plan Time";
-        this.dicomTagList["(300A,0009)"] = "Treatment Protocols";
-        this.dicomTagList["(300A,000A)"] = "Plan Intent";
-        this.dicomTagList["(300A,000B)"] = "Treatment Sites";
-        this.dicomTagList["(300A,000C)"] = "RT Plan Geometry";
-        this.dicomTagList["(300A,000E)"] = "Prescription Description";
-        this.dicomTagList["(300A,0010)"] = "Dose Reference Sequence";
-        this.dicomTagList["(300A,0012)"] = "Dose Reference Number";
-        this.dicomTagList["(300A,0013)"] = "Dose Reference UID";
-        this.dicomTagList["(300A,0014)"] = "Dose Reference Structure Type";
-        this.dicomTagList["(300A,0015)"] = "Nominal Beam Energy Unit";
-        this.dicomTagList["(300A,0016)"] = "Dose Reference Description";
-        this.dicomTagList["(300A,0018)"] = "Dose Reference Point Coordinates";
-        this.dicomTagList["(300A,001A)"] = "Nominal Prior Dose";
-        this.dicomTagList["(300A,0020)"] = "Dose Reference Type";
-        this.dicomTagList["(300A,0021)"] = "Constraint Weight";
-        this.dicomTagList["(300A,0022)"] = "Delivery Warning Dose";
-        this.dicomTagList["(300A,0023)"] = "Delivery Maximum Dose";
-        this.dicomTagList["(300A,0025)"] = "Target Minimum Dose";
-        this.dicomTagList["(300A,0026)"] = "Target Prescription Dose";
-        this.dicomTagList["(300A,0027)"] = "Target Maximum Dose";
-        this.dicomTagList["(300A,0028)"] = "Target Underdose Volume Fraction";
-        this.dicomTagList["(300A,002A)"] = "Organ at Risk Full-volume Dose";
-        this.dicomTagList["(300A,002B)"] = "Organ at Risk Limit Dose";
-        this.dicomTagList["(300A,002C)"] = "Organ at Risk Maximum Dose";
-        this.dicomTagList["(300A,002D)"] = "Organ at Risk Overdose Volume Fraction";
-        this.dicomTagList["(300A,0040)"] = "Tolerance Table Sequence";
-        this.dicomTagList["(300A,0042)"] = "Tolerance Table Number";
-        this.dicomTagList["(300A,0043)"] = "Tolerance Table Label";
-        this.dicomTagList["(300A,0044)"] = "Gantry Angle Tolerance";
-        this.dicomTagList["(300A,0046)"] = "Beam Limiting Device Angle Tolerance";
-        this.dicomTagList["(300A,0048)"] = "Beam Limiting Device Tolerance Sequence";
-        this.dicomTagList["(300A,004A)"] = "Beam Limiting Device Position Tolerance";
-        this.dicomTagList["(300A,004B)"] = "Snout Position Tolerance";
-        this.dicomTagList["(300A,004C)"] = "Patient Support Angle Tolerance";
-        this.dicomTagList["(300A,004E)"] = "Table Top Eccentric Angle Tolerance";
-        this.dicomTagList["(300A,004F)"] = "Table Top Pitch Angle Tolerance";
-        this.dicomTagList["(300A,0050)"] = "Table Top Roll Angle Tolerance";
-        this.dicomTagList["(300A,0051)"] = "Table Top Vertical Position Tolerance";
-        this.dicomTagList["(300A,0052)"] = "Table Top Longitudinal Position Tolerance";
-        this.dicomTagList["(300A,0053)"] = "Table Top Lateral Position Tolerance";
-        this.dicomTagList["(300A,0055)"] = "RT Plan Relationship";
-        this.dicomTagList["(300A,0070)"] = "Fraction Group Sequence";
-        this.dicomTagList["(300A,0071)"] = "Fraction Group Number";
-        this.dicomTagList["(300A,0072)"] = "Fraction Group Description";
-        this.dicomTagList["(300A,0078)"] = "Number of Fractions Planned";
-        this.dicomTagList["(300A,0079)"] = "Number of Fraction Pattern Digits Per Day";
-        this.dicomTagList["(300A,007A)"] = "Repeat Fraction Cycle Length";
-        this.dicomTagList["(300A,007B)"] = "Fraction Pattern";
-        this.dicomTagList["(300A,0080)"] = "Number of Beams";
-        this.dicomTagList["(300A,0082)"] = "Beam Dose Specification Point";
-        this.dicomTagList["(300A,0084)"] = "Beam Dose";
-        this.dicomTagList["(300A,0086)"] = "Beam Meterset";
-        this.dicomTagList["(300A,0088)"] = "Beam Dose Point Depth";
-        this.dicomTagList["(300A,0089)"] = "Beam Dose Point Equivalent Depth";
-        this.dicomTagList["(300A,008A)"] = "Beam Dose Point SSD";
-        this.dicomTagList["(300A,008B)"] = "Beam Dose Meaning";
-        this.dicomTagList["(300A,008C)"] = "Beam Dose Verification Control Point Sequence";
-        this.dicomTagList["(300A,008D)"] = "Average Beam Dose Point Depth";
-        this.dicomTagList["(300A,008E)"] = "Average Beam Dose Point Equivalent Depth";
-        this.dicomTagList["(300A,008F)"] = "Average Beam Dose Point SSD";
-        this.dicomTagList["(300A,0090)"] = "Beam Dose Type";
-        this.dicomTagList["(300A,0091)"] = "Alternate Beam Dose";
-        this.dicomTagList["(300A,0092)"] = "Alternate Beam Dose Type";
-        this.dicomTagList["(300A,00A0)"] = "Number of Brachy Application Setups";
-        this.dicomTagList["(300A,00A2)"] = "Brachy Application Setup Dose Specification Point";
-        this.dicomTagList["(300A,00A4)"] = "Brachy Application Setup Dose";
-        this.dicomTagList["(300A,00B0)"] = "Beam Sequence";
-        this.dicomTagList["(300A,00B2)"] = "Treatment Machine Name";
-        this.dicomTagList["(300A,00B3)"] = "Primary Dosimeter Unit";
-        this.dicomTagList["(300A,00B4)"] = "Source-Axis Distance";
-        this.dicomTagList["(300A,00B6)"] = "Beam Limiting Device Sequence";
-        this.dicomTagList["(300A,00B8)"] = "RT Beam Limiting Device Type";
-        this.dicomTagList["(300A,00BA)"] = "Source to Beam Limiting Device Distance";
-        this.dicomTagList["(300A,00BB)"] = "Isocenter to Beam Limiting Device Distance";
-        this.dicomTagList["(300A,00BC)"] = "Number of Leaf/Jaw Pairs";
-        this.dicomTagList["(300A,00BE)"] = "Leaf Position Boundaries";
-        this.dicomTagList["(300A,00C0)"] = "Beam Number";
-        this.dicomTagList["(300A,00C2)"] = "Beam Name";
-        this.dicomTagList["(300A,00C3)"] = "Beam Description";
-        this.dicomTagList["(300A,00C4)"] = "Beam Type";
-        this.dicomTagList["(300A,00C5)"] = "Beam Delivery Duration Limit";
-        this.dicomTagList["(300A,00C6)"] = "Radiation Type";
-        this.dicomTagList["(300A,00C7)"] = "High-Dose Technique Type";
-        this.dicomTagList["(300A,00C8)"] = "Reference Image Number";
-        this.dicomTagList["(300A,00CA)"] = "Planned Verification Image Sequence";
-        this.dicomTagList["(300A,00CC)"] = "Imaging Device-Specific Acquisition Parameters";
-        this.dicomTagList["(300A,00CE)"] = "Treatment Delivery Type";
-        this.dicomTagList["(300A,00D0)"] = "Number of Wedges";
-        this.dicomTagList["(300A,00D1)"] = "Wedge Sequence";
-        this.dicomTagList["(300A,00D2)"] = "Wedge Number";
-        this.dicomTagList["(300A,00D3)"] = "Wedge Type";
-        this.dicomTagList["(300A,00D4)"] = "Wedge ID";
-        this.dicomTagList["(300A,00D5)"] = "Wedge Angle";
-        this.dicomTagList["(300A,00D6)"] = "Wedge Factor";
-        this.dicomTagList["(300A,00D7)"] = "Total Wedge Tray Water-Equivalent Thickness";
-        this.dicomTagList["(300A,00D8)"] = "Wedge Orientation";
-        this.dicomTagList["(300A,00D9)"] = "Isocenter to Wedge Tray Distance";
-        this.dicomTagList["(300A,00DA)"] = "Source to Wedge Tray Distance";
-        this.dicomTagList["(300A,00DB)"] = "Wedge Thin Edge Position";
-        this.dicomTagList["(300A,00DC)"] = "Bolus ID";
-        this.dicomTagList["(300A,00DD)"] = "Bolus Description";
-        this.dicomTagList["(300A,00DE)"] = "Effective Wedge Angle";
-        this.dicomTagList["(300A,00E0)"] = "Number of Compensators";
-        this.dicomTagList["(300A,00E1)"] = "Material ID";
-        this.dicomTagList["(300A,00E2)"] = "Total Compensator Tray Factor";
-        this.dicomTagList["(300A,00E3)"] = "Compensator Sequence";
-        this.dicomTagList["(300A,00E4)"] = "Compensator Number";
-        this.dicomTagList["(300A,00E5)"] = "Compensator ID";
-        this.dicomTagList["(300A,00E6)"] = "Source to Compensator Tray Distance";
-        this.dicomTagList["(300A,00E7)"] = "Compensator Rows";
-        this.dicomTagList["(300A,00E8)"] = "Compensator Columns";
-        this.dicomTagList["(300A,00E9)"] = "Compensator Pixel Spacing";
-        this.dicomTagList["(300A,00EA)"] = "Compensator Position";
-        this.dicomTagList["(300A,00EB)"] = "Compensator Transmission Data";
-        this.dicomTagList["(300A,00EC)"] = "Compensator Thickness Data";
-        this.dicomTagList["(300A,00ED)"] = "Number of Boli";
-        this.dicomTagList["(300A,00EE)"] = "Compensator Type";
-        this.dicomTagList["(300A,00EF)"] = "Compensator Tray ID";
-        this.dicomTagList["(300A,00F0)"] = "Number of Blocks";
-        this.dicomTagList["(300A,00F2)"] = "Total Block Tray Factor";
-        this.dicomTagList["(300A,00F3)"] = "Total Block Tray Water-Equivalent Thickness";
-        this.dicomTagList["(300A,00F4)"] = "Block Sequence";
-        this.dicomTagList["(300A,00F5)"] = "Block Tray ID";
-        this.dicomTagList["(300A,00F6)"] = "Source to Block Tray Distance";
-        this.dicomTagList["(300A,00F7)"] = "Isocenter to Block Tray Distance";
-        this.dicomTagList["(300A,00F8)"] = "Block Type";
-        this.dicomTagList["(300A,00F9)"] = "Accessory Code";
-        this.dicomTagList["(300A,00FA)"] = "Block Divergence";
-        this.dicomTagList["(300A,00FB)"] = "Block Mounting Position";
-        this.dicomTagList["(300A,00FC)"] = "Block Number";
-        this.dicomTagList["(300A,00FE)"] = "Block Name";
-        this.dicomTagList["(300A,0100)"] = "Block Thickness";
-        this.dicomTagList["(300A,0102)"] = "Block Transmission";
-        this.dicomTagList["(300A,0104)"] = "Block Number of Points";
-        this.dicomTagList["(300A,0106)"] = "Block Data";
-        this.dicomTagList["(300A,0107)"] = "Applicator Sequence";
-        this.dicomTagList["(300A,0108)"] = "Applicator ID";
-        this.dicomTagList["(300A,0109)"] = "Applicator Type";
-        this.dicomTagList["(300A,010A)"] = "Applicator Description";
-        this.dicomTagList["(300A,010C)"] = "Cumulative Dose Reference Coefficient";
-        this.dicomTagList["(300A,010E)"] = "Final Cumulative Meterset Weight";
-        this.dicomTagList["(300A,0110)"] = "Number of Control Points";
-        this.dicomTagList["(300A,0111)"] = "Control Point Sequence";
-        this.dicomTagList["(300A,0112)"] = "Control Point Index";
-        this.dicomTagList["(300A,0114)"] = "Nominal Beam Energy";
-        this.dicomTagList["(300A,0115)"] = "Dose Rate Set";
-        this.dicomTagList["(300A,0116)"] = "Wedge Position Sequence";
-        this.dicomTagList["(300A,0118)"] = "Wedge Position";
-        this.dicomTagList["(300A,011A)"] = "Beam Limiting Device Position Sequence";
-        this.dicomTagList["(300A,011C)"] = "Leaf/Jaw Positions";
-        this.dicomTagList["(300A,011E)"] = "Gantry Angle";
-        this.dicomTagList["(300A,011F)"] = "Gantry Rotation Direction";
-        this.dicomTagList["(300A,0120)"] = "Beam Limiting Device Angle";
-        this.dicomTagList["(300A,0121)"] = "Beam Limiting Device Rotation Direction";
-        this.dicomTagList["(300A,0122)"] = "Patient Support Angle";
-        this.dicomTagList["(300A,0123)"] = "Patient Support Rotation Direction";
-        this.dicomTagList["(300A,0124)"] = "Table Top Eccentric Axis Distance";
-        this.dicomTagList["(300A,0125)"] = "Table Top Eccentric Angle";
-        this.dicomTagList["(300A,0126)"] = "Table Top Eccentric Rotation Direction";
-        this.dicomTagList["(300A,0128)"] = "Table Top Vertical Position";
-        this.dicomTagList["(300A,0129)"] = "Table Top Longitudinal Position";
-        this.dicomTagList["(300A,012A)"] = "Table Top Lateral Position";
-        this.dicomTagList["(300A,012C)"] = "Isocenter Position";
-        this.dicomTagList["(300A,012E)"] = "Surface Entry Point";
-        this.dicomTagList["(300A,0130)"] = "Source to Surface Distance";
-        this.dicomTagList["(300A,0131)"] = "Average Beam Dose Point Source to External Contour Distance";
-        this.dicomTagList["(300A,0132)"] = "Source to External Contour Distance";
-        this.dicomTagList["(300A,0133)"] = "External Contour Entry Point";
-        this.dicomTagList["(300A,0134)"] = "Cumulative Meterset Weight";
-        this.dicomTagList["(300A,0140)"] = "Table Top Pitch Angle";
-        this.dicomTagList["(300A,0142)"] = "Table Top Pitch Rotation Direction";
-        this.dicomTagList["(300A,0144)"] = "Table Top Roll Angle";
-        this.dicomTagList["(300A,0146)"] = "Table Top Roll Rotation Direction";
-        this.dicomTagList["(300A,0148)"] = "Head Fixation Angle";
-        this.dicomTagList["(300A,014A)"] = "Gantry Pitch Angle";
-        this.dicomTagList["(300A,014C)"] = "Gantry Pitch Rotation Direction";
-        this.dicomTagList["(300A,014E)"] = "Gantry Pitch Angle Tolerance";
-        this.dicomTagList["(300A,0150)"] = "Fixation Eye";
-        this.dicomTagList["(300A,0151)"] = "Chair Head Frame Position";
-        this.dicomTagList["(300A,0152)"] = "Head Fixation Angle Tolerance";
-        this.dicomTagList["(300A,0153)"] = "Chair Head Frame Position Tolerance";
-        this.dicomTagList["(300A,0154)"] = "Fixation Light Azimuthal Angle Tolerance";
-        this.dicomTagList["(300A,0155)"] = "Fixation Light Polar Angle Tolerance";
-        this.dicomTagList["(300A,0180)"] = "Patient Setup Sequence";
-        this.dicomTagList["(300A,0182)"] = "Patient Setup Number";
-        this.dicomTagList["(300A,0183)"] = "Patient Setup Label";
-        this.dicomTagList["(300A,0184)"] = "Patient Additional Position";
-        this.dicomTagList["(300A,0190)"] = "Fixation Device Sequence";
-        this.dicomTagList["(300A,0192)"] = "Fixation Device Type";
-        this.dicomTagList["(300A,0194)"] = "Fixation Device Label";
-        this.dicomTagList["(300A,0196)"] = "Fixation Device Description";
-        this.dicomTagList["(300A,0198)"] = "Fixation Device Position";
-        this.dicomTagList["(300A,0199)"] = "Fixation Device Pitch Angle";
-        this.dicomTagList["(300A,019A)"] = "Fixation Device Roll Angle";
-        this.dicomTagList["(300A,01A0)"] = "Shielding Device Sequence";
-        this.dicomTagList["(300A,01A2)"] = "Shielding Device Type";
-        this.dicomTagList["(300A,01A4)"] = "Shielding Device Label";
-        this.dicomTagList["(300A,01A6)"] = "Shielding Device Description";
-        this.dicomTagList["(300A,01A8)"] = "Shielding Device Position";
-        this.dicomTagList["(300A,01B0)"] = "Setup Technique";
-        this.dicomTagList["(300A,01B2)"] = "Setup Technique Description";
-        this.dicomTagList["(300A,01B4)"] = "Setup Device Sequence";
-        this.dicomTagList["(300A,01B6)"] = "Setup Device Type";
-        this.dicomTagList["(300A,01B8)"] = "Setup Device Label";
-        this.dicomTagList["(300A,01BA)"] = "Setup Device Description";
-        this.dicomTagList["(300A,01BC)"] = "Setup Device Parameter";
-        this.dicomTagList["(300A,01D0)"] = "Setup Reference Description";
-        this.dicomTagList["(300A,01D2)"] = "Table Top Vertical Setup Displacement";
-        this.dicomTagList["(300A,01D4)"] = "Table Top Longitudinal Setup Displacement";
-        this.dicomTagList["(300A,01D6)"] = "Table Top Lateral Setup Displacement";
-        this.dicomTagList["(300A,0200)"] = "Brachy Treatment Technique";
-        this.dicomTagList["(300A,0202)"] = "Brachy Treatment Type";
-        this.dicomTagList["(300A,0206)"] = "Treatment Machine Sequence";
-        this.dicomTagList["(300A,0210)"] = "Source Sequence";
-        this.dicomTagList["(300A,0212)"] = "Source Number";
-        this.dicomTagList["(300A,0214)"] = "Source Type";
-        this.dicomTagList["(300A,0216)"] = "Source Manufacturer";
-        this.dicomTagList["(300A,0218)"] = "Active Source Diameter";
-        this.dicomTagList["(300A,021A)"] = "Active Source Length";
-        this.dicomTagList["(300A,021B)"] = "Source Model ID";
-        this.dicomTagList["(300A,021C)"] = "Source Description";
-        this.dicomTagList["(300A,0222)"] = "Source Encapsulation Nominal Thickness";
-        this.dicomTagList["(300A,0224)"] = "Source Encapsulation Nominal Transmission";
-        this.dicomTagList["(300A,0226)"] = "Source Isotope Name";
-        this.dicomTagList["(300A,0228)"] = "Source Isotope Half Life";
-        this.dicomTagList["(300A,0229)"] = "Source Strength Units";
-        this.dicomTagList["(300A,022A)"] = "Reference Air Kerma Rate";
-        this.dicomTagList["(300A,022B)"] = "Source Strength";
-        this.dicomTagList["(300A,022C)"] = "Source Strength Reference Date";
-        this.dicomTagList["(300A,022E)"] = "Source Strength Reference Time";
-        this.dicomTagList["(300A,0230)"] = "Application Setup Sequence";
-        this.dicomTagList["(300A,0232)"] = "Application Setup Type";
-        this.dicomTagList["(300A,0234)"] = "Application Setup Number";
-        this.dicomTagList["(300A,0236)"] = "Application Setup Name";
-        this.dicomTagList["(300A,0238)"] = "Application Setup Manufacturer";
-        this.dicomTagList["(300A,0240)"] = "Template Number";
-        this.dicomTagList["(300A,0242)"] = "Template Type";
-        this.dicomTagList["(300A,0244)"] = "Template Name";
-        this.dicomTagList["(300A,0250)"] = "Total Reference Air Kerma";
-        this.dicomTagList["(300A,0260)"] = "Brachy Accessory Device Sequence";
-        this.dicomTagList["(300A,0262)"] = "Brachy Accessory Device Number";
-        this.dicomTagList["(300A,0263)"] = "Brachy Accessory Device ID";
-        this.dicomTagList["(300A,0264)"] = "Brachy Accessory Device Type";
-        this.dicomTagList["(300A,0266)"] = "Brachy Accessory Device Name";
-        this.dicomTagList["(300A,026A)"] = "Brachy Accessory Device Nominal Thickness";
-        this.dicomTagList["(300A,026C)"] = "Brachy Accessory Device Nominal Transmission";
-        this.dicomTagList["(300A,0280)"] = "Channel Sequence";
-        this.dicomTagList["(300A,0282)"] = "Channel Number";
-        this.dicomTagList["(300A,0284)"] = "Channel Length";
-        this.dicomTagList["(300A,0286)"] = "Channel Total Time";
-        this.dicomTagList["(300A,0288)"] = "Source Movement Type";
-        this.dicomTagList["(300A,028A)"] = "Number of Pulses";
-        this.dicomTagList["(300A,028C)"] = "Pulse Repetition Interval";
-        this.dicomTagList["(300A,0290)"] = "Source Applicator Number";
-        this.dicomTagList["(300A,0291)"] = "Source Applicator ID";
-        this.dicomTagList["(300A,0292)"] = "Source Applicator Type";
-        this.dicomTagList["(300A,0294)"] = "Source Applicator Name";
-        this.dicomTagList["(300A,0296)"] = "Source Applicator Length";
-        this.dicomTagList["(300A,0298)"] = "Source Applicator Manufacturer";
-        this.dicomTagList["(300A,029C)"] = "Source Applicator Wall Nominal Thickness";
-        this.dicomTagList["(300A,029E)"] = "Source Applicator Wall Nominal Transmission";
-        this.dicomTagList["(300A,02A0)"] = "Source Applicator Step Size";
-        this.dicomTagList["(300A,02A2)"] = "Transfer Tube Number";
-        this.dicomTagList["(300A,02A4)"] = "Transfer Tube Length";
-        this.dicomTagList["(300A,02B0)"] = "Channel Shield Sequence";
-        this.dicomTagList["(300A,02B2)"] = "Channel Shield Number";
-        this.dicomTagList["(300A,02B3)"] = "Channel Shield ID";
-        this.dicomTagList["(300A,02B4)"] = "Channel Shield Name";
-        this.dicomTagList["(300A,02B8)"] = "Channel Shield Nominal Thickness";
-        this.dicomTagList["(300A,02BA)"] = "Channel Shield Nominal Transmission";
-        this.dicomTagList["(300A,02C8)"] = "Final Cumulative Time Weight";
-        this.dicomTagList["(300A,02D0)"] = "Brachy Control Point Sequence";
-        this.dicomTagList["(300A,02D2)"] = "Control Point Relative Position";
-        this.dicomTagList["(300A,02D4)"] = "Control Point 3D Position";
-        this.dicomTagList["(300A,02D6)"] = "Cumulative Time Weight";
-        this.dicomTagList["(300A,02E0)"] = "Compensator Divergence";
-        this.dicomTagList["(300A,02E1)"] = "Compensator Mounting Position";
-        this.dicomTagList["(300A,02E2)"] = "Source to Compensator Distance";
-        this.dicomTagList["(300A,02E3)"] = "Total Compensator Tray Water-Equivalent Thickness";
-        this.dicomTagList["(300A,02E4)"] = "Isocenter to Compensator Tray Distance";
-        this.dicomTagList["(300A,02E5)"] = "Compensator Column Offset";
-        this.dicomTagList["(300A,02E6)"] = "Isocenter to Compensator Distances";
-        this.dicomTagList["(300A,02E7)"] = "Compensator Relative Stopping Power Ratio";
-        this.dicomTagList["(300A,02E8)"] = "Compensator Milling Tool Diameter";
-        this.dicomTagList["(300A,02EA)"] = "Ion Range Compensator Sequence";
-        this.dicomTagList["(300A,02EB)"] = "Compensator Description";
-        this.dicomTagList["(300A,0302)"] = "Radiation Mass Number";
-        this.dicomTagList["(300A,0304)"] = "Radiation Atomic Number";
-        this.dicomTagList["(300A,0306)"] = "Radiation Charge State";
-        this.dicomTagList["(300A,0308)"] = "Scan Mode";
-        this.dicomTagList["(300A,0309)"] = "Modulated Scan Mode Type";
-        this.dicomTagList["(300A,030A)"] = "Virtual Source-Axis Distances";
-        this.dicomTagList["(300A,030C)"] = "Snout Sequence";
-        this.dicomTagList["(300A,030D)"] = "Snout Position";
-        this.dicomTagList["(300A,030F)"] = "Snout ID";
-        this.dicomTagList["(300A,0312)"] = "Number of Range Shifters";
-        this.dicomTagList["(300A,0314)"] = "Range Shifter Sequence";
-        this.dicomTagList["(300A,0316)"] = "Range Shifter Number";
-        this.dicomTagList["(300A,0318)"] = "Range Shifter ID";
-        this.dicomTagList["(300A,0320)"] = "Range Shifter Type";
-        this.dicomTagList["(300A,0322)"] = "Range Shifter Description";
-        this.dicomTagList["(300A,0330)"] = "Number of Lateral Spreading Devices";
-        this.dicomTagList["(300A,0332)"] = "Lateral Spreading Device Sequence";
-        this.dicomTagList["(300A,0334)"] = "Lateral Spreading Device Number";
-        this.dicomTagList["(300A,0336)"] = "Lateral Spreading Device ID";
-        this.dicomTagList["(300A,0338)"] = "Lateral Spreading Device Type";
-        this.dicomTagList["(300A,033A)"] = "Lateral Spreading Device Description";
-        this.dicomTagList["(300A,033C)"] = "Lateral Spreading Device Water Equivalent Thickness";
-        this.dicomTagList["(300A,0340)"] = "Number of Range Modulators";
-        this.dicomTagList["(300A,0342)"] = "Range Modulator Sequence";
-        this.dicomTagList["(300A,0344)"] = "Range Modulator Number";
-        this.dicomTagList["(300A,0346)"] = "Range Modulator ID";
-        this.dicomTagList["(300A,0348)"] = "Range Modulator Type";
-        this.dicomTagList["(300A,034A)"] = "Range Modulator Description";
-        this.dicomTagList["(300A,034C)"] = "Beam Current Modulation ID";
-        this.dicomTagList["(300A,0350)"] = "Patient Support Type";
-        this.dicomTagList["(300A,0352)"] = "Patient Support ID";
-        this.dicomTagList["(300A,0354)"] = "Patient Support Accessory Code";
-        this.dicomTagList["(300A,0355)"] = "Tray Accessory Code";
-        this.dicomTagList["(300A,0356)"] = "Fixation Light Azimuthal Angle";
-        this.dicomTagList["(300A,0358)"] = "Fixation Light Polar Angle";
-        this.dicomTagList["(300A,035A)"] = "Meterset Rate";
-        this.dicomTagList["(300A,0360)"] = "Range Shifter Settings Sequence";
-        this.dicomTagList["(300A,0362)"] = "Range Shifter Setting";
-        this.dicomTagList["(300A,0364)"] = "Isocenter to Range Shifter Distance";
-        this.dicomTagList["(300A,0366)"] = "Range Shifter Water Equivalent Thickness";
-        this.dicomTagList["(300A,0370)"] = "Lateral Spreading Device Settings Sequence";
-        this.dicomTagList["(300A,0372)"] = "Lateral Spreading Device Setting";
-        this.dicomTagList["(300A,0374)"] = "Isocenter to Lateral Spreading Device Distance";
-        this.dicomTagList["(300A,0380)"] = "Range Modulator Settings Sequence";
-        this.dicomTagList["(300A,0382)"] = "Range Modulator Gating Start Value";
-        this.dicomTagList["(300A,0384)"] = "Range Modulator Gating Stop Value";
-        this.dicomTagList["(300A,0386)"] = "Range Modulator Gating Start Water Equivalent Thickness";
-        this.dicomTagList["(300A,0388)"] = "Range Modulator Gating Stop Water Equivalent Thickness";
-        this.dicomTagList["(300A,038A)"] = "Isocenter to Range Modulator Distance";
-        this.dicomTagList["(300A,0390)"] = "Scan Spot Tune ID";
-        this.dicomTagList["(300A,0391)"] = "Scan Spot Prescribed Indices";
-        this.dicomTagList["(300A,0392)"] = "Number of Scan Spot Positions";
-        this.dicomTagList["(300A,0393)"] = "Scan Spot Reordered";
-        this.dicomTagList["(300A,0394)"] = "Scan Spot Position Map";
-        this.dicomTagList["(300A,0395)"] = "Scan Spot Reordering Allowed";
-        this.dicomTagList["(300A,0396)"] = "Scan Spot Meterset Weights";
-        this.dicomTagList["(300A,0398)"] = "Scanning Spot Size";
-        this.dicomTagList["(300A,039A)"] = "Number of Paintings";
-        this.dicomTagList["(300A,03A0)"] = "Ion Tolerance Table Sequence";
-        this.dicomTagList["(300A,03A2)"] = "Ion Beam Sequence";
-        this.dicomTagList["(300A,03A4)"] = "Ion Beam Limiting Device Sequence";
-        this.dicomTagList["(300A,03A6)"] = "Ion Block Sequence";
-        this.dicomTagList["(300A,03A8)"] = "Ion Control Point Sequence";
-        this.dicomTagList["(300A,03AA)"] = "Ion Wedge Sequence";
-        this.dicomTagList["(300A,03AC)"] = "Ion Wedge Position Sequence";
-        this.dicomTagList["(300A,0401)"] = "Referenced Setup Image Sequence";
-        this.dicomTagList["(300A,0402)"] = "Setup Image Comment";
-        this.dicomTagList["(300A,0410)"] = "Motion Synchronization Sequence";
-        this.dicomTagList["(300A,0412)"] = "Control Point Orientation";
-        this.dicomTagList["(300A,0420)"] = "General Accessory Sequence";
-        this.dicomTagList["(300A,0421)"] = "General Accessory ID";
-        this.dicomTagList["(300A,0422)"] = "General Accessory Description";
-        this.dicomTagList["(300A,0423)"] = "General Accessory Type";
-        this.dicomTagList["(300A,0424)"] = "General Accessory Number";
-        this.dicomTagList["(300A,0425)"] = "Source to General Accessory Distance";
-        this.dicomTagList["(300A,0431)"] = "Applicator Geometry Sequence";
-        this.dicomTagList["(300A,0432)"] = "Applicator Aperture Shape";
-        this.dicomTagList["(300A,0433)"] = "Applicator Opening";
-        this.dicomTagList["(300A,0434)"] = "Applicator Opening X";
-        this.dicomTagList["(300A,0435)"] = "Applicator Opening Y";
-        this.dicomTagList["(300A,0436)"] = "Source to Applicator Mounting Position Distance";
-        this.dicomTagList["(300A,0440)"] = "Number of Block Slab Items";
-        this.dicomTagList["(300A,0441)"] = "Block Slab Sequence";
-        this.dicomTagList["(300A,0442)"] = "Block Slab Thickness";
-        this.dicomTagList["(300A,0443)"] = "Block Slab Number";
-        this.dicomTagList["(300A,0450)"] = "Device Motion Control Sequence";
-        this.dicomTagList["(300A,0451)"] = "Device Motion Execution Mode";
-        this.dicomTagList["(300A,0452)"] = "Device Motion Observation Mode";
-        this.dicomTagList["(300A,0453)"] = "Device Motion Parameter Code Sequence";
-        this.dicomTagList["(300A,0501)"] = "Distal Depth Fraction";
-        this.dicomTagList["(300A,0502)"] = "Distal Depth";
-        this.dicomTagList["(300A,0503)"] = "Nominal Range Modulation Fractions";
-        this.dicomTagList["(300A,0504)"] = "Nominal Range Modulated Region Depths";
-        this.dicomTagList["(300A,0505)"] = "Depth Dose Parameters Sequence";
-        this.dicomTagList["(300A,0506)"] = "Delivered Depth Dose Parameters Sequence";
-        this.dicomTagList["(300A,0507)"] = "Delivered Distal Depth Fraction";
-        this.dicomTagList["(300A,0508)"] = "Delivered Distal Depth";
-        this.dicomTagList["(300A,0509)"] = "Delivered Nominal Range Modulation Fractions";
-        this.dicomTagList["(300A,0510)"] = "Delivered Nominal Range Modulated Region Depths";
-        this.dicomTagList["(300A,0511)"] = "Delivered Reference Dose Definition";
-        this.dicomTagList["(300A,0512)"] = "Reference Dose Definition";
-        this.dicomTagList["(300C,0002)"] = "Referenced RT Plan Sequence";
-        this.dicomTagList["(300C,0004)"] = "Referenced Beam Sequence";
-        this.dicomTagList["(300C,0006)"] = "Referenced Beam Number";
-        this.dicomTagList["(300C,0007)"] = "Referenced Reference Image Number";
-        this.dicomTagList["(300C,0008)"] = "Start Cumulative Meterset Weight";
-        this.dicomTagList["(300C,0009)"] = "End Cumulative Meterset Weight";
-        this.dicomTagList["(300C,000A)"] = "Referenced Brachy Application Setup Sequence";
-        this.dicomTagList["(300C,000C)"] = "Referenced Brachy Application Setup Number";
-        this.dicomTagList["(300C,000E)"] = "Referenced Source Number";
-        this.dicomTagList["(300C,0020)"] = "Referenced Fraction Group Sequence";
-        this.dicomTagList["(300C,0022)"] = "Referenced Fraction Group Number";
-        this.dicomTagList["(300C,0040)"] = "Referenced Verification Image Sequence";
-        this.dicomTagList["(300C,0042)"] = "Referenced Reference Image Sequence";
-        this.dicomTagList["(300C,0050)"] = "Referenced Dose Reference Sequence";
-        this.dicomTagList["(300C,0051)"] = "Referenced Dose Reference Number";
-        this.dicomTagList["(300C,0055)"] = "Brachy Referenced Dose Reference Sequence";
-        this.dicomTagList["(300C,0060)"] = "Referenced Structure Set Sequence";
-        this.dicomTagList["(300C,006A)"] = "Referenced Patient Setup Number";
-        this.dicomTagList["(300C,0080)"] = "Referenced Dose Sequence";
-        this.dicomTagList["(300C,00A0)"] = "Referenced Tolerance Table Number";
-        this.dicomTagList["(300C,00B0)"] = "Referenced Bolus Sequence";
-        this.dicomTagList["(300C,00C0)"] = "Referenced Wedge Number";
-        this.dicomTagList["(300C,00D0)"] = "Referenced Compensator Number";
-        this.dicomTagList["(300C,00E0)"] = "Referenced Block Number";
-        this.dicomTagList["(300C,00F0)"] = "Referenced Control Point Index";
-        this.dicomTagList["(300C,00F2)"] = "Referenced Control Point Sequence";
-        this.dicomTagList["(300C,00F4)"] = "Referenced Start Control Point Index";
-        this.dicomTagList["(300C,00F6)"] = "Referenced Stop Control Point Index";
-        this.dicomTagList["(300C,0100)"] = "Referenced Range Shifter Number";
-        this.dicomTagList["(300C,0102)"] = "Referenced Lateral Spreading Device Number";
-        this.dicomTagList["(300C,0104)"] = "Referenced Range Modulator Number";
-        this.dicomTagList["(300C,0111)"] = "Omitted Beam Task Sequence";
-        this.dicomTagList["(300C,0112)"] = "Reason for Omission";
-        this.dicomTagList["(300C,0113)"] = "Reason for Omission Description";
-        this.dicomTagList["(300E,0002)"] = "Approval Status";
-        this.dicomTagList["(300E,0004)"] = "Review Date";
-        this.dicomTagList["(300E,0005)"] = "Review Time";
-        this.dicomTagList["(300E,0008)"] = "Reviewer Name";
-        this.dicomTagList["(4000,0010)"] = "Arbitrary";
-        this.dicomTagList["(4000,4000)"] = "Text Comments";
-        this.dicomTagList["(4008,0040)"] = "Results ID";
-        this.dicomTagList["(4008,0042)"] = "Results ID Issuer";
-        this.dicomTagList["(4008,0050)"] = "Referenced Interpretation Sequence";
-        this.dicomTagList["(4008,00FF)"] = "Report Production Status (Trial)";
-        this.dicomTagList["(4008,0100)"] = "Interpretation Recorded Date";
-        this.dicomTagList["(4008,0101)"] = "Interpretation Recorded Time";
-        this.dicomTagList["(4008,0102)"] = "Interpretation Recorder";
-        this.dicomTagList["(4008,0103)"] = "Reference to Recorded Sound";
-        this.dicomTagList["(4008,0108)"] = "Interpretation Transcription Date";
-        this.dicomTagList["(4008,0109)"] = "Interpretation Transcription Time";
-        this.dicomTagList["(4008,010A)"] = "Interpretation Transcriber";
-        this.dicomTagList["(4008,010B)"] = "Interpretation Text";
-        this.dicomTagList["(4008,010C)"] = "Interpretation Author";
-        this.dicomTagList["(4008,0111)"] = "Interpretation Approver Sequence";
-        this.dicomTagList["(4008,0112)"] = "Interpretation Approval Date";
-        this.dicomTagList["(4008,0113)"] = "Interpretation Approval Time";
-        this.dicomTagList["(4008,0114)"] = "Physician Approving Interpretation";
-        this.dicomTagList["(4008,0115)"] = "Interpretation Diagnosis Description";
-        this.dicomTagList["(4008,0117)"] = "Interpretation Diagnosis Code Sequence";
-        this.dicomTagList["(4008,0118)"] = "Results Distribution List Sequence";
-        this.dicomTagList["(4008,0119)"] = "Distribution Name";
-        this.dicomTagList["(4008,011A)"] = "Distribution Address";
-        this.dicomTagList["(4008,0200)"] = "Interpretation ID";
-        this.dicomTagList["(4008,0202)"] = "Interpretation ID Issuer";
-        this.dicomTagList["(4008,0210)"] = "Interpretation Type ID";
-        this.dicomTagList["(4008,0212)"] = "Interpretation Status ID";
-        this.dicomTagList["(4008,0300)"] = "Impressions";
-        this.dicomTagList["(4008,4000)"] = "Results Comments";
-        this.dicomTagList["(4010,0001)"] = "Low Energy Detectors";
-        this.dicomTagList["(4010,0002)"] = "High Energy Detectors";
-        this.dicomTagList["(4010,0004)"] = "Detector Geometry Sequence";
-        this.dicomTagList["(4010,1001)"] = "Threat ROI Voxel Sequence";
-        this.dicomTagList["(4010,1004)"] = "Threat ROI Base";
-        this.dicomTagList["(4010,1005)"] = "Threat ROI Extents";
-        this.dicomTagList["(4010,1006)"] = "Threat ROI Bitmap";
-        this.dicomTagList["(4010,1007)"] = "Route Segment ID";
-        this.dicomTagList["(4010,1008)"] = "Gantry Type";
-        this.dicomTagList["(4010,1009)"] = "OOI Owner Type";
-        this.dicomTagList["(4010,100A)"] = "Route Segment Sequence";
-        this.dicomTagList["(4010,1010)"] = "Potential Threat Object ID";
-        this.dicomTagList["(4010,1011)"] = "Threat Sequence";
-        this.dicomTagList["(4010,1012)"] = "Threat Category";
-        this.dicomTagList["(4010,1013)"] = "Threat Category Description";
-        this.dicomTagList["(4010,1014)"] = "ATD Ability Assessment";
-        this.dicomTagList["(4010,1015)"] = "ATD Assessment Flag";
-        this.dicomTagList["(4010,1016)"] = "ATD Assessment Probability";
-        this.dicomTagList["(4010,1017)"] = "Mass";
-        this.dicomTagList["(4010,1018)"] = "Density";
-        this.dicomTagList["(4010,1019)"] = "Z Effective";
-        this.dicomTagList["(4010,101A)"] = "Boarding Pass ID";
-        this.dicomTagList["(4010,101B)"] = "Center of Mass";
-        this.dicomTagList["(4010,101C)"] = "Center of PTO";
-        this.dicomTagList["(4010,101D)"] = "Bounding Polygon";
-        this.dicomTagList["(4010,101E)"] = "Route Segment Start Location ID";
-        this.dicomTagList["(4010,101F)"] = "Route Segment End Location ID";
-        this.dicomTagList["(4010,1020)"] = "Route Segment Location ID Type";
-        this.dicomTagList["(4010,1021)"] = "Abort Reason";
-        this.dicomTagList["(4010,1023)"] = "Volume of PTO";
-        this.dicomTagList["(4010,1024)"] = "Abort Flag";
-        this.dicomTagList["(4010,1025)"] = "Route Segment Start Time";
-        this.dicomTagList["(4010,1026)"] = "Route Segment End Time";
-        this.dicomTagList["(4010,1027)"] = "TDR Type";
-        this.dicomTagList["(4010,1028)"] = "International Route Segment";
-        this.dicomTagList["(4010,1029)"] = "Threat Detection Algorithm and Version";
-        this.dicomTagList["(4010,102A)"] = "Assigned Location";
-        this.dicomTagList["(4010,102B)"] = "Alarm Decision Time";
-        this.dicomTagList["(4010,1031)"] = "Alarm Decision";
-        this.dicomTagList["(4010,1033)"] = "Number of Total Objects";
-        this.dicomTagList["(4010,1034)"] = "Number of Alarm Objects";
-        this.dicomTagList["(4010,1037)"] = "PTO Representation Sequence";
-        this.dicomTagList["(4010,1038)"] = "ATD Assessment Sequence";
-        this.dicomTagList["(4010,1039)"] = "TIP Type";
-        this.dicomTagList["(4010,103A)"] = "Version";
-        this.dicomTagList["(4010,1041)"] = "OOI Owner Creation Time";
-        this.dicomTagList["(4010,1042)"] = "OOI Type";
-        this.dicomTagList["(4010,1043)"] = "OOI Size";
-        this.dicomTagList["(4010,1044)"] = "Acquisition Status";
-        this.dicomTagList["(4010,1045)"] = "Basis Materials Code Sequence";
-        this.dicomTagList["(4010,1046)"] = "Phantom Type";
-        this.dicomTagList["(4010,1047)"] = "OOI Owner Sequence";
-        this.dicomTagList["(4010,1048)"] = "Scan Type";
-        this.dicomTagList["(4010,1051)"] = "Itinerary ID";
-        this.dicomTagList["(4010,1052)"] = "Itinerary ID Type";
-        this.dicomTagList["(4010,1053)"] = "Itinerary ID Assigning Authority";
-        this.dicomTagList["(4010,1054)"] = "Route ID";
-        this.dicomTagList["(4010,1055)"] = "Route ID Assigning Authority";
-        this.dicomTagList["(4010,1056)"] = "Inbound Arrival Type";
-        this.dicomTagList["(4010,1058)"] = "Carrier ID";
-        this.dicomTagList["(4010,1059)"] = "Carrier ID Assigning Authority";
-        this.dicomTagList["(4010,1060)"] = "Source Orientation";
-        this.dicomTagList["(4010,1061)"] = "Source Position";
-        this.dicomTagList["(4010,1062)"] = "Belt Height";
-        this.dicomTagList["(4010,1064)"] = "Algorithm Routing Code Sequence";
-        this.dicomTagList["(4010,1067)"] = "Transport Classification";
-        this.dicomTagList["(4010,1068)"] = "OOI Type Descriptor";
-        this.dicomTagList["(4010,1069)"] = "Total Processing Time";
-        this.dicomTagList["(4010,106C)"] = "Detector Calibration Data";
-        this.dicomTagList["(4010,106D)"] = "Additional Screening Performed";
-        this.dicomTagList["(4010,106E)"] = "Additional Inspection Selection Criteria";
-        this.dicomTagList["(4010,106F)"] = "Additional Inspection Method Sequence";
-        this.dicomTagList["(4010,1070)"] = "AIT Device Type";
-        this.dicomTagList["(4010,1071)"] = "QR Measurements Sequence";
-        this.dicomTagList["(4010,1072)"] = "Target Material Sequence";
-        this.dicomTagList["(4010,1073)"] = "SNR Threshold";
-        this.dicomTagList["(4010,1075)"] = "Image Scale Representation";
-        this.dicomTagList["(4010,1076)"] = "Referenced PTO Sequence";
-        this.dicomTagList["(4010,1077)"] = "Referenced TDR Instance Sequence";
-        this.dicomTagList["(4010,1078)"] = "PTO Location Description";
-        this.dicomTagList["(4010,1079)"] = "Anomaly Locator Indicator Sequence";
-        this.dicomTagList["(4010,107A)"] = "Anomaly Locator Indicator";
-        this.dicomTagList["(4010,107B)"] = "PTO Region Sequence";
-        this.dicomTagList["(4010,107C)"] = "Inspection Selection Criteria";
-        this.dicomTagList["(4010,107D)"] = "Secondary Inspection Method Sequence";
-        this.dicomTagList["(4010,107E)"] = "PRCS to RCS Orientation";
-        this.dicomTagList["(4FFE,0001)"] = "MAC Parameters Sequence";
-        this.dicomTagList["(50xx,0005)"] = "Curve Dimensions";
-        this.dicomTagList["(50xx,0010)"] = "Number of Points";
-        this.dicomTagList["(50xx,0020)"] = "Type of Data";
-        this.dicomTagList["(50xx,0022)"] = "Curve Description";
-        this.dicomTagList["(50xx,0030)"] = "Axis Units";
-        this.dicomTagList["(50xx,0040)"] = "Axis Labels";
-        this.dicomTagList["(50xx,0103)"] = "Data Value Representation";
-        this.dicomTagList["(50xx,0104)"] = "Minimum Coordinate Value";
-        this.dicomTagList["(50xx,0105)"] = "Maximum Coordinate Value";
-        this.dicomTagList["(50xx,0106)"] = "Curve Range";
-        this.dicomTagList["(50xx,0110)"] = "Curve Data Descriptor";
-        this.dicomTagList["(50xx,0112)"] = "Coordinate Start Value";
-        this.dicomTagList["(50xx,0114)"] = "Coordinate Step Value";
-        this.dicomTagList["(50xx,1001)"] = "Curve Activation Layer";
-        this.dicomTagList["(50xx,2000)"] = "Audio Type";
-        this.dicomTagList["(50xx,2002)"] = "Audio Sample Format";
-        this.dicomTagList["(50xx,2004)"] = "Number of Channels";
-        this.dicomTagList["(50xx,2006)"] = "Number of Samples";
-        this.dicomTagList["(50xx,2008)"] = "Sample Rate";
-        this.dicomTagList["(50xx,200A)"] = "Total Time";
-        this.dicomTagList["(50xx,200C)"] = "Audio Sample Data";
-        this.dicomTagList["(50xx,200E)"] = "Audio Comments";
-        this.dicomTagList["(50xx,2500)"] = "Curve Label";
-        this.dicomTagList["(50xx,2600)"] = "Curve Referenced Overlay Sequence";
-        this.dicomTagList["(50xx,2610)"] = "Curve Referenced Overlay Group";
-        this.dicomTagList["(50xx,3000)"] = "Curve Data";
-        this.dicomTagList["(5200,9229)"] = "Shared Functional Groups Sequence";
-        this.dicomTagList["(5200,9230)"] = "Per-frame Functional Groups Sequence";
-        this.dicomTagList["(5400,0100)"] = "Waveform Sequence";
-        this.dicomTagList["(5400,0110)"] = "Channel Minimum Value";
-        this.dicomTagList["(5400,0112)"] = "Channel Maximum Value";
-        this.dicomTagList["(5400,1004)"] = "Waveform Bits Allocated";
-        this.dicomTagList["(5400,1006)"] = "Waveform Sample Interpretation";
-        this.dicomTagList["(5400,100A)"] = "Waveform Padding Value";
-        this.dicomTagList["(5400,1010)"] = "Waveform Data";
-        this.dicomTagList["(5600,0010)"] = "First Order Phase Correction Angle";
-        this.dicomTagList["(5600,0020)"] = "Spectroscopy Data";
-        this.dicomTagList["(60xx,0010)"] = "Overlay Rows";
-        this.dicomTagList["(60xx,0011)"] = "Overlay Columns";
-        this.dicomTagList["(60xx,0012)"] = "Overlay Planes";
-        this.dicomTagList["(60xx,0015)"] = "Number of Frames in Overlay";
-        this.dicomTagList["(60xx,0022)"] = "Overlay Description";
-        this.dicomTagList["(60xx,0040)"] = "Overlay Type";
-        this.dicomTagList["(60xx,0045)"] = "Overlay Subtype";
-        this.dicomTagList["(60xx,0050)"] = "Overlay Origin";
-        this.dicomTagList["(60xx,0051)"] = "Image Frame Origin";
-        this.dicomTagList["(60xx,0052)"] = "Overlay Plane Origin";
-        this.dicomTagList["(60xx,0060)"] = "Overlay Compression Code";
-        this.dicomTagList["(60xx,0061)"] = "Overlay Compression Originator";
-        this.dicomTagList["(60xx,0062)"] = "Overlay Compression Label";
-        this.dicomTagList["(60xx,0063)"] = "Overlay Compression Description";
-        this.dicomTagList["(60xx,0066)"] = "Overlay Compression Step Pointers";
-        this.dicomTagList["(60xx,0068)"] = "Overlay Repeat Interval";
-        this.dicomTagList["(60xx,0069)"] = "Overlay Bits Grouped";
-        this.dicomTagList["(60xx,0100)"] = "Overlay Bits Allocated";
-        this.dicomTagList["(60xx,0102)"] = "Overlay Bit Position";
-        this.dicomTagList["(60xx,0110)"] = "Overlay Format";
-        this.dicomTagList["(60xx,0200)"] = "Overlay Location";
-        this.dicomTagList["(60xx,0800)"] = "Overlay Code Label";
-        this.dicomTagList["(60xx,0802)"] = "Overlay Number of Tables";
-        this.dicomTagList["(60xx,0803)"] = "Overlay Code Table Location";
-        this.dicomTagList["(60xx,0804)"] = "Overlay Bits For Code Word";
-        this.dicomTagList["(60xx,1001)"] = "Overlay Activation Layer";
-        this.dicomTagList["(60xx,1100)"] = "Overlay Descriptor - Gray";
-        this.dicomTagList["(60xx,1101)"] = "Overlay Descriptor - Red";
-        this.dicomTagList["(60xx,1102)"] = "Overlay Descriptor - Green";
-        this.dicomTagList["(60xx,1103)"] = "Overlay Descriptor - Blue";
-        this.dicomTagList["(60xx,1200)"] = "Overlays - Gray";
-        this.dicomTagList["(60xx,1201)"] = "Overlays - Red";
-        this.dicomTagList["(60xx,1202)"] = "Overlays - Green";
-        this.dicomTagList["(60xx,1203)"] = "Overlays - Blue";
-        this.dicomTagList["(60xx,1301)"] = "ROI Area";
-        this.dicomTagList["(60xx,1302)"] = "ROI Mean";
-        this.dicomTagList["(60xx,1303)"] = "ROI Standard Deviation";
-        this.dicomTagList["(60xx,1500)"] = "Overlay Label";
-        this.dicomTagList["(60xx,3000)"] = "Overlay Data";
-        this.dicomTagList["(60xx,4000)"] = "Overlay Comments";
-        this.dicomTagList["(7FE0,0008)"] = "Float Pixel Data";
-        this.dicomTagList["(7FE0,0009)"] = "Double Float Pixel Data";
-        this.dicomTagList["(7FE0,0010)"] = "Pixel Data";
-        this.dicomTagList["(7FE0,0020)"] = "Coefficients SDVN";
-        this.dicomTagList["(7FE0,0030)"] = "Coefficients SDHN";
-        this.dicomTagList["(7FE0,0040)"] = "Coefficients SDDN";
-        this.dicomTagList["(7Fxx,0010)"] = "Variable Pixel Data";
-        this.dicomTagList["(7Fxx,0011)"] = "Variable Next Data Group";
-        this.dicomTagList["(7Fxx,0020)"] = "Variable Coefficients SDVN";
-        this.dicomTagList["(7Fxx,0030)"] = "Variable Coefficients SDHN";
-        this.dicomTagList["(7Fxx,0040)"] = "Variable Coefficients SDDN";
-        this.dicomTagList["(FFFA,FFFA)"] = "Digital Signatures Sequence";
-        this.dicomTagList["(FFFC,FFFC)"] = "Data Set Trailing Padding";
-        this.dicomTagList["(FFFE,E000)"] = "Item";
-        this.dicomTagList["(FFFE,E00D)"] = "Item Delimitation Item";
-        this.dicomTagList["(FFFE,E0DD)"] = "Sequence Delimitation Item";
     };
     DicomImageService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({

@@ -188,7 +188,6 @@
     <Compile Include="Controllers\ConfigController.cs" />
     <Compile Include="Controllers\DicomImageController.cs" />
     <Compile Include="Controllers\OverlayController.cs" />
-    <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\WadoController.cs" />
     <Compile Include="Controllers\PssiController.cs" />
     <Compile Include="Controllers\ShortcutController.cs" />
@@ -220,7 +219,6 @@
     <Folder Include="Views\DicomImage\" />
     <Folder Include="Views\Overlay\" />
     <Folder Include="Views\Pssi\" />
-    <Folder Include="Views\Settings\" />
     <Folder Include="Views\Shortcut\" />
     <Folder Include="Views\Worklist\" />
   </ItemGroup>

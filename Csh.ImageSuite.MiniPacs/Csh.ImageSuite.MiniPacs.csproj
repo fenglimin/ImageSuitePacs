@@ -55,9 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonDal.cs" />
-    <Compile Include="CompressHelper\CompressTask.cs" />
-    <Compile Include="CompressHelper\CompressTaskManager.cs" />
-    <Compile Include="CompressHelper\Dicom2JpegCompressWorker.cs" />
     <Compile Include="Installer\MiniPacsDbHelperInstaller.cs" />
     <Compile Include="Installer\MiniPacsDicomHelperInstaller.cs" />
     <Compile Include="Interface\IMiniPacsDicomHelper.cs" />

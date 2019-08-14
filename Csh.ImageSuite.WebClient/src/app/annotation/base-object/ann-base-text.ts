@@ -104,7 +104,7 @@ export class AnnBaseText extends AnnBaseObject {
     }
 
     setFontSize(fontSize: number) {
-        this.createdFontSize = fontSize;
+        this.createdFontSize = fontSize
         const font = new FontData("Times New Roman", "#FFF", fontSize);
         this.jcObj.font(font.getCanvasFontString());
     }

@@ -15,7 +15,6 @@ import { DialogService } from "../../../../services/dialog.service";
 import { LogService } from "../../../../services/log.service";
 import { WindowLevelData } from "../../../../models/dailog-data/image-process";
 import { ManualWlDialogComponent } from "../../../dialog/manual-wl-dialog/manual-wl-dialog.component";
-import { DicomHeaderDialogComponent } from "../../../dialog/dicom-header-dialog/dicom-header-dialog.component";
 import { SelectMarkerDialogComponent } from "../../../dialog/select-marker-dialog/select-marker-dialog.component";
 import { FontData } from "../../../../models/misc-data"
 import { MessageBoxType, MessageBoxContent, DialogResult } from "../../../../models/messageBox";
@@ -104,7 +103,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
     private annSerialize: AnnSerialize;
 
     private annRoiRectangle: AnnBaseRectangle;
-    private annPixelValueMeasurement: AnnText;
 
     private imageDragStart: Point;
     private shellId: string;
@@ -912,18 +910,9 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                 break;
 
             case ImageContextEnum.CreateAnn:
-                const cursorName = this.annotationService.getCursorNameByType(curContext.imageContextPara);
+                    const cursorName = this.annotationService.getCursorNameByType(curContext.imageContextPara);
                 cursor = cursorUrl.format(cursorName);
                 break;
-
-            case ImageContextEnum.PixelValueMeasurement:
-                cursor = cursorUrl.format("pixel_measure");
-                break;
-
-            case ImageContextEnum.DicomHeaderViewer:
-                cursor = cursorUrl.format("dicom_header_view");
-                break;
-
         }
 
         return cursor;
@@ -1586,10 +1575,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     const imagePoint = AnnTool.screenToImage(point, this.getImageLayer().transform());
                     this.annRoiRectangle = new AnnBaseRectangle(undefined, imagePoint, 0, 0, this);
                 }
-            } else if (curContext.imageContextType === ImageContextEnum.PixelValueMeasurement) {
-                this.showPixelValueMeasurement(point);
-            } else if (curContext.imageContextType === ImageContextEnum.DicomHeaderViewer) {
-                this.showDicomHeaderDialog();
             }
         }
 
@@ -1641,8 +1626,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                         this.annRoiRectangle.setWidth(imagePoint.x - topLeft.x);
                         this.annRoiRectangle.setHeight(imagePoint.y - topLeft.y);
                     }
-                } else if (curContext.imageContextType === ImageContextEnum.PixelValueMeasurement) {
-                    this.movePixelValueMeasurement(point);
                 }
             }
         }
@@ -1692,8 +1675,6 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
                     this.annRoiRectangle.onDeleteChildren();
                     this.annRoiRectangle = undefined;
                 }
-            } else if (curContext.imageContextType === ImageContextEnum.PixelValueMeasurement) {
-                this.hidePixelValueMeasurement();
             }
         }
 
@@ -2062,42 +2043,5 @@ export class ImageViewerComponent implements OnInit, AfterContentInit, IImageVie
         }
 
         this.loadImage(index);
-    }
-
-    private showPixelValueMeasurement(screenPoint: Point) {
-        if (!this.annPixelValueMeasurement) {
-            const imagePoint = AnnTool.screenToImage(screenPoint, this.getImageLayer().transform());
-            if (this.image.isPointInImage(imagePoint)) {
-                const viewPort = cornerstone.getViewport(this.helpElement);
-                const flippedImagePoint = this.image.getFlippedImagePoint(imagePoint, viewPort.hflip, viewPort.vflip);
-                this.annPixelValueMeasurement = new AnnText(undefined, this);
-                this.annPixelValueMeasurement.onCreate(imagePoint, this.dicomImageService.getPixelValueText(this.image, flippedImagePoint));
-            }
-        }
-    }
-
-    private movePixelValueMeasurement(screenPoint: Point) {
-        if (this.annPixelValueMeasurement) {
-            const imagePoint = AnnTool.screenToImage(screenPoint, this.getImageLayer().transform());
-            if (this.image.isPointInImage(imagePoint)) {
-                const viewPort = cornerstone.getViewport(this.helpElement);
-                const flippedImagePoint  = this.image.getFlippedImagePoint(imagePoint, viewPort.hflip, viewPort.vflip);
-                this.annPixelValueMeasurement.onMove(imagePoint);
-                this.annPixelValueMeasurement.setText(this.dicomImageService.getPixelValueText(this.image, flippedImagePoint));
-            }
-        }
-    }
-
-    private hidePixelValueMeasurement() {
-        if (this.annPixelValueMeasurement) {
-            this.annPixelValueMeasurement.onDeleteChildren();
-            this.annPixelValueMeasurement = undefined;
-        }
-    }
-
-    private showDicomHeaderDialog() {
-        const dicomTagDataList = [];
-        this.dicomImageService.getTagDataList(this.image.cornerStoneImageList[0].data, 0, dicomTagDataList);
-        this.dialogService.showDialog(DicomHeaderDialogComponent, dicomTagDataList);
     }
 }

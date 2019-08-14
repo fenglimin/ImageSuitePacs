@@ -55,9 +55,3 @@
 .div-headerbar-button:hover { color: #ff9900; }
 
 .div-headerbar-button:focus { outline: none; }
-
-
-#container-fluid {
-    display: flex;
-    justify-content: space-between;
-}

@@ -130,11 +130,6 @@ export class ViewerToolbarComponent implements OnInit {
             name: "ann_stamp", tip: "Markers", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.CreateAnn, AnnType.Stamp))
         };
 
-        const miscButtonMenu: SelectedButtonData[] = [
-            { name: "dicom_header_view", tip: "DICOM Header Viewer", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.DicomHeaderViewer)) },
-            { name: "pen", tip: "Pixel Value Measurement", operationData: new ImageOperationData(this.shellId, ImageOperationEnum.SetContext, new ImageContextData(ImageContextEnum.PixelValueMeasurement)) }
-        ];
-
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, selectPanButtonMenuList));
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, multiSelectButtonMenuList));
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, zoomButtonMenuList));
@@ -168,8 +163,6 @@ export class ViewerToolbarComponent implements OnInit {
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.SingleButton, showGraphicOverlayButtonMenu));
 
         this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.Divider, undefined));
-
-        this.toolbarButtonList.push(new ToolbarButtonData(ToolbarButtonTypeEnum.ListButton, miscButtonMenu));
     }
 
     getButtonDivideSrc(): string {
