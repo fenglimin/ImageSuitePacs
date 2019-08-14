@@ -207,14 +207,14 @@
                     <div>
                         Export Format :
                     </div>
-                    <select id="export-format-type">
-                        <option>
+                    <select id="export-format-type" [(ngModel)]="selectedExportType">
+                        <option value="DICOM">
                             DICOM
                         </option>
-                        <option>
+                        <option value="JPEG">
                             JPEG
                         </option>
-                        <option>
+                        <option value="PDF">
                             PDF
                         </option>
                     </select>
@@ -269,7 +269,7 @@
     <button class="mat-raised-button" (click)="onCancelClick()">
         <i class="glyphicon glyphicon-remove-circle" style="padding-right: 8px"></i>Cancel
     </button>
-    <button class="mat-raised-button" (click)="onOkClick()" [disabled]="isNoCheckedImage || isNoCheckedPacs">
+    <button class="mat-raised-button" (click)="onOkClick()" [disabled]="isNoCheckedImage || (isNoCheckedPacs && isShowPacs)">
         <i class="glyphicon glyphicon-ok-circle" style="padding-right: 8px"></i>Ok
     </button>
 </mat-dialog-actions>

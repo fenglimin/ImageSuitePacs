@@ -144,7 +144,9 @@ export enum ImageContextEnum {
     RoiZoom,
     CreateAnn,
     RoiWl,
-    SelectAnn
+    SelectAnn,
+    PixelValueMeasurement,
+    DicomHeaderViewer
 }
 
 export class ImageContextData {

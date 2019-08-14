@@ -7,7 +7,7 @@ import { MessageBoxType, MessageBoxContent, DialogResult } from "../../../models
 @Component({
     selector: "app-query-toolbar",
     templateUrl: "./query-toolbar.component.html",
-    styleUrls: ["./query-toolbar.component.css"]
+    styleUrls: ["./query-toolbar.component.less"]
 })
 export class QueryToolbarComponent implements OnInit {
 
@@ -44,5 +44,9 @@ export class QueryToolbarComponent implements OnInit {
             //shortcut.name = "test";
             this.worklistService.onSaveShortcut(val.valueInput);
         }
+    }
+
+    onDeliveryStatusClicked() {
+
     }
 }

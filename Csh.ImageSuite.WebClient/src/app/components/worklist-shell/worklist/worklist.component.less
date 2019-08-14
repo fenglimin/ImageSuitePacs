@@ -18,6 +18,12 @@ li {
         cursor: pointer;
     }
 
+#tblStudies {
+    border-spacing: 0px;
+    border: 1px solid #333 !important;
+    border-collapse: separate;
+}
+
 thead {
     background: @container-background-color;
 }
@@ -45,6 +51,8 @@ thead div {
 
 #tblStudies td {
     border: 1px solid @border-color;
+    border-right:none;
+    border-bottom:none;
     color: @font-second-color;
 }
 
@@ -55,6 +63,8 @@ thead div {
 
 #tblStudies th {
     border: 1px solid @border-color;
+    border-right:none;
+    border-bottom:none;
 }
 
 #tblStudies tr.cust-info td {
@@ -74,24 +84,6 @@ thead div {
     padding-right:5px;
 }
 
-/*#trStudiesQuery input[type=text] {
-    background-color: @background-color;
-    border: 1px solid @border-color;
-    vertical-align: middle;
-    width: 100%;
-
-    border-bottom:1px solid red;
-
-
-}*/
-
-/*input:focus{
-    outline: none;
-    border-bottom:1px solid green;
-}*/
-
-
-
 #trStudiesQuery input[type=checkbox] {
     background-color: @background-color;
     border: 1px solid @border-color;
@@ -109,6 +101,10 @@ select {
     margin: 0px;
     padding: 1px;
     vertical-align: middle;
+}
+
+#tblStudies tbody {
+
 }
 
 #tblStudies tbody tr:nth-child(2n) {

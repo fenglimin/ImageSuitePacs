@@ -56,6 +56,9 @@ import { ViewerBottombarComponent } from './components/viewer-shell/viewer-botto
 import { PatientEditComponent } from './components/worklist-shell/worklist/patient-edit/patient-edit.component';
 import { ExportStudyComponent } from './components/worklist-shell/worklist/export-study/export-study.component';
 import { VideoPlayerComponent } from './components/common/video-player/video-player.component';
+import { DicomHeaderDialogComponent } from './components/dialog/dicom-header-dialog/dicom-header-dialog.component';
+import { SettingsComponent } from './components/header-bar/settings/settings.component';
+import { DeliveryStatusComponent } from './components/header-bar/settings/delivery-status/delivery-status.component';
 
 
 @NgModule({
@@ -82,7 +85,10 @@ import { VideoPlayerComponent } from './components/common/video-player/video-pla
         ViewerBottombarComponent,
         PatientEditComponent,
         ExportStudyComponent,
-        VideoPlayerComponent
+        VideoPlayerComponent,
+        DicomHeaderDialogComponent,
+        SettingsComponent,
+        DeliveryStatusComponent
     ],
     imports: [
         BrowserModule,
@@ -111,7 +117,7 @@ import { VideoPlayerComponent } from './components/common/video-player/video-pla
     ],
     providers: [],
     bootstrap: [AppComponent],
-    entryComponents: [MessageBoxComponent, ManualWlDialogComponent, SelectStudydateDialogComponent, SelectMarkerDialogComponent, PatientEditComponent, ExportStudyComponent]
+    entryComponents: [MessageBoxComponent, ManualWlDialogComponent, SelectStudydateDialogComponent, SelectMarkerDialogComponent, PatientEditComponent, ExportStudyComponent, DicomHeaderDialogComponent, DeliveryStatusComponent]
 })
 export class AppModule {
 }

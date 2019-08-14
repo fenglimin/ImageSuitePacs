@@ -2061,6 +2061,7 @@ namespace Csh.ImageSuite.MiniPacs
             return result;
         }
 
+
         public void UpdateElementUID(ref List<SqlWrapper> lstSql, string strOldUID, int iLevel, ref List<string> newUidList)
         {
             SqlWrapper sql;
@@ -2436,5 +2437,333 @@ namespace Csh.ImageSuite.MiniPacs
             }
             return tb;
         }
+
+        public DataSet GetAllTransferJobDS()
+        {
+            try
+            {
+                DataSet ds;
+                string strSQL = @"SELECT RJ.JobUID, RJ.JobName, RJ.ItemTotalNumber, RJ.ExpectExecTime, RJ.CreateDateTime, '' AS [Type], '' AS [Destination], '' AS [CompressionRatio], " +
+                                " RJ.ExecutedNumber, RJ.SuccessNumber, RJ.Status, RJ.StudyInstanceUID, PT.PatientID, PT.PatientName " +
+                                " FROM RuleJob AS RJ, Patient AS PT, Study AS ST " +
+                                " WHERE ST.PatientGUID = PT.PatientGUID AND ST.StudyInstanceUID = RJ.StudyInstanceUID AND RTRIM(Submitter) = 'TransferPanel'  ORDER BY RJ.CreateDateTime DESC";
+
+                ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+
+                string jobCommand;
+                if (ds != null && ds.Tables.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        row["Type"] = getStudyType(row["StudyInstanceUID"].ToString());
+                        jobCommand = getJobCommand(row["JobUID"].ToString());
+
+                        row["Destination"] = getDestinationFromCommand(jobCommand);
+                        row["CompressionRatio"] = getCompressionRatioFromCommand(jobCommand);
+                    }
+                }
+                return ds;
+            }
+            catch (Exception ex)
+            {
+                //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_TransferJobDAL, GXLogLevel.Error, GXLogCode.DEFAULT, "Method Error : [getAllTransferJobDS]");
+                //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_TransferJobDAL, GXLogLevel.Error, GXLogCode.DEFAULT, ex);
+                throw ex;
+            }
+        }
+
+        public DataSet GetAllTransferJobItemDS(string jobUID)
+        {
+            try
+            {
+                DataSet ds;
+                string strSQL = @"SELECT ItemSerialNo,UIDType,Comments, ExecStatus,ExecTime,UID from RuleJobItem " +
+                                "where JobUID = '" + jobUID + "' order by ItemSerialNo desc";
+
+                ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+                if (ds != null)
+                {
+                    ds.Tables[0].Columns.Add("PatientID");
+                    ds.Tables[0].Columns.Add("PatientName");
+
+                    string jobComments;
+                    int index;
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        jobComments = row["Comments"].ToString();
+
+                        index = jobComments.IndexOf(":");
+                        if (index < 0)
+                        {
+                            row["PatientID"] = jobComments;
+                            row["PatientName"] = "";
+                        }
+                        else
+                        {
+                            row["PatientID"] = jobComments.Substring(0, index);
+                            row["PatientName"] = jobComments.Substring(index + 1, jobComments.Length - index - 1);
+                        }
+                    }
+
+                }
+
+                return ds;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string getStudyType(string studyInstanceUID)
+        {
+            try
+            {
+                DataSet ds;
+                string strSQL = @"SELECT LocalBodypart, ImageCount FROM Series  WHERE StudyInstanceUID = '" + studyInstanceUID + "'";
+
+                ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+
+                string studyType = "";
+                if (ds != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        studyType += row["LocalBodypart"].ToString();
+                        studyType += "-";
+                        studyType += row["ImageCount"].ToString();
+                        studyType += "Views;";
+                    }
+
+                }
+
+                return studyType;
+            }
+            catch (Exception ex)
+            {
+                //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_TransferJobDAL, GXLogLevel.Error, GXLogCode.DEFAULT, "Method Error : [getStudyType]");
+                //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_TransferJobDAL, GXLogLevel.Error, GXLogCode.DEFAULT, ex);
+                throw ex;
+            }
+        }
+
+        public string getJobCommand(string jobUID)
+        {
+            try
+            {
+                DataSet ds;
+                string strSQL = @"SELECT [Command] FROM RuleJobItem WHERE JobUID = '" + jobUID + "'";
+
+                ds = SqlHelper.ExecuteQuery(strSQL, _connectionString);
+                string jobCommand = "";
+                if (ds != null && ds.Tables[0].Rows.Count > 0)
+                {
+                    jobCommand = ds.Tables[0].Rows[0]["Command"].ToString().ToLower().Trim();
+                }
+                return jobCommand;
+            }
+            catch (Exception ex)
+            {
+                //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_TransferJobDAL, GXLogLevel.Error, GXLogCode.DEFAULT, "Method Error : [getJobCommand]");
+                //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_TransferJobDAL, GXLogLevel.Error, GXLogCode.DEFAULT, ex);
+                throw ex;
+            }
+        }
+
+        public string getDestinationFromCommand(string jobCommand)
+        {
+            if (jobCommand.Length == 0)
+                return "";
+
+            int index = jobCommand.IndexOf("push");
+            if (index < 0)
+                return "local";
+
+            jobCommand = jobCommand.Substring(index);
+            index = jobCommand.IndexOf(":");
+            if (index < 0)
+                return "";
+
+            jobCommand = jobCommand.Substring(index + 1);
+            index = jobCommand.IndexOf(":");
+            if (index < 0)
+                return jobCommand;
+
+            return jobCommand.Substring(0, index);
+        }
+
+        public string getCompressionRatioFromCommand(string jobCommand)
+        {
+            if (jobCommand.Length == 0)
+                return "";
+
+            int index = jobCommand.IndexOf("&");
+            if (index < 0)
+                return "";
+
+            jobCommand = jobCommand.Substring(0, index);
+            index = jobCommand.IndexOf("compress:");
+            if (index < 0)
+                return "";
+
+            index = jobCommand.IndexOf(":");
+            jobCommand = jobCommand.Substring(index + 1);
+            index = jobCommand.IndexOf(":");
+            if (index > 0)
+                jobCommand = jobCommand.Substring(0, index);
+
+            Transfer_Compression comp = (Transfer_Compression)int.Parse(jobCommand);
+            string compression;
+
+            if (comp == Transfer_Compression.NoCompression)
+                compression = "No Compression";
+            else if (comp == Transfer_Compression.Loseless)
+                compression = "Loseless Compression";
+            else
+            {
+                compression = "Lossy ";
+                compression += comp.ToString();
+                compression += ":1";
+            }
+
+            return compression;
+        }
+
+        public enum Transfer_Compression
+        {
+            NoCompression = 0,
+            Loseless = 1
+        }
+
+        public bool SetJobStatus(string jobUID, string newStatus)
+        {
+            DataSet ds = GetAllTransferJobDS();
+
+            string strWhere = " WHERE JobUID = '" + jobUID + "'";
+            string strSQL = "";
+            string status;
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                if (row["JobUID"].ToString().Trim().CompareTo(jobUID) != 0)
+                    continue;
+
+                // If current status is processing, do nothing.
+                status = row["Status"].ToString();
+                if (String.Compare(status, "processing", true) == 0)
+                    continue;
+
+                // Update table RuleJob
+                if (String.Compare(newStatus, "FRESH", true) == 0)
+                {
+                    strSQL = @"UPDATE RuleJob SET Status='" + newStatus + "', ExecutedNumber=0, SuccessNumber=0" + strWhere;
+                }
+                else if (String.Compare(newStatus, "canceled", true) == 0)
+                {
+                    strSQL = @"DELETE RuleJob" + strWhere;
+                }
+                else
+                {
+                    strSQL = @"UPDATE RuleJob SET Status='" + newStatus + "'" + strWhere;
+                }
+
+                if (SqlHelper.ExecuteNonQuery(strSQL, _connectionString) <= 0)
+                    return false;
+
+                // Update table RuleJobItem
+                if (String.Compare(newStatus, "canceled", true) == 0)
+                {
+                    strSQL = @"DELETE RuleJobItem" + strWhere;
+                }
+                else
+                {
+                    strSQL = @"UPDATE RuleJobItem SET ExecStatus='" + newStatus + "'" + strWhere;
+                }
+
+                if (SqlHelper.ExecuteNonQuery(strSQL, _connectionString) <= 0)
+                    return false;
+
+                return true;
+            }
+
+            return false;
+        }
+
+        //public IList<ImageInfo> GetImageInfo(string[] imageColumns, string[] sopInstanceUIDs)
+        //{
+        //    List<ImageInfo> imageInfoList = new List<ImageInfo>();
+        //    if (sopInstanceUIDs.Length == 0)
+        //        return imageInfoList;
+
+        //    string[] fixedColumns = new string[] { "SOPInstanceUID", "ObjectFile", "JP2FileName" };
+        //    string[] allColumns = QueryFormater.MergeDatabaseColumnArray(fixedColumns, imageColumns);
+        //    string formatedColumns = QueryFormater.FormatColumns(allColumns).TrimEnd(new char[] { ',' });
+
+        //    string formatedGuids = QueryFormater.FormatInConditions(sopInstanceUIDs);
+        //    string strSQL = "SELECT " + formatedColumns + " FROM Image WHERE SopInstanceUID IN " + formatedGuids;
+        //    try
+        //    {
+        //        DataSet dataset = SqlHelper.ExecuteAdapter(strSQL, "Image", _connectionString);
+        //        DataTable table = dataset.Tables["Image"];
+        //        foreach (DataRow pRow in table.Rows)
+        //        {
+        //            GXDCMElementList gxDCMElementList = new GXDCMElementList();
+        //            String SopInstanceUID = pRow["SopInstanceUID"].ToString().Trim();
+        //            foreach (DataColumn pColumn in table.Columns)
+        //            {
+        //                if (pColumn.ColumnName == "JP2FileName" || pColumn.ColumnName == "ObjectFile")
+        //                    continue;
+
+        //                try
+        //                {
+        //                    GXDCMElement elementInMap = _fieldElementMap["Image." + pColumn.ColumnName];
+        //                    GXDCMElement newElement = new GXDCMElement(elementInMap);
+
+        //                    if (pColumn.ColumnName == "NumberOfFrames")
+        //                    {
+        //                        int numberOfFrames = 1;
+        //                        try
+        //                        {
+        //                            numberOfFrames = Convert.ToInt32(pRow["NumberOfFrames"].ToString().Trim());
+        //                            newElement.Value = numberOfFrames.ToString();
+        //                        }
+        //                        catch { /* NumberOfFrames will be default value 1. */}
+        //                    }
+        //                    // comments since the JP2 management service mangage the all JP2 files.
+
+        //                    //else if (pColumn.ColumnName == "ObjectFile") {
+        //                    //    newElement.Value = ISConfigurationService.Configuration.JPIPServerAddress + SopInstanceUID;
+        //                    //        //pRow["ObjectFile"].ToString().Trim().Replace('\\', '/').Replace(".dcm","");
+        //                    //}
+        //                    else
+        //                    {
+        //                        newElement.Value = pRow[pColumn.ColumnName].ToString().Trim();
+        //                    }
+
+        //                    gxDCMElementList.AddElement(newElement);
+        //                }
+        //                catch (KeyNotFoundException keyNotFoundException)
+        //                {
+        //                    //GXLogManager.WriteLog(GXLogModule.SQLServerDAL_PssiDAL, GXLogLevel.Error, GXLogCode.DEFAULT,
+        //                    //    keyNotFoundException.Message + " key=\"Image." + pColumn.ColumnName + "\"");
+        //                }
+        //            }
+        //            ImageInfo iinfo = new ImageInfo();
+        //            iinfo.ElementList = gxDCMElementList;
+        //            iinfo.SopInstanceUID = SopInstanceUID;
+        //            iinfo.ObjectFile = pRow["ObjectFile"].ToString().Trim().Replace('\\', '/');
+        //            iinfo.JP2FileName = pRow["JP2FileName"].ToString().Trim();
+        //            if (iinfo.JP2FileName.Length == 0) { iinfo.JP2FileName = SopInstanceUID; }
+        //            imageInfoList.Add(iinfo);
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        GXLogManager.WriteLog(GXLogModule.SQLServerDAL_PssiDAL, GXLogLevel.Error, GXLogCode.DEFAULT, "at Carestream.GXWeb.Server.SQLServerDAL.PssiDAL.GetImageInfo");
+        //        throw;
+        //    }
+
+        //    return imageInfoList;
+        //}
     }
 }

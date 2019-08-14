@@ -1,0 +1,151 @@
+@import "../../../../../themes.less";
+
+.table-list-style {
+    overflow:auto;
+
+    th {
+        padding: 3px;
+        border: 1px solid @border-color;
+        min-width: 100px;
+        background: @header-background-color;
+    }
+
+    td {
+        padding: 3px;
+        border: 1px solid @border-color;
+        min-width: 100px;
+        /*color: @container-background-color;*/
+    }
+
+    th, td:first-child {
+        min-width: 20px;
+    }
+
+    tr:nth-child(odd){
+      background-color: @odd-tr-color;
+    }
+
+    tr:nth-child(even){
+      background-color: @background-color;
+    }
+}
+
+.mat-dialog-title {
+    border-bottom: 1px solid @underline-color;
+    color: @underline-color;
+    font-size: 15px;
+    margin: -24px -24px 0px -24px;
+    min-width: 200px;
+    padding: 1px 10px;
+}
+
+.mat-dialog-content {
+    color: @font-color;
+    font-size: 15px;
+    min-height: 500px;
+    max-height: 800px;
+    max-width: 1200px;
+    padding: 10px 10px;
+}
+
+.mat-dialog-actions { margin-right: -12px; }
+
+.mat-form-field {
+    width: 100%;
+}
+
+.mat-raised-button {
+    background-color: @container-background-color;
+    border: 1px solid #777;
+    border-radius: 3px;
+    color: @font-color;
+    font-size: 13px;
+    margin-left: 6px;
+    padding: 1px;
+    width: 100px;
+}
+
+.mat-raised-button:disabled:hover { color: @disable-color; }
+
+.mat-raised-button:hover { color: @underline-color; }
+
+.mat-dialog-actions { flex-direction: row-reverse; }
+
+.matInput {
+    caret-color: @underline-color;
+    color: green;
+}
+
+.mat-input-element {
+    width: 100%;
+    caret-color: @underline-color;
+}
+
+td {
+    padding: 3px;
+}
+
+::-webkit-inner-spin-button { display: none; }
+
+#button-content {
+    float:right;
+}
+
+.image-btn {
+    border: none;
+    height: 40px;
+    outline: none;
+    width: 60px;
+}
+    
+.selected-row{
+    outline: thin solid @underline-color;
+}
+
+.resume-btn { background: url(../../../../../assets/img/button/ResumeTransfer_60_40_All.png) no-repeat left top; }
+
+.resume-btn:hover { background: url(../../../../../assets/img/button/ResumeTransfer_60_40_All.png) no-repeat right top; }
+
+.resume-btn:active { background: url(../../../../../assets/img/button/ResumeTransfer_60_40_All.png) no-repeat left bottom; }
+
+.resume-btn:disabled { background: url(../../../../../assets/img/button/ResumeTransfer_60_40_All.png) no-repeat right bottom; }
+
+.pause-btn { background: url(../../../../../assets/img/button/Pause_60_40_All.png) no-repeat left top; }
+
+.pause-btn:hover { background: url(../../../../../assets/img/button/Pause_60_40_All.png) no-repeat right top; }
+
+.pause-btn:active { background: url(../../../../../assets/img/button/Pause_60_40_All.png) no-repeat left bottom; }
+
+.pause-btn:disabled { background: url(../../../../../assets/img/button/Pause_60_40_All.png) no-repeat right bottom; }
+
+.cancel-btn { background: url(../../../../../assets/img/button/Cancel_60_40_All.png) no-repeat left top; }
+
+.cancel-btn:hover { background: url(../../../../../assets/img/button/Cancel_60_40_All.png) no-repeat right top; }
+
+.cancel-btn:active { background: url(../../../../../assets/img/button/Cancel_60_40_All.png) no-repeat left bottom; }
+
+.cancel-btn:disabled { background: url(../../../../../assets/img/button/Cancel_60_40_All.png) no-repeat right bottom; }
+
+.resend-btn { background: url(../../../../../assets/img/button/Resend_60_40_All.png) no-repeat left top; }
+
+.resend-btn:hover { background: url(../../../../../assets/img/button/Resend_60_40_All.png) no-repeat right top; }
+
+.resend-btn:active { background: url(../../../../../assets/img/button/Resend_60_40_All.png) no-repeat left bottom; }
+
+.resend-btn:disabled { background: url(../../../../../assets/img/button/Resend_60_40_All.png) no-repeat right bottom; }
+
+.delete-btn { background: url(../../../../../assets/img/button/delete_60_40.png) no-repeat left top; }
+
+.delete-btn:hover { background: url(../../../../../assets/img/button/delete_60_40.png) no-repeat right top; }
+
+.delete-btn:active { background: url(../../../../../assets/img/button/delete_60_40.png) no-repeat right bottom; }
+
+.delete-btn:disabled { background: url(../../../../../assets/img/button/delete_60_40.png) no-repeat left bottom; }
+
+.refresh-btn { background: url(../../../../../assets/img/button/Refresh_60_40_All.png) no-repeat left top; }
+
+.refresh-btn:hover { background: url(../../../../../assets/img/button/Refresh_60_40_All.png) no-repeat right top; }
+
+.refresh-btn:active { background: url(../../../../../assets/img/button/Refresh_60_40_All.png) no-repeat left bottom; }
+
+.refresh-btn:disabled { background: url(../../../../../assets/img/button/Refresh_60_40_All.png) no-repeat right bottom; }
