@@ -288,4 +288,37 @@ export class AnnGuideData {
     }
 }
 
+export class Vector2 {
+    x: number;
+    y: number;
 
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
+
+    length(): number{
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+    
+    normalize(): Vector2{
+        const inv = 1 / this.length();
+        return new Vector2(this.x * inv, this.y * inv);
+    }
+
+    add(v: Vector2): Vector2 {
+        return new Vector2(this.x + v.x, this.y + v.y);
+    }
+
+    multiply(f: number): Vector2{
+        return new Vector2(this.x * f, this.y * f);
+    }
+    
+    dot(v: Vector2): number {
+        return this.x * v.x + this.y * v.y;
+    }
+
+    angle(v: Vector2): number{
+        return Math.acos(this.dot(v) / (this.length() * v.length())) * 180 / Math.PI;
+    }
+}
